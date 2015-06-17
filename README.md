@@ -44,7 +44,7 @@ Authors
 
 Tom is being developed by Michael Thon as part of his PhD thesis.
 
-Licence
+License
 -------
 
 Tom is licensed under the permissive open source [MIT License](http://opensource.org/licenses/MIT).
