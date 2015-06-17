@@ -36,7 +36,8 @@ from python, add the ./tom/lib directory to the system path:
 ```python
 import sys, os
 sys.path.append(<path to tom> + '/tom/lib')
-import tom```
+import tom
+```
 
 Authors
 -------
