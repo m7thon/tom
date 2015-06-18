@@ -1,20 +1,17 @@
 /**
  * @file   LinearAlgebra.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides several useful additional matrix functions.
- * 
+ *
  */
 
-#ifndef _LINEAR_ALGEBRA_H_
-#define _LINEAR_ALGEBRA_H_
-
-#include "../external/Eigen/Core"
-#include "Macros.h"
+#ifndef LINEAR_ALGEBRA_H
+#define LINEAR_ALGEBRA_H
 
 namespace tom {
 
-/** 
+/**
  * return \f$a^b\f$ for non-negative integer bases and exponents.\ Note that \f$0^0 := 1\f$.
  */
 inline
@@ -96,7 +93,7 @@ Eigen::MatrixXd kron(const Eigen::MatrixBase<D1>& A, const Eigen::MatrixBase<D2>
 // 		int v_A_segs = ipow(n, k-it-1);
 // 		Eigen::Map<Eigen::MatrixXd> v_mat(v_.derived().data(), v_rows, v_cols);
 // 		for (int i = 0; i < v_A_segs; ++i) {
-// 			v_mat.block(0, i*n, v_rows, n) = v_mat.block(0, i*n, v_rows, n) * (A.transpose()); 
+// 			v_mat.block(0, i*n, v_rows, n) = v_mat.block(0, i*n, v_rows, n) * (A.transpose());
 // 		}
 // 	}
 // }
@@ -188,4 +185,4 @@ TEMPLATE(improveWLRA, improveWLRA, MatrixMd, MatrixMd, MatrixMd, MatrixMd)
 
 } // namespace tom
 
-#endif // _LINEAR_ALGEBRA_H_
+#endif // LINEAR_ALGEBRA_H

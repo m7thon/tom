@@ -3,10 +3,8 @@
  * @author Michael Thon
  */
 
-#ifndef _STREE_ITERATORS_H_
-#define _STREE_ITERATORS_H_
-
-#include "STreeNode.h"
+#ifndef STREE_ITERATORS_H
+#define STREE_ITERATORS_H
 
 namespace stree {
 
@@ -72,4 +70,4 @@ private:
 } // namespace stree
 
 
-#endif /* _STREE_ITERATORS_H_ */
+#endif // STREE_ITERATORS_H

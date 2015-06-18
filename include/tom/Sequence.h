@@ -1,16 +1,11 @@
 /**
  * @file   Sequence.h
  * @author Michael Thon
- * 
+ *
  */
 
-#ifndef _SEQUENCE_H_
-#define _SEQUENCE_H_
-
-#include "CerealTom.h"
-#include <vector>
-#include <limits>
-#include <algorithm>
+#ifndef SEQUENCE_H
+#define SEQUENCE_H
 
 namespace tom {
 
@@ -51,12 +46,12 @@ public:
 /** @name Constructors */
 //@{
 
-	/** 
+	/**
 	 * Construct a \a Sequence with output alphabet size \a nO and input alphabet size \a nU from a given \a data vector.\ The \a data vector is copied, and the sequence is viewed as an input-output sequence if \a nU != 0.
 	 */
 	Sequence(const std::vector<Symbol>& data, int nO, int nU = 0);
 
-	/** 
+	/**
 	 * Construct a zero \a Sequence with output alphabet size \a nO and input alphabet size \a nU of a given \a length.\ The size of the \a Sequence will be 2 * \a length if it is an input-output sequence, i.e., if \a nU != 0.
 	 */
 	Sequence(unsigned long length = 0, int nO = 0, int nU = 0);
@@ -89,7 +84,7 @@ public:
 	/** Access the (input or output) symbol at position \a n. */
 	Symbol& at(unsigned long n);
 
-	/** Return the (input or output) symbol at position \a n. */	
+	/** Return the (input or output) symbol at position \a n. */
 	const Symbol operator[] (unsigned long n) const { return at(n); }
 
 	/** Access the (input or output) symbol at position \a n. */
@@ -129,7 +124,7 @@ public:
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0)) return 0;
 		if (seq.size() == 0) return length();
 		unsigned int c = 0;
-		for (unsigned int i = 0; i <= size() - seq.size(); i += nU() == 0 ? 1 : 2) if (seq == (sub(i, seq.size()))) c++; 
+		for (unsigned int i = 0; i <= size() - seq.size(); i += nU() == 0 ? 1 : 2) if (seq == (sub(i, seq.size()))) c++;
 		return c;
 	}
 
@@ -140,26 +135,26 @@ public:
 	/** Return \c true if this is an input-output sequence, i.e., if the input alphabet size \a nU is non-zero. */
 	bool isStrictlyIO() const { return ( nU() != 0 ); }
 
-  /** Return \c true if this sequence is aligned.\ This is always true for normal (non-io) sequences.\ For io-sequences this means that the sequence begins with an input-output pair, i.e., this \a Sequence is aligned if it is not reversed and begins with an input symbol, or is reversed and begins with an output symbol. */ 
+  /** Return \c true if this sequence is aligned.\ This is always true for normal (non-io) sequences.\ For io-sequences this means that the sequence begins with an input-output pair, i.e., this \a Sequence is aligned if it is not reversed and begins with an input symbol, or is reversed and begins with an output symbol. */
 	bool isAlignedIO() const { return ((nU() == 0) or (pos_ % 2 == 0)); }
 
 	/** Return \c true if this sequence is a valid (io)-sequence.\ This is always true for normal (non-io) sequences.\ For io-sequences this means that the sequence is aligned and has an even number of symbols. */
 	bool isValidIO() const { return ((nU() == 0) or ((size_%2==0) and isAlignedIO())); }
 
-	/** Return a subsequence starting at the given index \a posIO and of the given \a length, i.e., if this \a Sequence is \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$, then return a subsequence view to \f$ u_{posIO}o_{posIO}\ldots u_{posIO+length-1}o_{posIO+length-1}\f$.\ For normal (non-io) sequences this is the same as \a sub. */	
+	/** Return a subsequence starting at the given index \a posIO and of the given \a length, i.e., if this \a Sequence is \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$, then return a subsequence view to \f$ u_{posIO}o_{posIO}\ldots u_{posIO+length-1}o_{posIO+length-1}\f$.\ For normal (non-io) sequences this is the same as \a sub. */
 	Sequence subIO(unsigned long posIO, unsigned long length) const {	return sub( (nU() == 0 ? posIO : 2*posIO), (nU() == 0 ? length : 2*length) ); }
 
-  /** Return the length of this sequence, which is its size for normal (non-io) sequences and half its size for io-sequences.\ Note that this only makes sense for valid (io)-sequences. */ 
+  /** Return the length of this sequence, which is its size for normal (non-io) sequences and half its size for io-sequences.\ Note that this only makes sense for valid (io)-sequences. */
 	unsigned long length() const { return (nU() == 0 ? size() : size()/2); }
 
-	/** Return the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */	
+	/** Return the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */
 	const Symbol o(unsigned long n) const;
-	/** Set the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */	
+	/** Set the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */
 	void o(unsigned long n, Symbol o);
 
-	/** Return the \a n-th input symbol or 0 if this is an output-only \a Sequence.\ Note that this is only correct for aligned and strictly io-sequences. */	
+	/** Return the \a n-th input symbol or 0 if this is an output-only \a Sequence.\ Note that this is only correct for aligned and strictly io-sequences. */
 	const Symbol u(unsigned long n) const;
-	/** Set the \a n-th input symbol.\ Note that this is only correct for aligned and strictly io-sequences. */	
+	/** Set the \a n-th input symbol.\ Note that this is only correct for aligned and strictly io-sequences. */
 	void u(unsigned long n, Symbol u);
 //@}
 
@@ -208,13 +203,13 @@ private:
   /** write to the given output stream. */
 	std::ostream& operator>>(std::ostream &os) const;
 	/** an output helper function */
-	std::ostream& writeFormattedData(std::ostream& ostream, unsigned int maxOut = 0) const; 
+	std::ostream& writeFormattedData(std::ostream& ostream, unsigned int maxOut = 0) const;
 //@}
 
 private:
 	unsigned long pos_;             ///< The index position in the \a data_ corresponding to the beginning of this \a Sequence
 	long size_;                     ///< The size (in Symbols) of this \a Sequence.\ Negative values indicate a reversed sequence
-	SHARED_PTR<SequenceData> data_; ///< a pointer to the underlying \a SequenceData
+	std::shared_ptr<SequenceData> data_; ///< a pointer to the underlying \a SequenceData
 }; // class Sequence
 
 SWIGCODE(%extend Sequence { %COLLECTION(Symbol) };)
@@ -371,4 +366,4 @@ std::string Sequence::repr() const {
 
 } // tom
 
-#endif // _SEQUENCE_H_
+#endif // SEQUENCE_H

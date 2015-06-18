@@ -1,15 +1,12 @@
 /**
  * @file   Estimator.h
  * @author Michael Thon <mthon@jacobs-university.de>
- * 
+ *
  * @brief  Provides functions to get required estimates from data.
  */
 
-#ifndef _ESTIMATOR_H_
-#define _ESTIMATOR_H_
-
-#include <cmath>
-//#include "asa109/asa109.hpp"
+#ifndef ESTIMATOR_H
+#define ESTIMATOR_H
 
 namespace tom {
 
@@ -34,9 +31,9 @@ class Estimator
 { public:
 	///** create an uninitialized \a Estimator. */
 	//Estimator() : pos_() {};
-	
-	/** create an \a Estimator from a given \a sfxTree -- a suffix tree representation of a sample sequence */ 
-	Estimator(const SHARED_PTR<stree::STree>& sfxTree) : stree_(sfxTree) {
+
+	/** create an \a Estimator from a given \a sfxTree -- a suffix tree representation of a sample sequence */
+	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : stree_(sfxTree) {
 		s_.pos_ = stree::STreePos(stree_.get());
 		nO_ = sfxTree->text_.nO(); nU_ = stree_->text_.nU();
 		len_ = ( (nU_ == 0) ? stree_->size_ : stree_->size_ / 2 );
@@ -59,7 +56,7 @@ class Estimator
 
 	/** return a variance estimate for the current estiamte */
 	double v(const Sequence& seq) { estimateVariance_ = true; reset(); extendBy(seq); eval(); return s_.v_; }
-	
+
   OUTMATRIXXD(F)
   OUTMATRIXXD(V)
   /** return (in the output argument \a F) the matrix of estimates \f$\hat{F}^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$. */
@@ -90,8 +87,8 @@ class Estimator
 				F.coeffRef(i,j) = s_.f_;
 			}
 		}
-	}	
-	
+	}
+
 	/** return (in the output argument \a V) the matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_j\bar{x}_i))]_{i,j}\f$ corresponding to the estimates \f$\hat{f}(\bar{x}_j\bar{x}_i)\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$. */
 	void v(Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
@@ -136,7 +133,7 @@ class Estimator
 				V.coeffRef(i,j) = s_.v_;
 			}
 		}
-	}	
+	}
 
 	/** return (in the output argument \a F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_jz\bar{x}_i)]_{i,j}\f$, and (in the output argument \a V) the corresponding matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_jz\bar{x}_i))]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$ and the input-output pair \a z = (\a u,\a o). */
 	void fv(Eigen::MatrixXd& F, Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs, Symbol o, Symbol u = 0) {
@@ -152,14 +149,14 @@ class Estimator
 				V.coeffRef(i,j) = s_.v_;
 			}
 		}
-	} 
+	}
 
   CLEAROUTMATRIXXD(F)
   CLEAROUTMATRIXXD(V)
 
 	int nO_;              ///< the size of the output alphabet
 	int nU_;              ///< the size of the input alphabet
-	unsigned int len_;    ///< the length of the sample sequence from which the estimates are calculated	
+	unsigned int len_;    ///< the length of the sample sequence from which the estimates are calculated
 	Eigen::VectorXd uProbs_; ///< the input Symbol probabilities for the case of an iid ("blind") input policy.\ These are estimated on constructing the \a Estimator and may be overwritten if they are known exactly.
 
 	double nPseudoCounts_ = 1;
@@ -167,24 +164,24 @@ class Estimator
 	double addToVariance_ = 0;
 	double minimumVariance_ = 0;
 	double applyExponentToVariance_ = 1;
-		
+
 private:
   struct State {
 		stree::STreePos pos_; ///< the position in the suffix tree for the currently estimated sequence.
-		double f_  = 1;       ///< related to the current estimate (used internally in different ways) 
+		double f_  = 1;       ///< related to the current estimate (used internally in different ways)
 		double v_  = 1;
 		double fB_ = 1;       ///< related to the current Bayesian estimate (used internally in different ways)
 	};
 
-	
+
   State s_;
 	bool estimateVariance_ = true;
 
-	const SHARED_PTR<stree::STree> stree_; ///< a pointer to the underlying \a STree
-	
+	const std::shared_ptr<stree::STree> stree_; ///< a pointer to the underlying \a STree
+
 	void reset() { s_.pos_.setRoot(); s_.f_ = s_.fB_ = s_.v_ = 1; }
 	void reset(const State& s) { s_ = s; }
-	
+
 	void extendBy(Symbol o, Symbol u = 0) {
 		if (nU_ == 0) s_.pos_.addChar(o);
 		else {
@@ -204,7 +201,7 @@ private:
 			}
 		}
 	}
-	
+
 	void extendBy(const Sequence& seq) {
 		if (nU_ == 0) s_.pos_.addString(seq);
 		else for (unsigned int i = 0; i < seq.length(); ++i) extendBy(seq.o(i), seq.u(i));
@@ -235,7 +232,7 @@ private:
 		// 				double log_beta = std::lgamma(a) + std::lgamma(b) - std::lgamma(a+b);
 		// 				int error = 0;
 		// 				fB = xinbta(a, b, log_beta, 1-maxProbAlphaError_, error);
-		// 				if (fB > 0.5) fB = 0.5;						
+		// 				if (fB > 0.5) fB = 0.5;
 		// 			}
 		// 			else if (fB > 0.5) {
 		// 				double a = x; double b = n-x+1;
@@ -269,4 +266,4 @@ private:
 
 } // namespace tom
 
-#endif // _ESTIMATOR_H_
+#endif // ESTIMATOR_H

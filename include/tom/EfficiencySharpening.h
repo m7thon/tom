@@ -5,19 +5,19 @@
  * @brief  A reimplementation of the ES algorithm
  */
 
-#ifndef _EFFICIENCY_SHARPENING_H_
-#define _EFFICIENCY_SHARPENING_H_
+#ifndef EFFICIENCY_SHARPENING_H
+#define EFFICIENCY_SHARPENING_H
 
 namespace tom {
 
-SHARED_PTR<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, SHARED_PTR<std::vector<stree::Nidx> > indNodes) {
+std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::Nidx> > indNodes) {
   Sequence seq = rStree.text_.sub(0, rStree.size_);
   auto room = oom.reverse();
   MatrixXf* CF_l = room->harvestStates(seq);
   // Note: CF_l is [c_0, ..., c_l] as in the paper, but differently ordered from matlab code
-  
+
   // (3) Weed ( *** not implemented! (This is a weird thing to do anyway...) ***)
-  
+
   // (4) Associate reverse states with leaves and sum depth-first through suffix tree
   MatrixXf CF_i = MatrixXf::Zero(oom.dim(), rStree.nInternalNodes());
   for (stree::STreeNode tnode = rStree.getDeepestVirtualLeafBranch(); tnode.isValid(); tnode.suffixLink()) {
@@ -33,12 +33,12 @@ SHARED_PTR<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, SHARED_P
       }
     }
   }
-  
+
   // Start initializing the newly learnt oom
-  SHARED_PTR<Oom> newOom(new Oom());
+  std::shared_ptr<Oom> newOom(new Oom());
 	newOom->setSize(oom.dim(), seq.nO(), 0);
   newOom->sig() = RowVectorXd::Ones(oom.dim());
-  
+
   // (5) Obtain normalized argument-value-pair matrices CF and CFz
   //     and compute tau operators
   MatrixXd CF = MatrixXd::Zero(oom.dim(), indNodes->size());
@@ -65,10 +65,10 @@ SHARED_PTR<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, SHARED_P
     newOom->tau(o) = (CFz * CF).cast<double>();
   }
   delete CF_l;
-  
+
   newOom->w0() = newOom->stationaryState();
   newOom->init();
-  
+
   // (6) Set stabilization parameters of new Oom to those of given one
   newOom->minPrediction_ = oom.minPrediction_;
   newOom->maxPredictionError_ = oom.maxPredictionError_;
@@ -81,4 +81,4 @@ SHARED_PTR<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, SHARED_P
 
 } // namespace tom
 
-#endif // _EFFICIENCY_SHARPENING_H_
+#endif // EFFICIENCY_SHARPENING_H

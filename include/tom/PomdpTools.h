@@ -1,18 +1,12 @@
 /**
  * @file   PomdpTools.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides resources for dealing with POMDPs.
  */
 
-#ifndef __POMDP_TOOLS_H__
-#define __POMDP_TOOLS_H__
-
-#include "Macros.h"
-#include "Random.h"
-#include "../external/Eigen/Core"
-#include "CerealTom.h"
-#include "../external/cereal/types/vector.hpp"
+#ifndef POMDP_TOOLS_H
+#define POMDP_TOOLS_H
 
 namespace tom {
 
@@ -49,7 +43,7 @@ private:
 					}
 					if (i != indices_[currentIndex]) return false;
 					currentIndex++;
-				}	
+				}
 			}
 			return true;
 		}
@@ -68,7 +62,7 @@ private:
 		std::vector<int> indices_;
 		std::vector<double> vals_;
 	};
-	
+
 	template<class Archive>
 	void save(Archive& ar) const {
 		std::string type = "POLICY";
@@ -83,7 +77,7 @@ private:
 		MVAR(ar, nU); MVAR(ar, exploration);
 		MVAR(ar, planes);
 	}
-	
+
 	std::vector<Plane> planes_;
 };
 
@@ -120,4 +114,4 @@ inline Eigen::VectorXd Policy::p(const Eigen::VectorXd& w) const {
 
 } //namespace tom
 
-#endif // __POMDP_TOOLS_H__
+#endif // POMDP_TOOLS_H

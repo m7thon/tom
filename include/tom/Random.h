@@ -1,19 +1,12 @@
 /**
  * @file   Random.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides the \a Random class for random number generation.
  */
 
-#ifndef __RANDOM_H__
-#define __RANDOM_H__
-
-#include <string>
-#include <random>
-
-#include "../external/Eigen/Core"
-
-#include "Macros.h"
+#ifndef RANDOM_H
+#define RANDOM_H
 
 namespace tom {
 
@@ -71,6 +64,6 @@ private:
 SWIGCODE(%feature("autodoc", "sample(ArrayMd const & prob) -> unsigned int") Random::sample<ArrayMd >;)
 SWIGCODE(%template(sample) Random::sample<ArrayMd >;)
 
-} //namespace tom
+} // namespace tom
 
-#endif /* __RANDOM_H__ */
+#endif // RANDOM_H

@@ -1,5 +1,7 @@
 include Makefile.inc
 
+INCLUDE += $(EIGEN_INCLUDE) -I./include/tom -I./include/external
+
 SRCs = Makefile Makefile.inc
 SRCS += include/tom/stree/stree.h include/tom/stree/RBTree.h include/tom/stree/STreeCore.h include/tom/stree/STreeCore.cpp include/tom/stree/STreeNode.h include/tom/stree/STreeIterators.h
 SRCS += include/tom/tom.h include/tom/Macros.h include/tom/CerealTom.h include/tom/Random.h include/tom/PomdpTools.h include/tom/LinearAlgebra.h include/tom/LinearAlgebra.cpp include/tom/Sequence.h include/tom/Oom.h include/tom/Hmm.h include/tom/Oom.cpp include/tom/Estimator.h include/tom/CoreSequences.h include/tom/EfficiencySharpening.h
@@ -30,7 +32,7 @@ clean:
 	rm -f swig/*.o
 	rm -f lib/tomlib.py lib/tom.py lib/tomio.py lib/tomseqs.py lib/tomlearn.py lib/*.pyc
 	rm -f lib/_tomlib.so lib/stree.py lib/_stree.so
-	rm -f swig/tomlib_wrap.cxx swig/stree_wrap.cxx 
+	rm -f swig/tomlib_wrap.cxx swig/stree_wrap.cxx
 
 .PHONY: stree
 stree:

@@ -1,8 +1,3 @@
-#include "Oom.h"
-//#include "Eigen/Eigenvalues"
-
-#include <cmath>
-
 namespace tom {
 
 // CONSTRUCTORS AND INITIALIZATION
@@ -78,7 +73,7 @@ void Oom::validate() {
       if (tau_(o, u).minCoeff() < 0)
         valid_ = false;
 }
-  
+
 // IO-FUNCTIONS
 void Oom::writeOptionalPropertiesToStream(std::ostream &os) const {
   os << "minPrediction: " << minPrediction_ << std::endl;
@@ -96,7 +91,7 @@ std::ostream& Oom::operator>>(std::ostream &os) const {
 			os << "tau(" << o;
 			if (nU_ == 0) os << "):" << std::endl << tau_(o, u) << std::endl;
 			else os << "," << u << "):" << std::endl << tau_(o, u) << std::endl;
-		}		 
+		}
 	os << "w0:" << std::endl << w0_ << std::endl;
   writeOptionalPropertiesToStream(os);
   os << "OOM_END" << std::endl;
@@ -313,7 +308,7 @@ double Oom::ll(const Sequence& seq) {
 	reset();
 	static const double log2_e = std::log2(std::exp(1.0));
 	return -log2_e * log_f(seq) / seq.length();
-	
+
 }
 
 double Oom::averageOneStepPredictionError(Oom& gen, const Sequence& seq) {
@@ -326,14 +321,14 @@ double Oom::averageOneStepPredictionError(Oom& gen, const Sequence& seq) {
 	}
 	return sqr_err / ( seq.length() * nO_ );
 }
-  
+
 MatrixXf* Oom::harvestStates(const Sequence& seq) {
   double LLRevTrain = 0;
   long l = seq.length();
   double val = 0;
-  
+
   MatrixXf* W = new MatrixXf(dim_, l+1);
-  
+
   W->col(0) = wt().cast<float>();
   for (long i = 0; i < l; ++i) {
     double val = f(seq.o(i), ((nU_ != 0) ? seq.u(i) : 0));

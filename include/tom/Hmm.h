@@ -1,17 +1,14 @@
 /**
  * @file   Hmm.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides EM learning for HMMs and POMDPs.
  */
 
-#ifndef __HMM_H__
-#define __HMM_H__
-
-#include "tom.h"
+#ifndef HMM_H
+#define HMM_H
 
 namespace tom {
-using namespace Eigen;
 
 class EMStopCondition {
 public:
@@ -37,7 +34,7 @@ SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Hmm::repr;)
 class Hmm {
 	friend class cereal::access;
 	friend class Oom;
-public:	
+public:
 	Hmm(int nStates, int nObservations, int nInputs = 0, double exponent = 1, const Random& rnd = Random())
 		{ setSize(nStates, nObservations, nInputs); if (exponent != 0) randomize(exponent, rnd); else init(); }
 
@@ -63,11 +60,11 @@ public:
 
 	MatrixXd& Theta(int o, int a = 0 )         { return Theta_(o,a); }
   //@}
-		
+
 	INSERT_JSON_IO_FUNCTIONS()
 	/** return a representation to display in interactive python. */
 	std::string repr() const { std::stringstream os; os << "HMM" << " nU: " << nU_ << " nO: " << nO_ << " dim: " << dim_; return os.str(); }
-	
+
 private:
 	int dim_, nO_, nU_, nU1_;
 	VectorXd pi_;
@@ -85,7 +82,13 @@ private:
 		MVAR(ar,T); MVAR(ar,E); MVAR(ar,pi);
   }
   template<class Archive>
-  void load(Archive & ar) { save(ar); init(); }
+  void load(Archive & ar) {
+    std::string type = "HMM";
+		ar(cereal::make_nvp("Type", type));
+		MVAR(ar,nU); MVAR(ar,nO); MVAR(ar,dim);
+		MVAR(ar,T); MVAR(ar,E); MVAR(ar,pi);
+    init();
+  }
 };
 
 /* ------------------------------------------------------------------------- *
@@ -166,7 +169,7 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 	MatrixXd betaBlock(dim_, betaBlockSize);
 	VectorXd betaLog2Scale(N);
 	double alphaLog2Scale;
-	
+
 	VectorXd alpha(dim_);
 	VectorXd beta(dim_);
 	VectorXd gamma(dim_);
@@ -178,7 +181,7 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 		llOpt = -log2Px / N;
 		if (const_cast<EMStopCondition&>(stopCondition)(it, llOpt)) { return llOpt; }
 		const_cast<EMStopCondition&>(stopCondition).previousLog2Likelihood_ = llOpt;
-		
+
 		hmmOpt.setSize(dim_, nO_, nU_, true);
 		beta /*0*/ = betaBlock.col(0);
 		// We first handle the starting case (t0 == -1 or t0 == 0)
@@ -195,7 +198,7 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 			hmmOpt.pi_ = gamma;
 			hmmOpt.E_(x.o(0), x.u(0)) = gamma;
 		}
-		
+
 		for (int t = ( pomdp ? 0 : 1 ), tb = t / betaBlockSize, tbi = t % betaBlockSize; t < N; ++t) {
 			if (tbi == 0) { // recompute betaBlock
 				if (tb == betaCacheSize) { // we are passed last cached value
@@ -222,10 +225,10 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 			gamma /*t*/ = std::exp2( alphaLog2Scale + betaLog2Scale(t) - log2Px ) * alpha.cwiseProduct(beta);
 			// tom::normalize(gamma);
 			hmmOpt.E_(x.o(t), x.u(t)) += gamma;
-			
+
 			if (++tbi == betaBlockSize) { tb++; tbi = 0; } // ensure t = tb * betaBlockSize + tbi
 		}
-		
+
 		hmmOpt.normalize();
 		*this = hmmOpt;
 		init();
@@ -234,4 +237,4 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 
 } // namespace tom
 
-#endif // __HMM_H__
+#endif // HMM_H

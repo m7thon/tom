@@ -5,7 +5,7 @@ Observable operator models are a new class of models for (controlled) stochastic
 
 This "Toolkit for observable operator modeling" (*tom*) aims to provide a reference implementation of the OOM methods developed in the [MINDS](minds.jacobs-university.de) research group of Jacobs University Bremen. Some benchmark problems as well as demo scripts will be included.
 
-The *tom* core functionality is written in C++ for maximum performance. A Python interface to the library is included.
+The core functionality is written in C++ for maximum performance. A Python interface to the library is included.
 
 Requirements
 ------------
@@ -26,8 +26,8 @@ Installation
 
 1. Install the required dependencies
 2. Modify the Makefile.inc to set the correct compiler and paths to the dependencies
-3. run "make"
-4. run "make doc" to generate the documentation in the subdirectory doc/html
+3. run `make`
+4. run `make doc` to generate the documentation in the subdirectory doc/html
 
 Using the toolkit
 -----------------

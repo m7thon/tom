@@ -3,15 +3,15 @@
  * @brief  Include this file to use the suffix tree library.
  */
 
-#ifndef _STREE_H_
-#define _STREE_H_
+#ifndef STREE_H
+#define STREE_H
 
 #include <cassert>
-#include <stdint.h> // defines uint32_t
+#include <cstdint>
 
 #include <vector>
 #include <deque>
-#include <stack> // for iterative dfs traversal
+#include <stack> // for iterative dfs traversal and RBTree
 #include <queue> // for iterative bfs traversal
 
 #include <iostream>
@@ -55,11 +55,11 @@ class DFSIterator;
 
 } // namespace stree
 
+#include "RBTree.h"
 #include "STreeCore.h"
 #include "STreeNode.h"
 #include "STreeIterators.h"
 
-// Include the implementation as well:
 #include "STreeCore.cpp"
 
-#endif /* _STREE_H_ */
+#endif // STREE_H

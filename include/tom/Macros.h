@@ -1,12 +1,12 @@
 /**
  * @file   Macros.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides some convenience macros
  */
 
-#ifndef __MACROS_H__
-#define __MACROS_H__
+#ifndef MACROS_H
+#define MACROS_H
 
 #ifdef SWIG
 #define SWIGCODE(...) __VA_ARGS__
@@ -38,4 +38,4 @@
 
 #define ERR(s) {std::cerr << s << std::endl; std::cerr.flush();}
 
-#endif // __MACROS_H__
+#endif // MACROS_H

@@ -1,6 +1,3 @@
-#include "STreeCore.h"
-#include "STreeIterators.h"
-
 namespace stree {
 
 Nidx& STree::c(const Nidx node, Char chr) {
@@ -54,9 +51,9 @@ void STree::addChild(const Nidx node, Nidx newChild, Char chr) {
 Nidx STree::sib(const Nidx node) const {
   const Nidx* x = &(r(node));
   if (*x & VALID) { // find next sibling in rb-tree
-    for (const Nidx* tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x))) 
+    for (const Nidx* tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x)))
       x = tmp;
-    return *x; 
+    return *x;
   }
 	if (*x & COLOR) { // normal case: follow rb-tree thread to next sibling
     return *x | VALID;
@@ -70,7 +67,7 @@ Nidx STree::sib(const Nidx node) const {
 		if (*x & COLOR) // node is first sibling
 			return *x;
 		else { // node is second sibling: return leftmost in rb-tree
-			for (const Nidx* tmp = x; *tmp & VALID; tmp = &(l(*x))) 
+			for (const Nidx* tmp = x; *tmp & VALID; tmp = &(l(*x)))
 				x = tmp;
 			return *x;
 		}
@@ -83,7 +80,7 @@ void STree::createNewLeaf(bool swap) {
     const Nidx oldEdge = *currentPos.edgePtr;
     const Nidx newNode = (VALID | NODE | (*currentPos.edgePtr & COLOR) | (Idx)(nodes.size()));
     *currentPos.edgePtr = newNode;
-    currentPos.edgePtr = NULL; // ... since it is invalidated anyway by the following:        
+    currentPos.edgePtr = NULL; // ... since it is invalidated anyway by the following:
     if (swap and (at(pos) < at(currentPos.hIndex + currentPos.depth))) {
       nodes.push_back(InternalNode(l(oldEdge), r(oldEdge), (VALID | leaves.size())));
       leaves.push_back(LeafNode((oldEdge | COLOR), (pos - currentPos.depth)));
@@ -110,7 +107,7 @@ void STree::createNewLeaf(bool swap) {
 
 
 void STree::createTemporaryInternalNodes() {
-  assert(suffixLinkFrom == 0);  
+  assert(suffixLinkFrom == 0);
   Position currentPosOld = currentPos;
   nTemporaryInternalNodes = 0;
   while (!currentPos.isExplicit()) {
@@ -256,9 +253,9 @@ void STree::annotate() {
 		else if (it.nAncestors() > 0) {
 			nOccurrences[it.getParent().index()] += nOccurrences[it.index()];
 		}
-	}			
+	}
 }
-  
+
 STreeNode STree::getDeepestVirtualLeafBranch() {
   Position deepestVirtualLeafBranch = currentPos;
   deepestVirtualLeafBranch.canonize(this);

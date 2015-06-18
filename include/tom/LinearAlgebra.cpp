@@ -1,9 +1,4 @@
-#include <algorithm>
-#include "../external/Eigen/Dense"
-//#include "LinearAlgebra.h"
-
 namespace tom {
-using namespace Eigen;
 
 #ifndef SWIG
 typedef Map<Matrix< double, Dynamic, Dynamic>, 0, Stride<Dynamic, Dynamic> >  MatrixMd;
@@ -16,13 +11,13 @@ void pinvFast(const Eigen::MatrixBase<D1>& result, const Eigen::MatrixBase<D2>& 
 			const_cast<MatrixBase<D1>&>(result) = (M.transpose() * M).ldlt().solve(M.transpose());
 		} else { // method LLT as default
 			const_cast<MatrixBase<D1>&>(result) = (M.transpose() * M).llt().solve(M.transpose());
-		}	
+		}
 	} else { // M.rows() < M.cols()
 		if (method == "LDLT") {
 			const_cast<MatrixBase<D1>&>(result) = (M * M.transpose()).ldlt().solve(M).transpose();
 		} else { // method LLT as default
 			const_cast<MatrixBase<D1>&>(result) = (M * M.transpose()).llt().solve(M).transpose();
-		}	
+		}
 	}
 }
 // template void pinvFast(const MatrixBase<MatrixXd>&, const MatrixBase<MatrixMd>&, const std::string& );
@@ -84,7 +79,7 @@ void solveFastOLS(const MatrixBase<D1>& X, const MatrixBase<D2>& A, const Matrix
 			const_cast<MatrixBase<D1>&>(X) = (A.transpose() * A).llt().solve(A.transpose() * M);
 		else
 			const_cast<MatrixBase<D1>&>(X) = (A * A.transpose()).llt().solve(A * M.transpose()).transpose();
-	}	
+	}
 }
 //template void solveFastOLS(const MatrixBase<MatrixXd>&, const MatrixBase<MatrixMd>&, const MatrixBase<MatrixMd>&, bool, const std::string&);
 //template void solveFastOLS(const MatrixBase<MatrixXd>&, const MatrixBase<MatrixXd>&, const MatrixBase<MatrixXd>&, bool, const std::string&);
@@ -118,7 +113,7 @@ void solveOLS(const MatrixBase<D1>& X, const MatrixBase<D2>& A, const MatrixBase
 			const_cast<MatrixBase<D1>&>(X) = A.bdcSvd(ComputeThinU | ComputeThinV).solve(M);
 		else
 			const_cast<MatrixBase<D1>&>(X) = A.transpose().bdcSvd(ComputeThinU | ComputeThinV).solve(M.transpose()).transpose();
-	}	
+	}
 }
 //template void solveOLS(const MatrixBase<MatrixXd>&, const MatrixBase<MatrixMd>&, const MatrixBase<MatrixMd>&, bool, const std::string&);
 //template void solveOLS(const MatrixBase<MatrixXd>&, const MatrixBase<MatrixXd>&, const MatrixBase<MatrixXd>&, bool, const std::string&);
@@ -195,7 +190,7 @@ void solveFastGLS(Matrix<double, Dynamic, Dynamic, ColMajor>& X,
 				AtI_W_ATtI += kron(A.col(j) * A.col(j).transpose(), W.middleCols(j*m, m));
 				WM.col(j) = W.middleCols(j*m, m) * M.col(j);
 			}
-			WM *= A.transpose(); 
+			WM *= A.transpose();
 			const Map<const VectorXd> vecWMAT(WM.data(),WM.size());
 			if (method == "LDLT") { X = AtI_W_ATtI.ldlt().solve(vecWMAT); }
 			else { /* default LLT */ X = AtI_W_ATtI.llt().solve(vecWMAT); }
@@ -258,7 +253,7 @@ double improveWLRA(const MatrixBase<D1>& B, const MatrixBase<D2>& A, const Matri
 			solveFastWLS(A, B, M, W, true, method);
 		} else {
 			solveWLS(B, A, M, sqrtW, false, method);
-			solveWLS(A, B, M, sqrtW, true, method);			
+			solveWLS(A, B, M, sqrtW, true, method);
 		}
 		new_wrmse = (M - B*A).cwiseProduct(sqrtW).norm() / sqrt(M.size());
 		it++;

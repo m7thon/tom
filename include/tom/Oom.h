@@ -1,20 +1,12 @@
 /**
  * @file   Oom.h
  * @author Michael Thon
- * 
+ *
  * @brief  This file provides the basic functionality of observable operator models.
  */
 
-#ifndef __OOM_H__
-#define __OOM_H__
-
-#include "PomdpTools.h"
-#include <utility>
-#include "../external/cereal/cereal.hpp"
-#include "../external/cereal/types/string.hpp"
-#include "../external/cereal/archives/json.hpp"
-#include "CerealTom.h"
-
+#ifndef OOM_H
+#define OOM_H
 
 // SWIGCODE(%attribute(tom::Oom, int, nU, nU);)
 SWIGCODE(%attribute(tom::Oom, int, maxSetback_, maxSetback, maxSetback);)
@@ -158,13 +150,13 @@ public:
 		for (Symbol o = 0; o < nO(); ++o)
 			for (Symbol u = 0; u < ((nU() == 0) ? 1 : nU()); ++u)
 				if (tau(o,u) != other.tau(o,u)) return false;
-		if (maxSetback() != other.maxSetback() or 
+		if (maxSetback() != other.maxSetback() or
 				minPrediction_ != other.minPrediction_ or
 				maxPredictionError_ != other.maxPredictionError_) return false;
 		return true;
 	}
 //@}
- 
+
 /** @name IO-functions */ //@{
   /** return a \a std::string representation that can be used for saving to file etc. This function should just call the output stream operator. */
 	std::string toString() const { std::stringstream oss; *this >> oss; return oss.str(); }
@@ -176,14 +168,14 @@ public:
   /** write to the given output stream. */
 	std::ostream& operator>>(std::ostream &os) const;
 //@}
-  
+
 /** @name Internalals\. Use only if you know what you are doing! */ //@{
   /** attempt to fix the prediction vector of the next output symbol probabilities \f$P(\cdot|u_t, \omega_t)\f$ such that all probabilities are at least \a minPredictionProb_ and the probabilities sum to one.\ Return a measure of the required change to the prediction vector: 1.5 * nO() * squared norm of the difference. */
 	double normalizePrediction();
 	/** attempt to perform a state setback operation for at most \a maxSetback_ time-steps.\ Note that calling this method repeatedly will attempt a setback for a shorter history each time.\ Return \c true if a setback could be performed. */
 	bool setBack();
 //@}
-  
+
 	bool valid_ =              false; /**< if this OOM is guaranteed to be valid, we may be able to skip some stabilization heuristics */
   double minPrediction_ = 0 /*1e-5*/; /**< the smallest probability to assign to any next-symbol prediction when normalizing predictions */
   double maxPredictionError_ =   0.3; /**< the largest tolerated error of the prediction vector before a state setback is performed */
@@ -203,20 +195,20 @@ private:
 	VectorXd w0_;      /**< the initial state */
 	VectorXd wt_;      /**< the current state (at time t) */
   unsigned int maxSetback_ = 0 /*3*/; /**< the maximum number of steps to "replay" during a setBack operation */
-	
+
   bool didSetback_ = false;         /**< \c true if a setback operation has been performed in the current time step */
 	Array<MatrixXd, 1, Dynamic> sig_tau_;
   std::deque<Symbol> in_buf_, out_buf_;
 	VectorXd P_;       /**< the conditional next-symbol probabilities given the current input: \f$P(o)=P(o|u_t, w_t)=\sigma*tau(o,u)*w_t\f$. */
   unsigned long historyLength_ = 0;
 	VectorXd temp_dim_, temp_nO_;
-  
+
   /** a helper function to read optional parameters from stream */
   bool readOptionalPropertyFromStream(std::istream &istream);
 
   /** a helper function to write optional parameters to stream */
   void writeOptionalPropertiesToStream(std::ostream &ostream) const;
-	
+
 #ifndef SWIG
 	template<class Archive>
   void save(Archive & ar) const {
@@ -248,11 +240,11 @@ private:
 #endif
 
 #ifndef SWIG
-/** 
+/**
  * write the parameters of the OOM \a oom to the given output stream.
  */
 std::ostream& operator<<(std::ostream& os, const Oom& oom) { return oom >> os; }
-/** 
+/**
  * read the parameters of the OOM \a oom from the given input stream and initialize it. The format must correspond to what the output functions produce.
  */
 std::istream& operator>>(std::istream& istream, Oom& oom) { return oom << istream; }
@@ -260,4 +252,4 @@ std::istream& operator>>(std::istream& istream, Oom& oom) { return oom << istrea
 
 } // namespace tom
 
-#endif // __OOM_H__
+#endif // OOM_H

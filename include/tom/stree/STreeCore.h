@@ -5,10 +5,8 @@
  * @brief  An implementation of suffix trees for generic string types.
  */
 
-#ifndef _STREE_CORE_H_
-#define _STREE_CORE_H_
-
-#include "RBTree.h"
+#ifndef STREE_CORE_H
+#define STREE_CORE_H
 
 namespace stree {
 
@@ -25,7 +23,7 @@ namespace stree {
  * - Suffix-links of any (internal) node are stored in the right \a Nidx of the rightmost (in the binary tree) child, or alternatively in the left \a Nidx of the second child if there are only two children. This \a Nidx will always be marked as invalid and uncolored, but as addressing a node.
  * - The left \a Nidx of the leftmost sibling in the binary tree will always be marked as invalid and uncolored, but has no further meaning.
  * - The binary tree of siblings is threaded. This means that invalid left and right \a Nidx entries address previous and next siblings respectively. This is true for all siblings in the red-black tree, except for the left-and rightmost. To distinguish these, all invalid \a Nidx that indicate a thread are marked as colored (as opposed to the left-and rightmost, which are always marked as uncolored).
- * - Siblings are stored in lexicographic order with respect to their edge labels. It is ensured that the first and second siblings are always the lexicographically smallest.   
+ * - Siblings are stored in lexicographic order with respect to their edge labels. It is ensured that the first and second siblings are always the lexicographically smallest.
  *
  */
 class STree {
@@ -33,7 +31,7 @@ class STree {
 public:
 	/** Create an uninitialized \a STree object. */
 	STree() {}
-	
+
 	/** Create a suffix tree for a given \a text.
 	 *
 	 * \param text The text that should be represented by the suffix tree
@@ -44,7 +42,7 @@ public:
   STree(const String& text, Idx size = 0, unsigned int symbolSize = 1, bool annotated = true) {
 		initialize(text, size, symbolSize, annotated);
 	};
-	
+
 	/** (Re-)Initialize the \a STree object.
 	 *
 	 * \param text The text that should be represented by the suffix tree
@@ -56,19 +54,19 @@ public:
 
 	/** Extend the suffix tree representation of the underlying \a text to the given \a size\. Note that the given \a size must be smaller or equal to the size of the underlying \a text\. If the string does not end with a unique terminal symbol, temporary internal nodes (that have only one child!) will be inserted into the edges for positions corresponding to suffixes of the input string. */
   void extendTo(Idx size);
-	
+
   /** @name High-level suffix tree interface functions */ //@{
 
   /** Return the number of leaf nodes in the suffix tree. */
 	Idx nLeaves() const { return leaves.size(); }
-  
+
 	/** Return the number of internal nodes in the suffix tree. */
 	Idx nInternalNodes() const { return nodes.size(); }
 
   /** Return the number of nodes (internal and leaves) in the suffix tree. */
-	Idx nNodes() const { return leaves.size() + nodes.size(); }  
+	Idx nNodes() const { return leaves.size() + nodes.size(); }
   //@}
-  
+
   /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input text does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
   STreeNode getDeepestVirtualLeafBranch();
 
@@ -111,18 +109,18 @@ private:
   Nidx& c(const Nidx node) { return nodes[node & INDEX].c; }
 	/** Return the \b non-const child \a Nidx\& of the given \a node corresponding to the given \a chr (which is the first character of the edge leading away from the \a node)\. If no corresponding child is found, the (null) \a Nidx\& will be returned that corresponds to the place where the according child node would need to be inserted. */
 	Nidx& c(const Nidx node, Char chr);
-  /** Set the depth of the given \a node to the given \a depth. */ 
+  /** Set the depth of the given \a node to the given \a depth. */
   void d(const Nidx node, const Idx depth) { r(l(c(node))) = depth; }
-  /** Set the head index of the given \a node to the given \a headIndex. */ 
+  /** Set the head index of the given \a node to the given \a headIndex. */
   void hi(const Nidx node, const Idx headIndex) { r(c(node)) = headIndex; }
-  /** Set the suffix link of the given \a node to the given \a suffixLink. */ 
+  /** Set the suffix link of the given \a node to the given \a suffixLink. */
   void sl(const Nidx node, Nidx suffixLink) { Nidx* x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); *x = suffixLink & ~(VALID | COLOR); }
 
-  /** Add the node \a newChild as a new child according to the given \a chr (the first character of the edge leading from \a node to \a newChild) to the given \a node. */ 
+  /** Add the node \a newChild as a new child according to the given \a chr (the first character of the edge leading from \a node to \a newChild) to the given \a node. */
   void addChild(const Nidx node, Nidx newChild, Char chr);
 
 	/** Return the first character of the edge label leading from its parent to the \a node, where \a parentDepth specifies the depth of the parent node (this needs to be given since parent information is not stored in the suffix tree). */
-	Char key(const Nidx node, const Idx parentDepth) const { return at(hi(node) + parentDepth); }    
+	Char key(const Nidx node, const Idx parentDepth) const { return at(hi(node) + parentDepth); }
 
   /** Create a new leaf at the current position according to \a currentPos in the suffix tree\. If the \a currentPos is not an internal node, then a new internal node is created also\. The \a swap parameter only plays a role in the last case, and means, when set to \c false, that the new leaf will always be the second child of the new internal node, regardless of the correct ordering (this is used for \a temporary \a internal \a nodes)\. Finally, the suffix-link leading to this (new) node is set\. Note that this function invalidates the \a edgePtr of the \a currentPos ! */
   void createNewLeaf(bool swap = true);
@@ -131,7 +129,7 @@ private:
   void createTemporaryInternalNodes();
 	/** Remove the temporary internal nodes created by \ref createTemporaryInternalNodes()\. After calling this function, the suffix tree can be extended further. */
   void removeTemporaryInternalNodes();
-  
+
   /** Annotate the suffix tree with leaf counts, i.e., for each node, count the number of leafs (= number of occurrences of the corresponding substring) and store this in \a nOccurrences. */
 	void annotate();
 
@@ -147,7 +145,7 @@ private:
 		Nidx r; //< the right \a Nidx.
   };
 
-	/** An \a InternalNode consists of a left, right and child \a Nidx. */	
+	/** An \a InternalNode consists of a left, right and child \a Nidx. */
   class InternalNode
   { public:
 		/** Create a \a LeafNode with zero (hence null) left, right and child \a Nidx. */
@@ -179,12 +177,12 @@ private:
     STree* bst;
     Idx parentDepth;
   }; // class RBTreeNodeTraits
-	
+
   typedef RBTree<RBTreeNodeTraits> rbt;
-	
+
   /** A \a Position refers to the location in the suffix tree that corresponds to some substring of the represented \a String\. This position is unique, but can either be an expicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \a STreePos instead! */
 	class Position {
-	public:	
+	public:
 		/** Create a \a Position corresponding to the root of the suffix tree */
 		Position() : node(ROOT), hIndex(0), depth(0) { edgePtr = &node; }
 
@@ -224,7 +222,7 @@ public:
 		return os.str();
 	}
 }; // class STree
-  
+
 } // namespace stree
 
-#endif // _STREE_CORE_H_
+#endif // STREE_CORE_H

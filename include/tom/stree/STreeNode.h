@@ -3,14 +3,12 @@
  * @brief  This file provides several objects for navigating within the suffix tree structure.
  */
 
-#ifndef _STREE_NODE_H_
-#define _STREE_NODE_H_
-
-#include "STreeCore.h"
+#ifndef STREE_NODE_H
+#define STREE_NODE_H
 
 namespace stree {
 
-/** 
+/**
  * This class represents a node in the suffix tree\. It contains a pointer internally to the \a STree that it belongs to.
  */
 class STreeNode {
@@ -39,8 +37,8 @@ public:
 
 	Idx depth() const { return stree_->d(nidx_); }
 	Idx headIndex() const { return stree_->hi(nidx_); }
-	Idx count() const { return stree_->n(nidx_); } 
-	
+	Idx count() const { return stree_->n(nidx_); }
+
 	STreeNode getChild() const { if (isValid() and isNode()) return STreeNode(stree_, stree_->c(nidx_)); else return STreeNode(); }
 	void child() { if (isValid() and isNode()) nidx_ = stree_->c(nidx_); else setValid(false); }
 	STreeNode getChild(Char chr) const { if (isValid() and isNode()) return STreeNode(stree_, stree_->c(nidx_, chr)); else return STreeNode(); }
@@ -76,7 +74,7 @@ public:
 			<< " | n = " << std::setw(4) << count();
 		if (isNode()) {
 			s << " | c = " << getChild().indexStr(width)
-				<< " | sl = " << getSuffixLink().indexStr(width); 
+				<< " | sl = " << getSuffixLink().indexStr(width);
 		}
 		s << " ]";
 		return s.str();
@@ -105,7 +103,7 @@ public:
 	STreeEdge(const STree* stree, Nidx nidx, Nidx parent) : STreeNode(stree, nidx), parent_(parent) {}
 	STreeEdge(const STreeNode& node, Nidx parent) : STreeNode(node), parent_(parent) {}
 
-	Idx parentDepth() const { return stree_->d(this->parent_); } 
+	Idx parentDepth() const { return stree_->d(this->parent_); }
 	STreeNode getParent() const { return STreeNode(stree_, parent_); }
  	STreeEdge getChild() const { return STreeEdge(STreeNode::getChild(), nidx_); }
 	void child() { Nidx par = nidx_; STreeNode::child(); if (isValid()) parent_ = par; }
@@ -161,37 +159,37 @@ public:
 	STreePos(const STree* stree) : edge_(stree), depth_(0) {}
 
 	void setRoot() { edge_ = STreeEdge(edge_.stree_); depth_ = 0; }
-	
+
 	bool isValid() const { return edge_.isValid(); }
 	void setValid(bool valid = true) { edge_.setValid(valid); }
 	bool isExplicit() const { return (depth_ == edge_.depth()); }
 	bool isLeaf() const { return (isExplicit() and edge_.isLeaf()); }
-	
+
 	Idx count() const { return edge_.count(); }
 	Idx headIndex() const { return edge_.headIndex(); }
 	Idx depth() const { return depth_; }
 	Idx parentDepth() const { return edge_.parentDepth(); }
 
   STreeEdge& edge() { return edge_; }
-  
+
 	void suffixLink() { if (isValid()) {
 			if (edge_.stree_->symbolSize_ > depth_) { setValid(false); return; }
 			depth_-= edge_.stree_->symbolSize_;
 			Idx hi = headIndex() + edge_.stree_->symbolSize_;
 			edge_.parent_ = edge_.stree_->sl(edge_.parent_) | VALID;
 			edge_.nidx_ = edge_.parent_;
-			edge_.setValid();	
+			edge_.setValid();
 			while (edge_.isValid() and (edge_.depth() < depth_))
 				edge_.child(edge_.stree_->at(hi + edge_.depth()));
 		}}
-	
+
 	void addChar(Char chr) {
 		if (!isValid()) return;
 		if (isExplicit()) {
 			edge_.child(chr);
 			if (isValid()) depth_++;
 		}
-		else 
+		else
 			if (edge_.stree_->at(edge_.headIndex() + depth_) == chr) depth_++;
 			else edge_.setValid(false);
 	}
@@ -211,4 +209,4 @@ private:
 
 } // namespace stree
 
-#endif // _STREE_NODE_H_
+#endif // STREE_NODE_H

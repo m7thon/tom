@@ -3,7 +3,7 @@
 %naturalvar;
 
 %{
-#include "../include/external/Eigen/Core"
+#include "Eigen/Core"
 %}
 
 // numpy.i is from https://github.com/numpy/numpy/tree/master/doc/swig
@@ -334,12 +334,12 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
  ****************************************************************************/
 
 %define PREC_INT8_ARRAY    1025 %enddef
-%define PREC_INT16_ARRAY   1035 %enddef 
+%define PREC_INT16_ARRAY   1035 %enddef
 %define PREC_INT32_ARRAY   1045 %enddef
-%define PREC_INT64_ARRAY   1055 %enddef 
-%define PREC_INT128_ARRAY  1065 %enddef 
-%define PREC_FLOAT_ARRAY   1080 %enddef 
-%define PREC_DOUBLE_ARRAY  1090 %enddef 
+%define PREC_INT64_ARRAY   1055 %enddef
+%define PREC_INT128_ARRAY  1065 %enddef
+%define PREC_FLOAT_ARRAY   1080 %enddef
+%define PREC_DOUBLE_ARRAY  1090 %enddef
 
 %eigen_numpy_typemaps(int       , NPY_INT     , PREC_INT32_ARRAY   )
 %eigen_numpy_typemaps(long      , NPY_LONG    , PREC_INT64_ARRAY   )
