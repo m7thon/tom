@@ -2,4 +2,5 @@
 *.so
 *.o
 *_wrap.cxx
+*_wrap.h
 *.pyc

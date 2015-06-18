@@ -13,13 +13,19 @@ Requirements
 This toolkit relies on the following software:
 
 - Eigen3: This is a convenient C++ matrix library that provides the basic
-    linear algebra routines. It is recommended to use the most recent
-    (development) verision, which means strictly > 3.2.2 at the time of writing.
+    linear algebra routines. Currently, the most recent (development) verision is required, which
+    should correspond to a version >= 3.3.0.
 - A recent C++ compiler supporting the current C++11 standard, e.g., gcc > 4.8, clang, ...
 - GNU make for building the toolkit
 - SWIG: For generating the Python wrappers to the C++ code. Version 2.0.12 or later is required.
 - Python/SciPy for scripting
 - doxygen: To generate documentation from the source code
+
+Furthermore, the toolkit makes use of the following open source software that is included for convenience:
+
+- cereal (1.1.2): A C++ object serialization library. A modified version is included that uses a more current version
+    of rapidjson and a different json writer object to produce more concise json output.
+- rapidjson (1.0.2): A fast C++ json parser
 
 Installation
 ------------
