@@ -17,6 +17,14 @@ swig/tomlib_wrap.cxx: $(SRC) $(CXX_SRC) $(SWIG_SRC)
 swig:
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom swig/tomlib.i
 
+.PHONY: install
+install: python/tom/_tomlib.so
+	cd python; $(PYTHON) setup.py install
+
+.PHONY: local
+local: python/tom/_tomlib.so
+	cd python; $(PYTHON) setup.py install --prefix=~/local
+
 .PHONY: doc
 doc:
 	doxygen doc/tom.doxyfile
@@ -25,6 +33,7 @@ clean:
 	rm -f python/tom/*.pyc
 	rm -f python/tom/_tomlib.so python/tom/tomlib.py
 	rm -f swig/tomlib_wrap.cxx swig/tomlib_wrap.h
+	rm -rf python/build
 
 .PHONY: stree
 stree:

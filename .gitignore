@@ -5,3 +5,4 @@
 swig/tomlib_wrap.cxx
 swig/tomlib_wrap.h
 python/tom/tomlib.py
+python/build

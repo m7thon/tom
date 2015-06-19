@@ -33,16 +33,16 @@ Installation
 1. Install the required dependencies
 2. Modify the Makefile.inc to set the correct compiler and paths to the dependencies  
    The default settings in Makefile.inc way work for you, though.
-3. run `make`
-4. run `make doc` to generate the documentation in the subdirectory doc/html
+3. run `make` to build the toolkit as a python C++ extension
+4. to install, run `python setup.py install [--prefix=<prefix>]` from the python subdirectory  
+   Note: the python distutils system is only used for installation, not for building the extension
+5. run `make doc` to generate the documentation in the subdirectory doc/html
 
 Using the toolkit
 -----------------
 
-from python, add the ./python/tom directory to the system path:
+from python:
 ```python
-import sys, os
-sys.path.append(<path to tom> + '/python/tom')
 import tom
 ```
 

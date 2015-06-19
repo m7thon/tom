@@ -24,10 +24,10 @@ def unpickle_Policy(s):
     pol = Policy(); pol.fromJSON(s); return pol;
 def pickle_Policy(pol):
     return unpickle_Policy, (pol.toJSON(),)
-copy_reg.pickle(Oom, pickle_Oom)
-copy_reg.pickle(Sequence, pickle_Sequence)
-copy_reg.pickle(Sequences, pickle_Sequences)
-copy_reg.pickle(Policy, pickle_Policy)
+copyreg.pickle(Oom, pickle_Oom)
+copyreg.pickle(Sequence, pickle_Sequence)
+copyreg.pickle(Sequences, pickle_Sequences)
+copyreg.pickle(Policy, pickle_Policy)
 
 def load(filename):
     """Load an Oom, Sequence or Policy from file with given filename.
