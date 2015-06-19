@@ -242,14 +242,13 @@ struct stop_iteration {};
 	}
 	%feature("python:slot", "tp_iter", functype="getiterfunc") __iter__;
 	Sequence __iter__() { return tom::Sequence(*self); }
-	%typemap(throws) stop_iteration {
+	%typemap(throws) tom::stop_iteration {
     (void)$1;
     SWIG_SetErrorObj(PyExc_StopIteration, SWIG_Py_Void());
     SWIG_fail;
   }
-	%catches(stop_iteration) __next__();
 	%feature("python:slot", "tp_iternext", functype="iternextfunc") __next__;
-	Symbol __next__() {
+	Symbol __next__() throw(tom::stop_iteration) {
 		if (self->size() == 0) { throw tom::stop_iteration(); }
 		tom::Symbol ret = self->at(0);
 		++(*self);

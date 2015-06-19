@@ -10,6 +10,7 @@
 
 namespace tom {
 
+SWIGCODE(%feature("director") EMStopCondition;)
 class EMStopCondition {
 public:
 	int maxEMIterations_;

@@ -1,12 +1,8 @@
-from __future__ import division
+from .tomlib import *
+
 import numpy as np
 import scipy.linalg as linalg
 import itertools
-from tomlib import *
-from tomio import load, save
-from tomseqs import generateSequences, stringToSequence, iter
-from tomlearn import numericalRank, estimateDimension, identifySubspace, learnSpectral, learnWeightedSpectral
-from tomhmm import random_HMM, convert_HMM_to_OOM, learn_EM
 
 def getBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10):
     def addToCL(oom, v, v_seq, cl, sl, co):

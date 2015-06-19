@@ -1,9 +1,9 @@
-from tomlib import *
+from .tomlib import *
+
 import numpy as np
 import scipy.linalg as linalg
 import scipy.sparse.linalg
 import itertools
-
 
 def numericalRank(M, V, weightExp = 1):
     """Estimate the numerical rank of the matrix ``M`` with element-wise

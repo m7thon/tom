@@ -1,4 +1,4 @@
-from tomlib import *
+from .tomlib import *
 
 def stringToSequence(str, symbolTable=None):
 	if not symbolTable: symbolTable = {}
@@ -41,7 +41,3 @@ def generateSequences(len, nO, nU=0):
         seqs.push_back(Sequence(s, nO, nU))
         s = incrementSequenceList(s, nO, nU)
     return seqs
-
-def iter(seq):
-    for i in range(len(seq)):
-        yield seq[i]

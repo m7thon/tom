@@ -1,17 +1,13 @@
-from tomlib import *
+from .tomlib import *
+
 import numpy as np
 import itertools
-import bz2
-import gzip
-import re
-import ast
-import sys
+import bz2, gzip, re, ast, sys
 
-if sys.version_info[0] == 2:
-    import copy_reg
-else:
-    import copyreg
+if sys.version_info[0] == 2: import copy_reg as copyreg
+else: import copyreg
 import copy, pickle
+
 def unpickle_Oom(s):
     oom = Oom(); oom.fromJSON(s); return oom;
 def pickle_Oom(oom):
@@ -28,16 +24,10 @@ def unpickle_Policy(s):
     pol = Policy(); pol.fromJSON(s); return pol;
 def pickle_Policy(pol):
     return unpickle_Policy, (pol.toJSON(),)
-if sys.version_info[0] == 2:
-    copy_reg.pickle(Oom, pickle_Oom)
-    copy_reg.pickle(Sequence, pickle_Sequence)
-    copy_reg.pickle(Sequences, pickle_Sequences)
-    copy_reg.pickle(Policy, pickle_Policy)
-else:
-    copyreg.pickle(Oom, pickle_Oom)
-    copyreg.pickle(Sequence, pickle_Sequence)
-    copyreg.pickle(Sequences, pickle_Sequences)
-    copyreg.pickle(Policy, pickle_Policy)
+copy_reg.pickle(Oom, pickle_Oom)
+copy_reg.pickle(Sequence, pickle_Sequence)
+copy_reg.pickle(Sequences, pickle_Sequences)
+copy_reg.pickle(Policy, pickle_Policy)
 
 def load(filename):
     """Load an Oom, Sequence or Policy from file with given filename.

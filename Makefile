@@ -1,38 +1,30 @@
 include Makefile.inc
 
-INCLUDE += $(EIGEN_INCLUDE) -I./include/tom -I./include/external
+INCLUDE := $(EIGEN_INCLUDE) -I./include/tom -I./include/external
 
-SRCs = Makefile Makefile.inc
-SRCS += include/tom/stree/stree.h include/tom/stree/RBTree.h include/tom/stree/STreeCore.h include/tom/stree/STreeCore.cpp include/tom/stree/STreeNode.h include/tom/stree/STreeIterators.h
-SRCS += include/tom/tom.h include/tom/Macros.h include/tom/CerealTom.h include/tom/Random.h include/tom/PomdpTools.h include/tom/LinearAlgebra.h include/tom/LinearAlgebra.cpp include/tom/Sequence.h include/tom/Oom.h include/tom/Hmm.h include/tom/Oom.cpp include/tom/Estimator.h include/tom/CoreSequences.h include/tom/EfficiencySharpening.h
+SRC := Makefile Makefile.inc
+CXX_SRC := $(find include/tom -type f -name "*.h" -o -name "*.cpp" -o -name "*.hpp")
+SWIG_SRC := $(find swig -type f -name "*.i")
+PY_SRC := $(find python/tom -type f -name "*.py")
 
-PY_SRCS = python/tom.py python/tomio.py python/tomseqs.py python/tomlearn.py
+python/tom/_tomlib.so: swig/tomlib_wrap.cxx $(SRC) $(CXX_SRC)
+	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cxx $(PY_LDFLAGS) $(LDFLAGS) 
 
-SWIG_SRCS = swig/eigen3.i swig/collection.i swig/stree.i swig/tomlib.i
-
-tom: $(PY_SRCS) lib/_tomlib.so
-	cp python/*.py lib/.
+swig/tomlib_wrap.cxx: $(SRC) $(CXX_SRC) $(SWIG_SRC)
+	swig $(SWIG_FLAGS) -Iswig -outdir python/tom swig/tomlib.i
 
 .PHONY: swig
 swig:
-	swig $(SWIG_FLAGS) -Iswig -outdir lib swig/tomlib.i
-
-swig/tomlib_wrap.cxx: $(SRCS) $(SWIG_SRCS)
-	swig $(SWIG_FLAGS) -Iswig -outdir lib swig/tomlib.i
-
-lib/_tomlib.so: $(SRCS) swig/tomlib_wrap.cxx $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o lib/_tomlib.so swig/tomlib_wrap.cxx $(PY_LDFLAGS) $(LDFLAGS)
+	swig $(SWIG_FLAGS) -Iswig -outdir python/tom swig/tomlib.i
 
 .PHONY: doc
 doc:
 	doxygen doc/tom.doxyfile
 
 clean:
-	rm -f include/tom/*~ include/tom/stree/*~ swig/*~ python/*~
-	rm -f swig/*.o
-	rm -f lib/tomlib.py lib/tom.py lib/tomio.py lib/tomseqs.py lib/tomlearn.py lib/*.pyc
-	rm -f lib/_tomlib.so lib/stree.py lib/_stree.so
-	rm -f swig/tomlib_wrap.cxx swig/stree_wrap.cxx
+	rm -f python/tom/*.pyc
+	rm -f python/tom/_tomlib.so python/tom/tomlib.py
+	rm -f swig/tomlib_wrap.cxx swig/tomlib_wrap.h
 
 .PHONY: stree
 stree:

@@ -8,7 +8,6 @@
 
 %include "std_string.i"
 %include "stdint.i"
-%include "collection.i"
 
 %nspace stree;
 

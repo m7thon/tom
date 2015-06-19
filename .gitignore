@@ -1,6 +1,7 @@
 *~
 *.so
 *.o
-*_wrap.cxx
-*_wrap.h
 *.pyc
+swig/tomlib_wrap.cxx
+swig/tomlib_wrap.h
+python/tom/tomlib.py

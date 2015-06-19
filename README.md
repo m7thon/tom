@@ -17,7 +17,7 @@ This toolkit relies on the following software:
     should correspond to a version >= 3.3.0.
 - A recent C++ compiler supporting the current C++11 standard, e.g., gcc > 4.8, clang, ...
 - GNU make for building the toolkit
-- SWIG: For generating the Python wrappers to the C++ code. Version 2.0.12 or later is required.
+- SWIG: For generating the Python wrappers to the C++ code. A current version is required.
 - Python/SciPy for scripting
 - doxygen: To generate documentation from the source code
 
@@ -31,17 +31,18 @@ Installation
 ------------
 
 1. Install the required dependencies
-2. Modify the Makefile.inc to set the correct compiler and paths to the dependencies
+2. Modify the Makefile.inc to set the correct compiler and paths to the dependencies  
+   The default settings in Makefile.inc way work for you, though.
 3. run `make`
 4. run `make doc` to generate the documentation in the subdirectory doc/html
 
 Using the toolkit
 -----------------
 
-from python, add the ./tom/lib directory to the system path:
+from python, add the ./python/tom directory to the system path:
 ```python
 import sys, os
-sys.path.append(<path to tom> + '/tom/lib')
+sys.path.append(<path to tom> + '/python/tom')
 import tom
 ```
 

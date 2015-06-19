@@ -1,5 +1,5 @@
 /* -*- C -*-  (not really, but good for syntax highlighting) */
-%module tomlib
+%module(directors="1") tomlib
 %naturalvar;
 %feature("autodoc","1");
 

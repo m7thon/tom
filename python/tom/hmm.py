@@ -1,16 +1,8 @@
-from tomlib import *
-import numpy as np
-import scipy.linalg as linalg
-import warnings
-try:
-    import ghmm
-    ghmm.log.setLevel(ghmm.logging.ERROR)
-except:
-    warnings.warn('Could not load `ghmm` module. HMM functions will not work.')
+from .tomlib import *
 
-def seq_iter(seq):
-    for i in range(len(seq)):
-        yield seq[i]
+import numpy as np
+
+import warnings
 
 def random_HMM(alphabet_size, dim, exponent = 1):
     """Return randomly initialized HMM parameters (T, E, pi).
@@ -135,4 +127,3 @@ def learn_EM(train_seq, dim, n_init = 1, init_exponent = 1, max_iter = 100, min_
         if m_LL > best_LL: best_LL, best_m = m_LL, m
     m_params = best_m.asMatrices()
     return convert_HMM_to_OOM(m_params[0], m_params[1], m_params[2])
-
