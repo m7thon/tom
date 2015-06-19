@@ -23,18 +23,10 @@ public:
 	std::vector<Symbol> seq_; ///< the underlying sequence data
 };
 
-#ifdef SWIG
-%extend Sequence {
-%pythoncode {
-def __getstate__(self):
-	return self.toString()
-def __setstate__(self, state):
-	self.__init__(state)
-}
-}
-#endif // SWIG
-
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Sequence::repr;)
+SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::size;)
+
+
 /**
  * This class represents a sequence to be used with the OOM algorithms.\ It may represent a sequence, subsequence view or io-sequence, and stores information about the output and possibly input alphabet.
  */
@@ -104,7 +96,7 @@ public:
 	void reverse() { size_ = -size_; }
 
 	/** Return a subsequence starting at the given position \a pos and of the given \a size. */
-	Sequence sub(unsigned long pos, unsigned long size) const;
+	Sequence sub(unsigned long pos, unsigned long size, bool reverse = false) const;
 
 	/** Return a slice from the \a begin position up to (and not including) the \a end position, or if \a reverse is set to \c true, backwards from the \a end position up to (and not including) the \a begin position\. This follows python syntax, i.e., negative position values are counted from the end of the \a Sequence, with 0 being the first and -1 being the last position\. Furthermore, \a begin and \a end may be set to \a NoIndex, and then extend to the beginning or end of the \a Sequence. **/
 	Sequence slice(long begin = NoIndex, long end = NoIndex, bool reverse = false) const;
@@ -119,6 +111,14 @@ public:
 		return true;
 	}
 
+	SWIGCODE(%ignore operator++;)
+	/** Increment the first position, which allows using a \a Sequence as an iterator */
+	void operator ++() {
+		if (size_ == 0) return;
+		if (isReversed()) { size_++; }
+		else { pos_++; size_--; }
+	}
+	
 	/** Count the number of occurrences of the given \a Sequence \a seq as a sub-sequence of this \a Sequence. */
 	unsigned int count(const Sequence& seq) const {
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0)) return 0;
@@ -212,7 +212,51 @@ private:
 	std::shared_ptr<SequenceData> data_; ///< a pointer to the underlying \a SequenceData
 }; // class Sequence
 
-SWIGCODE(%extend Sequence { %COLLECTION(Symbol) };)
+// The following is some magic to make Sequence objects slice-able and iterable in python
+struct stop_iteration {};
+#ifdef SWIG
+%extend Sequence {
+	%typemap(in) PySliceObject* {
+		if (!PySlice_Check($input)) { %argument_fail(SWIG_TypeError, "$type", $symname, $argnum); }
+		$1 = (PySliceObject *) $input;
+	}
+	%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) PySliceObject* { $1 = PySlice_Check($input); }
+	%feature("python:slot", "mp_subscript", functype="binaryfunc") __getitem__;
+	Sequence __getitem__(PySliceObject *slice) throw (std::invalid_argument) {
+		Py_ssize_t start, stop, step, sliceLen;
+		PySlice_GetIndicesEx(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)self->size(), &start, &stop, &step, &sliceLen);
+		if (step == 1) { return self->sub(start, sliceLen); }
+		else if (step == -1) { return self->sub(stop+1, sliceLen, true); }
+		else { throw std::invalid_argument("slice step must be -1 or 1 for tom::Sequence objects."); }
+	}
+	Symbol __getitem__(long i) throw (std::out_of_range) {
+		if (i < 0) i = i + self->size();
+		if ((i < 0) or (i >= self->size())) { throw std::out_of_range("Index out of bounds"); }
+		return self->at(i);
+	}
+	%feature("python:slot", "mp_ass_subscript", functype="objobjargproc") __setitem__;
+	void __setitem__(long i, const Symbol& val) throw (std::out_of_range) {
+		if (i < 0) i = i + self->size();
+		if ((i < 0) or (i >= self->size())) { throw std::out_of_range("Index out of bounds"); }
+		self->at(i) = val;
+	}
+	%feature("python:slot", "tp_iter", functype="getiterfunc") __iter__;
+	Sequence __iter__() { return tom::Sequence(*self); }
+	%typemap(throws) stop_iteration {
+    (void)$1;
+    SWIG_SetErrorObj(PyExc_StopIteration, SWIG_Py_Void());
+    SWIG_fail;
+  }
+	%catches(stop_iteration) __next__();
+	%feature("python:slot", "tp_iternext", functype="iternextfunc") __next__;
+	Symbol __next__() {
+		if (self->size() == 0) { throw tom::stop_iteration(); }
+		tom::Symbol ret = self->at(0);
+		++(*self);
+		return ret;
+	}	
+};
+#endif // SWIG
 
 /** A vector of sequences */
 typedef std::vector<Sequence> Sequences;
@@ -244,11 +288,12 @@ Symbol& Sequence::at(unsigned long n) {
 }
 
 //Utilities
-Sequence Sequence::sub(unsigned long pos, unsigned long size) const {
+Sequence Sequence::sub(unsigned long pos, unsigned long size, bool reverse) const {
 	assert((pos < this->size()) and (pos + size <= this->size()));
 	Sequence seq(*this);
 	seq.pos_ = ( isReversed() ? this->pos() + this->size() - pos - size : this->pos() + pos );
 	seq.size_ = ( isReversed() ? -size : size );
+	if (reverse) { seq.reverse(); }
 	return seq;
 }
 

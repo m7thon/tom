@@ -13,7 +13,6 @@
 %} 
 
 %include "eigen3.i"
-%include "collection.i"
 
 %include "../include/tom/tom.h"
 

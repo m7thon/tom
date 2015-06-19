@@ -15,6 +15,7 @@
 #include <utility>
 #include <memory> // shared_ptr
 #include <cstdint>
+#include <stdexcept>
 
 #include "Eigen/Core"
 
