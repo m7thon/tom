@@ -89,8 +89,8 @@ public:
 	}
 
 protected:
-	Nidx nidx_;
 	const STree* stree_;
+	Nidx nidx_;
 }; // class STreeNode
 
 

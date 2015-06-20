@@ -3,6 +3,11 @@
 *.o
 *.pyc
 swig/tomlib_wrap.cxx
+swig/tomlib_wrap.cpp
 swig/tomlib_wrap.h
+swig/tomlib.py
 python/tom/tomlib.py
-python/build
+build
+doc/html
+doc/xml
+doc/tom.tag

@@ -306,8 +306,8 @@ namespace cereal
       //! @}
 
     private:
-      WriteStream itsWriteStream;          //!< Rapidjson write stream
       std::ostream& itsOStream;
+      WriteStream itsWriteStream;          //!< Rapidjson write stream
       JSONWriter itsWriter;                //!< Rapidjson writer
       char const * itsNextName;            //!< The next name
       std::stack<uint32_t> itsNameCounter; //!< Counter for creating unique names for unnamed nodes

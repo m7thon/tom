@@ -325,7 +325,6 @@ double Oom::averageOneStepPredictionError(Oom& gen, const Sequence& seq) {
 MatrixXf* Oom::harvestStates(const Sequence& seq) {
   double LLRevTrain = 0;
   long l = seq.length();
-  double val = 0;
 
   MatrixXf* W = new MatrixXf(dim_, l+1);
 

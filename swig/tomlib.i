@@ -3,7 +3,7 @@
 %naturalvar;
 %feature("autodoc","1");
 
-//%include "tom_doc.i"
+// %include "tomdoc.i"
 
 %{ 
 #define SWIG_FILE_WITH_INIT
@@ -68,4 +68,3 @@
 //%include "../include/tom/Learner.h"
 
 %include "../include/tom/EfficiencySharpening.h"
-

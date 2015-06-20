@@ -132,7 +132,6 @@ void Hmm::init() {
 
 double Hmm::backwardsWithCache(const Sequence& x, MatrixXd& betaBlock, MatrixXd& betaCache, VectorXd& betaLog2Scale) {
 	int N = x.length();
-	double ll = 0;
 	int betaBlockSize = betaBlock.cols();
 	VectorXd temp(dim_), beta(dim_);
 	beta /*N-1*/ = VectorXd::Ones(dim_);

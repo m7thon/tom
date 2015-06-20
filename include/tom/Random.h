@@ -55,13 +55,13 @@ public:
 		return integer(prob.size());
 	};
 private:
-	unsigned int n = 1;
 	std::uniform_int_distribution<unsigned int> int_dist = std::uniform_int_distribution<unsigned int>{0,1};
 	std::uniform_real_distribution<double> real_dist = std::uniform_real_distribution<double>{0,1};
 	std::mt19937 engine; // Mersenne twister MT19937
 };
 
 SWIGCODE(%feature("autodoc", "sample(ArrayMd const & prob) -> unsigned int") Random::sample<ArrayMd >;)
+SWIGCODE(%feature("docstring") Random::sample<ArrayMd > "This is some additional documentation";)
 SWIGCODE(%template(sample) Random::sample<ArrayMd >;)
 
 } // namespace tom

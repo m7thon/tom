@@ -16,9 +16,8 @@ This toolkit relies on the following software:
     linear algebra routines. Currently, the most recent (development) verision is required, which
     should correspond to a version >= 3.3.0.
 - A recent C++ compiler supporting the current C++11 standard, e.g., gcc > 4.8, clang, ...
-- GNU make for building the toolkit
 - SWIG: For generating the Python wrappers to the C++ code. A current version is required.
-- Python/SciPy for scripting
+- Python and SciPy
 - doxygen: To generate documentation from the source code
 
 Furthermore, the toolkit makes use of the following open source software that is included for convenience:
@@ -31,12 +30,22 @@ Installation
 ------------
 
 1. Install the required dependencies
-2. Modify the Makefile.inc to set the correct compiler and paths to the dependencies  
-   The default settings in Makefile.inc way work for you, though.
-3. run `make` to build the toolkit as a python C++ extension
-4. to install, run `python setup.py install [--prefix=<prefix>]` from the python subdirectory  
-   Note: the python distutils system is only used for installation, not for building the extension
-5. run `make doc` to generate the documentation in the subdirectory doc/html
+2. Modify setup.cfg to set the path to the eigen3 header files if not in a standard path
+3. run `python setup.py install`
+
+Optionally,
+- run `doxygen doc/tom.doxyfile` to generate the documentation in the subdirectory doc/html
+- run `python setup.py clean --all` to clean up the build directory
+
+Notes:
+- The compiler and compile options can be modified by setting the environment variables `CC`, `CXX` and
+  `CPPFLAGS`. Note that setup.py uses the compiler specified in `CC` for compiling and `CXX` for linking
+  swig wrapped C++ extensions for unknown reasons, so always specify both. Example:  
+  `CC=g++ CXX=g++ CPPFLAGS=-I/usr/local/include/eigen3 python setup.py install`.
+- You can also install tom into a user-local python package directory using  
+  `python setup.py install --user`. For details, see the
+  [distutils documentation](https://docs.python.org/3/install/index.html#alternate-installation).
+- See `build_with_gcc_and_install_locally.sh` for an example
 
 Using the toolkit
 -----------------

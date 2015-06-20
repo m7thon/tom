@@ -7,7 +7,7 @@
 
 #ifndef OOM_H
 #define OOM_H
-
+ 
 // SWIGCODE(%attribute(tom::Oom, int, nU, nU);)
 SWIGCODE(%attribute(tom::Oom, int, maxSetback_, maxSetback, maxSetback);)
 namespace tom {
@@ -144,7 +144,6 @@ public:
 	/** conjugate the OOM by the given matrices \a rho and \a rhoInv, i\.e\., set w0 = rho*w0, tau(o,u) = rho * tau(o,u) * rhoInv and sig = sig * rhoInv. **/
 	void conjugate(const MatrixXd& rho, const MatrixXd& rhoInv);
 	bool operator==(const Oom& other) const {
-		bool equal = true;
 		if (dim() != other.dim() or nO() != other.nO() or nU() != other.nU()) return false;
 		if (sig() != other.sig() or w0() != other.w0()) return false;
 		for (Symbol o = 0; o < nO(); ++o)
@@ -187,9 +186,9 @@ public:
 	int outputPrecision_ = std::numeric_limits< double >::digits10; /**< the precision to use when outputting the oom */
 
 private:
-	int nU_;           /**< the size of the input alphabet */
-  int nO_;           /**< the size of the output alphabet */
   int dim_;          /**< the model dimension */
+  int nO_;           /**< the size of the output alphabet */
+	int nU_;           /**< the size of the input alphabet */
 	RowVectorXd sig_;  /**< the probability functional vector \f$\sigma\f$ */
 	Array<MatrixXd, Dynamic, Dynamic> tau_; /**< the array of observable operators (of size \a nO x \a nU). The operator corresponding to the input-observation pair (u,o) is given by tau(o,u). (Read: "the observable operator for the observation o given the input u"). This is convenient when dealing with standard OOMs (\a nU == 0), since one can address the operators as tau(o) in this case, as the action u defaults to 0). */
 	VectorXd w0_;      /**< the initial state */
