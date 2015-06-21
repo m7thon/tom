@@ -9,6 +9,42 @@
 
 namespace tom {
 
+SWIGCODE(%feature("docstring") Sequence
+"Sequence(length = 0, nO = 0, nU = 0)\n"
+"Sequence(seq, nO, nU = 0)\n"
+"Sequence(json_representation)\n"
+"\n"
+"This object represents a sequence, subsequence view or io-sequence and stores the\n"
+"size `nO` of the output and `nU` of the input alphabet. If the size of the input\n"
+"alphabet is zero, this is just an ordinary sequence o_0...o_{N-1} of symbols o_t\n"
+"with zero-based indexing.\n"
+"\n"
+"An io-sequence is represented as a simple sequence u_0o_0...u_{N-1}o_{N-1} of\n"
+"inputs u_t and outputs o_t. For io-sequences, we distinguish `size` and `length`:\n"
+"For the io-sequence u_0o_0...u_{N-1}o_{N-1}, the `length` is N, while the `size`\n"
+"is 2N, and the symbol `at(n)` is `u(n/2)` if n is even and `o((n-1)/2)` if n is\n"
+"odd, or, conversely, the n-th input symbol `u(n)` is the symbol `at(2n)`, and\n"
+"the n-th output symbol `o(n)` is the symbol `at(2n+1)`. For standard sequences,\n"
+"`o(n)` is always `at(n)` and `u(n)` is always zero.\n"
+"\n"
+"This object always represents a view to underlying sequence data, i.e., copies,\n"
+"slices and subsequences always point to the same underlying data. To obtain a\n"
+"real deep copy, the `copy` member function is provided.\n"
+"\n"
+"Constructors\n"
+"------------\n"
+"Sequence(length = 0, nO = 0, nU = 0) -> a Sequence of given `length`, output\n"
+"    alphabet size `nO` and input alphabet size `nU` initialized with zeros. In\n"
+"    the case of an io-sequence (if `nU` != 0), the `size` will be 2 * `length`.\n"
+"Sequence(seq, nO, nU = 0) -> a Sequence of given output alphabet size `nO` and\n"
+"    input alphabet size `nU` constructed from the given `seq`, which may be a\n"
+"    list [u_0, ..., u_{N-1}] (or [u_0, o_0, ..., u_{N-1}, o_{N-1}] for an io-\n"
+"    sequence), or a std::vector<int>. The contents of `seq` will be copied.\n"
+"Sequence(json_representation) -> a Sequence corresponding to the given string\n"
+"    `json_representation`. The format should correspond to what `.toJSON()`\n"
+"    produces.\n"
+"\n";)
+
 constexpr long NoIndex = std::numeric_limits<long>::max();
 
 SWIGCODE(%ignore SequenceData);
@@ -23,12 +59,11 @@ public:
 	std::vector<Symbol> seq_; ///< the underlying sequence data
 };
 
+
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Sequence::repr;)
 SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::size;)
-
-
 /**
- * This class represents a sequence to be used with the OOM algorithms.\ It may represent a sequence, subsequence view or io-sequence, and stores information about the output and possibly input alphabet.
+ * This is the basic class to represent a sequence, subsequence view or io-sequence, and stores information about the size of the output and input alphabet\. If the size of the input alphabet is zero, this is just an ordinary sequence of symbols \f$ o_0\ldots o_{N-1}\f$\, with zero-based indexing\. Note that an io-sequence is represented as a simple sequence of inputs \f$u_t\f$ and outputs \f$o_t\f$, i.e., as \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$\. For such an io-sequence, the \a length is \a N, while the \a size is \a 2N\. The symbol \a at(n) is \f$u_{n/2}\f$ if \a n is even and \f$o_{(n-1)/2}\f$ if \a n is odd\. Conversely, the \a n-th input symbol \a u(n) is the symbol \a at(2n), and the \a n-th output symbol \a o(n) is the symbol \a at(2n+1).
  */
 class Sequence {
 	friend class SequenceData;
@@ -37,14 +72,13 @@ public:
 
 /** @name Constructors */
 //@{
-
 	/**
 	 * Construct a \a Sequence with output alphabet size \a nO and input alphabet size \a nU from a given \a data vector.\ The \a data vector is copied, and the sequence is viewed as an input-output sequence if \a nU != 0.
 	 */
 	Sequence(const std::vector<Symbol>& data, int nO, int nU = 0);
 
 	/**
-	 * Construct a zero \a Sequence with output alphabet size \a nO and input alphabet size \a nU of a given \a length.\ The size of the \a Sequence will be 2 * \a length if it is an input-output sequence, i.e., if \a nU != 0.
+	 * Construct a \a Sequence of zeros with output alphabet size \a nO and input alphabet size \a nU of a given \a length.\ The size of the \a Sequence will be 2 * \a length if it is an input-output sequence, i.e., if \a nU != 0.
 	 */
 	Sequence(unsigned long length = 0, int nO = 0, int nU = 0);
 

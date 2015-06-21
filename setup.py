@@ -27,7 +27,8 @@ cxx_flags = ['-std=c++11', '-Wno-unused-variable', '-Wno-sign-compare']
 # obsolete options that were once required (older swig + older clang):
 # cxx_flags += ['-stdlib=libc++']
 
-from distutils.core import setup,Extension
+try: from setuptools import setup,Extension,find_packages
+except ImportError: from distutils.core import setup,Extension
 import sys, os
 import numpy as np
 
@@ -64,4 +65,5 @@ setup(
                              include_dirs = [np.get_include(), 'include/tom', 'include/external'],
                              depends = make_depends() )],
     packages = ['tom'],
+    test_suite = 'tests',
 )

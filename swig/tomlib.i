@@ -31,9 +31,8 @@
 %template(IntVector) std::vector<int>;
 %template(DoubleVector) std::vector<double>;
 
+%include "stdint.i"
 %include "std_iostream.i"
-
-//%include "../doc/tomdoc.i"
 
 %init %{
   import_array();
@@ -52,6 +51,16 @@
 
 %template(Sequences) std::vector<tom::Sequence>;
 
+%include "../include/tom/stree/stree.h"
+
+%shared_ptr(stree::STree);
+%shared_ptr(std::vector<stree::Nidx>);
+%template(NidxVector) std::vector<stree::Nidx>;
+
+%include "../include/tom/stree/STreeCore.h"
+%include "../include/tom/stree/STreeNode.h"
+%include "../include/tom/stree/STreeIterators.h"
+
 %include "../include/tom/PomdpTools.h"
 
 %shared_ptr(tom::Oom);
@@ -60,7 +69,6 @@
 %shared_ptr(tom::Hmm);
 %include "../include/tom/Hmm.h"
 
-%include "stree.i"
 %include "../include/tom/CoreSequences.h"
 
  //%include "../include/tom/Estimators.h"

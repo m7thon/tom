@@ -1,9 +1,22 @@
-import sys
-sys.path.append('../lib')
-import cPickle
+import unittest
+import tom
+import sys,os
+
+dir = os.path.abspath(os.path.dirname(__file__)) + '/'
+
+class SequenceTest(unittest.TestCase):
+    def testCalculation(self):
+        
+        self.assertTrue(False, "So, this test did not work")
+
+class TrueTest(unittest.TestCase):
+    def testCalculation(self):
+        self.assertTrue(True, "True should be true")
+
+
+import pickle
 import bz2
 import random as rnd
-import tom
 
 # Provide unit type tests for the components of the tom library:
 def testRandom():
@@ -38,7 +51,7 @@ def testSuffixTree():
         print('   testing with ' + s +'.seq')
         seq = tom.load(s + '.seq')
         f = bz2.BZ2File(s + '.stree.bz2')
-        streeForm = cPickle.load(f)
+        streeForm = pickle.load(f)
         f.close()
         symbolSize = 2 if seq.nU() > 1 else 1
         # create SuffixTree in several random steps:
@@ -56,4 +69,4 @@ def testSuffixTree():
     if ok:
         print('...SuffixTree tests passed.')
 
-testSuffixTree()
+#testSuffixTree()

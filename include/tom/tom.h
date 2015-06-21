@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <string>
 #include <deque>
+#include <stack>
 #include <queue>
 #include <vector>
 #include <cmath>
@@ -15,6 +16,7 @@
 #include <utility>
 #include <memory> // shared_ptr
 #include <cstdint>
+#include <cassert>
 #include <stdexcept>
 
 #include "Eigen/Core"
@@ -39,7 +41,6 @@ typedef double Real;
 
 #include "Sequence.h"
 
-#define STREE_STRING_TYPE tom::Sequence
 #include "stree/stree.h"
 
 #include "LinearAlgebra.h"
