@@ -45,7 +45,7 @@ SWIGCODE(%feature("docstring") Sequence
 "    produces.\n"
 "\n";)
 
-constexpr long NoIndex = std::numeric_limits<long>::max();
+constexpr long NoIndex = std::numeric_limits<long>::min();
 
 SWIGCODE(%ignore SequenceData);
 class SequenceData {
@@ -255,6 +255,9 @@ struct stop_iteration {};
 		$1 = (PySliceObject *) $input;
 	}
 	%typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) PySliceObject* { $1 = PySlice_Check($input); }
+	%feature("python:slot", "nb_nonzero", functype="inquiry") __nonzero__;
+	bool __nonzero__() const { return (self->nO() != 0); }
+	bool __bool__() const { return (self->nO() != 0); }
 	%feature("python:slot", "mp_subscript", functype="binaryfunc") __getitem__;
 	Sequence __getitem__(PySliceObject *slice) throw (std::invalid_argument) {
 		Py_ssize_t start, stop, step, sliceLen;
@@ -331,18 +334,29 @@ Sequence Sequence::sub(unsigned long pos, unsigned long size, bool reverse) cons
 }
 
 Sequence Sequence::slice(long begin, long end, bool reverse) const {
-	if (size() == 0) return Sequence();
 	Sequence seq(*this);
 	if (not reverse) {
 		if (begin == NoIndex) { begin = 0; }
-		if (begin < 0) { begin = std::max(0L, begin + long(size())); }
-		if (end == NoIndex) { end = size(); }
-		if (end < 0) { end += long(size()); }
+		else {
+			if (begin < 0) { begin = std::max(0L, begin + long(size())); }
+			if (begin > long(size())) { begin = long(size()); }
+		}
+		if (  end == NoIndex) {   end = long(size()); }
+		else {
+			if (  end < 0) { end   = std::max(0L,   end + long(size())); }
+			if (  end > long(size())) {   end = long(size()); }
+		}
 	} else { // reverse:
 		if (begin == NoIndex) { begin = long(size()) - 1; }
-		if (begin < 0) { begin += size(); }
-		if (end < 0) { end = std::max(-1L, long(size()) + end); }
-		if (end == NoIndex) { end = -1; }
+		else {
+			if (begin < 0) { begin = std::max(-1L, begin + long(size())); }
+			if (begin > long(size())-1) { begin = long(size())-1; }
+		}
+		if (  end == NoIndex) {   end = -1L; }
+		else {
+			if (  end < 0) {   end = std::max(-1L,   end + long(size())); }
+			if (  end > long(size())-1) {   end = long(size())-1; }
+		}
 		std::swap(++begin, ++end);
 	}
 	seq.pos_ =  ( isReversed() ? long(pos()) + long(size()) - end : long(pos()) + begin );
@@ -434,9 +448,8 @@ std::ostream& Sequence::operator>>(std::ostream &ostream) const {
 
 std::string Sequence::repr() const {
 	std::stringstream os;
-	os << "SEQUENCE(" << length() << "," << nO() << "," << nU() << "): ";
-	writeFormattedData(os, nU() != 0 ? 20 : 10);
-	if (length() > 10) os << " ...";
+	os << "Sequence(" << length() << "," << nO() << "," << nU() << "): ";	
+	writeFormattedData(os, 10);
 	return os.str();
 }
 

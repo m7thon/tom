@@ -1,6 +1,6 @@
 from __future__ import division
 
-from .tomlib import Random, Sequence, Sequences, STree, Hmm, Oom, Policy, Estimator
+from .tomlib import Random, Sequence, Sequences, STree, Hmm, Oom, Policy, Estimator, NoIndex
 
 from .io import load, save
 from .sequences import generateSequences, stringToSequence
