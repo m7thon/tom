@@ -50,15 +50,15 @@ constexpr long NoIndex = std::numeric_limits<long>::min();
 SWIGCODE(%ignore SequenceData);
 class SequenceData {
 	friend class cereal::access;
+	friend class Sequence;
 public:
-	SequenceData(int nO = 0, int nU = 0) : nO_(nO), nU_(nU) {}
-	SequenceData(const std::vector<Symbol>& seq, int nO = 0, int nU = 0) : nO_(nO), nU_(nU), seq_(seq) {}
-	SequenceData(unsigned int size, int nO = 0, int nU = 0) : nO_(nO), nU_(nU), seq_(size, 0) {}
-  int nO_;                  ///< The size of the output alphabet
-	int nU_;                  ///< The size of the input alphabet, or 0 if there are no inputs
-	std::vector<Symbol> seq_; ///< the underlying sequence data
+	SequenceData(Symbol nO = 0, Symbol nU = 0) : nO_(nO), nU_(nU) {}
+	SequenceData(const std::vector<Symbol>& seq, Symbol nO = 0, Symbol nU = 0) : nO_(nO), nU_(nU), seq_(seq) {}
+	SequenceData(unsigned long size, Symbol nO = 0, Symbol nU = 0) : nO_(nO), nU_(nU), seq_(size, 0) {}
+    Symbol nO_;                  ///< The size of the output alphabet
+	Symbol nU_;                  ///< The size of the input alphabet, or 0 if there are no inputs
+	std::vector<Symbol> seq_;    ///< the underlying sequence data
 };
-
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Sequence::repr;)
 SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::size;)
@@ -66,59 +66,56 @@ SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::size
  * This is the basic class to represent a sequence, subsequence view or io-sequence, and stores information about the size of the output and input alphabet\. If the size of the input alphabet is zero, this is just an ordinary sequence of symbols \f$ o_0\ldots o_{N-1}\f$\, with zero-based indexing\. Note that an io-sequence is represented as a simple sequence of inputs \f$u_t\f$ and outputs \f$o_t\f$, i.e., as \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$\. For such an io-sequence, the \a length is \a N, while the \a size is \a 2N\. The symbol \a at(n) is \f$u_{n/2}\f$ if \a n is even and \f$o_{(n-1)/2}\f$ if \a n is odd\. Conversely, the \a n-th input symbol \a u(n) is the symbol \a at(2n), and the \a n-th output symbol \a o(n) is the symbol \a at(2n+1).
  */
 class Sequence {
-	friend class SequenceData;
 public:
 	typedef Symbol value_type;
 
 /** @name Constructors */
 //@{
-	/**
-	 * Construct a \a Sequence with output alphabet size \a nO and input alphabet size \a nU from a given \a data vector.\ The \a data vector is copied, and the sequence is viewed as an input-output sequence if \a nU != 0.
-	 */
-	Sequence(const std::vector<Symbol>& data, int nO, int nU = 0);
+    /** Construct a \a Sequence with output alphabet size \a nO and input alphabet size \a nU from a given \a data vector.\ The \a data vector is copied, and the sequence is viewed as an input-output sequence if \a nU != 0. */
+	Sequence(const std::vector<Symbol>& data, Symbol nO, Symbol nU = 0);
 
-	/**
-	 * Construct a \a Sequence of zeros with output alphabet size \a nO and input alphabet size \a nU of a given \a length.\ The size of the \a Sequence will be 2 * \a length if it is an input-output sequence, i.e., if \a nU != 0.
-	 */
-	Sequence(unsigned long length = 0, int nO = 0, int nU = 0);
+    /** Construct a \a Sequence of zeros with output alphabet size \a nO and input alphabet size \a nU of a given \a length.\ The size of the \a Sequence will be 2 * \a length if it is an input-output sequence, i.e., if \a nU != 0. */
+    Sequence(unsigned long length = 0, Symbol nO = 0, Symbol nU = 0);
 
-  /** Construct a \a Sequence from the string representation given by the \a sequenceStr\. This must correspond to what the \a toString() member function produces. */
-  Sequence(const std::string& sequenceStr) { std::stringstream iss(sequenceStr); *this << iss; }
+    /** Construct a \a Sequence from the given \a json_representation\. This must correspond to what the \a toJSON() member function produces. */
+    Sequence(const std::string& json_representation) { assert(false, "Not implemented"); }
 //@}
-
-/** @name Accessors */
+    
+/** @name Accessors and Properties */
 //@{
-	/** Return the size of the input alphabet.\ If this is zero, then the \a Sequence is an ordinary sequence, else an io-sequence. */
-	int nU() const { return data_->nU_; }
+    /** Return the size of the input alphabet.\ If this is zero, then the \a Sequence is an ordinary sequence, else an io-sequence. */
+	Symbol nU() const { return data_->nU_; }
+    
+    /** Return the size of the output alphabet. */
+	Symbol nO() const { return data_->nO_; }
+    
+    /** Return the size of the represented sequence.\ Note that for an io-sequence this is the sum of the number of input symbols and output symbols.\ Generally, use \a length() instead. */
+	unsigned long rawSize() const { return labs(size_); }
 
-	/** Return the size of the output alphabet. */
-	int nO() const { return data_->nO_; }
+    /** Return the length of this sequence\. For io-sequences this is the number of input-output symbols (i.e., time steps), which is generally half the size. */
+	unsigned long length() const { return nU() == 0 ? rawSize() : isFrontAligned() ? (rawSize() + 1) / 2 : rawSize() / 2 + 1; }
+    
+    /** Return the output symbol at the \a n-th position. */
+    Symbol o(long n) const { return data_->at(indexToPos(n, true)); }
 
-	/** Return the size of the represented (sub)-sequence.\ Note that for an io-sequence \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$ this is 2*N. */
-	unsigned long size() const { return labs(size_); }
+    /** Set the output symbol at the \a n-th posiiton. */
+	void o(long n, Symbol o) { data_->at(indexToPos(n, true)) = o; }
 
-	/** Return \c true if this is a reversed \a Sequence. */
-	bool isReversed() const { return ( size_ < 0 ); }
+    /** Return the input symbol at the \a n-th position, or zero if this is an output-only sequence. */
+    Symbol u(long n) const { if (nU() == 0) return 0; return data_->at(indexToPos(n, false)); }
+    
+    /** Set the output symbol at the \a n-th posiiton, or do nothing if this is an output-only sequence. */
+	void u(long n, Symbol u) { if (nU() == 0) return; data_->at(indexToPos(n, false)) = u; }
 
-  /** Return the index of the first symbol of the represented (sub)-sequence in the underlying data vector. */
-	unsigned long pos() const { return pos_; }
-
-	/** Return the (input or output) symbol at position \a n. */
-	const Symbol at(unsigned long n) const;
-
-	#ifndef SWIG
-	/** Access the (input or output) symbol at position \a n. */
-	Symbol& at(unsigned long n);
-
-	/** Return the (input or output) symbol at position \a n. */
-	const Symbol operator[] (unsigned long n) const { return at(n); }
-
-	/** Access the (input or output) symbol at position \a n. */
-	Symbol& operator[] (unsigned long n) { return at(n); }
-	#endif
+    /** Return \c true if this is a reversed \a Sequence\. This is relevant for io-sequences, since the order of input and outputs is also reversed.*/
+	bool isReversed() const { return size_ < 0; }
+	
+    bool isFrontAligned() const { return nU() == 0 or pos_ % 2 == 0; }
+	bool isBackAligned() const { return nU() == 0 or (pos_ + rawSize()) % 2 == 0; }
+	bool isAligned() const { return isFrontAligned() and isBackAligned(); }
 //@}
-
-/** @name Functionality */
+    
+/* Functionality */
 //@{
 	/** Return a deep copy of this \a Sequence, i\.e\., the copy will use its own memory. */
 	Sequence copy() const;
@@ -130,19 +127,24 @@ public:
 	void reverse() { size_ = -size_; }
 
 	/** Return a subsequence starting at the given position \a pos and of the given \a size. */
-	Sequence sub(unsigned long pos, unsigned long size, bool reverse = false) const;
+	Sequence sub(unsigned long pos, unsigned long size, bool reverse = false) const __attribute__((deprecated));
 
 	/** Return a slice from the \a begin position up to (and not including) the \a end position, or if \a reverse is set to \c true, backwards from the \a end position up to (and not including) the \a begin position\. This follows python syntax, i.e., negative position values are counted from the end of the \a Sequence, with 0 being the first and -1 being the last position\. Furthermore, \a begin and \a end may be set to \a NoIndex, and then extend to the beginning or end of the \a Sequence. **/
-	Sequence slice(long begin = NoIndex, long end = NoIndex, bool reverse = false) const;
-
-	/** Alias for sub(unsigned long pos, unsigned long size) */
-	Sequence substr(unsigned long pos, unsigned long size) const { return sub(pos, size); }
+	Sequence slice(long begin = NoIndex, long end = NoIndex, bool reverse = false) const __attribute__((deprecated));
 
 	/** Return true if the given \a Sequence \a seq is equal to this \a Sequence */
 	bool operator ==(const Sequence& seq) const {
-		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0) or (size() != seq.size())) return false;
-		for (unsigned int i = 0; i < size(); ++i) if (at(i) != seq.at(i)) return false;
-		return true;
+		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0) or (rawSize() != seq.rawSize()) or (isFrontAligned() != seq.isFrontAligned())) return false;
+		if (nU() == 0 or ((isReversed() == seq.isReversed()))) {
+			for (unsigned int i = 0; i < rawSize(); ++i) if (rawAt(i) != seq.rawAt(i)) return false;
+			return true;
+		} /* else { // can a reversed io-sequence equal a non-reversed one?
+			if (isAligned()) {
+				for (unsigned int i = 0; i < length(); ++i) if ((o(i) != seq.o(i)) or u(i) != seq.u(i)) return false;
+				return true;
+			}
+		} */
+		return false;
 	}
 
 	SWIGCODE(%ignore operator++;)
@@ -158,38 +160,23 @@ public:
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0)) return 0;
 		if (seq.size() == 0) return length();
 		unsigned int c = 0;
-		for (unsigned int i = 0; i <= size() - seq.size(); i += nU() == 0 ? 1 : 2) if (seq == (sub(i, seq.size()))) c++;
+        for (unsigned int i = 0; i <= length() - seq.length(); ++i) {
+            if (seq == (sub(i, seq.length()))) c++;
+        }
 		return c;
 	}
-
 //@}
 
 /** @name Special functions for input-outpus sequences */
 //@{
 	/** Return \c true if this is an input-output sequence, i.e., if the input alphabet size \a nU is non-zero. */
-	bool isStrictlyIO() const { return ( nU() != 0 ); }
-
-  /** Return \c true if this sequence is aligned.\ This is always true for normal (non-io) sequences.\ For io-sequences this means that the sequence begins with an input-output pair, i.e., this \a Sequence is aligned if it is not reversed and begins with an input symbol, or is reversed and begins with an output symbol. */
-	bool isAlignedIO() const { return ((nU() == 0) or (pos_ % 2 == 0)); }
-
-	/** Return \c true if this sequence is a valid (io)-sequence.\ This is always true for normal (non-io) sequences.\ For io-sequences this means that the sequence is aligned and has an even number of symbols. */
-	bool isValidIO() const { return ((nU() == 0) or ((size_%2==0) and isAlignedIO())); }
+	bool isIO() const { return ( nU() != 0 ); }
 
 	/** Return a subsequence starting at the given index \a posIO and of the given \a length, i.e., if this \a Sequence is \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$, then return a subsequence view to \f$ u_{posIO}o_{posIO}\ldots u_{posIO+length-1}o_{posIO+length-1}\f$.\ For normal (non-io) sequences this is the same as \a sub. */
 	Sequence subIO(unsigned long posIO, unsigned long length) const {	return sub( (nU() == 0 ? posIO : 2*posIO), (nU() == 0 ? length : 2*length) ); }
 
   /** Return the length of this sequence, which is its size for normal (non-io) sequences and half its size for io-sequences.\ Note that this only makes sense for valid (io)-sequences. */
 	unsigned long length() const { return (nU() == 0 ? size() : size()/2); }
-
-	/** Return the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */
-	const Symbol o(unsigned long n) const;
-	/** Set the \a n-th output symbol.\ Note that this is only correct for aligned (io)-sequences. */
-	void o(unsigned long n, Symbol o);
-
-	/** Return the \a n-th input symbol or 0 if this is an output-only \a Sequence.\ Note that this is only correct for aligned and strictly io-sequences. */
-	const Symbol u(unsigned long n) const;
-	/** Set the \a n-th input symbol.\ Note that this is only correct for aligned and strictly io-sequences. */
-	void u(unsigned long n, Symbol u);
 //@}
 
 /** @name IO-functions */ //@{
@@ -244,6 +231,14 @@ private:
 	unsigned long pos_;             ///< The index position in the \a data_ corresponding to the beginning of this \a Sequence
 	long size_;                     ///< The size (in Symbols) of this \a Sequence.\ Negative values indicate a reversed sequence
 	std::shared_ptr<SequenceData> data_; ///< a pointer to the underlying \a SequenceData
+	long indexToPos(long n = 0, bool forOutputSymbol = true) const {
+		long p = forOutputSymbol;
+		if (n<0) n += length();
+		if (nU() == 0) { p += isReversed() ? pos_ + rawSize() - 1 - n : pos_ + n; }
+		else { p += isReversed() ? 2*((pos_ + rawSize() - 1)/2 - n) : 2*(pos_/2 + n); }
+		if (p < pos_ or p >= pos_ + rawSize()) throw std::out_of_range();
+		return p;
+	}
 }; // class Sequence
 
 // The following is some magic to make Sequence objects slice-able and iterable in python
@@ -313,16 +308,6 @@ Sequence::Sequence(unsigned long length_, int nO, int nU) : pos_(0), size_(0) {
 	data_ = std::make_shared<SequenceData>(size_, nO, nU);
 }
 
-//Accessors
-const Symbol Sequence::at(unsigned long n) const {
-	assert(n < size());
-	return data_->seq_.at( isReversed() ? pos() + size() - 1 - n : pos() + n );
-}
-Symbol& Sequence::at(unsigned long n) {
-	assert(n < size());
-	return data_->seq_.at( isReversed() ? pos() + size() - 1 - n : pos() + n );
-}
-
 //Utilities
 Sequence Sequence::sub(unsigned long pos, unsigned long size, bool reverse) const {
 	assert((pos < this->size()) and (pos + size <= this->size()));
@@ -384,25 +369,6 @@ Sequence Sequence::mergeToIo(const Sequence& inputSequence) const {
 	len = std::min(len, inputSequence.length());
 	for (unsigned long n = 0; n < len; ++n) { seq.u(n, inputSequence.o(n)); }
 	return seq;
-}
-
-
-//Special IO-Sequence functions
-const Symbol Sequence::o(unsigned long n) const {
-	if (nU() == 0) { return at(n); }
-	else { return ( isReversed() ? at(2*n) : at(2*n+1) ); }
-}
-void Sequence::o(unsigned long n, Symbol o) {
-	if (nU() == 0) { at(n) = o; }
-	else { if (isReversed()) at(2*n) = o; else at(2*n+1) = o; }
-}
-const Symbol Sequence::u(unsigned long n) const {
-	if (nU() == 0) return 0;
-	return ( isReversed() ? at(2*n+1) : at(2*n) );
-}
-void Sequence::u(unsigned long n, Symbol u) {
-	if (nU() == 0) return;
-	if (isReversed()) at(2*n+1) = u; else at(2*n) = u;
 }
 
 
