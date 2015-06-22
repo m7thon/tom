@@ -78,7 +78,7 @@ public:
     }
 
     /** Construct a \a Sequence from the given \a json_representation\. This must correspond to what the \a toJSON() member function produces. */
-    Sequence(const std::string& json_representation) { assert(false, "Not implemented"); }
+    Sequence(const std::string& json_representation) { fromJSON(json_representation); }
 //@}
     
 /** @name Accessors and Properties */
@@ -240,14 +240,6 @@ public:
 	}
 //@}
 
-/** @name Special functions for input-outpus sequences */
-//@{
-	/** Return a subsequence starting at the given index \a posIO and of the given \a length, i.e., if this \a Sequence is \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$, then return a subsequence view to \f$ u_{posIO}o_{posIO}\ldots u_{posIO+length-1}o_{posIO+length-1}\f$.\ For normal (non-io) sequences this is the same as \a sub. */
-	Sequence sub(unsigned long posIO, unsigned long length) const __attribute__((deprecated)) {
-        return sub( (nU() == 0 ? posIO : 2*posIO), (nU() == 0 ? length : 2*length) );
-    }
-//@}
-
 /** @name IO-functions */ //@{
 	INSERT_JSON_IO_FUNCTIONS()
 	/** return a representation to display in interactive python. */
@@ -379,32 +371,38 @@ std::istream & Sequence::operator<<(std::istream &istream) {
 }
 
 std::ostream& Sequence::writeFormattedData(std::ostream& ostream, unsigned int maxOut) const {
-	if ((maxOut == 0) or (maxOut > size())) maxOut = size();
-	bool align = isAlignedIO();
-	if (maxOut != 0) {
-		if (nU() != 0) {
-			for (unsigned long n = 0; n < maxOut-1; ++n) {
-				align = not align;
-				ostream << at(n) << ( align ? "  " : " " );
-			}
-		}
-		else
-			for (unsigned long n = 0; n < maxOut-1; ++n)
-				ostream << at(n) << " ";
-		ostream << at(maxOut-1);
-	}
-	return ostream;
-}
-
-std::ostream& Sequence::operator>>(std::ostream &ostream) const {
-  ostream << "SEQUENCE " << "Length: " << length() << " nU: " << nU() << " nO: " << nO() << std::endl;
-	writeFormattedData(ostream);
-	return ostream;
+    char io_char = isReversed() ? '>' : '<';
+    char gap_char = ' ';
+    bool theres_more = false;
+    if (!isIO()) {
+        if ((maxOut == 0) or (maxOut > length())) { maxOut = length(); theres_more = true; }
+        if (maxOut == 0) return ostream;
+        for (unsigned long i = 0; i < maxOut - 1; ++i) {
+            ostream << rawAt(i) << gap_char;
+        }
+        ostream << rawA(maxOut-1);
+    } else {
+        maxOut *= 2;
+        if ((maxOut == 0) or (maxOut > rawSize())) { maxOut = rawSize(); theres_more = true; }
+        bool align = false;
+        if ( (isReversed() and !isBackAligned() ) or ( !isReversed() and !isFrontAligned() ) ) {
+            ostream << gap_char << io_char;
+            align = true;
+        }
+        for (unsigned long i = 0; i < maxOut-1; ++i) {
+            align = not align;
+            ostream << rawAt(i) << ( align ? io_char : gap_char );
+        }
+        ostream << rawAt(maxOut-1);
+        if (align) { ostream << io_char; }
+    }
+    if (theres_more) { ostream << ' ...'; }
+    return ostream;
 }
 
 std::string Sequence::repr() const {
 	std::stringstream os;
-	os << "Sequence(" << length() << "," << nO() << "," << nU() << "): ";	
+	os << "Sequence(" << length() << "," << nO() << "," << nU() << "): ";
 	writeFormattedData(os, 10);
 	return os.str();
 }
