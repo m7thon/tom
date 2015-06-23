@@ -32,7 +32,7 @@ except ImportError: from distutils.core import setup,Extension
 import sys, os
 import numpy as np
 
-swig_flags = ['-c++', '-naturalvar', '-builtin', '-O', '-Iswig']
+swig_flags = ['-c++', '-naturalvar', '-builtin', '-O', '-Iswig', '-DTOM_DEBUG']
 if sys.version_info >= (3,): swig_flags += ['-py3']
 
 def is_source_file(filename):

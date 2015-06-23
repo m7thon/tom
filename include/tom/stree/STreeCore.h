@@ -93,7 +93,7 @@ public:
   Nidx sib(const Nidx node) const;
 
 	/** Return the character at index \a pos in the string represented by this suffix tree. */
-	Char at(Idx pos) const { return text_[pos]; }
+	Char at(Idx pos) const { return text_.rawAt(pos); }
 
   String text_;            //< a copy of the underlying text for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree.
   Idx size_;                         //< the size of the represented text

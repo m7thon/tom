@@ -10,8 +10,9 @@
 
 namespace tom {
 
-std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::Nidx> > indNodes) {
-  Sequence seq = rStree.text_.sub(0, rStree.size_);
+std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::Nidx> > indNodes) throw (std::invalid_argument) {
+    if (oom.nU() != 0) throw std::invalid_argument("sharpenEfficiency does not work for IO-OOMs");
+  Sequence seq = rStree.text_.rawSub(0, rStree.size_);
   auto room = oom.reverse();
   MatrixXf* CF_l = room->harvestStates(seq);
   // Note: CF_l is [c_0, ..., c_l] as in the paper, but differently ordered from matlab code

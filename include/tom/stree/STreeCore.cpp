@@ -182,7 +182,7 @@ void STree::extendTo(Idx size) {
 void  STree::initialize(const String& text, Idx size, unsigned int symbolSize, bool annotated) {
 	size_ = size; annotated_ = annotated; symbolSize_ = symbolSize;
 	text_ = text;
-	if (size_ == 0) size_ = text_.size();
+	if (size_ == 0) size_ = text_.rawSize();
   leaves.push_back(LeafNode((NODE), (0)));
   nodes.push_back(InternalNode((NODE), (0), (VALID)));
   suffixLinkFrom = 0;

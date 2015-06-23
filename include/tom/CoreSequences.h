@@ -41,7 +41,7 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	stree::STreeEdge node = stree::STreeEdge(sfxTree);
 	std::priority_queue<stree::STreeEdge> nodeQueue;
 	nodeQueue.push(node);
-	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->text_.sub(0,0)); // handles root case
+	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->text_.rawSub(0,0)); // handles root case
 	while (!nodeQueue.empty() and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
 		node = nodeQueue.top();
 		nodeQueue.pop();
@@ -58,12 +58,12 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 		stree::Idx d = node.parentDepth() + 1; if ((IO == 2) and (d & 1)) d++;
 		if (d < IO * minSeqLen) d = IO * minSeqLen;
 		if (unique) {
-			if (d <= node_depth) coreSeqs->push_back(sfxTree->text_.sub(node.headIndex(), d));
+			if (d <= node_depth) coreSeqs->push_back(sfxTree->text_.rawSub(node.headIndex(), d));
 		}
 		else {
 			stree::Idx head_index = node.headIndex();
 			while (d <= node_depth and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
-				coreSeqs->push_back(sfxTree->text_.sub(head_index, d));
+				coreSeqs->push_back(sfxTree->text_.rawSub(head_index, d));
 				d += IO;
 			}
 		}

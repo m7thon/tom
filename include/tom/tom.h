@@ -1,6 +1,8 @@
 #ifndef TOM_H
 #define TOM_H
 
+#include "Macros.h"
+
 #include <limits>
 #include <iostream>
 #include <sstream>
@@ -33,8 +35,6 @@ typedef double Real;
 #include "cereal/types/string.hpp"
 #include "cereal/archives/json.hpp"
 #include "CerealTom.h"
-
-#include "Macros.h"
 
 #include <random>
 #include "Random.h"

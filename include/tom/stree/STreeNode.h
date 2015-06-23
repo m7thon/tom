@@ -59,10 +59,10 @@ public:
 		else { setValid(false); }
 	}
 
-	String string() const { return stree_->text_.substr(headIndex(), depth()); }
+	String string() const { return stree_->text_.rawSub(headIndex(), depth()); }
 	String label(Idx parentDepth) const {
 		assert(parentDepth <= depth());
-		return stree_->text_.substr(headIndex() + parentDepth, depth() - parentDepth);
+		return stree_->text_.rawSub(headIndex() + parentDepth, depth() - parentDepth);
 	}
 
 	std::string dataStr(int width = 5) const {
@@ -194,12 +194,12 @@ public:
 			else edge_.setValid(false);
 	}
 	void addString(const String& str) {
-		for (Idx pos = 0; ((pos < str.size()) and (edge_.isValid())); ++pos)
-			addChar(str[pos]);
+		for (Idx pos = 0; ((pos < str.rawSize()) and (edge_.isValid())); ++pos)
+			addChar(str.rawAt(pos));
 	}
 
-	String string() const { return edge_.stree_->text_.substr(headIndex(), depth_); }
-	String label() const { return edge_.stree_->text_.substr(headIndex() + parentDepth(), depth_ - parentDepth()); }
+	String string() const { return edge_.stree_->text_.rawSub(headIndex(), depth_); }
+	String label() const { return edge_.stree_->text_.rawSub(headIndex() + parentDepth(), depth_ - parentDepth()); }
 
 private:
 	STreeEdge edge_;
