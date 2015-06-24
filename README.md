@@ -45,7 +45,22 @@ Notes:
 - You can also install tom into a user-local python package directory using  
   `python setup.py install --user`. For details, see the
   [distutils documentation](https://docs.python.org/3/install/index.html#alternate-installation).
-- See `build_with_gcc_and_install_locally.sh` for an example
+- A Makefile is provided with some useful targets:
+  + `make doc` -- make the documentation
+  + `make clean` -- clean up
+  + `make build` -- call `python setup.py build_ext`
+  + `make install` -- call `python setup.py install`
+  + `make debug_build_clang` -- set up some compile flags for debugging
+  + `make list` -- list all available targets
+- Also, the Makefile allows building the toolkit without pythons setuptools. For this
+  1. Modufy the first section in the Makefile to suit your local needs
+  2. run `make build_without_setuptools`
+  3. From python, include the directory python/tom into the search path:
+     ```python
+	import sys, os
+	sys.path.append(os.path.abspath('.')+"/python/tom")
+	import tom
+     ```
 
 Using the toolkit
 -----------------

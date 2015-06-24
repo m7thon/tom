@@ -8,6 +8,8 @@ swig/tomlib_wrap.h
 swig/tomlib.py
 python/tom/tomlib.py
 build
+dist
 doc/html
 doc/xml
 doc/tom.tag
+python/tom.egg-info
