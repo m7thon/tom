@@ -1,13 +1,19 @@
 #ifndef MACROS_H
 #define MACROS_H
 
-// NOTE: The lowest and recommended checking level, especially when working from python, is
-//       TOM_CHECK. Enable TOM_DEBUG for full checking (also in libraries) and TOM_CHECK to
-//       turn on asserts only in the tom library.
+#define TOM_CHECK
+// NOTE: The lowest and default checking level, especially when working from python, is
+//       TOM_CHECK. Define TOM_DEBUG for full checking (also in libraries) and TOM_NCHECK
+//       to turn off all checks.
 
 #ifdef TOM_DEBUG
     #undef NDEBUG
     #define TOM_CHECK
+    #undef TOM_NCHECK
+#endif
+
+#ifdef TOM_NCHECK
+    #undef TOM_CHECK
 #endif
 
 #ifdef TOM_CHECK

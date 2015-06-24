@@ -27,12 +27,19 @@ cxx_flags = ['-std=c++11', '-Wno-unused-variable', '-Wno-sign-compare']
 # obsolete options that were once required (older swig + older clang):
 # cxx_flags += ['-stdlib=libc++']
 
-try: from setuptools import setup,Extension,find_packages
-except ImportError: from distutils.core import setup,Extension
+try:
+    from setuptools import setup,Extension
+    from setuptools.command.install import install
+except ImportError:
+    from distutils.core import setup,Extension
+    from distutils.command.install import install 
+from distutils.command.build import build
+
 import sys, os
 import numpy as np
 
 swig_flags = ['-c++', '-naturalvar', '-builtin', '-O', '-Iswig', '-DTOM_DEBUG']
+swig_flags += ['-outdir', 'python/tom']
 if sys.version_info >= (3,): swig_flags += ['-py3']
 
 def is_source_file(filename):
@@ -51,6 +58,21 @@ def make_depends():
                     depends.append(os.path.join(root,file))
     return depends
 
+# Unfortunately, python setuptools has a long-standing bug when building swig extensions
+# To work around, one needs to make sure build_ext is always called first:
+class PatchedBuild(build):
+    def run(self):
+        self.run_command('build_ext')
+        build.run(self)
+class PatchedInstall(install):
+    def run(self):
+        self.run_command("build_ext")
+        return install.run(self)
+
+tomlib_extension = [Extension('tom._tomlib', sources = ['swig/tomlib.i'], swig_opts = swig_flags,
+                              language='c++', extra_compile_args = cxx_flags,
+                              include_dirs = [np.get_include(), 'include/tom', 'include/external'],
+                              depends = make_depends() )]
 setup(
     name = "tom",
     version = "0.4.0",
@@ -60,10 +82,8 @@ setup(
     license = "MIT",
     url = "https://gitlab.com/m7.thon/tom",
     package_dir = {'': 'python'},
-    ext_modules = [Extension('tom._tomlib', sources = ['swig/tomlib.i'], swig_opts = swig_flags,
-                             language='c++', extra_compile_args = cxx_flags,
-                             include_dirs = [np.get_include(), 'include/tom', 'include/external'],
-                             depends = make_depends() )],
+    ext_modules = tomlib_extension,
     packages = ['tom'],
+    cmdclass={'build': PatchedBuild, 'install': PatchedInstall},
     test_suite = 'tests',
 )

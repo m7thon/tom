@@ -53,8 +53,9 @@ PYTHON = python
 PYTHON_CONFIG = python-config
 
 # Optimization flags:
-OPT = -O3 -march=native -DNDEBUG -fPIC
-#OPT = -O2 -march=native -fPIC
+#OPT = -O2 -march=msse2 -fPIC
+OPT = -O3 -march=native -DNDEBUG
+#OPT = -O -march=native -DNDEBUG -DTOM_NCHECK
 
 #####################################################################
 # End of basic configuration !
@@ -93,7 +94,7 @@ build_gcc:
 
 .PHONY: build_gcc5_on_OSX
 build_gcc5_on_OSX:
-	CC=g++ CXX=g++ CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -g0 -march=native -O3" python setup.py build_ext
+	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3" python setup.py build_ext
 
 .PHONY: build_without_setuptools
 build_without_setuptools: python/tom/_tomlib.so
@@ -107,6 +108,10 @@ build_without_setuptools: python/tom/_tomlib.so
 debug_build_clang:
 	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -O0 -DTOM_DEBUG" python setup.py build_ext
 
+.PHONY: debug_build_clang_install_user
+debug_build_clang_install_user:
+	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -O0 -DTOM_DEBUG" python setup.py install --user
+
 .PHONY: install
 install:
 	python setup.py install
@@ -115,9 +120,21 @@ install:
 install_user:
 	python setup.py install --user
 
+.PHONY: optimized_build_clang
+optimized_build_clang:
+	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
+
+.PHONY: optimized_build_gcc
+optimized_build_gcc:
+	CC=g++ CXX=g++ CPPFLAGS="$(EIGEN3_INCLUDE) -g0 -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
+
+.PHONY: optimized_build_gcc5_on_OSX
+optimized_build_gcc5_on_OSX:
+	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
+
 .PHONY: swig
 swig:
-	swig $(SWIG_FLAGS) -Iswig -outdir python/tom swig/tomlib.i
+	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
 
 .PHONY: doc
 doc:
@@ -128,8 +145,9 @@ clean:
 	rm -rf dist
 	rm -f python/tom/*.pyc
 	rm -f python/tom/_tomlib.so python/tom/tomlib.py
-	rm -f swig/tomlib_wrap.cxx swig/tomlib_wrap.cpp swig/tomlib_wrap.h
-	rm -rf build
+	rm -f swig/tomlib_wrap.cxx swig/tomlib_wrap.cpp swig/tomlib_wrap.h swig/tomlib.py
+	rm -rf python/tom.egg-info
+	rm -rf tom.egg-info
 	python setup.py clean --all
 
 .PHONY: swig-docstrings
@@ -137,12 +155,12 @@ swig-docstrings:
 	doc/doxy2swig.py -n -q doc/xml/index.xml swig/tom_doc.i
 
 # Not a target:
-python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cxx $(CXX_SRC)
-	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cxx $(PY_LDFLAGS) $(LDFLAGS)
+python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp $(CXX_SRC)
+	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cpp $(PY_LDFLAGS) $(LDFLAGS)
 
 # Not a target:
-swig/tomlib_wrap.cxx: $(CXX_SRC) $(SWIG_SRC)
-	swig $(SWIG_FLAGS) -Iswig -DTOM_DEBUG -outdir python/tom swig/tomlib.i
+swig/tomlib_wrap.cpp: $(CXX_SRC) $(SWIG_SRC)
+	swig $(SWIG_FLAGS) -Iswig -DTOM_DEBUG -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
 
 # Not a target:
 .PHONY: test

@@ -42,6 +42,9 @@ Notes:
   `CPPFLAGS`. Note that setup.py uses the compiler specified in `CC` for compiling and `CXX` for linking
   swig wrapped C++ extensions for unknown reasons, so always specify both. Example:  
   `CC=g++ CXX=g++ CPPFLAGS=-I/usr/local/include/eigen3 python setup.py install`.
+- Useful flags / variables to define are:
+  + `-DTOM_DEBUG` -- enable all debugging checks (asserts and bounds checking)
+  + `-DTOM_NCHECK` -- disable bounds checking and such (enabled by default)
 - You can also install tom into a user-local python package directory using  
   `python setup.py install --user`. For details, see the
   [distutils documentation](https://docs.python.org/3/install/index.html#alternate-installation).
@@ -50,17 +53,18 @@ Notes:
   + `make clean` -- clean up
   + `make build` -- call `python setup.py build_ext`
   + `make install` -- call `python setup.py install`
-  + `make debug_build_clang` -- set up some compile flags for debugging
+  + `make debug_build_clang` -- compile with flags for debugging (`-DTOM_DEBUG`)
+  + `make optimized_build_gcc5_on_OSX` -- compile the fastest version on my system with no bounds checking (`-DTOM_NCHECK`)
   + `make list` -- list all available targets
-- Also, the Makefile allows building the toolkit without pythons setuptools. For this
-  1. Modufy the first section in the Makefile to suit your local needs
+- Also, the Makefile allows building the toolkit without python's setuptools. For this
+  1. Modify the first section in the Makefile to suit your local needs
   2. run `make build_without_setuptools`
   3. From python, include the directory python/tom into the search path:
      ```python
 	import sys, os
 	sys.path.append(os.path.abspath('.')+"/python/tom")
 	import tom
-     ```
+    ```
 
 Using the toolkit
 -----------------
