@@ -6,6 +6,7 @@ swig/tomlib_wrap.cxx
 swig/tomlib_wrap.cpp
 swig/tomlib_wrap.h
 swig/tomlib.py
+swig/tomdoc.i
 python/tom/tomlib.py
 build
 dist

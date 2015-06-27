@@ -26,7 +26,7 @@ output will be written (the file will be clobbered).
 #   Johan Hake:  the include_function_definition feature
 #   Bill Spotz:  bug reports and testing.
 #   Sebastian Henschel:   Misc. enhancements.
-#
+#   Michael Thon:  Modified to my liking (June 2015)
 #
 
 from xml.dom import minidom
@@ -52,7 +52,6 @@ def my_open_write(dest):
 
 
 class Doxy2SWIG:
-
     """Converts Doxygen generated XML files into a file containing
     docstrings that can be used by SWIG-1.3.x that have support for
     feature("docstring").  Once the data is parsed it is stored in
@@ -95,6 +94,11 @@ class Doxy2SWIG:
 
         self.quiet = quiet
 
+        self.textwidth = 120
+        self.indent = 0
+        self.initial_indent = 0
+        self.listitem = ''
+
     def generate(self):
         """Parses the file set in the initialization.  The resulting
         data is stored in `self.pieces`.
@@ -116,14 +120,14 @@ class Doxy2SWIG:
 
     def parse_Text(self, node):
         txt = node.data
-        txt = txt.replace('\\', r'\\\\')
+        txt = txt.replace('\\', r'\\')
         txt = txt.replace('"', r'\"')
         # ignore pure whitespace
         m = self.space_re.match(txt)
         if m and len(m.group()) == len(txt):
             pass
         else:
-            self.add_text(textwrap.fill(txt, break_long_words=False))
+            self.add_text(txt)
 
     def parse_Element(self, node):
         """Parse an `ELEMENT_NODE`.  This calls specific
@@ -191,15 +195,38 @@ class Doxy2SWIG:
             if len(self.pieces) > npiece:
                 self.add_text('\n')
 
-    def space_parse(self, node):
-        self.add_text(' ')
+    def surround_parse(self, node, pre_char, post_char):
+        self.add_text(pre_char)
         self.generic_parse(node)
+        self.add_text(post_char)
+    
+    do_ref = generic_parse
+    do_formula = generic_parse
+    
+    def do_linebreak(self, node):
+        self.add_text('  ')
+    
+    def do_emphasis(self, node):
+        self.surround_parse(node, '_', '_')
 
-    do_ref = space_parse
-    do_emphasis = space_parse
-    do_bold = space_parse
-    do_computeroutput = space_parse
-    do_formula = space_parse
+    def do_bold(self, node):
+        self.surround_parse(node, '**', '**')
+    
+    def do_heading(self, node):
+        pieces, self.pieces = self.pieces, []
+        level = int(node.attributes['level'].value)
+        if level >= 3:
+            add_text(level * '#' + ' ')
+        self.generic_parse(node)
+        if level == 1:
+            self.add_text('\n' + len("".join(self.pieces).strip()) * '=')
+        elif _level == 2:
+            self.add_text('\n' + len("".join(self.pieces).strip()) * '-')
+        pieces.extend(self.pieces)
+        self.pieces = pieces
+
+    def do_computeroutput(self, node):
+        self.surround_parse(node, '`', '`')
 
     def do_compoundname(self, node):
         self.add_text('\n\n')
@@ -216,7 +243,7 @@ class Doxy2SWIG:
                      'detaileddescription', 'includes')
             first = self.get_specific_nodes(node, names)
             for n in names:
-                if first.has_key(n):
+                if n in first:
                     self.parse(first[n])
             self.add_text(['";', '\n'])
             for n in node.childNodes:
@@ -228,7 +255,7 @@ class Doxy2SWIG:
                 self.parse(n)
 
     def do_includes(self, node):
-        self.add_text('C++ includes: ')
+        self.add_text('\nC++ includes: ')
         self.generic_parse(node, pad=1)
 
     def do_parameterlist(self, node):
@@ -244,15 +271,74 @@ class Doxy2SWIG:
                 else:
                     text = val
                 break
-        self.add_text(['\n', '\n', text, ':', '\n'])
-        self.generic_parse(node, pad=1)
+        self.add_text([text, '\n', len(text) * '-', '\n'])
+        self.generic_parse(node)
 
-    def do_para(self, node):
+    def do_itemizedlist(self, node):
+        if self.pieces != []:
+            self.add_text('\n')
+        listitem = self.listitem
+        if self.listitem == '':
+            self.listitem = '*'
+        else:
+            self.listitem = '-'
+        self.generic_parse(node)
+        self.listitem = listitem
+
+    def do_orderedlist(self, node):
+        if self.pieces != []:
+            self.add_text('\n')
+        listitem = self.listitem
+        self.listitem = 0
+        self.generic_parse(node)
+        self.listitem = listitem
+
+    def do_listitem(self, node):
+        try:
+            self.listitem = int(self.listitem) + 1
+            item = str(self.listitem) + '. '
+        except:
+            item = str(self.listitem) + ' '
+        self.parse_and_shift(node, item)
+
+    def do_parameterdescription(self, node):
         self.add_text('\n')
-        self.generic_parse(node, pad=1)
+        self.parse_and_shift(node, '    ')
+
+    def end_line(self):
+        """Makes sure the last symbol of the current pieces is '\n' if not empty"""
+        if self.pieces != [] and self.pieces[-1] != '' and self.pieces[-1][-1] != '\n':
+            self.pieces[-1] = self.pieces[-1] + '\n'
+    
+    def textwrap_para(self, pieces, width):
+        """Wrap para of text pieces to a given width, but preserve newlines."""
+        ret = []
+        for i in "".join(pieces).split('\n'):
+            ret.append(textwrap.fill(i, width=width, break_long_words=False))
+        return ["\n".join(ret)]
+
+    def parse_and_shift(self, node, item):
+        pieces, self.pieces = self.pieces, []
+        self.indent += len(item)
+        self.generic_parse(node)
+        lines = "".join(self.pieces).split('\n')
+        for i in range(0,len(lines)):
+            if lines[i] != '':
+                lines[i] = len(item) * ' ' + lines[i]
+        pieces.extend(item + "\n".join(lines)[len(item):])
+        self.pieces = pieces
+        self.indent -= len(item)
+    
+    def do_para(self, node):
+        pieces, self.pieces = self.pieces, []
+        if pieces != []:
+            self.add_text('\n')
+        self.generic_parse(node)
+        pieces.extend(self.textwrap_para(self.pieces, self.textwidth - self.indent))
+        self.pieces = pieces
+        self.end_line()
 
     def do_parametername(self, node):
-        self.add_text('\n')
         try:
             data = node.firstChild.data
         except AttributeError:  # perhaps a <ref> tag in it
@@ -266,10 +352,10 @@ class Doxy2SWIG:
         self.generic_parse(node, pad=1)
 
     def do_detaileddescription(self, node):
-        self.generic_parse(node, pad=1)
+        self.generic_parse(node)
 
     def do_briefdescription(self, node):
-        self.generic_parse(node, pad=1)
+        self.generic_parse(node)
 
     def do_memberdef(self, node):
         prot = node.attributes['prot'].value
@@ -354,8 +440,10 @@ class Doxy2SWIG:
             self.generic_parse(node)
         elif kind == 'see':
             self.add_text('\n')
-            self.add_text('See: ')
-            self.generic_parse(node)
+            self.parse_and_shift(node, 'See: ')
+        elif kind == 'return':
+            self.add_text(['\n', 'Returns:', '\n', '--------', '\n'])
+            self.parse_and_shift(node, '     ')
         else:
             self.generic_parse(node)
 
@@ -380,51 +468,13 @@ class Doxy2SWIG:
                 print("parsing file: %s" % fname)
             p = Doxy2SWIG(fname, self.include_function_definition, self.quiet)
             p.generate()
-            self.pieces.extend(self.clean_pieces(p.pieces))
+            self.pieces.extend(p.pieces)
 
     def write(self, fname):
         o = my_open_write(fname)
-        if self.multi:
-            o.write("".join(self.pieces))
-        else:
-            o.write("".join(self.clean_pieces(self.pieces)))
+        o.write("".join(self.pieces))
+        o.write('\n')
         o.close()
-
-    def clean_pieces(self, pieces):
-        """Cleans the list of strings given as `pieces`.  It replaces
-        multiple newlines by a maximum of 2 and returns a new list.
-        It also wraps the paragraphs nicely.
-
-        """
-        ret = []
-        count = 0
-        for i in pieces:
-            if i == '\n':
-                count = count + 1
-            else:
-                if i == '";':
-                    if count:
-                        ret.append('\n')
-                elif count > 2:
-                    ret.append('\n\n')
-                elif count:
-                    ret.append('\n' * count)
-                count = 0
-                ret.append(i)
-
-        _data = "".join(ret)
-        ret = []
-        for i in _data.split('\n\n'):
-            if i == 'Parameters:' or i == 'Exceptions:' or i == 'Returns:':
-                ret.extend([i, '\n' + '-' * len(i), '\n\n'])
-            elif i.find('// File:') > -1:  # leave comments alone.
-                ret.extend([i, '\n'])
-            else:
-                _tmp = textwrap.fill(i.strip(), break_long_words=False)
-                _tmp = self.lead_spc.sub(r'\1"\2', _tmp)
-                ret.extend([_tmp, '\n\n'])
-        return ret
-
 
 def convert(input, output, include_function_definition=True, quiet=False):
     p = Doxy2SWIG(input, include_function_definition, quiet)
