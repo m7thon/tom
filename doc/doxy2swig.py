@@ -50,7 +50,6 @@ def my_open_write(dest):
     else:
         return open(dest, 'w')
 
-
 class Doxy2SWIG:
     """Converts Doxygen generated XML files into a file containing
     docstrings that can be used by SWIG-1.3.x that have support for
@@ -86,17 +85,12 @@ class Doxy2SWIG:
                         'references', 'referencedby', 'location',
                         'collaborationgraph', 'reimplements',
                         'reimplementedby', 'derivedcompoundref',
-                        'basecompoundref']
+                        'basecompoundref', 'argsstring']
         #self.generics = []
         self.include_function_definition = include_function_definition
-        if not include_function_definition:
-            self.ignores.append('argsstring')
-
         self.quiet = quiet
-
-        self.textwidth = 120
+        self.textwidth = 80
         self.indent = 0
-        self.initial_indent = 0
         self.listitem = ''
 
     def generate(self):
@@ -159,6 +153,17 @@ class Doxy2SWIG:
         else:
             self.pieces.append(value)
 
+    def get_specific_subnodes(self, node, name, recursive=False):
+        """Given a node and a name, return a list of subnodes matching the
+        name. Search recursively if recursive is set to True.
+        """
+        children = [x for x in node.childNodes if x.nodeType == x.ELEMENT_NODE]
+        ret = [x for x in children if x.tagName == name]
+        if recursive:
+            for x in children:
+                ret.extend(self.get_specific_subnodes(x, name))
+        return ret
+
     def get_specific_nodes(self, node, names):
         """Given a node and a sequence of strings in `names`, return a
         dictionary containing the names as keys and child
@@ -215,13 +220,15 @@ class Doxy2SWIG:
     def do_heading(self, node):
         pieces, self.pieces = self.pieces, []
         level = int(node.attributes['level'].value)
-        if level >= 3:
-            add_text(level * '#' + ' ')
         self.generic_parse(node)
         if level == 1:
-            self.add_text('\n' + len("".join(self.pieces).strip()) * '=')
-        elif _level == 2:
-            self.add_text('\n' + len("".join(self.pieces).strip()) * '-')
+            # self.pieces.insert(0,'\n')
+            self.add_text(['\n', len(''.join(self.pieces).strip()) * '='])
+        elif level == 2:
+            self.add_text(['\n', len(''.join(self.pieces).strip()) * '-'])
+        elif level >= 3:
+            self.pieces.insert(0, level * '#' + ' ')
+        self.add_text('')
         pieces.extend(self.pieces)
         self.pieces = pieces
 
@@ -241,9 +248,26 @@ class Doxy2SWIG:
                 return
             names = ('compoundname', 'briefdescription',
                      'detaileddescription', 'includes')
+            first = self.get_specific_nodes(node, ['compoundname'])
+            if 'compoundname' in first:
+                self.add_text('\n\n')
+                classname = first['compoundname'].firstChild.data
+                self.add_text('%%feature("docstring") %s "\n' % classname)
+            constructor_nodes = []
+            for n in self.get_specific_subnodes(node, 'memberdef', recursive=True):
+                defn = self.get_specific_subnodes(n, 'definition')
+                if defn and defn[0].firstChild.data == classname + '::' + classname:
+                    constructor_nodes.append(n)
+            for n in constructor_nodes:
+                defn_str = self.get_specific_subnodes(n, 'definition')[0].firstChild.data
+                argsstring = self.get_specific_subnodes(n, 'argsstring')
+                if argsstring:
+                    defn_str = defn_str + argsstring[0].firstChild.data
+                self.add_text([defn_str[len(classname)+2:], '\n'])
+
             first = self.get_specific_nodes(node, names)
             for n in names:
-                if n in first:
+                if n in first and n != 'compoundname':
                     self.parse(first[n])
             self.add_text(['";', '\n'])
             for n in node.childNodes:
@@ -257,22 +281,6 @@ class Doxy2SWIG:
     def do_includes(self, node):
         self.add_text('\nC++ includes: ')
         self.generic_parse(node, pad=1)
-
-    def do_parameterlist(self, node):
-        text = 'unknown'
-        for key, val in node.attributes.items():
-            if key == 'kind':
-                if val == 'param':
-                    text = 'Parameters'
-                elif val == 'exception':
-                    text = 'Exceptions'
-                elif val == 'retval':
-                    text = 'Returns'
-                else:
-                    text = val
-                break
-        self.add_text([text, '\n', len(text) * '-', '\n'])
-        self.generic_parse(node)
 
     def do_itemizedlist(self, node):
         if self.pieces != []:
@@ -300,53 +308,97 @@ class Doxy2SWIG:
         except:
             item = str(self.listitem) + ' '
         self.parse_and_shift(node, item)
-
-    def do_parameterdescription(self, node):
-        self.add_text('\n')
-        self.parse_and_shift(node, '    ')
-
-    def end_line(self):
-        """Makes sure the last symbol of the current pieces is '\n' if not empty"""
-        if self.pieces != [] and self.pieces[-1] != '' and self.pieces[-1][-1] != '\n':
-            self.pieces[-1] = self.pieces[-1] + '\n'
     
-    def textwrap_para(self, pieces, width):
-        """Wrap para of text pieces to a given width, but preserve newlines."""
-        ret = []
-        for i in "".join(pieces).split('\n'):
-            ret.append(textwrap.fill(i, width=width, break_long_words=False))
-        return ["\n".join(ret)]
-
-    def parse_and_shift(self, node, item):
-        pieces, self.pieces = self.pieces, []
+    def parse_and_shift(self, node, item, indent = ''):
+        """Adds the following to self.pieces:
+        <item><indent><parsed and wrapped line 1>
+        <shift><parsed and wrapped line 2>
+        ...
+        <shift><parsed and wrapped line n>
+        where shift is just ' ' * len(item)"""
+        pieces, self.pieces = self.pieces, [indent, '']
         self.indent += len(item)
         self.generic_parse(node)
-        lines = "".join(self.pieces).split('\n')
-        for i in range(0,len(lines)):
+        lines = ''.join(self.pieces).split('\n')
+        for i in range(len(lines)):
             if lines[i] != '':
                 lines[i] = len(item) * ' ' + lines[i]
-        pieces.extend(item + "\n".join(lines)[len(item):])
+        pieces.append(item + '\n'.join(lines)[len(item):])
         self.pieces = pieces
         self.indent -= len(item)
     
-    def do_para(self, node):
+    def textwrap_para(self, dont_end_with_newline = True):
+        """Wrap self.pieces to a width of self.textwidth - self.indent, but preserve
+        newlines and "markdown newlines"."""
+        width = self.textwidth - self.indent
         pieces, self.pieces = self.pieces, []
-        if pieces != []:
-            self.add_text('\n')
-        self.generic_parse(node)
-        pieces.extend(self.textwrap_para(self.pieces, self.textwidth - self.indent))
-        self.pieces = pieces
-        self.end_line()
+        for line in ''.join(pieces).splitlines():
+            keep_markdown_newline = line[-2:] == '  '
+            wrapped_line = textwrap.wrap(line, width=width, break_long_words=False)
+            if wrapped_line == []:
+                wrapped_line = ['']
+            if keep_markdown_newline:
+                wrapped_line[-1] = wrapped_line[-1] + '  '
+            for wl in wrapped_line:
+                self.pieces.extend([wl, '\n'])
+        if dont_end_with_newline:
+            self.pieces = self.pieces[:-1]
+        else:
+            self.pieces = self.pieces[:-1] + ['  \n']
 
+    def do_para(self, node):
+        if self.pieces[-1:] == ['']:
+            pieces = []
+        else:
+            if self.pieces != []:
+                self.add_text('\n')
+            pieces, self.pieces = self.pieces, []
+        self.generic_parse(node)
+        self.textwrap_para(self.pieces[-1:] == [''])
+        pieces.extend(self.pieces)
+        self.pieces = pieces
+
+    def do_parameterlist(self, node):
+        if self.pieces != []:
+            self.add_text('\n')
+        text = 'unknown'
+        for key, val in node.attributes.items():
+            if key == 'kind':
+                if val == 'param':
+                    text = 'Parameters'
+                elif val == 'exception':
+                    text = 'Exceptions'
+                elif val == 'retval':
+                    text = 'Returns'
+                else:
+                    text = val
+                break
+        self.add_text([text, '\n', len(text) * '-', '\n'])
+        self.generic_parse(node)
+
+    def do_parameteritem(self, node):
+        pieces, self.pieces = self.pieces, []
+        self.generic_parse(node)
+        pieces.extend(self.pieces)
+        self.pieces = pieces
+
+    def do_parameternamelist(self, node):
+        self.generic_parse(node)
+        self.add_text(' : ')
+    
     def do_parametername(self, node):
+        if self.pieces != []:
+            self.add_text(', ')
         try:
             data = node.firstChild.data
         except AttributeError:  # perhaps a <ref> tag in it
             data = node.firstChild.firstChild.data
-        if data.find('Exception') != -1:
-            self.add_text(data)
-        else:
-            self.add_text("%s: " % data)
+        self.add_text(data)
+
+    def do_parameterdescription(self, node):
+        names = ''.join(self.pieces)
+        self.pieces = []
+        self.parse_and_shift(node, '% 4s' % names[:4], names[4:])
 
     def do_parameterdefinition(self, node):
         self.generic_parse(node, pad=1)
@@ -367,18 +419,20 @@ class Doxy2SWIG:
 
         if prot == 'public':
             first = self.get_specific_nodes(node, ('definition', 'name'))
+            argsstring = self.get_specific_nodes(node, ('argsstring'))
             name = first['name'].firstChild.data
             if name[:8] == 'operator':  # Don't handle operators yet.
                 return
 
-            if not 'definition' in first or \
-                   kind in ['variable', 'typedef']:
+            if not 'definition' in first or kind in ['variable', 'typedef']:
                 return
 
             if self.include_function_definition:
                 defn = first['definition'].firstChild.data
+                if 'argsstring' in argsstring:
+                    defn = defn + argsstring['argsstring'].firstChild.data + '  \n\n'
             else:
-                defn = ""
+                defn = ''
             self.add_text('\n')
             self.add_text('%feature("docstring") ')
 
@@ -397,7 +451,7 @@ class Doxy2SWIG:
                 anc_node = anc.getElementsByTagName('compoundname')
                 cname = anc_node[0].firstChild.data
                 self.add_text(' %s::%s "\n%s' % (cname, name, defn))
-
+            self.add_text('')
             for n in node.childNodes:
                 if n not in first.values():
                     self.parse(n)
@@ -434,16 +488,16 @@ class Doxy2SWIG:
     def do_simplesect(self, node):
         kind = node.attributes['kind'].value
         if kind in ('date', 'rcs', 'version'):
-            pass
-        elif kind == 'warning':
-            self.add_text(['\n', 'WARNING: '])
-            self.generic_parse(node)
-        elif kind == 'see':
+            return
+        if self.pieces != []:
             self.add_text('\n')
+        if kind == 'warning':
+            self.parse_and_shift(node, 'WARNING: ')
+        elif kind == 'see':
             self.parse_and_shift(node, 'See: ')
         elif kind == 'return':
-            self.add_text(['\n', 'Returns:', '\n', '--------', '\n'])
-            self.parse_and_shift(node, '     ')
+            self.add_text(['Returns:', '\n', '--------', '\n'])
+            self.parse_and_shift(node, '    ')
         else:
             self.generic_parse(node)
 
@@ -472,7 +526,7 @@ class Doxy2SWIG:
 
     def write(self, fname):
         o = my_open_write(fname)
-        o.write("".join(self.pieces))
+        o.write(''.join(self.pieces))
         o.write('\n')
         o.close()
 
