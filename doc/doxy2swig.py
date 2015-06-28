@@ -304,6 +304,59 @@ class Doxy2SWIG:
                 self.pieces = pieces
                 self.indent -= 4
 
+    def get_memberdef_nodes_and_signatures(self, node, kind):
+        sig_dict = {}
+        sig_prefix = ''
+        if kind in ('file', 'namespace'):
+            ns_node = node.getElementsByTagName('innernamespace')
+            if not ns_node and kind == 'namespace':
+                ns_node = node.getElementsByTagName('compoundname')
+            if ns_node:
+                sig_prefix = self.get_Text(ns_node[0]) + '::'
+        elif kind in ('class', 'struct'):
+            # Get the full function name.
+            cn_node = node.getElementsByTagName('compoundname')
+            sig_prefix = self.get_Text(cn_node[0]) + '::'
+
+        md_nodes = self.get_specific_subnodes(node, 'memberdef', recursive=2)
+        for n in md_nodes:
+            if n.attributes['prot'].value != 'public':
+                continue
+            if n.attributes['kind'].value in ['variable', 'typedef']:
+                continue
+            if not self.get_specific_subnodes(n, 'definition'):
+                continue
+            name = self.get_Text(self.get_specific_subnodes(n, 'name')[0])
+            if name[:8] == 'operator':
+                continue
+            sig = sig_prefix + name
+            if sig in sig_dict:
+                sig_dict[sig].append(n)
+            else:
+                sig_dict[sig] = [n]
+        return sig_dict
+            
+    def handle_overloaded_memberdef(self, signature, memberdef_nodes):
+        is_overloaded = len(memberdef_nodes) > 1
+        self.add_text(['\n', '%feature("docstring") ', signature, ' "', '\n'])
+        if self.include_function_definition:
+            for n in memberdef_nodes:
+                self.add_line_with_subsequent_indent(self.get_function_definition(n))
+        self.add_text('\n')
+        if is_overloaded:
+            self.add_text(['Overloaded function', '\n',
+                           '-------------------', '\n'])
+        for n in memberdef_nodes:
+            if is_overloaded:
+                self.add_line_with_subsequent_indent('### ' + self.get_function_definition(n))
+                self.add_text('')
+            for cn in n.childNodes:
+                if cn not in self.get_specific_nodes(n, ('definition', 'name')).values():
+                    self.parse(cn)
+            if is_overloaded:
+                self.add_text(['\n', ''])
+        self.add_text(['";', '\n'])
+
     def do_compounddef(self, node):
         kind = node.attributes['kind'].value
         if kind in ('class', 'struct'):
@@ -319,9 +372,10 @@ class Doxy2SWIG:
             self.add_text('%%feature("docstring") %s "\n' % classdefn)
             constructor_nodes = []
             for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
-                defn = self.get_specific_subnodes(n, 'definition')
-                if defn and self.get_Text(defn[0]) == classdefn + '::' + classname:
-                    constructor_nodes.append(n)
+                if n.attributes['prot'].value == 'public':
+                    defn = self.get_specific_subnodes(n, 'definition')
+                    if defn and self.get_Text(defn[0]) == classdefn + '::' + classname:
+                        constructor_nodes.append(n)
             for n in constructor_nodes:
                 defn_str = classname
                 argsstring = self.get_specific_subnodes(n, 'argsstring')
@@ -348,6 +402,12 @@ class Doxy2SWIG:
             nodes = node.getElementsByTagName('sectiondef')
             for n in nodes:
                 self.parse(n)
+        # now handle possibly overloaded member functions, leaving the above legacy code
+        # untouched. Simply add additional %feature("docstring") directives and rely on the
+        # fact that swig treats newer ones as overwriting previous ones.
+        md_nodes = self.get_memberdef_nodes_and_signatures(node, kind)
+        for sig in md_nodes:
+            self.handle_overloaded_memberdef(sig, md_nodes[sig])
 
     def do_includes(self, node):
         self.add_text('\nC++ includes: ')
@@ -496,6 +556,19 @@ class Doxy2SWIG:
     def do_briefdescription(self, node):
         self.generic_parse(node)
 
+    def get_function_definition(self, node):
+        name = self.get_Text(self.get_specific_subnodes(node, 'name')[0])
+        argsstring = self.get_specific_subnodes(node, 'argsstring')
+        try:
+            argsstring = self.get_Text(argsstring[0])
+        except:
+            argsstring = ''
+        type = self.get_type(node)
+        function_definition = name + argsstring
+        if type != '' and type != 'void':
+            function_definition = function_definition + ' -> ' + type
+        return function_definition
+
     def do_memberdef(self, node):
         prot = node.attributes['prot'].value
         id = node.attributes['id'].value
@@ -507,21 +580,12 @@ class Doxy2SWIG:
         if prot != 'public':
             return
         first = self.get_specific_nodes(node, ('definition', 'name'))
-        argsstring = self.get_specific_subnodes(node, 'argsstring')
-        if argsstring:
-            argsstring = self.get_Text(argsstring[0])
-        else:
-            argsstring = ''
         name = self.get_Text(first['name'])
-        type = self.get_type(node)
         if name[:8] == 'operator':  # Don't handle operators yet.
             return
         if not 'definition' in first or kind in ['variable', 'typedef']:
             return
 
-        function_definition = name + argsstring
-        if type != '' and type != 'void':
-            function_definition = function_definition + ' -> ' + type
         self.add_text('\n')
         self.add_text('%feature("docstring") ')
 
@@ -542,7 +606,7 @@ class Doxy2SWIG:
             self.add_text(' %s::%s "\n' % (cname, name))
 
         if self.include_function_definition:
-            self.add_line_with_subsequent_indent(function_definition)
+            self.add_line_with_subsequent_indent(self.get_function_definition(node))
             self.add_text('\n')
         self.add_text('')
         for n in node.childNodes:
