@@ -257,14 +257,15 @@ class Doxy2SWIG:
     def make_constructor_list(self, constructor_nodes, classname):
         if constructor_nodes == []:
             return
-        self.add_text(['\n', 'Constructors','\n','============'])
+        self.add_text(['\n', 'Constructors',
+                       '\n', '------------'])
         for n in constructor_nodes:
             defn_str = classname
             argsstring = self.get_specific_subnodes(n, 'argsstring')
             if argsstring:
                 defn_str = defn_str + self.get_Text(argsstring[0])
             self.add_text('\n')
-            self.add_line_with_subsequent_indent(defn_str)
+            self.add_line_with_subsequent_indent('* ' + defn_str)
             pieces, self.pieces = self.pieces, ['']
             self.indent += 4
             for sn in n.childNodes:
@@ -285,11 +286,12 @@ class Doxy2SWIG:
                 have_attributes = True
         if not have_attributes:
             return
-        self.add_text(['\n', 'Attributes','\n','=========='])
+        self.add_text(['\n', 'Attributes',
+                       '\n', '----------'])
         for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
             if n.attributes['kind'].value == 'variable' and n.attributes['prot'].value == 'public':
                 name = self.get_Text(self.get_specific_subnodes(n, 'name')[0])
-                self.add_text(['\n', name, ' : '])
+                self.add_text(['\n* ', name, ' : '])
                 self.add_text(self.get_type(n))
                 self.add_text(['\n', ''])
                 pieces, self.pieces = self.pieces, ['']
@@ -342,17 +344,25 @@ class Doxy2SWIG:
         if self.include_function_definition:
             for n in memberdef_nodes:
                 self.add_line_with_subsequent_indent(self.get_function_definition(n))
-        self.add_text('\n')
         if is_overloaded:
-            self.add_text(['Overloaded function', '\n',
+            self.add_text(['\n',
+                           'Overloaded function', '\n',
                            '-------------------', '\n'])
         for n in memberdef_nodes:
             if is_overloaded:
-                self.add_line_with_subsequent_indent('### ' + self.get_function_definition(n))
-                self.add_text('')
-            for cn in n.childNodes:
-                if cn not in self.get_specific_nodes(n, ('definition', 'name')).values():
-                    self.parse(cn)
+                self.add_line_with_subsequent_indent('* ' + self.get_function_definition(n))
+                pieces, self.pieces = self.pieces, ['']
+                self.indent += 4
+                for sn in n.childNodes:
+                    if sn not in self.get_specific_nodes(n, ('definition', 'name')).values():
+                        self.parse(sn)
+                lines = ''.join(self.pieces).split('\n')
+                for i in range(len(lines)):
+                    if lines[i] != '':
+                        lines[i] = 4 * ' ' + lines[i]
+                pieces.append('\n'.join(lines))
+                self.pieces = pieces
+                self.indent -= 4
             if is_overloaded:
                 self.add_text(['\n', ''])
         self.add_text(['";', '\n'])
@@ -520,11 +530,12 @@ class Doxy2SWIG:
                 else:
                     text = val
                 break
-        self.add_text([text, '\n', len(text) * '-', '\n'])
+        self.add_text([text, ':\n'])
         self.generic_parse(node)
 
     def do_parameteritem(self, node):
         pieces, self.pieces = self.pieces, []
+        self.add_text(['* ', ''])
         self.generic_parse(node)
         pieces.extend(self.pieces)
         self.pieces = pieces
@@ -534,7 +545,7 @@ class Doxy2SWIG:
         self.add_text(' : ')
     
     def do_parametername(self, node):
-        if self.pieces != []:
+        if self.pieces != [] and self.pieces != ['* ', '']:
             self.add_text(', ')
         try:
             data = self.get_Text(node)
@@ -653,8 +664,8 @@ class Doxy2SWIG:
         elif kind == 'see':
             self.shifted_parse(node, 'See: ')
         elif kind == 'return':
-            self.add_text(['Returns:', '\n', '--------', '\n'])
-            self.shifted_parse(node, '    ')
+            self.add_text(['Returns:', '\n', ''])
+            self.generic_parse(node)
         else:
             self.generic_parse(node)
 
