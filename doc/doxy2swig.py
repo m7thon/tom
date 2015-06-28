@@ -235,10 +235,26 @@ class Doxy2SWIG:
     def do_computeroutput(self, node):
         self.surround_parse(node, '`', '`')
 
-    def do_compoundname(self, node):
-        self.add_text('\n\n')
-        data = node.firstChild.data
-        self.add_text('%%feature("docstring") %s "\n' % data)
+    def make_constructor_list(self, constructor_nodes, classname):
+        self.add_text(['\n', 'Constructors','\n','============'])
+        for n in constructor_nodes:
+            defn_str = self.get_specific_subnodes(n, 'definition')[0].firstChild.data
+            argsstring = self.get_specific_subnodes(n, 'argsstring')
+            if argsstring:
+                defn_str = defn_str + argsstring[0].firstChild.data
+            self.add_text(['\n', defn_str[len(classname)+2:], '\n'])
+            pieces, self.pieces = self.pieces, ['']
+            self.indent += 4
+            for sn in n.childNodes:
+                if sn not in self.get_specific_nodes(n, ('definition', 'name')).values():
+                    self.parse(sn)
+            lines = ''.join(self.pieces).split('\n')
+            for i in range(len(lines)):
+                if lines[i] != '':
+                    lines[i] = 4 * ' ' + lines[i]
+            pieces.append('\n'.join(lines))
+            self.pieces = pieces
+            self.indent -= 4
 
     def do_compounddef(self, node):
         kind = node.attributes['kind'].value
@@ -246,12 +262,12 @@ class Doxy2SWIG:
             prot = node.attributes['prot'].value
             if prot != 'public':
                 return
-            names = ('compoundname', 'briefdescription',
+            names = ('briefdescription',
                      'detaileddescription', 'includes')
-            first = self.get_specific_nodes(node, ['compoundname'])
-            if 'compoundname' in first:
+            subnode = self.get_specific_subnodes(node, 'compoundname')
+            if subnode:
                 self.add_text('\n\n')
-                classname = first['compoundname'].firstChild.data
+                classname = subnode[0].firstChild.data
                 self.add_text('%%feature("docstring") %s "\n' % classname)
             constructor_nodes = []
             for n in self.get_specific_subnodes(node, 'memberdef', recursive=True):
@@ -266,12 +282,19 @@ class Doxy2SWIG:
                 self.add_text([defn_str[len(classname)+2:], '\n'])
 
             first = self.get_specific_nodes(node, names)
-            for n in names:
+            for n in ('briefdescription','detaileddescription'):
                 if n in first and n != 'compoundname':
                     self.parse(first[n])
+
+            self.make_constructor_list(constructor_nodes, classname)
+
+            subnode = self.get_specific_subnodes(node, 'includes')
+            if subnode:
+                self.parse(subnode[0])
             self.add_text(['";', '\n'])
             for n in node.childNodes:
-                if n not in first.values():
+                names = ('compoundname', 'briefdescription','detaileddescription', 'includes')
+                if n not in self.get_specific_nodes(node,names).values():
                     self.parse(n)
         elif kind in ('file', 'namespace'):
             nodes = node.getElementsByTagName('sectiondef')
@@ -360,7 +383,10 @@ class Doxy2SWIG:
 
     def do_parameterlist(self, node):
         if self.pieces != []:
-            self.add_text('\n')
+            if self.pieces[-1][-1:] == '\n':
+                self.add_text('\n')
+            else:
+                self.add_text('  \n\n')
         text = 'unknown'
         for key, val in node.attributes.items():
             if key == 'kind':
