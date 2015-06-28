@@ -112,6 +112,16 @@ class Doxy2SWIG:
     def parse_Document(self, node):
         self.parse(node.documentElement)
 
+    def get_Text(self, node):
+        txt = node.firstChild.data
+        txt = txt.replace('\\', r'\\')
+        txt = txt.replace('"', r'\"')
+        m = self.space_re.match(txt)
+        if m and len(m.group()) == len(txt):
+            return ''
+        else:
+            return txt
+
     def parse_Text(self, node):
         txt = node.data
         txt = txt.replace('\\', r'\\')
@@ -200,10 +210,14 @@ class Doxy2SWIG:
             if len(self.pieces) > npiece:
                 self.add_text('\n')
 
-    def type_parse(self, node):
+    def get_type(self, node):
+        pieces, self.pieces = self.pieces, []
         type = self.get_specific_subnodes(node, 'type')
         if type:
             self.generic_parse(type[0])
+        type_str = ''.join(self.pieces)
+        self.pieces = pieces
+        return type_str
 
     def surround_parse(self, node, pre_char, post_char):
         self.add_text(pre_char)
@@ -241,13 +255,16 @@ class Doxy2SWIG:
         self.surround_parse(node, '`', '`')
 
     def make_constructor_list(self, constructor_nodes, classname):
+        if constructor_nodes == []:
+            return
         self.add_text(['\n', 'Constructors','\n','============'])
         for n in constructor_nodes:
-            defn_str = self.get_specific_subnodes(n, 'definition')[0].firstChild.data
+            defn_str = classname
             argsstring = self.get_specific_subnodes(n, 'argsstring')
             if argsstring:
-                defn_str = defn_str + argsstring[0].firstChild.data
-            self.add_text(['\n', defn_str[len(classname)+2:], '\n'])
+                defn_str = defn_str + self.get_Text(argsstring[0])
+            self.add_text('\n')
+            self.add_line_with_subsequent_indent(defn_str)
             pieces, self.pieces = self.pieces, ['']
             self.indent += 4
             for sn in n.childNodes:
@@ -262,12 +279,18 @@ class Doxy2SWIG:
             self.indent -= 4
 
     def make_attribute_list(self, node):
+        have_attributes = False
+        for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
+            if n.attributes['kind'].value == 'variable' and n.attributes['prot'].value == 'public':
+                have_attributes = True
+        if not have_attributes:
+            return
         self.add_text(['\n', 'Attributes','\n','=========='])
         for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
             if n.attributes['kind'].value == 'variable' and n.attributes['prot'].value == 'public':
-                name = self.get_specific_subnodes(n, 'name')[0].firstChild.data
+                name = self.get_Text(self.get_specific_subnodes(n, 'name')[0])
                 self.add_text(['\n', name, ' : '])
-                self.type_parse(n)
+                self.add_text(self.get_type(n))
                 self.add_text(['\n', ''])
                 pieces, self.pieces = self.pieces, ['']
                 self.indent += 4
@@ -290,21 +313,21 @@ class Doxy2SWIG:
             names = ('briefdescription',
                      'detaileddescription', 'includes')
             subnode = self.get_specific_subnodes(node, 'compoundname')
-            if subnode:
-                self.add_text('\n\n')
-                classname = subnode[0].firstChild.data
-                self.add_text('%%feature("docstring") %s "\n' % classname)
+            self.add_text('\n\n')
+            classdefn = self.get_Text(subnode[0])
+            classname = classdefn.split('::')[-1]
+            self.add_text('%%feature("docstring") %s "\n' % classdefn)
             constructor_nodes = []
             for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
                 defn = self.get_specific_subnodes(n, 'definition')
-                if defn and defn[0].firstChild.data == classname + '::' + classname:
+                if defn and self.get_Text(defn[0]) == classdefn + '::' + classname:
                     constructor_nodes.append(n)
             for n in constructor_nodes:
-                defn_str = self.get_specific_subnodes(n, 'definition')[0].firstChild.data
+                defn_str = classname
                 argsstring = self.get_specific_subnodes(n, 'argsstring')
                 if argsstring:
-                    defn_str = defn_str + argsstring[0].firstChild.data
-                self.add_text([defn_str[len(classname)+2:], '\n'])
+                    defn_str = defn_str + self.get_Text(argsstring[0])
+                self.add_line_with_subsequent_indent(defn_str)
 
             first = self.get_specific_nodes(node, names)
             for n in ('briefdescription','detaileddescription'):
@@ -374,7 +397,20 @@ class Doxy2SWIG:
         pieces.append(item + '\n'.join(lines)[len(item):])
         self.pieces = pieces
         self.indent -= len(item)
-    
+
+    def add_line_with_subsequent_indent(self, value, indent=4):
+        if isinstance(value, (list, tuple)):
+            line = ''.join(value)
+        else:
+            line = value
+        line = line.strip()
+        width = self.textwidth-self.indent-indent
+        wrapped_lines = textwrap.wrap(line[indent:], width=width)
+        for i in range(len(wrapped_lines)):
+            if wrapped_lines[i] != '':
+                wrapped_lines[i] = indent * ' ' + wrapped_lines[i]
+        self.pieces.append(line[:indent] + '\n'.join(wrapped_lines)[indent:] + '  \n')
+
     def textwrap_para(self, dont_end_with_newline = True):
         """Wrap self.pieces to a width of self.textwidth - self.indent, but preserve
         newlines and "markdown newlines"."""
@@ -441,9 +477,9 @@ class Doxy2SWIG:
         if self.pieces != []:
             self.add_text(', ')
         try:
-            data = node.firstChild.data
+            data = self.get_Text(node)
         except AttributeError:  # perhaps a <ref> tag in it
-            data = node.firstChild.firstChild.data
+            data = self.get_Text(node.firstChild)
         self.add_text(data)
 
     def do_parameterdescription(self, node):
@@ -468,48 +504,54 @@ class Doxy2SWIG:
         compdef = tmp.getElementsByTagName('compounddef')[0]
         cdef_kind = compdef.attributes['kind'].value
 
-        if prot == 'public':
-            first = self.get_specific_nodes(node, ('definition', 'name'))
-            argsstring = self.get_specific_nodes(node, ('argsstring'))
-            name = first['name'].firstChild.data
-            if name[:8] == 'operator':  # Don't handle operators yet.
-                return
+        if prot != 'public':
+            return
+        first = self.get_specific_nodes(node, ('definition', 'name'))
+        argsstring = self.get_specific_subnodes(node, 'argsstring')
+        if argsstring:
+            argsstring = self.get_Text(argsstring[0])
+        else:
+            argsstring = ''
+        name = self.get_Text(first['name'])
+        type = self.get_type(node)
+        if name[:8] == 'operator':  # Don't handle operators yet.
+            return
+        if not 'definition' in first or kind in ['variable', 'typedef']:
+            return
 
-            if not 'definition' in first or kind in ['variable', 'typedef']:
-                return
+        function_definition = name + argsstring
+        if type != '' and type != 'void':
+            function_definition = function_definition + ' -> ' + type
+        self.add_text('\n')
+        self.add_text('%feature("docstring") ')
 
-            if self.include_function_definition:
-                defn = first['definition'].firstChild.data
-                if 'argsstring' in argsstring:
-                    defn = defn + argsstring['argsstring'].firstChild.data + '  \n\n'
+        anc = node.parentNode.parentNode
+        if cdef_kind in ('file', 'namespace'):
+            ns_node = anc.getElementsByTagName('innernamespace')
+            if not ns_node and cdef_kind == 'namespace':
+                ns_node = anc.getElementsByTagName('compoundname')
+            if ns_node:
+                ns = self.get_Text(ns_node[0])
+                self.add_text(' %s::%s "\n' % (ns, name))
             else:
-                defn = ''
-            self.add_text('\n')
-            self.add_text('%feature("docstring") ')
+                self.add_text(' %s "\n' % (name))
+        elif cdef_kind in ('class', 'struct'):
+            # Get the full function name.
+            anc_node = anc.getElementsByTagName('compoundname')
+            cname = self.get_Text(anc_node[0])
+            self.add_text(' %s::%s "\n' % (cname, name))
 
-            anc = node.parentNode.parentNode
-            if cdef_kind in ('file', 'namespace'):
-                ns_node = anc.getElementsByTagName('innernamespace')
-                if not ns_node and cdef_kind == 'namespace':
-                    ns_node = anc.getElementsByTagName('compoundname')
-                if ns_node:
-                    ns = ns_node[0].firstChild.data
-                    self.add_text(' %s::%s "\n%s' % (ns, name, defn))
-                else:
-                    self.add_text(' %s "\n%s' % (name, defn))
-            elif cdef_kind in ('class', 'struct'):
-                # Get the full function name.
-                anc_node = anc.getElementsByTagName('compoundname')
-                cname = anc_node[0].firstChild.data
-                self.add_text(' %s::%s "\n%s' % (cname, name, defn))
-            self.add_text('')
-            for n in node.childNodes:
-                if n not in first.values():
-                    self.parse(n)
-            self.add_text(['";', '\n'])
+        if self.include_function_definition:
+            self.add_line_with_subsequent_indent(function_definition)
+            self.add_text('\n')
+        self.add_text('')
+        for n in node.childNodes:
+            if n not in first.values():
+                self.parse(n)
+        self.add_text(['";', '\n'])
 
     def do_definition(self, node):
-        data = node.firstChild.data
+        data = self.get_Text(node)
         self.add_text('%s "\n%s' % (data, data))
 
     def do_sectiondef(self, node):
@@ -521,7 +563,7 @@ class Doxy2SWIG:
         """For a user defined section def a header field is present
         which should not be printed as such, so we comment it in the
         output."""
-        data = node.firstChild.data
+        data = self.get_Text(node)
         self.add_text('\n/*\n %s \n*/\n' % data)
         # If our immediate sibling is a 'description' node then we
         # should comment that out also and remove it from the parent
