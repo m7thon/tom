@@ -153,15 +153,15 @@ class Doxy2SWIG:
         else:
             self.pieces.append(value)
 
-    def get_specific_subnodes(self, node, name, recursive=False):
+    def get_specific_subnodes(self, node, name, recursive=0):
         """Given a node and a name, return a list of subnodes matching the
-        name. Search recursively if recursive is set to True.
+        name. Search recursively for `recursive` levels.
         """
         children = [x for x in node.childNodes if x.nodeType == x.ELEMENT_NODE]
         ret = [x for x in children if x.tagName == name]
-        if recursive:
+        if recursive > 0:
             for x in children:
-                ret.extend(self.get_specific_subnodes(x, name))
+                ret.extend(self.get_specific_subnodes(x, name, recursive-1))
         return ret
 
     def get_specific_nodes(self, node, names):
@@ -199,6 +199,11 @@ class Doxy2SWIG:
         if pad:
             if len(self.pieces) > npiece:
                 self.add_text('\n')
+
+    def type_parse(self, node):
+        type = self.get_specific_subnodes(node, 'type')
+        if type:
+            self.generic_parse(type[0])
 
     def surround_parse(self, node, pre_char, post_char):
         self.add_text(pre_char)
@@ -256,6 +261,26 @@ class Doxy2SWIG:
             self.pieces = pieces
             self.indent -= 4
 
+    def make_attribute_list(self, node):
+        self.add_text(['\n', 'Attributes','\n','=========='])
+        for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
+            if n.attributes['kind'].value == 'variable' and n.attributes['prot'].value == 'public':
+                name = self.get_specific_subnodes(n, 'name')[0].firstChild.data
+                self.add_text(['\n', name, ' : '])
+                self.type_parse(n)
+                self.add_text(['\n', ''])
+                pieces, self.pieces = self.pieces, ['']
+                self.indent += 4
+                self.parse(self.get_specific_subnodes(n, 'briefdescription')[0])
+                self.parse(self.get_specific_subnodes(n, 'detaileddescription')[0])
+                lines = ''.join(self.pieces).split('\n')
+                for i in range(len(lines)):
+                    if lines[i] != '':
+                        lines[i] = 4 * ' ' + lines[i]
+                pieces.append('\n'.join(lines))
+                self.pieces = pieces
+                self.indent -= 4
+
     def do_compounddef(self, node):
         kind = node.attributes['kind'].value
         if kind in ('class', 'struct'):
@@ -270,7 +295,7 @@ class Doxy2SWIG:
                 classname = subnode[0].firstChild.data
                 self.add_text('%%feature("docstring") %s "\n' % classname)
             constructor_nodes = []
-            for n in self.get_specific_subnodes(node, 'memberdef', recursive=True):
+            for n in self.get_specific_subnodes(node, 'memberdef', recursive=2):
                 defn = self.get_specific_subnodes(n, 'definition')
                 if defn and defn[0].firstChild.data == classname + '::' + classname:
                     constructor_nodes.append(n)
@@ -287,7 +312,7 @@ class Doxy2SWIG:
                     self.parse(first[n])
 
             self.make_constructor_list(constructor_nodes, classname)
-
+            self.make_attribute_list(node)
             subnode = self.get_specific_subnodes(node, 'includes')
             if subnode:
                 self.parse(subnode[0])
@@ -330,9 +355,9 @@ class Doxy2SWIG:
             item = str(self.listitem) + '. '
         except:
             item = str(self.listitem) + ' '
-        self.parse_and_shift(node, item)
+        self.shifted_parse(node, item)
     
-    def parse_and_shift(self, node, item, indent = ''):
+    def shifted_parse(self, node, item, indent = ''):
         """Adds the following to self.pieces:
         <item><indent><parsed and wrapped line 1>
         <shift><parsed and wrapped line 2>
@@ -424,7 +449,7 @@ class Doxy2SWIG:
     def do_parameterdescription(self, node):
         names = ''.join(self.pieces)
         self.pieces = []
-        self.parse_and_shift(node, '% 4s' % names[:4], names[4:])
+        self.shifted_parse(node, '% 4s' % names[:4], names[4:])
 
     def do_parameterdefinition(self, node):
         self.generic_parse(node, pad=1)
@@ -518,12 +543,12 @@ class Doxy2SWIG:
         if self.pieces != []:
             self.add_text('\n')
         if kind == 'warning':
-            self.parse_and_shift(node, 'WARNING: ')
+            self.shifted_parse(node, 'WARNING: ')
         elif kind == 'see':
-            self.parse_and_shift(node, 'See: ')
+            self.shifted_parse(node, 'See: ')
         elif kind == 'return':
             self.add_text(['Returns:', '\n', '--------', '\n'])
-            self.parse_and_shift(node, '    ')
+            self.shifted_parse(node, '    ')
         else:
             self.generic_parse(node)
 
