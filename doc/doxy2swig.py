@@ -85,7 +85,7 @@ class Doxy2SWIG:
                         'references', 'referencedby', 'location',
                         'collaborationgraph', 'reimplements',
                         'reimplementedby', 'derivedcompoundref',
-                        'basecompoundref', 'argsstring']
+                        'basecompoundref', 'argsstring', 'exceptions']
         #self.generics = []
         self.include_function_definition = include_function_definition
         self.quiet = quiet
@@ -112,16 +112,6 @@ class Doxy2SWIG:
     def parse_Document(self, node):
         self.parse(node.documentElement)
 
-    def get_Text(self, node):
-        txt = node.firstChild.data
-        txt = txt.replace('\\', r'\\')
-        txt = txt.replace('"', r'\"')
-        m = self.space_re.match(txt)
-        if m and len(m.group()) == len(txt):
-            return ''
-        else:
-            return txt
-
     def parse_Text(self, node):
         txt = node.data
         txt = txt.replace('\\', r'\\')
@@ -133,10 +123,14 @@ class Doxy2SWIG:
         else:
             self.add_text(txt)
 
+    def parse_Comment(self, node):
+        """Parse a `COMMENT_NODE`.  This does nothing for now."""
+        return
+
     def parse_Element(self, node):
         """Parse an `ELEMENT_NODE`.  This calls specific
         `do_<tagName>` handers for different elements.  If no handler
-        is available the `generic_parse` method is called.  All
+        is available the `subnode_parse` method is called.  All
         tagNames specified in `self.ignores` are simply ignored.
 
         """
@@ -149,12 +143,17 @@ class Doxy2SWIG:
             handlerMethod = getattr(self, attr)
             handlerMethod(node)
         else:
-            self.generic_parse(node)
+            self.subnode_parse(node)
             #if name not in self.generics: self.generics.append(name)
 
-    def parse_Comment(self, node):
-        """Parse a `COMMENT_NODE`.  This does nothing for now."""
-        return
+    def subnode_parse(self, node, ignore=[]):
+        """Parse the subnodes of a given node. Subnodes with tags in the
+        `ignore` list are ignored.
+
+        """
+        for n in node.childNodes:
+            if node.tagName not in ignore:
+                self.parse(n)
 
     def add_text(self, value):
         """Adds text corresponding to `value` into `self.pieces`."""
@@ -185,47 +184,22 @@ class Doxy2SWIG:
                  x.tagName in names]
         return dict(nodes)
 
-    def generic_parse(self, node, pad=0):
-        """A Generic parser for arbitrary tags in a node.
-
-        Parameters:
-
-         - node:  A node in the DOM.
-         - pad: `int` (default: 0)
-
-           If 0 the node data is not padded with newlines.  If 1 it
-           appends a newline after parsing the childNodes.  If 2 it
-           pads before and after the nodes are processed.  Defaults to
-           0.
-
-        """
-        npiece = 0
-        if pad:
-            npiece = len(self.pieces)
-            if pad == 2:
-                self.add_text('\n')
-        for n in node.childNodes:
-            self.parse(n)
-        if pad:
-            if len(self.pieces) > npiece:
-                self.add_text('\n')
-
     def get_type(self, node):
         pieces, self.pieces = self.pieces, []
         type = self.get_specific_subnodes(node, 'type')
         if type:
-            self.generic_parse(type[0])
+            self.subnode_parse(type[0])
         type_str = ''.join(self.pieces)
         self.pieces = pieces
         return type_str
 
     def surround_parse(self, node, pre_char, post_char):
         self.add_text(pre_char)
-        self.generic_parse(node)
+        self.subnode_parse(node)
         self.add_text(post_char)
     
-    do_ref = generic_parse
-    do_formula = generic_parse
+    do_ref = subnode_parse
+    do_formula = subnode_parse
     
     def do_linebreak(self, node):
         self.add_text('  ')
@@ -239,7 +213,7 @@ class Doxy2SWIG:
     def do_heading(self, node):
         pieces, self.pieces = self.pieces, []
         level = int(node.attributes['level'].value)
-        self.generic_parse(node)
+        self.subnode_parse(node)
         if level == 1:
             # self.pieces.insert(0,'\n')
             self.add_text(['\n', len(''.join(self.pieces).strip()) * '='])
@@ -266,11 +240,13 @@ class Doxy2SWIG:
                 defn_str = defn_str + self.get_Text(argsstring[0])
             self.add_text('\n')
             self.add_line_with_subsequent_indent('* ' + defn_str)
-            pieces, self.pieces = self.pieces, ['']
+            pieces, self.pieces = self.pieces, []
             self.indent += 4
             for sn in n.childNodes:
                 if sn not in self.get_specific_nodes(n, ('definition', 'name')).values():
                     self.parse(sn)
+            if self.pieces != []:
+                self.pieces.insert(0, '\n')
             lines = ''.join(self.pieces).split('\n')
             for i in range(len(lines)):
                 if lines[i] != '':
@@ -345,17 +321,19 @@ class Doxy2SWIG:
             for n in memberdef_nodes:
                 self.add_line_with_subsequent_indent(self.get_function_definition(n))
         if is_overloaded:
-            self.add_text(['\n',
-                           'Overloaded function', '\n',
+            self.add_text('\n')
+            self.add_text(['Overloaded function', '\n',
                            '-------------------', '\n'])
         for n in memberdef_nodes:
             if is_overloaded:
                 self.add_line_with_subsequent_indent('* ' + self.get_function_definition(n))
-                pieces, self.pieces = self.pieces, ['']
+                self.add_text('\n')
+                pieces, self.pieces = self.pieces, []
                 self.indent += 4
-                for sn in n.childNodes:
-                    if sn not in self.get_specific_nodes(n, ('definition', 'name')).values():
-                        self.parse(sn)
+            for sn in n.childNodes:
+                if sn not in self.get_specific_nodes(n, ('definition', 'name')).values():
+                    self.parse(sn)
+            if is_overloaded:
                 lines = ''.join(self.pieces).split('\n')
                 for i in range(len(lines)):
                     if lines[i] != '':
@@ -363,7 +341,6 @@ class Doxy2SWIG:
                 pieces.append('\n'.join(lines))
                 self.pieces = pieces
                 self.indent -= 4
-            if is_overloaded:
                 self.add_text(['\n', ''])
         self.add_text(['";', '\n'])
 
@@ -421,7 +398,8 @@ class Doxy2SWIG:
 
     def do_includes(self, node):
         self.add_text('\nC++ includes: ')
-        self.generic_parse(node, pad=1)
+        self.subnode_parse(node)
+        self.add_text('\n')
 
     def do_itemizedlist(self, node):
         if self.pieces != []:
@@ -431,7 +409,7 @@ class Doxy2SWIG:
             self.listitem = '*'
         else:
             self.listitem = '-'
-        self.generic_parse(node)
+        self.subnode_parse(node)
         self.listitem = listitem
 
     def do_orderedlist(self, node):
@@ -439,7 +417,7 @@ class Doxy2SWIG:
             self.add_text('\n')
         listitem = self.listitem
         self.listitem = 0
-        self.generic_parse(node)
+        self.subnode_parse(node)
         self.listitem = listitem
 
     def do_listitem(self, node):
@@ -459,7 +437,7 @@ class Doxy2SWIG:
         where shift is just ' ' * len(item)"""
         pieces, self.pieces = self.pieces, [indent, '']
         self.indent += len(item)
-        self.generic_parse(node)
+        self.subnode_parse(node)
         lines = ''.join(self.pieces).split('\n')
         for i in range(len(lines)):
             if lines[i] != '':
@@ -507,7 +485,7 @@ class Doxy2SWIG:
             if self.pieces != []:
                 self.add_text('\n')
             pieces, self.pieces = self.pieces, []
-        self.generic_parse(node)
+        self.subnode_parse(node)
         self.textwrap_para(self.pieces[-1:] == [''])
         pieces.extend(self.pieces)
         self.pieces = pieces
@@ -531,17 +509,17 @@ class Doxy2SWIG:
                     text = val
                 break
         self.add_text([text, ':\n'])
-        self.generic_parse(node)
+        self.subnode_parse(node)
 
     def do_parameteritem(self, node):
         pieces, self.pieces = self.pieces, []
         self.add_text(['* ', ''])
-        self.generic_parse(node)
+        self.subnode_parse(node)
         pieces.extend(self.pieces)
         self.pieces = pieces
 
     def do_parameternamelist(self, node):
-        self.generic_parse(node)
+        self.subnode_parse(node)
         self.add_text(' : ')
     
     def do_parametername(self, node):
@@ -559,13 +537,14 @@ class Doxy2SWIG:
         self.shifted_parse(node, '% 4s' % names[:4], names[4:])
 
     def do_parameterdefinition(self, node):
-        self.generic_parse(node, pad=1)
+        self.subnode_parse(node)
+        self.add_text('\n')
 
     def do_detaileddescription(self, node):
-        self.generic_parse(node)
+        self.subnode_parse(node)
 
     def do_briefdescription(self, node):
-        self.generic_parse(node)
+        self.subnode_parse(node)
 
     def get_function_definition(self, node):
         name = self.get_Text(self.get_specific_subnodes(node, 'name')[0])
@@ -632,7 +611,7 @@ class Doxy2SWIG:
     def do_sectiondef(self, node):
         kind = node.attributes['kind'].value
         if kind in ('public-func', 'func', 'user-defined', ''):
-            self.generic_parse(node)
+            self.subnode_parse(node)
 
     def do_header(self, node):
         """For a user defined section def a header field is present
@@ -650,7 +629,7 @@ class Doxy2SWIG:
             if nd.nodeName == 'description':
                 nd = parent.removeChild(nd)
                 self.add_text('\n/*')
-                self.generic_parse(nd)
+                self.subnode_parse(nd)
                 self.add_text('\n*/\n')
 
     def do_simplesect(self, node):
@@ -665,18 +644,19 @@ class Doxy2SWIG:
             self.shifted_parse(node, 'See: ')
         elif kind == 'return':
             self.add_text(['Returns:', '\n', ''])
-            self.generic_parse(node)
+            self.subnode_parse(node)
         else:
-            self.generic_parse(node)
+            self.subnode_parse(node)
 
     def do_argsstring(self, node):
-        self.generic_parse(node, pad=1)
+        self.subnode_parse(node)
+        self.add_text('\n')
 
     def do_member(self, node):
         kind = node.attributes['kind'].value
         refid = node.attributes['refid'].value
         if kind == 'function' and refid[:9] == 'namespace':
-            self.generic_parse(node)
+            self.subnode_parse(node)
 
     def do_doxygenindex(self, node):
         self.multi = 1
@@ -691,6 +671,16 @@ class Doxy2SWIG:
             p = Doxy2SWIG(fname, self.include_function_definition, self.quiet)
             p.generate()
             self.pieces.extend(p.pieces)
+
+    def get_Text(self, node):
+        txt = node.firstChild.data
+        txt = txt.replace('\\', r'\\')
+        txt = txt.replace('"', r'\"')
+        m = self.space_re.match(txt)
+        if m and len(m.group()) == len(txt):
+            return ''
+        else:
+            return txt
 
     def write(self, fname):
         o = my_open_write(fname)
