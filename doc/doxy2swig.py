@@ -34,7 +34,8 @@ output will be written (the file will be clobbered).
 #              feature of swig (swig bug!)
 #      - collect all documentation for overloaded functions into the python
 #        function documentation
-#      - rewrite of the text-wrapping.
+#      - rewrite of the text-wrapping, and include option -w to specify
+#        the wrapping width
 #      - Attempt to produce docstrings that render nicely as markdown. This can
 #        be improved once python tools actually support this.
 #
@@ -299,11 +300,9 @@ class Doxy2SWIG:
         except:
             argsstring = ''
         type = self.get_type(node)
-        function_definition = '`' + name + argsstring
+        function_definition = '`' + name + argsstring + '`'
         if type != '' and type != 'void':
-            function_definition = function_definition + ' -> ' + type + '`'
-        else:
-            function_definition = function_definition + '`'
+            function_definition = function_definition + ' -> ' + '`' + type + '`'
         return function_definition
 
 # MARK: Special parsing tasks (need to be called manually)
@@ -664,7 +663,7 @@ class Doxy2SWIG:
         if self.pieces != []:
             self.add_text('\n')
         if kind == 'warning':
-            self.subnode_parse(node, pieces=['WARNING: ',''], indent=4)
+            self.subnode_parse(node, pieces=['**Warning**: ',''], indent=4)
         elif kind == 'see':
             self.subnode_parse(node, pieces=['See: ',''], indent=4)
         elif kind == 'return':
@@ -674,7 +673,7 @@ class Doxy2SWIG:
                 pieces = ['Returns:', '\n', '']
             self.subnode_parse(node, pieces=pieces)
         else:
-            self.subnode_parse(node)
+            self.subnode_parse(node, pieces=[kind, ': ',''], indent=4)
 
     def do_argsstring(self, node):
         self.subnode_parse(node)
