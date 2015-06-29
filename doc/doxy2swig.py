@@ -15,29 +15,32 @@ output will be written (the file will be clobbered).
 
 """
 #
-#
 # This code is implemented using Mark Pilgrim's code as a guideline:
 #   http://www.faqs.org/docs/diveintopython/kgp_divein.html
 #
-# Author: Prabhu Ramachandran
+# Original Author: Prabhu Ramachandran
+# Modified by:     Michael Thon (June 2015)
 # License: BSD style
 #
 # Thanks:
 #   Johan Hake:  the include_function_definition feature
 #   Bill Spotz:  bug reports and testing.
 #   Sebastian Henschel:   Misc. enhancements.
-#   Michael Thon (June 2015): New features:
-#      - docstrings for classes that contain constructor signatures and a
-#        constructor and attributes section collecting the respective docs
-#        (this is the place for these docs in python)
-#        NOTE: As of June 2015 these do not show when using the -builtin
-#              feature of swig (swig bug!)
-#      - collect all documentation for overloaded functions into the python
-#        function documentation
-#      - rewrite of the text-wrapping, and include option -w to specify
-#        the wrapping width
-#      - Attempt to produce docstrings that render nicely as markdown. This can
-#        be improved once python tools actually support this.
+#
+# Changes:
+# June 2015 (Michael Thon):
+#   - class docstring now contain:
+#     + constructor call signatures
+#     + "Constructors" and "Attributes" sections collecting the respective docs
+#       (this is the place for these docs in python)
+#     NOTE: Currenty swig ignores class docstrings when using -builtin (BUG!)
+#   - overloaded functions:
+#     + collect all documentation into one "Overloaded function" section
+#   - formatting:
+#     + lists (incl. nested and ordered)
+#     + attempt to produce docstrings that render nicely as markdown
+#     + translate header, code, emphasis, bold, linebreak tags to markdown
+#     + new text-wrapping and option -w to specify the text width
 #
 
 from xml.dom import minidom
@@ -120,7 +123,8 @@ class Doxy2SWIG:
                         'references', 'referencedby', 'location',
                         'collaborationgraph', 'reimplements',
                         'reimplementedby', 'derivedcompoundref',
-                        'basecompoundref', 'argsstring', 'exceptions']
+                        'basecompoundref',
+                        'argsstring', 'definition', 'exceptions']
         #self.generics = []
         self.include_function_definition = include_function_definition
         self.quiet = quiet
@@ -264,6 +268,19 @@ class Doxy2SWIG:
                 return txt
         except:
             return ''
+
+    def start_new_paragraph(self):
+        """Make sure to create an empty line. This is overridden, if the previous
+        text ends with the special marker ''. In that case, nothing is done.
+        """
+        if self.pieces[-1:] == ['']: # respect special marker
+            return
+        elif self.pieces == []: # first paragraph, add '\n', override with ''
+            self.pieces = ['\n']
+        elif self.pieces[-1][-1:] != '\n': # previous line not ended
+            self.pieces.extend(['  \n' ,'\n'])
+        else: #default
+            self.pieces.append('\n')
 
     def add_line_with_subsequent_indent(self, value, indent=4):
         """Add line of text and wrap such that subsequent lines are indented
@@ -416,18 +433,19 @@ class Doxy2SWIG:
         self.surround_parse(node, '`', '`')
 
     def do_heading(self, node):
-        pieces, self.pieces = self.pieces, []
+        self.start_new_paragraph()
+        pieces, self.pieces = self.pieces, ['']
         level = int(node.attributes['level'].value)
         self.subnode_parse(node)
         if level == 1:
-            # self.pieces.insert(0,'\n')
+            self.pieces.insert(0, '\n')
             self.add_text(['\n', len(''.join(self.pieces).strip()) * '='])
         elif level == 2:
             self.add_text(['\n', len(''.join(self.pieces).strip()) * '-'])
         elif level >= 3:
             self.pieces.insert(0, level * '#' + ' ')
-        self.add_text(['\n', ''])
-        pieces.extend(self.pieces)
+        # make following text have no gap to the heading:
+        pieces.extend([''.join(self.pieces) + '  \n', ''])
         self.pieces = pieces
             
     def do_includes(self, node):
@@ -443,14 +461,17 @@ class Doxy2SWIG:
         then adds the result to self.pieces. However, it may be convenient to
         allow the previous content of self.pieces to be included in the text
         wrapping. For this, use the following *convention*:
-        If self.pieces ends with '', treat it as part of the current paragraph.
-        Else, insert new-line and start a new paragraph and "wrapping context".
+        If self.pieces ends with '', treat the _previous_ entry as part of the
+        current paragraph. Else, insert new-line and start a new paragraph
+        and "wrapping context".
+        Paragraphs always end with '  \n', but if the parsed content ends with
+        the special symbol '', this is passed on.
         """
         if self.pieces[-1:] == ['']:
-            pieces = []
+            pieces, self.pieces = self.pieces[:-2], self.pieces[-2:-1]
         else:
             self.add_text('\n')
-            pieces, self.pieces = self.pieces, []
+            pieces, self.pieces = self.pieces, ['']
         self.subnode_parse(node)
         dont_end_paragraph = self.pieces[-1:] == ['']
         # Now do the text wrapping:
@@ -464,11 +485,11 @@ class Doxy2SWIG:
             if keep_markdown_newline:
                 w_line[-1] = w_line[-1] + '  '
             for wl in w_line:
-                wrapped_para.extend([wl, '\n'])
-        if dont_end_paragraph:
-            wrapped_para = wrapped_para[:-1] + ['']
-        else:
-            wrapped_para = wrapped_para[:-1] + ['  \n']
+                wrapped_para.append(wl + '\n')
+        if wrapped_para:
+            wrapped_para[-1] = wrapped_para[-1][:-1] + '  \n'
+            if dont_end_paragraph:
+                wrapped_para.append('')
         pieces.extend(wrapped_para)
         self.pieces = pieces
 
@@ -502,8 +523,7 @@ class Doxy2SWIG:
 
 # MARK: Parameter list tag handlers
     def do_parameterlist(self, node):
-        if self.pieces != []: # We are not in a new para tag
-            self.add_text(['  \n', '\n'])
+        self.start_new_paragraph()
         text = 'unknown'
         for key, val in node.attributes.items():
             if key == 'kind':
@@ -540,6 +560,25 @@ class Doxy2SWIG:
 
     def do_parameterdescription(self, node):
         self.subnode_parse(node, pieces=[''], indent=4)
+
+# MARK: Section tag handler
+    def do_simplesect(self, node):
+        kind = node.attributes['kind'].value
+        if kind in ('date', 'rcs', 'version'):
+            return
+        self.start_new_paragraph()
+        if kind == 'warning':
+            self.subnode_parse(node, pieces=['**Warning**: ',''], indent=4)
+        elif kind == 'see':
+            self.subnode_parse(node, pieces=['See also: ',''], indent=4)
+        elif kind == 'return':
+            if self.indent == 0:
+                pieces = ['Returns', '\n', len('Returns') * '-', '\n', '']
+            else:
+                pieces = ['Returns:', '\n', '']
+            self.subnode_parse(node, pieces=pieces)
+        else:
+            self.subnode_parse(node, pieces=[kind + ': ',''], indent=4)
 
 # MARK: %feature("docstring") producing tag handlers
     def do_compounddef(self, node):
@@ -602,16 +641,19 @@ class Doxy2SWIG:
                 self.handle_overloaded_memberdef(sig, md_nodes[sig])
     
     def do_memberdef(self, node):
-        """DEPRECATED! This should no longer be needed, since the according
-        entries are produces by `handle_overloaded_memberfunction`. This is -- 
-        and its produces entries -- are kept for now"""
+        """Handle cases outside of class, struct, file or namespace. These are
+        now dealt with by `handle_overloaded_memberfunction`.
+        Do these even exist???
+        """
         prot = node.attributes['prot'].value
         id = node.attributes['id'].value
         kind = node.attributes['kind'].value
         tmp = node.parentNode.parentNode.parentNode
         compdef = tmp.getElementsByTagName('compounddef')[0]
         cdef_kind = compdef.attributes['kind'].value
-
+        if cdef_kind in ('file', 'namespace', 'class', 'struct'):
+            # These cases are now handled by `handle_overloaded_memberdef`
+            return
         if prot != 'public':
             return
         first = self.get_specific_nodes(node, ('definition', 'name'))
@@ -621,64 +663,16 @@ class Doxy2SWIG:
         if not 'definition' in first or kind in ['variable', 'typedef']:
             return
 
+        data = self.get_Text(first['definition'])
         self.add_text('\n')
-        self.add_text(['/* deprecated entry */', '\n'])
-        self.add_text('%feature("docstring") ')
+        self.add_text(['/* where did this entry come from??? */', '\n'])
+        self.add_text('%feature("docstring") %s "\n%s' % (data, data))
 
-        anc = node.parentNode.parentNode
-        if cdef_kind in ('file', 'namespace'):
-            ns_node = anc.getElementsByTagName('innernamespace')
-            if not ns_node and cdef_kind == 'namespace':
-                ns_node = anc.getElementsByTagName('compoundname')
-            if ns_node:
-                ns = self.get_Text(ns_node[0])
-                self.add_text(' %s::%s "\n' % (ns, name))
-            else:
-                self.add_text(' %s "\n' % (name))
-        elif cdef_kind in ('class', 'struct'):
-            # Get the full function name.
-            anc_node = anc.getElementsByTagName('compoundname')
-            cname = self.get_Text(anc_node[0])
-            self.add_text(' %s::%s "\n' % (cname, name))
-
-        if self.include_function_definition:
-            self.add_line_with_subsequent_indent(self.get_function_definition(node))
-            self.add_text('\n')
-        self.add_text('')
         for n in node.childNodes:
             if n not in first.values():
                 self.parse(n)
         self.add_text(['";', '\n'])
-
-    def do_definition(self, node):
-        """Can this ever be called??"""
-        print("Warning: This should not have happened!")
-        data = self.get_Text(node)
-        self.add_text('%s "\n%s' % (data, data))
-
-    def do_simplesect(self, node):
-        kind = node.attributes['kind'].value
-        if kind in ('date', 'rcs', 'version'):
-            return
-        if self.pieces != []:
-            self.add_text('\n')
-        if kind == 'warning':
-            self.subnode_parse(node, pieces=['**Warning**: ',''], indent=4)
-        elif kind == 'see':
-            self.subnode_parse(node, pieces=['See: ',''], indent=4)
-        elif kind == 'return':
-            if self.indent == 0:
-                pieces = ['Returns', '\n', len('Returns') * '-', '\n', '']
-            else:
-                pieces = ['Returns:', '\n', '']
-            self.subnode_parse(node, pieces=pieces)
-        else:
-            self.subnode_parse(node, pieces=[kind, ': ',''], indent=4)
-
-    def do_argsstring(self, node):
-        self.subnode_parse(node)
-        self.add_text('\n')
-
+    
 # MARK: Entry tag handlers (dont print anything meaningful)
     def do_sectiondef(self, node):
         kind = node.attributes['kind'].value
