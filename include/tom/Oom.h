@@ -9,7 +9,7 @@
 #define OOM_H
  
 // SWIGCODE(%attribute(tom::Oom, int, nU, nU);)
-SWIGCODE(%attribute(tom::Oom, int, maxSetback_, maxSetback, maxSetback);)
+// SWIGCODE(%attribute(tom::Oom, int, maxSetback_, maxSetback, maxSetback);)
 namespace tom {
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Oom::repr;)
 /**

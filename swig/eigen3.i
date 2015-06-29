@@ -112,9 +112,7 @@ const Eigen::Array<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>&
 }
 
 
-/******************************
-  Input const & typemaps     // Passing a wrapper object (Eigen::Map), but without copying the data
-/*****************************/
+// MARK: (Input) const & Eigen::DenseBase<Derived> [passes Eigen::Map wrapper, no copy]
 %typemap(in, fragment="Eigen_NumPy_Utilities")
 const Eigen::MatrixBase<Eigen::Map<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> > >&,
 const Eigen::DenseBase <Eigen::Map<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> > >&,
@@ -164,9 +162,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
 { if ($1) delete $1; }
 
 
-/******************************
-  Input const & typemaps     // This involves a temporary, i.e., a full copy of the data, but passes a true Eigen::MatrixXt object instead of an Eigen::Map.
-/*****************************/
+// MARK: (Input) const & Eigen::Derived [makes copy, passes Eigen::Derived object]
 %typemap(in, fragment="Eigen_NumPy_Utilities")
   const Eigen::MatrixBase<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic> >& (Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic> temp),
   const Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>& (Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic> temp),
@@ -184,9 +180,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
 	$1 = &temp;
 }
 
-/******************************
-  Input value typemaps       // This involves at least one temporary
-/*****************************/
+// MARK: (Input) [makes at least one copy, passes Eigen::Derived]
 %typemap(in, optimal=1, fragment="Eigen_NumPy_Utilities")
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>,
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>,
@@ -202,9 +196,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   $1 = Eigen::Map<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>, 0, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic> > ((DATA_TYPE*) array_data(ary), rows, cols, Eigen::Stride<Eigen::Dynamic, Eigen::Dynamic>(outer, inner));
 }
 
-/******************************
-  Output & typemaps          // This does not pass ownership to Python
-/*****************************/
+// MARK: (Output) & [does not pass ownership]
 %typemap(out, fragment="Eigen_NumPy_Utilities")
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>&,
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>&,
@@ -218,9 +210,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   array_setbase($result,encapsulate($1, NULL));
 }
 
-/******************************
-  Output (const) & typemaps  //
-/*****************************/
+// MARK: (Output) const & [does not pass ownership]
 %typemap(out, fragment="Eigen_NumPy_Utilities")
   const Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>&,
   const Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>&,
@@ -234,9 +224,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   array_setbase($result,encapsulate($1, NULL));
 }
 
-/******************************
-  Output * typemaps          // This passes ownership to Python
-/*****************************/
+// MARK: (Output) * [passed ownership]
 %typemap(out, fragment="Eigen_NumPy_Utilities")
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>*,
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>*,
@@ -250,9 +238,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   array_setbase($result, encapsulate($1, clean<$1_ltype>));
 }
 
-/******************************
-  Output SHARED_PTR typemaps //
-/*****************************/
+// MARK: (Output) SHARED_PTR
 %typemap(out, optimal = "1", fragment="Eigen_NumPy_Utilities")
   SHARED_PTR<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic> >,
   SHARED_PTR<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1> >,
@@ -267,9 +253,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   array_setbase($result, encapsulate(newSharedPtr, clean<$1_ltype*>));
 }
 
-/******************************
-  Output value typemaps      // This creates a copy and passes ownership of the copy to Python
-/*****************************/
+// MARK: (Output) [pass by value: makes copy and passes ownership]
 %typemap(out, optimal = "1", fragment="Eigen_NumPy_Utilities")
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>,
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>,
@@ -284,9 +268,7 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
   array_setbase($result, encapsulate(temp, clean<$1_ltype*>));
 }
 
-/******************************
-  Argout & typemaps          //
-/*****************************/
+// MARK: (Argout) const & OUTPUT [creates new object, passes ownership]
 %typemap(in, numinputs=0)
   const Eigen::MatrixBase<Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic> >& OUTPUT
 {
@@ -301,6 +283,8 @@ const Eigen::EigenBase <Eigen::Map<Eigen::Array<DATA_TYPE, Eigen::Dynamic, 1>, 0
 	array_setbase(res, encapsulate($1, clean<Eigen::Matrix<DATA_TYPE,Eigen::Dynamic,Eigen::Dynamic>*>));
 	$result = SWIG_Python_AppendOutput($result,res);
 }
+
+// MARK: (Argout) & OUTPUT [creates new object, passes ownership]
 %typemap(in, numinputs=0)
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, Eigen::Dynamic>& OUTPUT,
   Eigen::Matrix<DATA_TYPE, Eigen::Dynamic, 1>& OUTPUT,

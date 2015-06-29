@@ -133,7 +133,7 @@ optimized_build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
 
 .PHONY: swig
-swig:
+swig: swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
 
 .PHONY: doc
@@ -150,9 +150,14 @@ clean:
 	rm -rf tom.egg-info
 	python setup.py clean --all
 
-.PHONY: swig-docstrings
-swig-docstrings:
-	doc/doxy2swig.py -n -q doc/xml/index.xml swig/tom_doc.i
+.PHONY: tomdoc
+tomdoc:
+	doxygen doc/tom.doxyfile
+	$(PYTHON) doc/doxy2swig.py -q doc/xml/index.xml swig/tomdoc.i
+
+swig/tomdoc.i:
+	doxygen doc/tom.doxyfile
+	$(PYTHON) doc/doxy2swig.py -n -q doc/xml/index.xml swig/tomdoc.i
 
 # Not a target:
 python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp $(CXX_SRC)

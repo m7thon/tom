@@ -103,7 +103,7 @@ Eigen::MatrixXd kron(const Eigen::MatrixBase<D1>& A, const Eigen::MatrixBase<D2>
 
 
 /**
- * for the given matrix \a M of size m x n, return in the output argument \a result the matrix \f$(M^\top M)^{-1}M^\top\f$ if m >= n, or \f$M^\top(MM^\top)^{-1}\f$ if m < n, which is computed as the OLS solution X to \f$MX\approx I\f$, or \f$XM\approx I\f$, respectively, using a \a method from {"LLT" (default), "LDLT"}\. \b Note that for this the matrix \M must not be rank deficient!
+ * for the given matrix \a M of size m x n, return in the output argument \a result the matrix \f$(M^\top M)^{-1}M^\top\f$ if m >= n, or \f$M^\top(MM^\top)^{-1}\f$ if m < n, which is computed as the OLS solution X to \f$MX\approx I\f$, or \f$XM\approx I\f$, respectively, using a \a method from {"LLT" (default), "LDLT"}\. \b Note that for this the matrix \a M must not be rank deficient!
  */
 OUTMAP(result)
 template< typename D1, typename D2 >
