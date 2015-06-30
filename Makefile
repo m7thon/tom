@@ -80,6 +80,15 @@ CXX_SRC := $(find include/tom -type f -name "*.h" -o -name "*.cpp" -o -name "*.h
 SWIG_SRC := $(find swig -type f -name "*.i")
 PY_SRC := $(find python/tom -type f -name "*.py")
 
+.PHONY: all
+all: python/tom/_tomlib.so
+	@echo "-----------------------------------------------------------"
+	@echo "You should now be able to use the toolkit. From python, do:"
+	@echo ">>> import sys, os"
+	@echo ">>> sys.path.append(os.path.abspath('.')+\"/python/tom\")"
+	@echo ">>> import tom"
+	@echo "-----------------------------------------------------------"
+
 .PHONY: build
 build:
 	CPPFLAGS=$(EIGEN3_INCLUDE) python setup.py build_ext
@@ -95,14 +104,6 @@ build_gcc:
 .PHONY: build_gcc5_on_OSX
 build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3" python setup.py build_ext
-
-.PHONY: build_without_setuptools
-build_without_setuptools: python/tom/_tomlib.so
-	@echo "-----------------------------------------------------------"
-	@echo "You should now be able to use the toolkit. From python, do:"
-	@echo ">>> import sys, os"
-	@echo ">>> sys.path.append(os.path.abspath('.')+\"/python/tom\")"
-	@echo ">>> import tom"
 
 .PHONY: debug_build_clang
 debug_build_clang:
@@ -132,46 +133,42 @@ optimized_build_gcc:
 optimized_build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
 
-.PHONY: swig
-swig: swig/tomdoc.i
-	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
-
 .PHONY: doc
 doc:
 	doxygen doc/tom.doxyfile
+	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
+
+.PHONY: swig
+swig:
+	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
 
 .PHONY: clean
 clean:
-	rm -rf dist
-	rm -f python/tom/*.pyc
-	rm -f python/tom/_tomlib.so python/tom/tomlib.py
-	rm -f swig/tomlib_wrap.cxx swig/tomlib_wrap.cpp swig/tomlib_wrap.h swig/tomlib.py
-	rm -rf python/tom.egg-info
-	rm -rf tom.egg-info
-	python setup.py clean --all
+	@rm -rf doc/html doc/xml
+	@rm -f swig/tomdoc.i
+	@rm -f swig/tomlib_wrap.cpp swig/tomlib_wrap.h swig/tomlib.py
+	@rm -f python/tom/tomlib.py python/tom/_tomlib.so
+	@$(PYTHON) setup.py -q clean --all 2>/dev/null
+	@rm -rf dist build
+	@rm -f python/tom/*.pyc
+	@rm -rf python/tom.egg-info tom.egg-info
 
-.PHONY: tomdoc
-tomdoc:
+doc/xml/index.xml: $(CXX_SRC)
 	doxygen doc/tom.doxyfile
-	$(PYTHON) doc/doxy2swig.py -q doc/xml/index.xml swig/tomdoc.i
 
-swig/tomdoc.i:
-	doxygen doc/tom.doxyfile
-	$(PYTHON) doc/doxy2swig.py -n -q doc/xml/index.xml swig/tomdoc.i
+swig/tomdoc.i: doc/doxy2swig/doxy2swig.py doc/xml/index.xml
+	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
 
-# Not a target:
+swig/tomlib_wrap.cpp: $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
+	swig $(SWIG_FLAGS) -Iswig -DTOM_DEBUG -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
+
 python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp $(CXX_SRC)
 	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cpp $(PY_LDFLAGS) $(LDFLAGS)
 
-# Not a target:
-swig/tomlib_wrap.cpp: $(CXX_SRC) $(SWIG_SRC)
-	swig $(SWIG_FLAGS) -Iswig -DTOM_DEBUG -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
-
-# Not a target:
 .PHONY: test
 test: sandbox/test.cpp $(SRCS)
 	$(CXX) $(CXXFLAGS) $(OPT) $(INCLUDE) -o sandbox/test sandbox/test.cpp $(LDFLAGS)
 
 .PHONY: list
 list:
-	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]" && $$3 ~ "^#  Phony") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
