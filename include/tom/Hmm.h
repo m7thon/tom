@@ -30,7 +30,7 @@ SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Hmm::repr;)
  * This class provides provides a rudimentry structure for HMMs and POMDPs. It purpose is to
  * - create randomly initialized HMMs or POMDPs
  * - learn HMMs / POMDPs from data using EM (Baum-Welch)
- * Further operations are available after conversion into an \a Oom.
+ * Further operations are available after conversion into an \c Oom.
  */
 class Hmm {
 	friend class cereal::access;

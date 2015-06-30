@@ -12,7 +12,7 @@
 namespace stree {
 
 /**
- * An example of which functions an \a RBTreeNodeTraits object must provide to be used with \a RBTree. It is assumed that each node has a left and right pointer to child nodes, forming a binary tree. These pointers may be any user defined data structure used to index the nodes. For this reason, all needed functions to manipulate the tree structure must me provided in an \a RBTreeNodeTraits object. Note that nodes are referred to only by \a RBNodePtr objects and never directly.
+ * An example of which functions an \c RBTreeNodeTraits object must provide to be used with \c RBTree. It is assumed that each node has a left and right pointer to child nodes, forming a binary tree. These pointers may be any user defined data structure used to index the nodes. For this reason, all needed functions to manipulate the tree structure must me provided in an \c RBTreeNodeTraits object. Note that nodes are referred to only by \c RBNodePtr objects and never directly.
  */
 template< typename NodeType, typename KeyType >
 class RBTreeNodeTraitsTemplate {
@@ -21,48 +21,48 @@ class RBTreeNodeTraitsTemplate {
 	/** the key type used for comparison operations. */
   typedef KeyType RBKey;
 	/**
-	 * \a true if the given \a key is less than the key of the node corresponding to \a n
+	 * \c true if the given \c key is less than the key of the node corresponding to \c n
 	 */
   bool less(RBKey& k, RBNodePtr& n);
 	/**
-	 * \a true if the given \a key is equal to the key of the node corresponding to \a n
+	 * \c true if the given \c key is equal to the key of the node corresponding to \c n
 	 */
   bool equals(RBKey& k, RBNodePtr& n);
 	/**
-	 * \a true if \a n is a \c NULL pointer
+	 * \c true if \c n is a \c NULL pointer
 	 */
   bool isNull(RBNodePtr& n);
   /**
-	 * the left \a RBNodePtr of the node corresponding to \a n
+	 * the left \c RBNodePtr of the node corresponding to \c n
 	 */
   RBNodePtr& left(RBNodePtr& n);
   /**
-	 * the right \a RBNodePtr of the node corresponding to \a n
+	 * the right \c RBNodePtr of the node corresponding to \c n
 	 */
   RBNodePtr& right(RBNodePtr& n);
 	/**
-	 * set the \a RBNodePtr \a n to the given \a RBNodePtr \a nNew. Note that if color, nullness and threading properties are stored in the \a RBNodePtr structure, then these must be preserved by the set operation. This will generaly just amount to n = nNew.
+	 * set the \c RBNodePtr \c n to the given \c RBNodePtr \c nNew. Note that if color, nullness and threading properties are stored in the \c RBNodePtr structure, then these must be preserved by the set operation. This will generaly just amount to n = nNew.
 	 */
   void set(RBNodePtr& n, RBNodePtr& nNew);
 	/**
-	 * mark the \a RBNodePtr \a n as \c NULL and indicate a threading if possible.
+	 * mark the \c RBNodePtr \c n as \c NULL and indicate a threading if possible.
 	 */
   void setThread(RBNodePtr& n);
 	/**
-	 * set the color of the node corresponding to \a n to the given color \a c.
+	 * set the color of the node corresponding to \c n to the given color \c c.
 	 */
   void setColor(RBNodePtr& n, bool c);
 	/**
-	 * return the color of the node corresponding to \a n.
+	 * return the color of the node corresponding to \c n.
 	 */
 	bool getColor(RBNodePtr& n) const;
 };
 
 
 /**
- * An implementation of red-black tree algorithms. The functions can be used with generic kinds of nodes that need to be specified by providing an \a RBTreeNodeTraits object when calling the functions.
+ * An implementation of red-black tree algorithms. The functions can be used with generic kinds of nodes that need to be specified by providing an \c RBTreeNodeTraits object when calling the functions.
  *
- * Note that the red-black tree will be threaded if a \c NULL \a RBNodePtr can still address a node. This allows iterating over the stored values in their order merely by following the left or right pointers (even if \c NULL). The left-and rightmost \a RBNodePtr will be inherited from the left and right \a RBNodePtr of the original root, i.e., the first node \a RBNodePtr used in the first insertion operation when constructing the red-black tree, while every threaded right or left \a RBNodePtr will be set to the according \a RBNodePtr and then marked as a thread by calling the function \a setThread. It is up to the user to implement a suitable \a RBNodePtr structure to be able to distinguish the left-/rightmost \a RBNodePtr from a threaded \a RBNodePtr (e.g., if the color of nodes is stored in the \a RBNodePtr, even if \c NULL, then a threaded \a RBNodePtr may be \c NULL and colored red, while the left-/rightmost \a RBNodePtr may be \c NULL and black).
+ * Note that the red-black tree will be threaded if a \c NULL \c RBNodePtr can still address a node. This allows iterating over the stored values in their order merely by following the left or right pointers (even if \c NULL). The left-and rightmost \c RBNodePtr will be inherited from the left and right \c RBNodePtr of the original root, i.e., the first node \c RBNodePtr used in the first insertion operation when constructing the red-black tree, while every threaded right or left \c RBNodePtr will be set to the according \c RBNodePtr and then marked as a thread by calling the function \c setThread. It is up to the user to implement a suitable \c RBNodePtr structure to be able to distinguish the left-/rightmost \c RBNodePtr from a threaded \c RBNodePtr (e.g., if the color of nodes is stored in the \c RBNodePtr, even if \c NULL, then a threaded \c RBNodePtr may be \c NULL and colored red, while the left-/rightmost \c RBNodePtr may be \c NULL and black).
  */
 template< typename RBTreeNodeTraits >
 class RBTree {
@@ -71,13 +71,13 @@ class RBTree {
   typedef typename RBNT::RBNodePtr RBNodePtr;
 public:
   /**
-   * search for a node matching a given \a key in the binary search tree below a given node \a h.
+   * search for a node matching a given \c key in the binary search tree below a given node \c h.
    *
    * @param h the node below which (and including) to search for the key
    * @param key the key value to be searched for
-   * @param rbnt an \a RBTreeNodeTraits object
+   * @param rbnt an \c RBTreeNodeTraits object
    *
-   * @return the \a RBNodePtr& of the parent node to the node found, or some \c NULL \a RBNodePtr, if no matching node found.
+   * @return the \c RBNodePtr& of the parent node to the node found, or some \c NULL \c RBNodePtr, if no matching node found.
    */
   static RBNodePtr&
   find(RBNodePtr& h, const RBKey& key, const RBNT& rbnt) {
@@ -93,10 +93,10 @@ public:
   /**
    * insert a node into the red-black tree according to a given key. Please see the general remarks about threading.
    *
-   * @param h the \a RBNodePtr to the root of the red-black tree (this will point to the new root after the insertion operation)
+   * @param h the \c RBNodePtr to the root of the red-black tree (this will point to the new root after the insertion operation)
    * @param n the node to be inserted
    * @param key the key value of the new node
-   * @param rbnt an \a RBTreeNodeTraits object
+   * @param rbnt an \c RBTreeNodeTraits object
    */
   static void
   insert(RBNodePtr& h, RBNodePtr n, const RBKey& key, const RBNT& rbnt) {
@@ -141,10 +141,10 @@ public:
 
 
   /**
-   * fixes the threads leading to the node \a n in the red-black tree; this function needs to be called after replacing a node in the red-black tree structure.
+   * fixes the threads leading to the node \c n in the red-black tree; this function needs to be called after replacing a node in the red-black tree structure.
    *
    * @param n the node whose threading needs to be fixed
-   * @param rbnt an \a RBTreeNodeTraits object
+   * @param rbnt an \c RBTreeNodeTraits object
    */
 	static void
 	fixThreading(const RBNodePtr& n, const RBNT& rbnt) {

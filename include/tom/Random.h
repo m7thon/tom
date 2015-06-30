@@ -2,7 +2,7 @@
  * @file   Random.h
  * @author Michael Thon
  *
- * @brief  This file provides the \a Random class for random number generation.
+ * @brief  This file provides the \c Random class for random number generation.
  */
 
 #ifndef RANDOM_H
@@ -13,9 +13,9 @@ namespace tom {
 /** This class provides basic random number generation functionality. */
 class Random {
 public:
-	/** create a \a Random object initialized with a random seed */
+	/** create a \c Random object initialized with a random seed */
 	Random() : engine(std::random_device{}()) {}
-	/** create a \a Random object initialized with the given \a seed */
+	/** create a \c Random object initialized with the given \c seed */
 	Random(unsigned int seed) : engine(seed) {}
   /** randomly seed the random number generator and return the seed */
 	unsigned int seed() {
@@ -24,11 +24,11 @@ public:
 		engine.seed(seedVal);
 		return seedVal;
 	}
-	/** seed the random number generator with the given \a seedVal */
+	/** seed the random number generator with the given \c seedVal */
 	void seed(unsigned int seedVal) { engine.seed(seedVal); }
 	/** return a random real value in the range [0, 1) */
 	double random() { return real_dist(engine); }
-	/** return a matrix of size \a m x \a n with uniformly random entries from [0,1) **/
+	/** return a matrix of size \c m x \c n with uniformly random entries from [0,1) **/
 	Eigen::MatrixXd random(int m, int n) {
 		Eigen::MatrixXd M(m,n);
 		for (int j = 0; j < n; ++j)
@@ -36,13 +36,13 @@ public:
 				M(i,j) = random();
 		return M;
 	}
-	/** return a random integer in the range [0, \a n) */
+	/** return a random integer in the range [0, \c n) */
 	unsigned int integer(unsigned int n) {
 		using dist_t = std::uniform_int_distribution<unsigned int>;
 		using param_t = dist_t::param_type;
 		return int_dist(engine, param_t{0,n-1});
 	}
-	/** return an integer in the range [0, n), where n is the size of the array \a probs, distributed according to the discrete distribution described by \a probs\. Note that the probabilities in \a probs must sum to 1. */
+	/** return an integer in the range [0, n), where n is the size of the array \c probs, distributed according to the discrete distribution described by \c probs\. Note that the probabilities in \c probs must sum to 1. */
 	template <typename Derived>
 	unsigned int sample(const Eigen::MatrixBase<Derived>& prob) {
 		double dice = random() * prob.sum();

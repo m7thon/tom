@@ -29,10 +29,10 @@ double ApproxNormalCDFInverse(double p) {
 */
 class Estimator
 { public:
-	///** create an uninitialized \a Estimator. */
+	///** create an uninitialized \c Estimator. */
 	//Estimator() : pos_() {};
 
-	/** create an \a Estimator from a given \a sfxTree -- a suffix tree representation of a sample sequence */
+	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
 	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : stree_(sfxTree) {
 		s_.pos_ = stree::STreePos(stree_.get());
 		nO_ = sfxTree->text_.nO(); nU_ = stree_->text_.nU();
@@ -59,7 +59,7 @@ class Estimator
 
   OUTMATRIXXD(F)
   OUTMATRIXXD(V)
-  /** return (in the output argument \a F) the matrix of estimates \f$\hat{F}^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$. */
+  /** return (in the output argument \c F) the matrix of estimates \f$\hat{F}^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$. */
 	void f(Eigen::MatrixXd& F, const Sequences& chaSeqs, const Sequences& indSeqs) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		F.resize(rows, cols);
@@ -74,7 +74,7 @@ class Estimator
 		}
 	}
 
-	/** return (in the output argument \a F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_jz\bar{x}_i)]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$ and the input-output pair \a z = (\a u,\a o). */
+	/** return (in the output argument \c F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_jz\bar{x}_i)]_{i,j}\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$ and the input-output pair \c z = (\c u,\c o). */
 	void f(Eigen::MatrixXd& F, const Sequences& chaSeqs, const Sequences& indSeqs, Symbol o, Symbol u = 0) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		F.resize(rows, cols);
@@ -89,7 +89,7 @@ class Estimator
 		}
 	}
 
-	/** return (in the output argument \a V) the matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_j\bar{x}_i))]_{i,j}\f$ corresponding to the estimates \f$\hat{f}(\bar{x}_j\bar{x}_i)\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$. */
+	/** return (in the output argument \c V) the matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_j\bar{x}_i))]_{i,j}\f$ corresponding to the estimates \f$\hat{f}(\bar{x}_j\bar{x}_i)\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$. */
 	void v(Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		V.resize(rows, cols);
@@ -104,7 +104,7 @@ class Estimator
 		}
 	}
 
-	/** return (in the output argument \a V) the matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_jz\bar{x}_i))]_{i,j}\f$ corresponding to the estimates \f$\hat{f}(\bar{x}_jz\bar{x}_i)\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$, and the input-output pair \a z = (\a u,\a o). */
+	/** return (in the output argument \c V) the matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_jz\bar{x}_i))]_{i,j}\f$ corresponding to the estimates \f$\hat{f}(\bar{x}_jz\bar{x}_i)\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$, and the input-output pair \c z = (\c u,\c o). */
 	void v(Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs, Symbol o, Symbol u = 0) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		V.resize(rows, cols);
@@ -119,7 +119,7 @@ class Estimator
 		}
 	}
 
-	/** return (in the output argument \a F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$, and (in the output argument \a V) the corresponding matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_j\bar{x}_i))]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$. */
+	/** return (in the output argument \c F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$, and (in the output argument \c V) the corresponding matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_j\bar{x}_i))]_{i,j}\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$. */
 	void fv(Eigen::MatrixXd& F, Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		F.resize(rows, cols); V.resize(rows, cols);
@@ -135,7 +135,7 @@ class Estimator
 		}
 	}
 
-	/** return (in the output argument \a F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_jz\bar{x}_i)]_{i,j}\f$, and (in the output argument \a V) the corresponding matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_jz\bar{x}_i))]_{i,j}\f$ for the given set \a chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \a indSeqs of indicative sequences \f$\bar{x}_j\f$ and the input-output pair \a z = (\a u,\a o). */
+	/** return (in the output argument \c F) the matrix of estimates \f$\hat{F}_z^{I,J}=[\hat{f}(\bar{x}_jz\bar{x}_i)]_{i,j}\f$, and (in the output argument \c V) the corresponding matrix of variance estimates \f$\hat{V}^{I,J}[\hat{\rm{Var}}(\hat{f}(\bar{x}_jz\bar{x}_i))]_{i,j}\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$, the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$ and the input-output pair \c z = (\c u,\c o). */
 	void fv(Eigen::MatrixXd& F, Eigen::MatrixXd& V, const Sequences& chaSeqs, const Sequences& indSeqs, Symbol o, Symbol u = 0) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
 		F.resize(rows, cols); V.resize(rows, cols);
@@ -157,7 +157,7 @@ class Estimator
 	int nO_;              ///< the size of the output alphabet
 	int nU_;              ///< the size of the input alphabet
 	unsigned int len_;    ///< the length of the sample sequence from which the estimates are calculated
-	Eigen::VectorXd uProbs_; ///< the input Symbol probabilities for the case of an iid ("blind") input policy.\ These are estimated on constructing the \a Estimator and may be overwritten if they are known exactly.
+	Eigen::VectorXd uProbs_; ///< the input Symbol probabilities for the case of an iid ("blind") input policy.\ These are estimated on constructing the \c Estimator and may be overwritten if they are known exactly.
 
 	double nPseudoCounts_ = 1;
 	double zConfidenceIntervalSize_ = 0;
@@ -177,7 +177,7 @@ private:
   State s_;
 	bool estimateVariance_ = true;
 
-	const std::shared_ptr<stree::STree> stree_; ///< a pointer to the underlying \a STree
+	const std::shared_ptr<stree::STree> stree_; ///< a pointer to the underlying \c STree
 
 	void reset() { s_.pos_.setRoot(); s_.f_ = s_.fB_ = s_.v_ = 1; }
 	void reset(const State& s) { s_ = s; }

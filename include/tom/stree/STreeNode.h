@@ -9,15 +9,15 @@
 namespace stree {
 
 /**
- * This class represents a node in the suffix tree\. It contains a pointer internally to the \a STree that it belongs to.
+ * This class represents a node in the suffix tree\. It contains a pointer internally to the \c STree that it belongs to.
  */
 class STreeNode {
 public:
-  /** construct an uninitialized and invalid \a STreeNode */
+  /** construct an uninitialized and invalid \c STreeNode */
 	STreeNode() : stree_(NULL), nidx_(NODE) {}
-	/** construct a \a STreeNode initialized as the root of the given \a stree */
+	/** construct a \c STreeNode initialized as the root of the given \c stree */
 	STreeNode(const STree* stree) : stree_(stree), nidx_(ROOT) {}
-	/** construct a \a STreeNode initialized to the given \a node \a Nidx. */
+	/** construct a \c STreeNode initialized to the given \c node \c Nidx. */
 	STreeNode(const STree* stree, Nidx node) : stree_(stree), nidx_(node) {}
 
 	/** return \c true if valid, otherwise return \c false. */
