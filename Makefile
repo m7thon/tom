@@ -7,7 +7,7 @@
 #       3) python setup.py install [--user]
 #
 # However, this Makefile provides some useful targets:
-# * build_without_setuptools:
+# * oldstyle:
 #       this allowd to build the toolkit without the setuptools.
 #       for this (and only for this!) modify the following part
 #       of this makefile to reflect your configuration
@@ -76,12 +76,12 @@ endif
 
 INCLUDE := $(EIGEN3_INCLUDE) -I./include/tom -I./include/external
 
-CXX_SRC := $(find include/tom -type f -name "*.h" -o -name "*.cpp" -o -name "*.hpp")
-SWIG_SRC := $(find swig -type f -name "*.i")
-PY_SRC := $(find python/tom -type f -name "*.py")
+CXX_SRC := $(shell find include/tom -type f -name '*.h' -o -name '*.cpp' -o -name '*.hpp')
+SWIG_SRC := $(shell find swig -type f -name "*.i")
+PY_SRC := $(shell find python/tom -type f -name "*.py")
 
-.PHONY: all
-all: python/tom/_tomlib.so
+.PHONY: oldstyle
+oldstyle: python/tom/_tomlib.so
 	@echo "-----------------------------------------------------------"
 	@echo "You should now be able to use the toolkit. From python, do:"
 	@echo ">>> import sys, os"
@@ -105,13 +105,13 @@ build_gcc:
 build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3" python setup.py build_ext
 
-.PHONY: debug_build_clang
-debug_build_clang:
-	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -O0 -DTOM_DEBUG" python setup.py build_ext
-
-.PHONY: debug_build_clang_install_user
-debug_build_clang_install_user:
+.PHONY: deploy_fast
+deploy_fast: swig/tomdoc.i
 	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -O0 -DTOM_DEBUG" python setup.py install --user
+
+.PHONY: deploy
+deploy: swig/tomdoc.i
+	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py install --user
 
 .PHONY: install
 install:
@@ -133,10 +133,14 @@ optimized_build_gcc:
 optimized_build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3 -DTOM_NCHECK" python setup.py build_ext
 
-.PHONY: doc
-doc:
+.PHONY: docs
+docs:
 	doxygen doc/tom.doxyfile
 	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
+
+.PHONY: doc_debug
+doc_debug:
+	doxygen doc/tom.doxdebug
 
 .PHONY: swig
 swig:
@@ -149,9 +153,11 @@ clean:
 	@rm -f swig/tomlib_wrap.cpp swig/tomlib_wrap.h swig/tomlib.py
 	@rm -f python/tom/tomlib.py python/tom/_tomlib.so
 	@$(PYTHON) setup.py -q clean --all 2>/dev/null
+	@find python -name '__pycache__' -exec rm -rf {} \;
+	@find python -name '*.pyc' -exec rm -f {} \;
+	@find . -name 'tom.egg-info' -exec rm -rf {} \;
 	@rm -rf dist build
-	@rm -f python/tom/*.pyc
-	@rm -rf python/tom.egg-info tom.egg-info
+	@echo "Squeaky clean!"
 
 doc/xml/index.xml: $(CXX_SRC)
 	doxygen doc/tom.doxyfile
@@ -159,10 +165,10 @@ doc/xml/index.xml: $(CXX_SRC)
 swig/tomdoc.i: doc/doxy2swig/doxy2swig.py doc/xml/index.xml
 	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
 
-swig/tomlib_wrap.cpp: $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
+swig/tomlib_wrap.cpp: Makefile $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -DTOM_DEBUG -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
 
-python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp $(CXX_SRC)
+python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp
 	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cpp $(PY_LDFLAGS) $(LDFLAGS)
 
 .PHONY: test

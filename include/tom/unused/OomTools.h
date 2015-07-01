@@ -10,12 +10,6 @@
 
 namespace tom {
 
-/**
- * Create an OOM from a given HMM. The HMM parameters must be specified as follows:
- * @param T the state transition probabilities: \f$T_{i,j} = P(s_{t+1}=j | s_{t}=i)\f$
- * @param E the emission probabilities: \f$E_{i,j} = P(o_t=j | s_t=i)\f$
- * @param w the initial state probabilities: \f$w_i = P(s_0 = i)\f$.
- */
 SHARED_PTR<Oom> hmmToOom(const Eigen::MatrixXd& T, const Eigen::MatrixXd& E, const Eigen::VectorXd& w, bool transition_first = false); 
 
 

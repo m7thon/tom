@@ -28,10 +28,11 @@ public:
 	Oom() {};
   /**
    * Construct a simple (random) OOM of dimension \c dim that models a stochastic process with \c nO number of possible observations and \c nU number of possible inputs.\ The initial state will be set to the stationary state in the case of an output-only \c Oom.
+	 * @param dim the dimension of the OOM to construct
 	 * @param nO the size of the output alphabet
 	 * @param nU the size of the input alphabet (0 for an output-only \c Oom)
-	 * @param dim the dimension of the OOM to construct
 	 * @param exponent exponent of value distribution of tau operator matrix entries. When set to 1, the entries of matrices are sampled from a uniform distribution. Higher values lead to sample distributions that are increasingly skewed to the right, while a value of zero (default) will lead to an \c Oom that produces iud outputs.
+     * @param r a `Random` object to obtain randomness from
    */
   Oom(int dim, int nO, int nU = 0, double exponent = 0, const Random& r = Random());
   /** Construct an \c Oom from the string representation given by \c oomString\. This must correspond to what the \c toString member function produces. */

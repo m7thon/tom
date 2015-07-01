@@ -83,7 +83,7 @@ setup(
     url = "https://gitlab.com/m7.thon/tom",
     package_dir = {'': 'python'},
     ext_modules = tomlib_extension,
-    packages = ['tom'],
+    packages = ['tom', 'tom.hmm'],
     cmdclass={'build': PatchedBuild, 'install': PatchedInstall},
     test_suite = 'tests',
 )

@@ -1,8 +1,8 @@
-from . import tomlib as _tomlib
+from .. import tomlib as _tomlib
 import numpy as _np
 import scipy.linalg as _linalg
 
-from .tomlib import Hmm, EMStopCondition
+from ..tomlib import Hmm, EMStopCondition
 
 try:
     import ghmm

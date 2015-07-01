@@ -1,5 +1,5 @@
 /**
- * @file   OomTrain.h
+ * @file   Learner.h
  * @author Michael Thon <mthon@jacobs-university.de>
  * @date   Mon Aug  2 14:30:36 2010
  * 
@@ -21,14 +21,14 @@ public:
 	enum { NO_CACHE = 0, CACHE_F = 1, CACHE_W = 2, CACHE_FZ = 4, CACHE_WZ = 8, CACHE_CQ = 16 };
 	int nU_;       /**< the size of the input alphabet */
   int nO_;       /**< the size of the output alphabet */
-	int dim_;      /**< the target dimension of the \cOom model to be learnt */
+	int dim_;      /**< the target dimension of the \a Oom model to be learnt */
 	unsigned long seqLen_; /**< the length of the sample sequence to use for learning */
 	int weightingScheme_; /* how to use weights is the learning procedure -- if permitted by the chosen algorithm. The possible choices are:
 													 - NO_WEIGHTS: Don't use weights at all
 													 - FULL_WEIGHTS: Use all available weights
 													 - RC_WEIGHTS: Use only estimated row and column weights
 													 - RCREDUCED_WEIGHTS: Use row and column weights that are computed from the full weights */
-	int algorithm_; /**< which algorithm to use to estimate the \cOom model. Currently, the only choices are:
+	int algorithm_; /**< which algorithm to use to estimate the \a Oom model. Currently, the only choices are:
 										    - SVD_ALGO: Spectral learning
 												- EC_ALGO: Same as spectral learning, but the SVD is computed via EM */
 	int cache_;     /**< determines which values in the computation to cache */
@@ -37,9 +37,9 @@ public:
 	int ec_iterations_;
 	double ec_err_;
 
-	Sequence trainSequence_;    /**< the sample sequence from which to learn the \cOom model. */
-	stree::STree suffixTree_;   /**< a suffix tree representation of the \ctrainSequence_ or a subsequence */ 
-	Estimator estimator_;       /**< the \cEstimator to use to obtain estimates from the sample sequence. */
+	Sequence trainSequence_;    /**< the sample sequence from which to learn the \a Oom model. */
+	stree::STree suffixTree_;   /**< a suffix tree representation of the \a trainSequence_ or a subsequence */ 
+	Estimator estimator_;       /**< the \a Estimator to use to obtain estimates from the sample sequence. */
 	
 	SHARED_PTR<Sequences> characteristicSequences_;   /**< the set of characteristic sequences */
 	SHARED_PTR<Sequences> indicativeSequences_;       /**< the set of indicative sequences */

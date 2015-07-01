@@ -23,17 +23,17 @@ void reverseSequences(std::shared_ptr<Sequences> seqs) {
  * @param minSeqLen the minimum length for core sequences
  * @param maxSeqLen the maximum length for core sequences or -1, if \c maxSeqLen should equal \c minSeqLen
  * @param minCounts the minimum number of occurrence counts in the training sequence for core sequences
- * @param maxCoreSeqs the maximum number of core sequences to return, or -1 if unlimited
+ * @param maxCoreSeq the maximum number of core sequences to return, or -1 if unlimited
  * @param unique in case two seqences x and xy qualify such that x is always followed by y in the training sequence, then only the shorter sequence x is returned if \c unique is set to \c true.
  *
  * @return the core sequences
  */
 std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
-																		int minSeqLen = 0,
-																		int maxSeqLen = -1,
-																		int minCounts = 1,
-																		int maxCoreSeq = -1,
-																		bool unique = true) {
+                                         int minSeqLen = 0,
+                                         int maxSeqLen = -1,
+                                         int minCounts = 1,
+                                         int maxCoreSeq = -1,
+                                         bool unique = true) {
 	int IO = sfxTree->symbolSize_;
 	if (maxSeqLen <= minSeqLen) maxSeqLen = minSeqLen;
 	std::shared_ptr<Sequences> coreSeqs(new Sequences());

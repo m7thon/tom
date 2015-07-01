@@ -29,12 +29,12 @@ public:
 	LinearMembershipFunction();
 
 	/** 
-	 * constructs a dirac delta membership function at \cx
+	 * constructs a dirac delta membership function at \a x
 	 */
 	LinearMembershipFunction(double x);
 
 	/** 
-	 * setup a LinearMembershipFunction from the given \cpoints.
+	 * setup a LinearMembershipFunction from the given \a points.
 	 */
 	template <typename D>
 	void setPoints(const Eigen::MatrixBase<D>& points);
@@ -45,7 +45,7 @@ public:
 	void init();
 
 	/** 
-	 * evaluates this function at \cx
+	 * evaluates this function at \a x
 	 */
 	inline double value(double x) const;
 
@@ -60,7 +60,7 @@ public:
 	inline double sample() const;
 
 	/** 
-	 * returns the inner product of this membership function with another membership function \cf. I.e., if we denote this membership function by \cg, then \f$\langle f,g\rangle = \int f(x)g(x)\,dx\f$ is calculated.
+	 * returns the inner product of this membership function with another membership function \a f. I.e., if we denote this membership function by \a g, then \f$\langle f,g\rangle = \int f(x)g(x)\,dx\f$ is calculated.
 	 */
 	double operator*(const LinearMembershipFunction& f) const;
 	
@@ -96,11 +96,11 @@ private:
 	double w; /**< the integral of this membership function */
 	double m; /**< the mean of this membership function viewed as a distribution */
 	int nP; /**< the number of pieces that this piecewise defined function consists of */
-	Eigen::ArrayXXd P; /**< the data points that define this function. The data points of the form \f$(x, f(x))\f$ are sorted according to the \cx-coordinate. The entries of \cP have the following meaning:
-												- \cP(i,0) is the \cx-coordinate of the i-th data point
-												- \cP(i,1) is the value \f$f(x)\f$ of the i-th data point
-												- \cP(i,2) is the slope of the i-th piece (i.e., \f$(P(i+1,1) - P(i,1)) / (P(i+1,0) - P(i,0))\f$, or 0, if this expression is undefined)
-												- \cP(i,3) is the integral of the i-th piece */
+	Eigen::ArrayXXd P; /**< the data points that define this function. The data points of the form \f$(x, f(x))\f$ are sorted according to the \a x-coordinate. The entries of \a P have the following meaning:
+												- \a P(i,0) is the \a x-coordinate of the i-th data point
+												- \a P(i,1) is the value \f$f(x)\f$ of the i-th data point
+												- \a P(i,2) is the slope of the i-th piece (i.e., \f$(P(i+1,1) - P(i,1)) / (P(i+1,0) - P(i,0))\f$, or 0, if this expression is undefined)
+												- \a P(i,3) is the integral of the i-th piece */
 }; // class LinearMembershipFunction
 
 #ifdef SWIG
@@ -110,11 +110,11 @@ private:
 
 #ifndef SWIG
 /**
- * write the parameters of the LinearMembershipFunction \cf to the given output stream.
+ * write the parameters of the LinearMembershipFunction \a f to the given output stream.
  */
 std::ostream& operator<<(std::ostream& os, const LinearMembershipFunction& f);
 /** 
- * read the parameters of the LinearMembershipFunction \cf from the given input stream and initialize. The format must correspond to what the output functions produce.
+ * read the parameters of the LinearMembershipFunction \a f from the given input stream and initialize. The format must correspond to what the output functions produce.
  */
 std::istream& operator>>(std::istream& is, LinearMembershipFunction& f);
 #endif // SWIG

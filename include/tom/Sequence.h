@@ -5,58 +5,6 @@
 
 namespace tom {
     
-//#ifdef SWIG
-//%feature("docstring") Sequence "Sequence(length = 0, nO = 0, nU = 0)
-//    Sequence(seq, nO, nU = 0)
-//    Sequence(json_representation)";
-//#endif
-    
-//const char* dummy =
-// "Sequence(length = 0, nO = 0, nU = 0)\n"
-// "Sequence(seq, nO, nU = 0)\n"
-// "Sequence(json_representation)\n"
-// "\n"
-// "This object represents a sequence, subsequence view or io-sequence and stores the\n"
-// "size `nO` of the output and `nU` of the input alphabet. If the size of the input\n"
-// "alphabet is zero, this is just an ordinary sequence o_0...o_{N-1} of symbols o_t\n"
-// "with zero-based indexing. An io-sequence is represented as a simple sequence \n"
-// "u_0o_0...u_{N-1}o_{N-1} of input symbols u_t and output symbols o_t. For\n"
-// "io-sequences, we distinguish `size` and `length`: `size` is always the number of \n"
-// "symbols, while the `length` is the number of io symbol pairs, which is just the\n"
-// "`size` for ordinary sequences, and 2*`size` for (aligned) io-sequences.\n"
-// "\n"
-// "There are three ways to interact with this sequence:\n"
-// "  1) The `raw...` methods. These just access the sequence as an raw symbol\n"
-// "     sequence, treating each input or output symbol as a separate symbol. I.e.,\n"
-// "     for the io-sequence u_0o_0...u_{N-1}o_{N-1}, the `rawSize()` is 2*N, and \n"
-// "     `rawAt(i)` is u_{i/2} if i is even or o_{i/2} if i is odd. Etc.\n"
-// "  2) The methods not prefixed by `raw` treat each io-symbol pair as one symbol,\n"
-// "     i.e., `at(i)` is the symbol-pair (u_i, o_i) (actually, the subsequence at\n"
-// "     index i of length 1: `sub(i,1)`). The methods `u(i)` and `o(i)` return the\n"
-// "     input symbol u_i or respectively output symbol o_i, and the `length()` is\n"
-// "     the number of io symbol pairs N.\n"
-// "     For ordinary sequences these methods are equivalent to the `raw...` ones.\n"
-// "  3) Access using python []-syntax (including slicing) and python iteration just\n"
-// "     treats all sequences as raw symbol sequences, i.e., is equivalent to 1).\n"
-// "\n"
-// "This object always represents a view to underlying sequence data, i.e., copies,\n"
-// "slices and subsequences always point to the same underlying data. To obtain a\n"
-// "real deep copy, the `copy` member function is provided.\n"
-// "\n"
-// "Constructors\n"
-// "------------\n"
-// "Sequence(length = 0, nO = 0, nU = 0) -> a Sequence of given `length`, output\n"
-// "    alphabet size `nO` and input alphabet size `nU` initialized with zeros. In\n"
-// "    the case of an io-sequence (if `nU` != 0), the `size` will be 2 * `length`.\n"
-// "Sequence(symbol_list, nO, nU = 0) -> a Sequence of given output alphabet size `nO`\n"
-// "    and input alphabet size `nU` constructed from the given `symbol_list`, which\n"
-// "    may be a list [u_0, ..., u_{N-1}] (or [u_0, o_0, ..., u_{N-1}, o_{N-1}] for an\n"
-// "    io-sequence), or a std::vector<int>. The contents of `symbol_list` is copied.\n"
-// "Sequence(json_representation) -> a Sequence corresponding to the given string\n"
-// "    `json_representation`. The format should correspond to what `.toJSON()`\n"
-// "    produces.\n"
-// "\n";
-
 constexpr long NoIndex = std::numeric_limits<long>::min();
 
 SWIGCODE(%ignore SequenceData);
@@ -74,28 +22,37 @@ public:
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Sequence::repr;)
 SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::rawSize;)
-/**
- * This is the basic class to represent a sequence, subsequence view or io-sequence, and stores information about the size of the output and input alphabet\. If the size of the input alphabet is zero, this is just an ordinary sequence of symbols \f$ o_0\ldots o_{N-1}\f$\, with zero-based indexing\. Note that an io-sequence is represented as a simple sequence of inputs \f$u_t\f$ and outputs \f$o_t\f$, i.e., as \f$ u_0o_0\ldots u_{N-1}o_{N-1}\f$\. For such an io-sequence, the \c length is \c N, while the \c size is \c 2N\. The symbol \c at(n) is \f$u_{n/2}\f$ if \c n is even and \f$o_{(n-1)/2}\f$ if \c n is odd\. Conversely, the \c n-th input symbol \c u(n) is the symbol \c at(2n), and the \c n-th output symbol \c o(n) is the symbol \c at(2n+1).
+/** This object represents a sequence, subsequence view or io-sequence and stores the size `nO()` of the output and `nU()` of the input alphabet. If the size of the input alphabet is zero, this is just an ordinary sequence $o_0...o_{N-1}$ of symbols $o_t$ with zero-based indexing. An io-sequence is represented as a simple sequence $u_0o_0...u_{N-1}o_{N-1}$ of input symbols $u_t$ and output symbols $o_t$. For io-sequences, we distinguish *size* and *length*: *size* is always the number of symbols, while the *length* is the number of io symbol pairs, which is just the *size* for ordinary sequences, and 2 * *size* for (aligned) io-sequences.
+ 
+    There are three ways to interact with this sequence:
+    1. The `raw...()` methods. These just access the sequence as a raw symbol sequence, treating each input or output symbol as a separate symbol. I.e., for the io sequence $u_0o_0...u_{N-1}o_{N-1}$, the `rawSize()` is 2 * N, and `rawAt(i)` is $u_{i/2}$ if $i$ is even or $o_{i/2}$ if $i$ is odd. Etc.
+    2. The methods not prefixed by "raw" treat each io-symbol *pair* as one symbol: `at(i)` is the symbol-pair $(u_i, o_i)$ (actually, the subsequence at index $i$ of length 1: `sub(i,1)`), the methods `u(i)` and `o(i)` return the input symbol $u_i$ or respectively output symbol $o_i$, and the `length()` is the *length* of the sequence -- the number N of io symbol pairs. For ordinary sequences these methods are equivalent to the `raw...()` ones.
+    3. Access using python `[]`-syntax (including slicing) and python iteration just treats all sequences as raw symbol sequences (as in 1.).
+
+    This object always represents a view to underlying sequence data, i.e., copies, slices and subsequences always point to the same underlying data. To obtain a real deep copy, the `copy()` member function is provided.
  */
 class Sequence {
 public:
 	typedef Symbol value_type;
-
+    
 /** @name Constructors */
 //@{
-    /** Construct a \c Sequence with output alphabet size \c nO and input alphabet size \c nU from a given \c data vector.\ The \c data vector is copied, and the sequence is viewed as an input-output sequence if \c nU != 0. */
+    /** Construct a `Sequence` of given output alphabet size `nO` and input alphabet size `nU` from the given `symbol_list`. This may be a list `[u_0, ..., u_{N-1}]` (or `[u_0, o_0, ..., u_{N-1}, o_{N-1}]` for an io-sequence), or a `std::vector<int>`. The contents of `symbol_list` is copied.
+     */
     Sequence(const std::vector<Symbol>& symbol_list, Symbol nO, Symbol nU = 0) {
         data_ = std::make_shared<SequenceData>(symbol_list, nO, nU);
         size_ = data_->seq_.size();
     }
 
-    /** Construct a \c Sequence of zeros with output alphabet size \c nO and input alphabet size \c nU of a given \c length. */
+    /** Construct a `Sequence` of given `length`, output alphabet size `nO` and input alphabet size `nU` initialized with zeros. In the case of an io-sequence (if `nU != 0`), the `rawSize()` will be 2 * `length`.
+     */
     Sequence(long length = 0, Symbol nO = 0, Symbol nU = 0) {
         size_ = (1 + (nU != 0)) * length;
         data_ = std::make_shared<SequenceData>(rawSize(), nO, nU);
     }
 
-    /** Construct a \c Sequence from the given \c json_representation\. This must correspond to what the \c toJSON() member function produces. */
+    /** Construct a `Sequence` corresponding to the given string `json_representation`. The format must correspond to what `toJSON()` produces.
+     */
     Sequence(const std::string& json_representation) { fromJSON(json_representation.c_str()); }
 //@}
     
