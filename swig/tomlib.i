@@ -1,7 +1,7 @@
 /* -*- C -*-  (not really, but good for syntax highlighting) */
 %module(directors="1") tomlib
 %naturalvar;
-%feature("autodoc","1");
+//%feature("autodoc","1");
 
 %{ 
 #define SWIG_FILE_WITH_INIT

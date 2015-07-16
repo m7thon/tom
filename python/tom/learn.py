@@ -68,7 +68,7 @@ def identifySubspace(eF, dim, W = None):
     if W is None: # We don't use any weights
         U,s,VT = linalg.svd(eF)
         s = np.sqrt(s[:dim])
-        B = U[:,:dim] * s[None,:]; A = s[:,None] * V_T[:dim,:]
+        B = U[:,:dim] * s[None,:]; A = s[:,None] * VT[:dim,:]
     elif type(W) in [list, tuple]: # row/column weights
         wI = np.sqrt(W[0]); wJ = np.sqrt(W[1])
         if wI.ndim == 1: wI = wI[:,None]
@@ -89,13 +89,13 @@ def identifySubspace(eF, dim, W = None):
 def learnSpectral(estimator, X, Y, dimension = 0, weightExp = 0):
     """Spectral learning algorithm for (IO)-OOMs.
 
-    This function returns an (IO)-OOM that is estimated using the spectal
+    This function returns an (IO)-OOM that is estimated using the spectral
     learning algorithm. The training data is provided in the form of an
-    ``estimator`` together with sets of indicative and characteristic
-    sequences given by ``indicatives`` and ``characteristics``. The target
-    dimension may be specified by ``dimemsion``, otherwise it will be
+    "estimator" together with sets of indicative and characteristic
+    sequences given by "indicatives" and "characteristics". The target
+    dimension may be specified by "dimemsion", otherwise it will be
     selected numerically. Row and column weights will be taken into account
-    if the ``weightExp`` parameter is set to e.g. 1.
+    if the "weightExp" parameter is set to e.g. 1.
 
     Parameters
     ----------

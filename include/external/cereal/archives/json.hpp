@@ -365,7 +365,7 @@ namespace cereal
 
       //! Construct, reading from the provided stream
       /*! @param stream The stream to read from */
-		  JSONInputArchive(const char* stream) :
+      JSONInputArchive(const char* stream) :
         InputArchive<JSONInputArchive>(this),
         itsNextName( nullptr ),
         itsReadStream(stream)
