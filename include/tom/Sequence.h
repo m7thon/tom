@@ -22,11 +22,11 @@ public:
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Sequence::repr;)
 SWIGCODE(%feature("python:slot", "sq_length", functype="lenfunc") Sequence::rawSize;)
-/** This object represents a sequence, subsequence view or io-sequence and stores the size `nO()` of the output and `nU()` of the input alphabet. If the size of the input alphabet is zero, this is just an ordinary sequence $o_0...o_{N-1}$ of symbols $o_t$ with zero-based indexing. An io-sequence is represented as a simple sequence $u_0o_0...u_{N-1}o_{N-1}$ of input symbols $u_t$ and output symbols $o_t$. For io-sequences, we distinguish *size* and *length*: *size* is always the number of symbols, while the *length* is the number of io symbol pairs, which is just the *size* for ordinary sequences, and 2 * *size* for (aligned) io-sequences.
+/** This object represents a sequence, subsequence view or io-sequence and stores the size `nO()` of the output and `nU()` of the input alphabet. If the size of the input alphabet is zero, this is just an ordinary sequence \f$o_0...o_{N-1}\f$ of symbols \f$o_t\f$ with zero-based indexing. An io-sequence is represented as a simple sequence \f$u_0o_0...u_{N-1}o_{N-1}\f$ of input symbols \f$u_t\f$ and output symbols \f$o_t\f$. For io-sequences, we distinguish *size* and *length*: *size* is always the number of symbols, while the *length* is the number of io symbol pairs, which is just the *size* for ordinary sequences, and 2 * *size* for (aligned) io-sequences.
  
     There are three ways to interact with this sequence:
-    1. The `raw...()` methods. These just access the sequence as a raw symbol sequence, treating each input or output symbol as a separate symbol. I.e., for the io sequence $u_0o_0...u_{N-1}o_{N-1}$, the `rawSize()` is 2 * N, and `rawAt(i)` is $u_{i/2}$ if $i$ is even or $o_{i/2}$ if $i$ is odd. Etc.
-    2. The methods not prefixed by "raw" treat each io-symbol *pair* as one symbol: `at(i)` is the symbol-pair $(u_i, o_i)$ (actually, the subsequence at index $i$ of length 1: `sub(i,1)`), the methods `u(i)` and `o(i)` return the input symbol $u_i$ or respectively output symbol $o_i$, and the `length()` is the *length* of the sequence -- the number N of io symbol pairs. For ordinary sequences these methods are equivalent to the `raw...()` ones.
+    1. The `raw...()` methods. These just access the sequence as a raw symbol sequence, treating each input or output symbol as a separate symbol. I.e., for the io sequence \f$u_0o_0...u_{N-1}o_{N-1}\f$, the `rawSize()` is \f$2N\f$, and `rawAt(i)` is \f$u_{i/2}\f$ if \f$i\f$ is even or \f$o_{i/2}\f$ if \f$i\f$ is odd. Etc.
+    2. The methods not prefixed by "raw" treat each io-symbol *pair* as one symbol: `at(i)` is the symbol-pair \f$(u_i, o_i)\f$ (actually, the subsequence at index \f$i\f$ of length 1: `sub(i,1)`), the methods `u(i)` and `o(i)` return the input symbol \f$u_i\f$ or respectively output symbol \f$o_i\f$, and the `length()` is the *length* of the sequence -- the number N of io symbol pairs. For ordinary sequences these methods are equivalent to the `raw...()` ones.
     3. Access using python `[]`-syntax (including slicing) and python iteration just treats all sequences as raw symbol sequences (as in 1.).
 
     This object always represents a view to underlying sequence data, i.e., copies, slices and subsequences always point to the same underlying data. To obtain a real deep copy, the `copy()` member function is provided.
@@ -58,29 +58,37 @@ public:
     
 /** @name Accessors and Properties */
 //@{
-    /** Return the size of the input alphabet.\ If this is zero, then the \c Sequence is an ordinary sequence, else an io-sequence. */
+    /** Return the size of the input alphabet. If this is zero, then this is an ordinary sequence, else an io-sequence.
+     */
 	Symbol nU() const { return data_->nU_; }
     
-    /** Return the size of the output alphabet. */
+    /** Return the size of the output alphabet.
+     */
 	Symbol nO() const { return data_->nO_; }
     
-    /** Return \c true if this is an input-output sequence, i.e., if the input alphabet size \c nU is non-zero. */
+    /** Return \c true if this is an input-output sequence, i.e., if the input alphabet size \c nU() is non-zero.
+     */
     bool isIO() const { return ( nU() != 0 ); }
 //@}
     
 /** @name Interface as raw symbol sequence */
 //@{
-    /** Return the size of the represented sequence.\ Note that for an io-sequence this is the sum of the number of input symbols and output symbols.\ Generally, use \c length() instead. */
+    /** Return the *size* of the represented sequence, i.e., the raw symbol count, counting each input and output as one symbol. Generally, use `length()` instead.
+     */
 	long rawSize() const { return labs(size_); }
     
-    /** Return the n-th symbol, treating io-sequences as raw sequences. */
+    /** Return the symbol at index `idx`, treating io-sequences as raw sequences.
+     */
     Symbol rawAt(long idx) const CHECK(throw (std::out_of_range)) { return data_->seq_[ checkPos( rawIndexToPos( normalizeRawIndex( idx ) ) ) ]; }
     
-    /** Set the n-th symbol, treating io-sequences as raw sequences. */
+    /** Set the symbol at index `idx` to `x`, treating io-sequences as raw sequences. Negative indexing is supported.
+     */
     void rawAt(long idx, Symbol x) CHECK(throw (std::out_of_range)) { data_->seq_[ checkPos( rawIndexToPos( normalizeRawIndex( idx ) ) ) ] = x; }
 
-    /** Return a subsequence starting at the given position index \c n and of the given \c size. */
+    /** Return a subsequence starting at the given position index `idx` and of the given `size`, treating io-sequences as raw sequences. Negative indexing is supported, and if `size` is negative, a reverse sequence starting at the `idx` is returned.
+     */
     Sequence rawSub(long idx, long size) const CHECK(throw (std::out_of_range)) {
+        if (size == 0) { Sequence seq(*this); seq.size_ = 0; return seq; }
         idx = normalizeRawIndex( idx );
         long p1 = checkPos( rawIndexToPos( idx ) );
         long p2 = checkPos( rawIndexToPos( idx + size + (size > 0 ? -1 : 1) ) );
@@ -90,7 +98,8 @@ public:
         return seq;
     }
 
-    /** Return a slice from the \c begin position up to (and not including) the \c end position, or if \c forwards is set to \c false, backwards from the \c begin position up to (and not including) the \c end position\. Negative position values are counted from the end of the \c Sequence, with 0 being the first and -1 being the last position\. Furthermore, \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the \c Sequence. **/
+    /** Return a subsequence from the \c begin index up to (and not including) the \c end index, or if \c forwards is set to \c false, a reverse sequence from the \c begin position up to (and not including) the \c end position. Negative indexing is supported, and \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the sequence, depending on `reverse`.
+     */
     Sequence rawSlice(long begin = NoIndex, long end = NoIndex, bool forwards = true) const CHECK(throw (std::out_of_range)) {
         if (begin == NoIndex) { begin = forwards ? 0 : rawSize() - 1; }
         else { begin = normalizeRawIndex( begin ); }
@@ -100,40 +109,69 @@ public:
             CHECK( if (end < 0) throw std::out_of_range("sequence index out of range"); )
         }
         long size = end - begin;
-        CHECK( if ( (begin < 0) or (size < 0 and forwards) or (size > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
+        CHECK( if ( (begin < 0 and size != 0) or (size < 0 and forwards) or (size > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
         return rawSub(begin, size);
     }
 //}
     
-/** @name Interface as io-sequence */
+/** @name Standard interface */
 //@{
-
-    /** Return \c true if this is a reversed \c Sequence\. This is relevant for io-sequences, since the order of input and outputs is also reversed.*/
+    /** Return \c true if this is a reversed sequence. This is relevant for io-sequences, since the order of input and outputs is then also reversed.
+     */
     bool isReversed() const { return size_ < 0; }
-    
+        
+    /** Return `true` if this sequence is io-aligned with respect to its beginning in the underlying data, i.e., if either:
+        * this is a plain (non-io) sequence
+        * this io-sequence is not reversed and begins with an input symbol
+        * this io-sequence is reversed and ends with an input symbol
+     */
     bool isFrontAligned() const { return nU() == 0 or size_ == 0 or pos_ % 2 == 0; }
+
+    /** Return `true` if this sequence is io-aligned with respect to its end in the underlying data, i.e., if either:
+        * this is a plain (non-io) sequence
+        * this io-sequence is not reversed and ends with an output symbol
+        * this io-sequence is reversed and begins with an output symbol
+     */
     bool isBackAligned() const { return nU() == 0 or size_ == 0 or (pos_ + rawSize()) % 2 == 0; }
+
+    /** Return true if this sequence is io-aligned with respect to its underlying data, i.e., if it is front and back aligned.
+     */
     bool isAligned() const { return isFrontAligned() and isBackAligned(); }
 
+    /** Return the io symbol pair at index `idx`, where each index covers one io-pair. This returns `sub(idx, 1)`, so even for plain sequences, the return value is not a symbol. For plain sequences, generally use `rawAt(idx)` or `o(idx)` instead.
+     
+        Negative indexing is supported.
+     */
     Sequence at(long idx) const CHECK(throw (std::out_of_range)) { return sub(idx, 1); }
     
-    /** Return the output symbol at the \c n-th position. */
+    /** Return the output symbol at indx `idx`, where each index covers one io-pair. Negative indexing is supported.
+     */
     Symbol o(long idx) const CHECK(throw (std::out_of_range)) { return data_->seq_[ checkPos( indexToPos( normalizeIndex( idx ), true ) ) ]; }
 
-    /** Set the output symbol at the \c n-th posiiton. */
+    /** Set the output symbol at index `idx` to `o`, where each index covers one io-pair. Negative indexing is supported.
+     */
 	void o(long idx, Symbol o) CHECK(throw (std::out_of_range)) { data_->seq_[ checkPos( indexToPos( normalizeIndex( idx ), true ) ) ] = o; }
 
-    /** Return the input symbol at the \c n-th position, or zero if this is an output-only sequence. */
+    /** Return the input symbol at index `idx`, where each index covers one io-pair, or return zero if this is a plain (non-io) sequence. Negative indexing is supported.
+     */
     Symbol u(long idx) const CHECK(throw (std::out_of_range)) { if (nU() == 0) return 0; return data_->seq_[ checkPos( indexToPos( normalizeIndex( idx ), false ) ) ]; }
     
-    /** Set the output symbol at the \c n-th posiiton, or do nothing if this is an output-only sequence. */
+    /** Set the input symbol at index `idx` to `u`, where each index covers one io-pair, or do nothing if this is a plain (non-io) sequence. Negative indexing is supported.
+     */
 	void u(long idx, Symbol u) CHECK(throw (std::out_of_range)) { if (nU() == 0) return; data_->seq_[ checkPos( indexToPos( normalizeIndex( idx ), false ) ) ] = u; }
     
-    /** Return the length of this sequence\. For io-sequences this is the number of input-output symbols (i.e., time steps), which is generally half the size. */
+    /** Return the *length* of this sequence. For plain sequences this is the same as `rawSize()`. For (aligned) io-sequences this is the number of io-symbol pairs, which is half the *size*.
+     
+        For unaligned io-sequences, the *length* means the number of covered io-sequence-pair indices. Example:\n
+        For the io-sequence \f$o_0 u_1o_1 ... u_{N-2}o_{N-2} u_{N-1}\f$, which is neither front nor back aligned, the *length* is \f$N\f$, since \f$N\f$ io-pair indices are covered, but the *size* -- the number of raw symbols -- is only \f$2N - 2\f$.
+     */
     long length() const { return nU() == 0 ? rawSize() : isFrontAligned() ? (rawSize() + 1) / 2 : rawSize() / 2 + 1; }
 
+    /** Return a subsequence starting at the given position index `idx` and of the given `length`, where each index covers one io-pair. Negative indexing is supported, and if `length` is negative, a reverse sequence starting at the `idx` is returned.
+     */
     Sequence sub(long idx, long length) const CHECK(throw (std::out_of_range)) {
         if (nU() == 0) return rawSub(idx, length);
+        if (length == 0) { Sequence seq(*this); seq.size_ = 0; return seq; }
         // convert negatives and check:
         idx = normalizeIndex( idx );
         long last_idx;
@@ -147,8 +185,6 @@ public:
             if (last_idx < 0 or last_idx >= this_length) { throw std::out_of_range("sequence index out of range"); }
         }
 #endif
-        // deal with special case of length == 0 (needed!)
-        if (length == 0) { Sequence seq(*this); seq.size_ = 0; return seq; }
         // convert to positions:
         long p1 = indexToPos(      idx,  isReversed() );
         long p2 = indexToPos( last_idx, !isReversed() );
@@ -164,21 +200,24 @@ public:
         if (reverse) { seq.reverse(); }
         return seq;
     }
-    
+
+    /** Return a subsequence from the \c begin index up to (and not including) the \c end index, or if \c forwards is set to \c false, a reverse sequence from the \c begin position up to (and not including) the \c end position, where each index covers one io-pair. Negative indexing is supported, and \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the sequence, depending on `reverse`.
+     */
     Sequence slice(long begin, long end = NoIndex, bool forwards = true) const CHECK(throw (std::out_of_range)) {
-        if (begin == NoIndex) { begin = forwards ? 0 : length(); }
+        if (begin == NoIndex) { begin = forwards ? 0 : length() - 1; }
         else { begin = normalizeIndex( begin ); }
         if (  end == NoIndex) {   end = forwards ? length() : -1; }
         else { end = normalizeIndex( end ); }
         long length = end - begin;
-        CHECK( if ( (begin < 0) or (length < 0 and forwards) or (length > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
+        CHECK( if ( (begin < 0 and length != 0) or (length < 0 and forwards) or (length > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
         return sub(begin, length);
     }
 //@}
     
 /** @name Functionality */
 //@{
-	/** Return a deep copy of this \c Sequence, i\.e\., the copy will use its own memory. */
+	/** Return a deep copy of this \c Sequence, i\.e\., the copy will use its own memory.
+     */
     Sequence copy() const {
         Sequence seq(length(), nO(), nU());
         if (!isFrontAligned()) { seq.pos_++; }
@@ -187,10 +226,12 @@ public:
         return seq;
     }
 
-    /** Reverse the \c Sequnece.\ Note that this does not actually change the underlying data. */
+    /** Reverse this \c Sequnece.\ Note that this does not actually change the underlying data.
+     */
 	void reverse() { size_ = -size_; }
 
-	/** Return true if the given \c Sequence \c seq is equal to this \c Sequence */
+	/** Return \c true if the given \c Sequence \c seq is equal to this \c Sequence
+     */
 	bool operator ==(const Sequence& seq) const {
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0) or (rawSize() != seq.rawSize()) or (isFrontAligned() != seq.isFrontAligned())) return false;
 		if (nU() == 0 or ((isReversed() == seq.isReversed()))) {
@@ -212,7 +253,8 @@ public:
         else { pos_ += 1; size_ -= 1; }
 	}
 	
-	/** Count the number of occurrences of the given \c Sequence \c seq as a sub-sequence of this \c Sequence. */
+	/** Count the number of occurrences of the given \c Sequence \c seq as a sub-sequence of this \c Sequence.
+     */
 	unsigned int count(const Sequence& seq) const {
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0)) return 0;
 		if (seq.length() == 0) return length();
@@ -226,7 +268,7 @@ public:
 
 /** @name IO-functions */ //@{
 	INSERT_JSON_IO_FUNCTIONS()
-	/** return a representation to display in interactive python. */
+	/** return a string representation to display in python. */
 	std::string repr() const;
 private:
     template<class Archive>
@@ -259,7 +301,9 @@ private:
         else { pos_ = 0; }
         ar.setNextName("data"); ar.startNode();
         if (!haveSize) { cereal::size_type s; ar.loadSize(s); size_ = s; }
-        data_ = std::make_shared<SequenceData>((1 + (nU != 0)) * length(), nO, abs(nU));
+        int data_size = pos_ + rawSize();
+        if ((nU != 0) and (data_size % 2 != 0)) { data_size++; }
+        data_ = std::make_shared<SequenceData>(data_size, nO, nU);
         for (unsigned long i = 0; i < rawSize(); ++i) { ar.loadValue(data_->seq_.at( pos_ + i )); }
         ar.finishNode();
     }
@@ -271,7 +315,9 @@ private:
 	long size_ = 0;                 ///< The size (in Symbols) of this \c Sequence.\ Negative values indicate a reversed sequence
 	std::shared_ptr<SequenceData> data_; ///< a pointer to the underlying \c SequenceData
 
+    /** Return the corresponding raw index for a raw negative index (i.e., treating this as a non-io sequences). */
     long normalizeRawIndex(long idx) const { if (idx < 0) return idx + rawSize(); return idx; }
+    /** Return the corresponding io-index for a negative io-index. */
     long normalizeIndex(long idx) const { if (idx < 0) return idx + length(); return idx; }
         
     /** Helper function that returns the position in the underlying data for a given raw normalized index (i.e., treating this as a non-io sequences). */
@@ -281,7 +327,7 @@ private:
 		if (nU() == 0) return rawIndexToPos(idx);
 		return outputSymbol + ( isReversed() ? 2*((pos_ + rawSize() - 1)/2 - idx) : 2*(pos_/2 + idx) );
 	}
-    /** Check that the given position p in the underlying data is valid, i.e., assert pos_ <= p < pos_ + rawSize(), and return p. */
+    /** Check that the given position `p` in the underlying data is valid, i.e., assert `pos_ <= p < pos_ + rawSize()`, and return `p`. */
     long checkPos(long p) const CHECK(throw(std::out_of_range)) {
         CHECK( if (p < pos_ or p >= pos_ + rawSize()) { throw std::out_of_range("sequence index out of range"); } )
         return p;
@@ -291,6 +337,7 @@ private:
 
 // The following is some magic to make Sequence objects slice-able and iterable in python
 // MARK: python interface stuff
+SWIGCODE(%ignore stop_iteration;)
 struct stop_iteration {};
 #ifdef SWIG
 %extend Sequence {
@@ -307,6 +354,8 @@ struct stop_iteration {};
 		Py_ssize_t start, stop, step, sliceLen;
 		PySlice_GetIndicesEx(SWIGPY_SLICE_ARG(slice), (Py_ssize_t)$self->rawSize(), &start, &stop, &step, &sliceLen);
 		if (step != 1 and step != -1) { throw std::invalid_argument("slice step must be -1 or 1 for tom::Sequence objects."); }
+        if (start < 0) { start = tom::NoIndex; }
+        if (stop < 0) { stop = tom::NoIndex; }
         return $self->rawSlice(start, stop, step == 1);
     }
     Symbol __getitem__(long i) throw (std::out_of_range) {
