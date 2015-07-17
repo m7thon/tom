@@ -121,22 +121,26 @@ public:
     bool isReversed() const { return size_ < 0; }
         
     /** Return `true` if this sequence is io-aligned with respect to its beginning in the underlying data, i.e., if either:
-        * this is a plain (non-io) sequence
-        * this io-sequence is not reversed and begins with an input symbol
-        * this io-sequence is reversed and ends with an input symbol
+        - this is a plain (non-io) sequence
+        - this io-sequence is not reversed and begins with an input symbol
+        - this io-sequence is reversed and ends with an input symbol
      */
     bool isFrontAligned() const { return nU() == 0 or size_ == 0 or pos_ % 2 == 0; }
 
     /** Return `true` if this sequence is io-aligned with respect to its end in the underlying data, i.e., if either:
-        * this is a plain (non-io) sequence
-        * this io-sequence is not reversed and ends with an output symbol
-        * this io-sequence is reversed and begins with an output symbol
+        - this is a plain (non-io) sequence
+        - this io-sequence is not reversed and ends with an output symbol
+        - this io-sequence is reversed and begins with an output symbol
      */
     bool isBackAligned() const { return nU() == 0 or size_ == 0 or (pos_ + rawSize()) % 2 == 0; }
 
-    /** Return true if this sequence is io-aligned with respect to its underlying data, i.e., if it is front and back aligned.
+    /** Return true if this sequence is io-aligned at its beginning, i.e., if either:
+        - it is not reversed and front aligned
+        - it is reversed and back aligned
+     
+        This basically says that the first symbol of this sequence is what it is supposed to be: an input symbol if it is not reversed, or an output symbol otherwise.
      */
-    bool isAligned() const { return isFrontAligned() and isBackAligned(); }
+    bool isAligned() const { return isReversed() ? isBackAligned() : isFrontAligned(); }
 
     /** Return the io symbol pair at index `idx`, where each index covers one io-pair. This returns `sub(idx, 1)`, so even for plain sequences, the return value is not a symbol. For plain sequences, generally use `rawAt(idx)` or `o(idx)` instead.
      
@@ -237,12 +241,7 @@ public:
 		if (nU() == 0 or ((isReversed() == seq.isReversed()))) {
 			for (unsigned int i = 0; i < rawSize(); ++i) if (rawAt(i) != seq.rawAt(i)) return false;
 			return true;
-		} /* else { // can a reversed io-sequence equal a non-reversed one?
-			if (isAligned()) {
-				for (unsigned int i = 0; i < length(); ++i) if ((o(i) != seq.o(i)) or u(i) != seq.u(i)) return false;
-				return true;
-			}
-		} */
+		}
 		return false;
 	}
 
@@ -257,10 +256,11 @@ public:
      */
 	unsigned int count(const Sequence& seq) const {
 		if ((nU() == 0 and seq.nU() > 0) or (nU() > 0 and seq.nU() == 0)) return 0;
-		if (seq.length() == 0) return length();
+		if (seq.rawSize() == 0) return length();
 		unsigned int c = 0;
-        for (unsigned int i = 0; i <= length() - seq.length(); ++i) {
-            if (seq == (sub(i, seq.length()))) c++;
+        for (unsigned int i = 0; i <= rawSize() - seq.rawSize(); ++i) {
+            // This relies on the fact that io-sequences that are misaligned cannot be equal!
+            if (seq == (rawSub(i, seq.rawSize()))) c++;
         }
 		return c;
 	}
