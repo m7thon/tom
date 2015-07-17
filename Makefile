@@ -8,7 +8,7 @@
 #
 # However, this Makefile provides some useful targets:
 # * oldstyle:
-#       this allowd to build the toolkit without the setuptools.
+#       this allowed to build the toolkit without the setuptools.
 #       for this (and only for this!) modify the following part
 #       of this makefile to reflect your configuration
 # * clean:
@@ -106,12 +106,17 @@ build_gcc5_on_OSX:
 	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="$(EIGEN3_INCLUDE) -Wa,-q -Wa,-w -g0 -march=native -O3" python setup.py build_ext
 
 .PHONY: deploy_fast
-deploy_fast: swig/tomdoc.i
+deploy_fast: swig/tomlib_wrap.cpp
 	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -O0 -DTOM_DEBUG" python setup.py install --user
 
 .PHONY: deploy
-deploy: swig/tomdoc.i
+deploy: swig/tomlib_wrap.cpp
 	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py install --user
+
+.PHONY: test
+test: swig/tomlib_wrap.cpp
+	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py install --user
+	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py test
 
 .PHONY: install
 install:
@@ -171,8 +176,8 @@ swig/tomlib_wrap.cpp: Makefile $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
 python/tom/_tomlib.so: Makefile swig/tomlib_wrap.cpp
 	$(CXX) $(CXXFLAGS) $(OPT) $(PY_INCLUDE) $(INCLUDE) -shared -o python/tom/_tomlib.so swig/tomlib_wrap.cpp $(PY_LDFLAGS) $(LDFLAGS)
 
-.PHONY: test
-test: sandbox/test.cpp $(SRCS)
+.PHONY: sandbox
+sandbox: sandbox/test.cpp $(SRCS)
 	$(CXX) $(CXXFLAGS) $(OPT) $(INCLUDE) -o sandbox/test sandbox/test.cpp $(LDFLAGS)
 
 .PHONY: list
