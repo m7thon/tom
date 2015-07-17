@@ -3,6 +3,9 @@
 *.o
 *.pyc
 .idea
+.settings
+.project
+.cproject
 swig/tomlib_wrap.cxx
 swig/tomlib_wrap.cpp
 swig/tomlib_wrap.h
@@ -12,7 +15,9 @@ python/tom/tomlib.py
 build
 dist
 doc/html
+doc/latex
 doc/xml
 doc/tom.tag
+doc/dummydox
 python/tom.egg-info
 tom.egg-info
