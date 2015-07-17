@@ -45,8 +45,8 @@
 
 %include "../include/tom/stree/stree.h"
 %shared_ptr(stree::STree);
-%shared_ptr(std::vector<stree::Nidx>);
-%template(NidxVector) std::vector<stree::Nidx>;
+%shared_ptr(std::vector<stree::NodeId>);
+%template(NodeIdVector) std::vector<stree::NodeId>;
 
 %include "../include/tom/stree/STreeCore.h"
 %include "../include/tom/stree/STreeNode.h"

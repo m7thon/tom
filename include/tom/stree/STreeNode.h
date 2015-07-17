@@ -6,6 +6,8 @@
 #ifndef STREE_NODE_H
 #define STREE_NODE_H
 
+#include "stree.h"
+
 namespace stree {
 
 /**
@@ -18,7 +20,7 @@ public:
 	/** construct a \c STreeNode initialized as the root of the given \c stree */
 	STreeNode(const STree* stree) : stree_(stree), nidx_(ROOT) {}
 	/** construct a \c STreeNode initialized to the given \c node \c Nidx. */
-	STreeNode(const STree* stree, Nidx node) : stree_(stree), nidx_(node) {}
+	STreeNode(const STree* stree, NodeId node) : stree_(stree), nidx_(node) {}
 
 	/** return \c true if valid, otherwise return \c false. */
 	bool isValid() const { return stree_ and (nidx_ & VALID); }
@@ -29,7 +31,7 @@ public:
 
 	Idx index() const { return nidx_ & INDEX; }
 	Idx nodeIndex() const { return nidx_ & (INDEX | NODE); }
-	Nidx nidx() const { return nidx_; }
+	NodeId nidx() const { return nidx_; }
 
 	bool operator ==(const STreeNode& other) const { return ((nidx_ | COLOR) == (other.nidx() | COLOR)); }
 
@@ -43,12 +45,12 @@ public:
 	void child() { if (isValid() and isNode()) nidx_ = stree_->c(nidx_); else setValid(false); }
 	STreeNode getChild(Char chr) const { if (isValid() and isNode()) return STreeNode(stree_, stree_->c(nidx_, chr)); else return STreeNode(); }
 	void child(Char chr) {
-		if (isValid() and isNode()) { Nidx chld = stree_->c(nidx_, chr); if (chld & VALID) nidx_ = chld; else setValid(false); }
+		if (isValid() and isNode()) { NodeId chld = stree_->c(nidx_, chr); if (chld & VALID) nidx_ = chld; else setValid(false); }
 		else setValid(false);
 	}
 
 	STreeNode getSibling() const { if (isValid()) return STreeNode(stree_, stree_->sib(nidx_)); else return STreeNode(); }
-	void sibling() { if (isValid()) { Nidx sbl = stree_->sib(nidx_); if (sbl & VALID) nidx_ = sbl; else setValid(false); } }
+	void sibling() { if (isValid()) { NodeId sbl = stree_->sib(nidx_); if (sbl & VALID) nidx_ = sbl; else setValid(false); } }
 
 	STreeNode getSuffixLink() const {
 		if (isValid() and isNode() and (index() != 0)) return STreeNode(stree_, stree_->sl(nidx_) | VALID);
@@ -90,7 +92,7 @@ public:
 
 protected:
 	const STree* stree_;
-	Nidx nidx_;
+	NodeId nidx_;
 }; // class STreeNode
 
 
@@ -100,15 +102,15 @@ class STreeEdge : public STreeNode {
 public:
 	STreeEdge() : STreeNode(), parent_(NODE) {}
 	STreeEdge(const STree* stree) : STreeNode(stree), parent_(NODE) {}
-	STreeEdge(const STree* stree, Nidx nidx, Nidx parent) : STreeNode(stree, nidx), parent_(parent) {}
-	STreeEdge(const STreeNode& node, Nidx parent) : STreeNode(node), parent_(parent) {}
+	STreeEdge(const STree* stree, NodeId nidx, NodeId parent) : STreeNode(stree, nidx), parent_(parent) {}
+	STreeEdge(const STreeNode& node, NodeId parent) : STreeNode(node), parent_(parent) {}
 
 	Idx parentDepth() const { return stree_->d(this->parent_); }
 	STreeNode getParent() const { return STreeNode(stree_, parent_); }
  	STreeEdge getChild() const { return STreeEdge(STreeNode::getChild(), nidx_); }
-	void child() { Nidx par = nidx_; STreeNode::child(); if (isValid()) parent_ = par; }
+	void child() { NodeId par = nidx_; STreeNode::child(); if (isValid()) parent_ = par; }
 	STreeEdge getChild(Char chr) const { return STreeEdge(STreeNode::getChild(chr), nidx_); }
-	void child(Char chr) { Nidx par = nidx_; STreeNode::child(chr); if (isValid()) parent_ = par; }
+	void child(Char chr) { NodeId par = nidx_; STreeNode::child(chr); if (isValid()) parent_ = par; }
 	STreeEdge getSibling() const { return STreeEdge(STreeNode::getSibling(), parent_); }
 
 	String label() const { return STreeNode::label(parentDepth()); }
@@ -117,7 +119,7 @@ private:
 	using STreeNode::getSuffixLink;
 	using STreeNode::suffixLink;
 protected:
-	Nidx parent_;
+	NodeId parent_;
 }; // class STreeEdge
 
 
@@ -127,8 +129,8 @@ public:
 	STreePath() : STreeNode(), path() {}
 	STreePath(const STree* stree) : STreeNode(stree), path() {}
 
-	void child() { Nidx current = nidx_; STreeNode::child(); if (isValid()) path.push_back(current); }
-	void child(Char chr) { Nidx current = nidx_; STreeNode::child(chr); if (isValid()) path.push_back(current); }
+	void child() { NodeId current = nidx_; STreeNode::child(); if (isValid()) path.push_back(current); }
+	void child(Char chr) { NodeId current = nidx_; STreeNode::child(chr); if (isValid()) path.push_back(current); }
 	STreeNode getParent() const { if (path.empty()) return STreeNode(stree_, NODE); return STreeNode(stree_, path.back()); }
 	STreeNode getAncestor(Idx generations) const {
 		if (generations > path.size()) return STreeNode(stree_, NODE);
@@ -148,7 +150,7 @@ private:
 	using STreeNode::getSuffixLink;
 	using STreeNode::suffixLink;
 protected:
-	std::deque<Nidx> path;
+	std::deque<NodeId> path;
 }; // class STreePath
 
 

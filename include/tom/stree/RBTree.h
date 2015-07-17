@@ -9,6 +9,8 @@
 #ifndef RBTREE_H
 #define RBTREE_H
 
+#include "stree.h"
+
 namespace stree {
 
 /**

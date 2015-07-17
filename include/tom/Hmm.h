@@ -8,6 +8,8 @@
 #ifndef HMM_H
 #define HMM_H
 
+#include "tom.h"
+
 namespace tom {
 
 SWIGCODE(%feature("director") EMStopCondition;)

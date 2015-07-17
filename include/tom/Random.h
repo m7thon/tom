@@ -1,12 +1,7 @@
-/**
- * @file   Random.h
- * @author Michael Thon
- *
- * @brief  This file provides the \c Random class for random number generation.
- */
-
 #ifndef RANDOM_H
 #define RANDOM_H
+
+#include "tom.h"
 
 namespace tom {
 

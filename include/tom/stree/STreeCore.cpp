@@ -1,7 +1,9 @@
+#include "stree.h"
+
 namespace stree {
 
-Nidx& STree::c(const Nidx node, Char chr) {
-  Nidx *child = &(c(node));
+NodeId & STree::c(const NodeId node, Char chr) {
+  NodeId *child = &(c(node));
   if (key(*child, d(node)) == chr) return *child;
   child = &(l(*child));
   if (!(*child & VALID)) return *child;
@@ -9,18 +11,18 @@ Nidx& STree::c(const Nidx node, Char chr) {
   return rbt::find(l(*child), chr, RBTreeNodeTraits(this, d(node)));
 }
 
-const Nidx& STree::c(const Nidx node, Char chr) const {
+const NodeId & STree::c(const NodeId node, Char chr) const {
 	return const_cast<STree*>(this)->c(node, chr);
 }
 
 
-void STree::addChild(const Nidx node, Nidx newChild, Char chr) {
+void STree::addChild(const NodeId node, NodeId newChild, Char chr) {
   RBTreeNodeTraits rbnt(this, d(node));
-  Nidx* x = &(c(node));
+  NodeId * x = &(c(node));
   if (rbnt.less(chr, *x)) {
     l(newChild) = l(*x);
     r(newChild) = r(*x);
-    Nidx tmp = *x;
+    NodeId tmp = *x;
     *x = newChild;
     newChild = tmp;
   }
@@ -29,7 +31,7 @@ void STree::addChild(const Nidx node, Nidx newChild, Char chr) {
     if (rbnt.less(chr, *x)) {
       l(newChild) = l(*x);
       r(newChild) = r(*x);
-      Nidx tmp = *x;
+      NodeId tmp = *x;
       *x = newChild | COLOR;
       newChild = tmp;
     }
@@ -48,10 +50,10 @@ void STree::addChild(const Nidx node, Nidx newChild, Char chr) {
 }
 
 
-Nidx STree::sib(const Nidx node) const {
-  const Nidx* x = &(r(node));
+NodeId STree::sib(const NodeId node) const {
+  const NodeId * x = &(r(node));
   if (*x & VALID) { // find next sibling in rb-tree
-    for (const Nidx* tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x)))
+    for (const NodeId * tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x)))
       x = tmp;
     return *x;
   }
@@ -67,7 +69,7 @@ Nidx STree::sib(const Nidx node) const {
 		if (*x & COLOR) // node is first sibling
 			return *x;
 		else { // node is second sibling: return leftmost in rb-tree
-			for (const Nidx* tmp = x; *tmp & VALID; tmp = &(l(*x)))
+			for (const NodeId * tmp = x; *tmp & VALID; tmp = &(l(*x)))
 				x = tmp;
 			return *x;
 		}
@@ -77,8 +79,8 @@ Nidx STree::sib(const Nidx node) const {
 void STree::createNewLeaf(bool swap) {
 	// NOTE: this function invalidates the edgePtr of the currentPos
   if (!currentPos.isExplicit()) {
-    const Nidx oldEdge = *currentPos.edgePtr;
-    const Nidx newNode = (VALID | NODE | (*currentPos.edgePtr & COLOR) | (Idx)(nodes.size()));
+    const NodeId oldEdge = *currentPos.edgePtr;
+    const NodeId newNode = (VALID | NODE | (*currentPos.edgePtr & COLOR) | (Idx)(nodes.size()));
     *currentPos.edgePtr = newNode;
     currentPos.edgePtr = NULL; // ... since it is invalidated anyway by the following:
     if (swap and (at(pos) < at(currentPos.hIndex + currentPos.depth))) {
@@ -129,8 +131,8 @@ void STree::removeTemporaryInternalNodes() {
     Position currentPosOld = currentPos;
     currentPos.preCanonize(this);
     for (Idx nToDo = nTemporaryInternalNodes; nToDo > 0; nToDo--) {
-      Nidx newEdge = *(currentPos.edgePtr);
-      Nidx oldEdge = c(newEdge);
+      NodeId newEdge = *(currentPos.edgePtr);
+      NodeId oldEdge = c(newEdge);
       *(currentPos.edgePtr) = oldEdge;
       l(oldEdge) = l(newEdge);
       r(oldEdge) = r(newEdge);
@@ -193,7 +195,7 @@ void  STree::initialize(const String& text, Idx size, unsigned int symbolSize, b
 
 bool STree::Position::followChar(STree* stree, const Char chr) {
   if (isExplicit()) {
-    Nidx* nextNode = &(stree->c(node, chr));
+    NodeId * nextNode = &(stree->c(node, chr));
     if (!(*nextNode & VALID)) return false;
     edgePtr = nextNode;
     hIndex = stree->hi(*edgePtr);
@@ -244,7 +246,7 @@ void STree::annotate() {
 	if (currentPos.depth > 0) {
 		Position tempIntNode = currentPos;
 		tempIntNode.canonize(this);
-		for (Nidx tnode = tempIntNode.node; (tnode & INDEX) != 0; tnode = sl(tnode))
+		for (NodeId tnode = tempIntNode.node; (tnode & INDEX) != 0; tnode = sl(tnode))
 			nOccurrences[tnode & INDEX]++;
 	}
 	for (PostfixIterator it = PostfixIterator(this); it.isValid(); it.next()) {

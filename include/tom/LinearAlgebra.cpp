@@ -1,3 +1,5 @@
+#include "tom.h"
+
 namespace tom {
 
 #ifndef SWIG

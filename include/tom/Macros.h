@@ -1,6 +1,8 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#include "tom.h"
+
 #define TOM_CHECK
 // NOTE: The lowest and default checking level, especially when working from python, is
 //       TOM_CHECK. Define TOM_DEBUG for full checking (also in libraries) and TOM_NCHECK

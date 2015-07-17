@@ -1,13 +1,8 @@
-/**
- * @file   Oom.h
- * @author Michael Thon
- *
- * @brief  This file provides the basic functionality of observable operator models.
- */
-
 #ifndef OOM_H
 #define OOM_H
- 
+
+#include "tom.h"
+
 // SWIGCODE(%attribute(tom::Oom, int, nU, nU);)
 // SWIGCODE(%attribute(tom::Oom, int, maxSetback_, maxSetback, maxSetback);)
 namespace tom {

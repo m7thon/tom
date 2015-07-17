@@ -6,6 +6,8 @@
 #ifndef STREE_ITERATORS_H
 #define STREE_ITERATORS_H
 
+#include "stree.h"
+
 namespace stree {
 
 class PrefixIterator : public STreePath {

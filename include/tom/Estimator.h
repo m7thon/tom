@@ -8,6 +8,8 @@
 #ifndef ESTIMATOR_H
 #define ESTIMATOR_H
 
+#include "tom.h"
+
 namespace tom {
 
 double ApproxNormalCDFInverse(double p) {

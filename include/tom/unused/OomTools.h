@@ -1,12 +1,7 @@
-/**
- * @file   OomTools.h
- * @author Michael Thon
- * 
- * @brief  This file provides tools for working with OOMs.
- */
-
 #ifndef OOM_TOOLS_H_
 #define OOM_TOOLS_H_
+
+#include "../tom.h"
 
 namespace tom {
 

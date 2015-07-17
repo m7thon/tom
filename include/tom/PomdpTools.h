@@ -1,12 +1,7 @@
-/**
- * @file   PomdpTools.h
- * @author Michael Thon
- *
- * @brief  This file provides resources for dealing with POMDPs.
- */
-
 #ifndef POMDP_TOOLS_H
 #define POMDP_TOOLS_H
+
+#include "tom.h"
 
 namespace tom {
 

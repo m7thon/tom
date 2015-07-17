@@ -8,6 +8,8 @@
 #ifndef CORESEQUENCES_H
 #define CORESEQUENCES_H
 
+#include "tom.h"
+
 namespace tom {
 
 /** reverse all the sequences in the \c Sequences vector \c seqs. */
@@ -71,8 +73,8 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	return coreSeqs;
 }
 
-std::shared_ptr<std::vector<stree::Nidx> > getIndicativeSequenceNodes(stree::STree* reverseSTree, int minIndCount, int maxIndLen) {
-  std::shared_ptr<std::vector<stree::Nidx> > indNodes(new std::vector<stree::Nidx>);
+std::shared_ptr<std::vector<stree::NodeId> > getIndicativeSequenceNodes(stree::STree* reverseSTree, int minIndCount, int maxIndLen) {
+  std::shared_ptr<std::vector<stree::NodeId> > indNodes(new std::vector<stree::NodeId>);
   for (stree::DFSIterator node = stree::DFSIterator(reverseSTree); node.isValid(); node.next()) {
 		if (node.isFirstVisit()) {
 			if (node.count() < minIndCount) { node.setUpPass(); continue; }

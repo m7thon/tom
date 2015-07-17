@@ -1,13 +1,7 @@
-/**
- * @file   Learner.h
- * @author Michael Thon <mthon@jacobs-university.de>
- * @date   Mon Aug  2 14:30:36 2010
- * 
- * @brief  Functions for learning OOMs from data
- */
-
 #ifndef _OOM_TRAIN_H_
 #define _OOM_TRAIN_H_
+
+#include "../tom.h"
 
 #include <cstdlib>
 

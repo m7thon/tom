@@ -1,3 +1,5 @@
+#include "tom.h"
+
 namespace tom {
 
 // CONSTRUCTORS AND INITIALIZATION

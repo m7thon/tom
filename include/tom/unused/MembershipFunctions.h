@@ -1,14 +1,7 @@
-/**
- * @file   MembershipFunctions.h
- * @author Michael Thon
- * @date   Thursday Aug 4 2011
- * 
- * @brief  This file provides several classes for use as membership functions in blended continuous OOMs.
- * 
- */
-
 #ifndef __MEMBERSHIP_FUNCTIONS_H__
 #define __MEMBERSHIP_FUNCTIONS_H__
+
+#include "../tom.h"
 
 #include "RandTom.h"
 #include <iostream>

@@ -8,6 +8,8 @@
 #ifndef CEREAL_TOM_H
 #define CEREAL_TOM_H
 
+#include "tom.h"
+
 namespace tom {
 #define MVAR(AR, T) AR(cereal::make_nvp(#T, T ## _))
 #define VAR(AR, T) AR(cereal::make_nvp(#T, T))

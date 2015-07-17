@@ -1,13 +1,7 @@
-/**
- * @file   LinearAlgebra.h
- * @author Michael Thon
- *
- * @brief  This file provides several useful additional matrix functions.
- *
- */
-
 #ifndef LINEAR_ALGEBRA_H
 #define LINEAR_ALGEBRA_H
+
+#include "tom.h"
 
 namespace tom {
 

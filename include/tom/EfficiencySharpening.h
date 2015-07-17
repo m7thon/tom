@@ -8,9 +8,11 @@
 #ifndef EFFICIENCY_SHARPENING_H
 #define EFFICIENCY_SHARPENING_H
 
+#include "tom.h"
+
 namespace tom {
 
-std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::Nidx> > indNodes) throw (std::invalid_argument) {
+std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::NodeId> > indNodes) throw (std::invalid_argument) {
     if (oom.nU() != 0) throw std::invalid_argument("sharpenEfficiency does not work for IO-OOMs");
   Sequence seq = rStree.text_.rawSub(0, rStree.size_);
   auto room = oom.reverse();
