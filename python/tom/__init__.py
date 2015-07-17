@@ -7,4 +7,5 @@ from ._io import load, save
 #from .sequences import generateSequences, stringToSequence
 #from .learn import numericalRank, estimateDimension, identifySubspace, learnSpectral, learnWeightedSpectral
 from . import hmm
+from . import stree
 #from .tools import *
