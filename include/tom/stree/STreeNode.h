@@ -19,7 +19,7 @@ public:
 	STreeNode() : stree_(NULL), nidx_(NODE) {}
 	/** construct a \c STreeNode initialized as the root of the given \c stree */
 	STreeNode(const STree* stree) : stree_(stree), nidx_(ROOT) {}
-	/** construct a \c STreeNode initialized to the given \c node \c Nidx. */
+	/** construct a \c STreeNode initialized to the given \c node \c NodeId. */
 	STreeNode(const STree* stree, NodeId node) : stree_(stree), nidx_(node) {}
 
 	/** return \c true if valid, otherwise return \c false. */

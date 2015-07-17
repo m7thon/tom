@@ -5,7 +5,7 @@
 
 namespace stree {
 
-//Nidx BitFlags:
+//NodeId BitFlags:
 typedef uint32_t Idx;                   // the index "pointer" type to be used
 typedef uint32_t NodeId;
 

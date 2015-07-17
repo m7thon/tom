@@ -76,17 +76,17 @@ public:
   Idx d(const NodeId node) const { return (node & NODE) ? r(l(c(node))) : size_ - ((node & INDEX) * symbolSize_); }
 	/** Return the head index of the \c node, i.e., a position in the underlying \c text where the substring represented by the \c node can be found. */
   Idx hi(const NodeId node) const { return (node & NODE) ? r(c(node)) : (node & INDEX) * symbolSize_; }
-	/** Return the left \c Nidx\& of the given \c node. */
+	/** Return the left \c NodeId\& of the given \c node. */
   const NodeId & l(const NodeId node) const { return (node & NODE) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
-	/** Return the right \c Nidx\& of the given \c node. */
+	/** Return the right \c NodeId\& of the given \c node. */
   const NodeId & r(const NodeId node) const { return (node & NODE) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
-	/** Return the child \c Nidx\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
+	/** Return the child \c NodeId\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
   const NodeId & c(const NodeId node) const { return nodes[node & INDEX].c; }
-	/** Return the child \c Nidx\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c Nidx\& will be returned that corresponds to the place where the according child node would need to be inserted. */
+	/** Return the child \c NodeId\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c NodeId\& will be returned that corresponds to the place where the according child node would need to be inserted. */
 	const NodeId & c(const NodeId node, Char chr) const;
-	/** Return the suffix link \c Nidx\& of the given \c node. */
+	/** Return the suffix link \c NodeId\& of the given \c node. */
 	const NodeId & sl(const NodeId node) const { const NodeId * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); return *x; }
-	/** Return the next sibling (according to lexicographic ordering of edge labels) of the given \c node, or a null \c Nidx if no further sibling exists. */
+	/** Return the next sibling (according to lexicographic ordering of edge labels) of the given \c node, or a null \c NodeId if no further sibling exists. */
     NodeId sib(const NodeId node) const;
 
 	/** Return the character at index \c pos in the string represented by this suffix tree. */
@@ -98,13 +98,13 @@ public:
 	bool annotated_;                   //< true it this suffix tree is annotated (i.e., the number of occurrences of substrings are computed and stored in \c nOccurrences)
 
 private:
-	/** Return the \b non-const left \c Nidx\& of the given \c node. */
+	/** Return the \b non-const left \c NodeId\& of the given \c node. */
     NodeId & l(const NodeId node) { return (node & NODE) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
-	/** Return the \b non-const right \c Nidx\& of the given \c node. */
+	/** Return the \b non-const right \c NodeId\& of the given \c node. */
     NodeId & r(const NodeId node) { return (node & NODE) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
-	/** Return the \b non-const child \c Nidx\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
+	/** Return the \b non-const child \c NodeId\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
     NodeId & c(const NodeId node) { return nodes[node & INDEX].c; }
-	/** Return the \b non-const child \c Nidx\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c Nidx\& will be returned that corresponds to the place where the according child node would need to be inserted. */
+	/** Return the \b non-const child \c NodeId\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c NodeId\& will be returned that corresponds to the place where the according child node would need to be inserted. */
     NodeId & c(const NodeId node, Char chr);
   /** Set the depth of the given \c node to the given \c depth. */
   void d(const NodeId node, const Idx depth) { r(l(c(node))) = depth; }
@@ -131,27 +131,27 @@ private:
 	void annotate();
 
 private:
-	/** A \c LeafNode consists of a left and right \c Nidx. */
+	/** A \c LeafNode consists of a left and right \c NodeId. */
   class LeafNode {
 	public:
-		/** Create a \c LeafNode with zero (hence null) left and right \c Nidx. */
+		/** Create a \c LeafNode with zero (hence null) left and right \c NodeId. */
     LeafNode() : l(0), r(0) {}
-		/** Create a \c LeafNode with the given left (\c l_) and right (\c r_) \c Nidx. */
+		/** Create a \c LeafNode with the given left (\c l_) and right (\c r_) \c NodeId. */
     LeafNode(NodeId l_, NodeId r_) : l(l_), r(r_) {}
-    NodeId l; //< the left \c Nidx.
-		NodeId r; //< the right \c Nidx.
+    NodeId l; //< the left \c NodeId.
+		NodeId r; //< the right \c NodeId.
   };
 
-	/** An \c InternalNode consists of a left, right and child \c Nidx. */
+	/** An \c InternalNode consists of a left, right and child \c NodeId. */
   class InternalNode
   { public:
-		/** Create a \c LeafNode with zero (hence null) left, right and child \c Nidx. */
+		/** Create a \c LeafNode with zero (hence null) left, right and child \c NodeId. */
     InternalNode() : l(0), r(0), c(0) {}
-		/** Create a \c LeafNode with the given left (\c l_), right (\c r_) and child (\c c_) \c Nidx. */
+		/** Create a \c LeafNode with the given left (\c l_), right (\c r_) and child (\c c_) \c NodeId. */
     InternalNode(NodeId l_, NodeId r_, NodeId c_) : l(l_), r(r_), c(c_) {}
-    NodeId l; //< the left \c Nidx.
-		NodeId r; //< the right \c Nidx.
-    NodeId c; //< the child \c Nidx.
+    NodeId l; //< the left \c NodeId.
+		NodeId r; //< the right \c NodeId.
+    NodeId c; //< the child \c NodeId.
   };
 
 	/** An object specifying the node traits for the underlying red-black tree implementation. */
