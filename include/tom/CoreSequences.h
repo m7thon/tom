@@ -43,11 +43,11 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	stree::STreeEdge node = stree::STreeEdge(sfxTree);
 	std::priority_queue<stree::STreeEdge> nodeQueue;
 	nodeQueue.push(node);
-	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->text_.rawSub(0,0)); // handles root case
+	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->sequence_.rawSub(0,0)); // handles root case
 	while (!nodeQueue.empty() and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
 		node = nodeQueue.top();
 		nodeQueue.pop();
-		stree::Idx node_depth = node.depth();
+		stree::nidx_t node_depth = node.depth();
 		if (node_depth < IO * maxSeqLen) {
 			stree::STreeEdge child = node.getChild();
 			while (child.isValid()) {
@@ -57,15 +57,15 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 		}
 		if (node_depth < IO * minSeqLen) { continue; }
 		if (node_depth >= IO * maxSeqLen) node_depth = IO * maxSeqLen;
-		stree::Idx d = node.parentDepth() + 1; if ((IO == 2) and (d & 1)) d++;
+		stree::nidx_t d = node.parentDepth() + 1; if ((IO == 2) and (d & 1)) d++;
 		if (d < IO * minSeqLen) d = IO * minSeqLen;
 		if (unique) {
-			if (d <= node_depth) coreSeqs->push_back(sfxTree->text_.rawSub(node.headIndex(), d));
+			if (d <= node_depth) coreSeqs->push_back(sfxTree->sequence_.rawSub(node.headIndex(), d));
 		}
 		else {
-			stree::Idx head_index = node.headIndex();
+			stree::nidx_t head_index = node.headIndex();
 			while (d <= node_depth and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
-				coreSeqs->push_back(sfxTree->text_.rawSub(head_index, d));
+				coreSeqs->push_back(sfxTree->sequence_.rawSub(head_index, d));
 				d += IO;
 			}
 		}
@@ -73,8 +73,8 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	return coreSeqs;
 }
 
-std::shared_ptr<std::vector<stree::NodeId> > getIndicativeSequenceNodes(stree::STree* reverseSTree, int minIndCount, int maxIndLen) {
-  std::shared_ptr<std::vector<stree::NodeId> > indNodes(new std::vector<stree::NodeId>);
+std::shared_ptr<std::vector<stree::nidx_t> > getIndicativeSequenceNodes(stree::STree* reverseSTree, int minIndCount, int maxIndLen) {
+  std::shared_ptr<std::vector<stree::nidx_t> > indNodes(new std::vector<stree::nidx_t>);
   for (stree::DFSIterator node = stree::DFSIterator(reverseSTree); node.isValid(); node.next()) {
 		if (node.isFirstVisit()) {
 			if (node.count() < minIndCount) { node.setUpPass(); continue; }

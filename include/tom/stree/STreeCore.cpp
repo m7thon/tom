@@ -2,8 +2,8 @@
 
 namespace stree {
 
-NodeId & STree::c(const NodeId node, Char chr) {
-  NodeId *child = &(c(node));
+nidx_t & STree::c(const nidx_t node, Symbol chr) {
+  nidx_t *child = &(c(node));
   if (key(*child, d(node)) == chr) return *child;
   child = &(l(*child));
   if (!(*child & VALID)) return *child;
@@ -11,18 +11,18 @@ NodeId & STree::c(const NodeId node, Char chr) {
   return rbt::find(l(*child), chr, RBTreeNodeTraits(this, d(node)));
 }
 
-const NodeId & STree::c(const NodeId node, Char chr) const {
+const nidx_t & STree::c(const nidx_t node, Symbol chr) const {
 	return const_cast<STree*>(this)->c(node, chr);
 }
 
 
-void STree::addChild(const NodeId node, NodeId newChild, Char chr) {
+void STree::addChild(const nidx_t node, nidx_t newChild, Symbol chr) {
   RBTreeNodeTraits rbnt(this, d(node));
-  NodeId * x = &(c(node));
+  nidx_t * x = &(c(node));
   if (rbnt.less(chr, *x)) {
     l(newChild) = l(*x);
     r(newChild) = r(*x);
-    NodeId tmp = *x;
+    nidx_t tmp = *x;
     *x = newChild;
     newChild = tmp;
   }
@@ -31,7 +31,7 @@ void STree::addChild(const NodeId node, NodeId newChild, Char chr) {
     if (rbnt.less(chr, *x)) {
       l(newChild) = l(*x);
       r(newChild) = r(*x);
-      NodeId tmp = *x;
+      nidx_t tmp = *x;
       *x = newChild | COLOR;
       newChild = tmp;
     }
@@ -44,16 +44,16 @@ void STree::addChild(const NodeId node, NodeId newChild, Char chr) {
   }
   else { // This case is *only* called when adding the second child to the root
     *x = newChild | COLOR;
-    l(newChild) = NODE; // suffix link
+    l(newChild) = INTERNAL; // suffix link
     r(newChild) = 0; // d;
   }
 }
 
 
-NodeId STree::sib(const NodeId node) const {
-  const NodeId * x = &(r(node));
+nidx_t STree::sib(const nidx_t node) const {
+  const nidx_t * x = &(r(node));
   if (*x & VALID) { // find next sibling in rb-tree
-    for (const NodeId * tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x)))
+    for (const nidx_t * tmp = &(l(*x)); *tmp & VALID; tmp = &(l(*x)))
       x = tmp;
     return *x;
   }
@@ -61,7 +61,7 @@ NodeId STree::sib(const NodeId node) const {
     return *x | VALID;
 	}
   // special case: first, second, or last sibling
-	if (*x & NODE) { // must be last sibling;
+	if (*x & INTERNAL) { // must be last sibling;
 		return 0;
 	}
 	else { // first or second sibling
@@ -69,7 +69,7 @@ NodeId STree::sib(const NodeId node) const {
 		if (*x & COLOR) // node is first sibling
 			return *x;
 		else { // node is second sibling: return leftmost in rb-tree
-			for (const NodeId * tmp = x; *tmp & VALID; tmp = &(l(*x)))
+			for (const nidx_t * tmp = x; *tmp & VALID; tmp = &(l(*x)))
 				x = tmp;
 			return *x;
 		}
@@ -79,8 +79,8 @@ NodeId STree::sib(const NodeId node) const {
 void STree::createNewLeaf(bool swap) {
 	// NOTE: this function invalidates the edgePtr of the currentPos
   if (!currentPos.isExplicit()) {
-    const NodeId oldEdge = *currentPos.edgePtr;
-    const NodeId newNode = (VALID | NODE | (*currentPos.edgePtr & COLOR) | (Idx)(nodes.size()));
+    const nidx_t oldEdge = *currentPos.edgePtr;
+    const nidx_t newNode = (VALID | INTERNAL | (*currentPos.edgePtr & COLOR) | (nidx_t)(nodes.size()));
     *currentPos.edgePtr = newNode;
     currentPos.edgePtr = NULL; // ... since it is invalidated anyway by the following:
     if (swap and (at(pos) < at(currentPos.hIndex + currentPos.depth))) {
@@ -95,7 +95,7 @@ void STree::createNewLeaf(bool swap) {
       l(oldEdge) = VALID | COLOR | (leaves.size() - 1);
       r(oldEdge) = pos - currentPos.depth; // sets hi of the new internal node
     }
-		if (r(newNode) & (VALID | NODE | COLOR)) // the new node is organized in an RBTree structure
+		if (r(newNode) & (VALID | INTERNAL | COLOR)) // the new node is organized in an RBTree structure
 				rbt::fixThreading(newNode, RBTreeNodeTraits(this));
     // At this point we can set the suffix link leading TO this internal node:
     if (suffixLinkFrom & VALID) sl(suffixLinkFrom, newNode);
@@ -130,13 +130,13 @@ void STree::removeTemporaryInternalNodes() {
   if (nTemporaryInternalNodes > 0) {
     Position currentPosOld = currentPos;
     currentPos.preCanonize(this);
-    for (Idx nToDo = nTemporaryInternalNodes; nToDo > 0; nToDo--) {
-      NodeId newEdge = *(currentPos.edgePtr);
-      NodeId oldEdge = c(newEdge);
+    for (nidx_t nToDo = nTemporaryInternalNodes; nToDo > 0; nToDo--) {
+      nidx_t newEdge = *(currentPos.edgePtr);
+      nidx_t oldEdge = c(newEdge);
       *(currentPos.edgePtr) = oldEdge;
       l(oldEdge) = l(newEdge);
       r(oldEdge) = r(newEdge);
-			if (r(oldEdge) & (VALID | NODE | COLOR)) // the oldEdge is organized in an RBTree structure
+			if (r(oldEdge) & (VALID | INTERNAL | COLOR)) // the oldEdge is organized in an RBTree structure
 				rbt::fixThreading(oldEdge, RBTreeNodeTraits(this));
 			currentPos.node = sl(currentPos.node);
 			if (symbolSize_ > currentPos.depth) {
@@ -156,7 +156,7 @@ void STree::removeTemporaryInternalNodes() {
   }
 }
 
-void STree::extendTo(Idx size) {
+void STree::extendTo(nidx_t size) {
 	assert(size >= size_);
   size_ = size;
 	removeTemporaryInternalNodes();
@@ -164,7 +164,7 @@ void STree::extendTo(Idx size) {
   currentPos.canonize(this);
   while (pos < size_) {
     if ((currentPos.depth != 0) or (pos % symbolSize_ == 0)) {
-      while (!currentPos.followChar(this, at(pos))) {
+      while (!currentPos.followSymbol(this, at(pos))) {
 				createNewLeaf();
 				if (currentPos.depth == 0) break;
 				currentPos.followSuffixLink(this);
@@ -181,21 +181,21 @@ void STree::extendTo(Idx size) {
 	if (annotated_) annotate();
 }
 
-void  STree::initialize(const String& text, Idx size, unsigned int symbolSize, bool annotated) {
+void  STree::initialize(const Sequence& sequence, nidx_t size, unsigned int symbolSize, bool annotated) {
 	size_ = size; annotated_ = annotated; symbolSize_ = symbolSize;
-	text_ = text;
-	if (size_ == 0) size_ = text_.rawSize();
-  leaves.push_back(LeafNode((NODE), (0)));
-  nodes.push_back(InternalNode((NODE), (0), (VALID)));
+	sequence_ = sequence;
+	if (size_ == 0) size_ = sequence_.rawSize();
+  leaves.push_back(LeafNode((INTERNAL), (0)));
+  nodes.push_back(InternalNode((INTERNAL), (0), (VALID)));
   suffixLinkFrom = 0;
   pos = 1;
   nTemporaryInternalNodes = 0;
   extendTo(size_);
 }
 
-bool STree::Position::followChar(STree* stree, const Char chr) {
+bool STree::Position::followSymbol(STree* stree, const Symbol chr) {
   if (isExplicit()) {
-    NodeId * nextNode = &(stree->c(node, chr));
+    nidx_t * nextNode = &(stree->c(node, chr));
     if (!(*nextNode & VALID)) return false;
     edgePtr = nextNode;
     hIndex = stree->hi(*edgePtr);
@@ -205,7 +205,7 @@ bool STree::Position::followChar(STree* stree, const Char chr) {
       return false;
   }
   depth++;
-  if ((*edgePtr & NODE) and (stree->d(*edgePtr) == depth))
+  if ((*edgePtr & INTERNAL) and (stree->d(*edgePtr) == depth))
     node = *edgePtr;
   return true;
 }
@@ -223,7 +223,7 @@ void STree::Position::preCanonize(STree* stree) {
 
 void STree::Position::canonize(STree* stree) {
   preCanonize(stree);
-  if ((*edgePtr & NODE) and (stree->d(*edgePtr) == depth))
+  if ((*edgePtr & INTERNAL) and (stree->d(*edgePtr) == depth))
     node = *edgePtr;
 }
 
@@ -246,7 +246,7 @@ void STree::annotate() {
 	if (currentPos.depth > 0) {
 		Position tempIntNode = currentPos;
 		tempIntNode.canonize(this);
-		for (NodeId tnode = tempIntNode.node; (tnode & INDEX) != 0; tnode = sl(tnode))
+		for (nidx_t tnode = tempIntNode.node; (tnode & INDEX) != 0; tnode = sl(tnode))
 			nOccurrences[tnode & INDEX]++;
 	}
 	for (PostfixIterator it = PostfixIterator(this); it.isValid(); it.next()) {

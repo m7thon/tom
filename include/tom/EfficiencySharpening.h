@@ -12,9 +12,9 @@
 
 namespace tom {
 
-std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::NodeId> > indNodes) throw (std::invalid_argument) {
+std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std::shared_ptr<std::vector<stree::nidx_t> > indNodes) throw (std::invalid_argument) {
     if (oom.nU() != 0) throw std::invalid_argument("sharpenEfficiency does not work for IO-OOMs");
-  Sequence seq = rStree.text_.rawSub(0, rStree.size_);
+  Sequence seq = rStree.sequence_.rawSub(0, rStree.size_);
   auto room = oom.reverse();
   MatrixXf* CF_l = room->harvestStates(seq);
   // Note: CF_l is [c_0, ..., c_l] as in the paper, but differently ordered from matlab code
@@ -58,7 +58,7 @@ std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std
     MatrixXd CFz = MatrixXd::Zero(oom.dim(), indNodes->size());
     for (int i = 0; i < indNodes->size(); ++i) {
       stree::STreePos pos(&rStree); // root
-      pos.addChar(o); pos.addString(stree::STreeNode(&rStree, indNodes->at(i)).string());
+      pos.addSymbol(o); pos.addSequence(stree::STreeNode(&rStree, indNodes->at(i)).string());
       stree::STreeNode node = pos.edge();
       if (node.isValid()) {
         CFz.col(i) = node.isLeaf() ? CF_l->col(node.index()).cast<double>() : CF_i.col(node.index()).cast<double>();

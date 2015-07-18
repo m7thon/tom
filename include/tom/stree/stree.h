@@ -5,18 +5,17 @@
 
 namespace stree {
 
-//NodeId BitFlags:
-typedef uint32_t Idx;                   // the index "pointer" type to be used
-typedef uint32_t NodeId;
+typedef uint32_t nidx_t;                   // the index "pointer" type to be used
 
-const NodeId VALID  =    2147483648u; // (1 << 31) = 2**31 (highest bit)
-const NodeId NODE   =    1073741824u; // (1 << 30) = 2**30
-const NodeId COLOR  =     536870912u; // (1 << 29) = 2**29
-const NodeId INDEX  =     536870911u; // ~(7 << 29) = 2**29-1 (29 lowest bits)
-const NodeId ROOT   =   VALID | NODE; // corresponds to the root node of the suffix tree
+//nidx_t BitFlags:
+constexpr nidx_t VALID    =   1 << 31;
+constexpr nidx_t INTERNAL =   1 << 30;
+constexpr nidx_t COLOR    =   1 << 29;
+constexpr nidx_t INDEX    = ~(7 << 29);
+constexpr nidx_t ROOT = VALID | INTERNAL; // corresponds to the root node of the suffix tree
 
-typedef tom::Sequence String;
-typedef String::value_type Char;
+typedef tom::Sequence Sequence;
+typedef tom::Symbol Symbol;
 
 
 // forward declarations

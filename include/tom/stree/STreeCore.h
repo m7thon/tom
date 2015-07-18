@@ -29,100 +29,100 @@ public:
 	/** Create an uninitialized \c STree object. */
 	STree() {}
 
-	/** Create a suffix tree for a given \c text.
+	/** Create a suffix tree for a given \c sequence.
 	 *
-	 * \param text The text that should be represented by the suffix tree
-	 * \param size The size of the \c text that should be represented, or 0 if the entire text should be represented
-	 * \param symbolSize If set to 1, every suffix of the \c text is represented; if set to 2, only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
-	 * \param annotated \c true it the nodes should be annotated by the occurrence counts of the corresponding substrings in the \c text
+	 * \param sequence The sequence that should be represented by the suffix tree
+	 * \param size The size of the \c sequence that should be represented, or 0 if the entire sequence should be represented
+	 * \param symbolSize If set to 1, every suffix of the \c sequence is represented; if set to 2, only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
+	 * \param annotated \c true it the nodes should be annotated by the occurrence counts of the corresponding substrings in the \c sequence
 	 */
-  STree(const String& text, Idx size = 0, unsigned int symbolSize = 1, bool annotated = true) {
-		initialize(text, size, symbolSize, annotated);
+  STree(const Sequence& sequence, nidx_t size = 0, unsigned int symbolSize = 1, bool annotated = true) {
+		initialize(sequence, size, symbolSize, annotated);
 	};
 
 	/** (Re-)Initialize the \c STree object.
 	 *
-	 * \param text The text that should be represented by the suffix tree
-	 * \param size The size of the \c text that should be represented, or 0 if the entire text should be represented
-	 * \param symbolSize If set to 1, every suffix of the \c text is represented; if set to 2, only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
-	 * \param annotated \c true it the nodes should be annotated by the occurrence counts of the corresponding substrings in the \c text
+	 * \param sequence The sequence that should be represented by the suffix tree
+	 * \param size The size of the \c sequence that should be represented, or 0 if the entire sequence should be represented
+	 * \param symbolSize If set to 1, every suffix of the \c sequence is represented; if set to 2, only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
+	 * \param annotated \c true it the nodes should be annotated by the occurrence counts of the corresponding substrings in the \c sequence
 	 */
-  void initialize(const String& text, Idx size = 0, unsigned int symbolSize = 1, bool annotated = true);
+  void initialize(const Sequence& sequence, nidx_t size = 0, unsigned int symbolSize = 1, bool annotated = true);
 
-	/** Extend the suffix tree representation of the underlying \c text to the given \c size\. Note that the given \c size must be smaller or equal to the size of the underlying \c text\. If the string does not end with a unique terminal symbol, temporary internal nodes (that have only one child!) will be inserted into the edges for positions corresponding to suffixes of the input string. */
-  void extendTo(Idx size);
+	/** Extend the suffix tree representation of the underlying \c sequence to the given \c size\. Note that the given \c size must be smaller or equal to the size of the underlying \c sequence\. If the string does not end with a unique terminal symbol, temporary internal nodes (that have only one child!) will be inserted into the edges for positions corresponding to suffixes of the input string. */
+  void extendTo(nidx_t size);
 
   /** @name High-level suffix tree interface functions */ //@{
 
   /** Return the number of leaf nodes in the suffix tree. */
-	Idx nLeaves() const { return leaves.size(); }
+	nidx_t nLeaves() const { return leaves.size(); }
 
 	/** Return the number of internal nodes in the suffix tree. */
-	Idx nInternalNodes() const { return nodes.size(); }
+	nidx_t nInternalNodes() const { return nodes.size(); }
 
   /** Return the number of nodes (internal and leaves) in the suffix tree. */
-	Idx nNodes() const { return leaves.size() + nodes.size(); }
+	nidx_t nNodes() const { return leaves.size() + nodes.size(); }
   //@}
 
-  /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input text does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
+  /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
   STreeNode getDeepestVirtualLeafBranch();
 
-  /* Return the number of leaves below this \c node, which is the same as the number of occurrences of the substring corresponding to this \c node in the \c text. */
-	Idx n(const NodeId node) const { if (!((annotated_) and (node & VALID))) return 0;
-		if (node & NODE) return nOccurrences[node & INDEX]; else return 1;
+  /* Return the number of leaves below this \c node, which is the same as the number of occurrences of the substring corresponding to this \c node in the \c sequence. */
+	nidx_t n(const nidx_t node) const { if (!((annotated_) and (node & VALID))) return 0;
+		if (node & INTERNAL) return nOccurrences[node & INDEX]; else return 1;
 	}
 
 	/** Return the depth of the \c node, i.e., the size of the substring represented by the \c node. */
-  Idx d(const NodeId node) const { return (node & NODE) ? r(l(c(node))) : size_ - ((node & INDEX) * symbolSize_); }
-	/** Return the head index of the \c node, i.e., a position in the underlying \c text where the substring represented by the \c node can be found. */
-  Idx hi(const NodeId node) const { return (node & NODE) ? r(c(node)) : (node & INDEX) * symbolSize_; }
-	/** Return the left \c NodeId\& of the given \c node. */
-  const NodeId & l(const NodeId node) const { return (node & NODE) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
-	/** Return the right \c NodeId\& of the given \c node. */
-  const NodeId & r(const NodeId node) const { return (node & NODE) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
-	/** Return the child \c NodeId\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
-  const NodeId & c(const NodeId node) const { return nodes[node & INDEX].c; }
-	/** Return the child \c NodeId\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c NodeId\& will be returned that corresponds to the place where the according child node would need to be inserted. */
-	const NodeId & c(const NodeId node, Char chr) const;
-	/** Return the suffix link \c NodeId\& of the given \c node. */
-	const NodeId & sl(const NodeId node) const { const NodeId * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); return *x; }
-	/** Return the next sibling (according to lexicographic ordering of edge labels) of the given \c node, or a null \c NodeId if no further sibling exists. */
-    NodeId sib(const NodeId node) const;
+  nidx_t d(const nidx_t node) const { return (node & INTERNAL) ? r(l(c(node))) : size_ - ((node & INDEX) * symbolSize_); }
+	/** Return the head index of the \c node, i.e., a position in the underlying \c sequence where the substring represented by the \c node can be found. */
+  nidx_t hi(const nidx_t node) const { return (node & INTERNAL) ? r(c(node)) : (node & INDEX) * symbolSize_; }
+	/** Return the left \c nidx_t\& of the given \c node. */
+  const nidx_t & l(const nidx_t node) const { return (node & INTERNAL) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
+	/** Return the right \c nidx_t\& of the given \c node. */
+  const nidx_t & r(const nidx_t node) const { return (node & INTERNAL) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
+	/** Return the child \c nidx_t\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
+  const nidx_t & c(const nidx_t node) const { return nodes[node & INDEX].c; }
+	/** Return the child \c nidx_t\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c nidx_t\& will be returned that corresponds to the place where the according child node would need to be inserted. */
+	const nidx_t & c(const nidx_t node, Symbol chr) const;
+	/** Return the suffix link \c nidx_t\& of the given \c node. */
+	const nidx_t & sl(const nidx_t node) const { const nidx_t * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); return *x; }
+	/** Return the next sibling (according to lexicographic ordering of edge labels) of the given \c node, or a null \c nidx_t if no further sibling exists. */
+    nidx_t sib(const nidx_t node) const;
 
 	/** Return the character at index \c pos in the string represented by this suffix tree. */
-	Char at(Idx pos) const { return text_.rawAt(pos); }
+	Symbol at(nidx_t pos) const { return sequence_.rawAt(pos); }
 
-  String text_;            //< a copy of the underlying text for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree.
-  Idx size_;                         //< the size of the represented text
-  unsigned int symbolSize_;          //< 1 if every suffix of the text is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
+  Sequence sequence_;            //< a copy of the underlying sequence for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree.
+  nidx_t size_;                         //< the size of the represented sequence
+  unsigned int symbolSize_;          //< 1 if every suffix of the sequence is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
 	bool annotated_;                   //< true it this suffix tree is annotated (i.e., the number of occurrences of substrings are computed and stored in \c nOccurrences)
 
 private:
-	/** Return the \b non-const left \c NodeId\& of the given \c node. */
-    NodeId & l(const NodeId node) { return (node & NODE) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
-	/** Return the \b non-const right \c NodeId\& of the given \c node. */
-    NodeId & r(const NodeId node) { return (node & NODE) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
-	/** Return the \b non-const child \c NodeId\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
-    NodeId & c(const NodeId node) { return nodes[node & INDEX].c; }
-	/** Return the \b non-const child \c NodeId\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c NodeId\& will be returned that corresponds to the place where the according child node would need to be inserted. */
-    NodeId & c(const NodeId node, Char chr);
+	/** Return the \b non-const left \c nidx_t\& of the given \c node. */
+    nidx_t & l(const nidx_t node) { return (node & INTERNAL) ? nodes[node & INDEX].l : leaves[node & INDEX].l; }
+	/** Return the \b non-const right \c nidx_t\& of the given \c node. */
+    nidx_t & r(const nidx_t node) { return (node & INTERNAL) ? nodes[node & INDEX].r : leaves[node & INDEX].r; }
+	/** Return the \b non-const child \c nidx_t\& of the given \c node\. Note that \c node must specify an internal node and not a leaf. */
+    nidx_t & c(const nidx_t node) { return nodes[node & INDEX].c; }
+	/** Return the \b non-const child \c nidx_t\& of the given \c node corresponding to the given \c chr (which is the first character of the edge leading away from the \c node)\. If no corresponding child is found, the (null) \c nidx_t\& will be returned that corresponds to the place where the according child node would need to be inserted. */
+    nidx_t & c(const nidx_t node, Symbol chr);
   /** Set the depth of the given \c node to the given \c depth. */
-  void d(const NodeId node, const Idx depth) { r(l(c(node))) = depth; }
+  void d(const nidx_t node, const nidx_t depth) { r(l(c(node))) = depth; }
   /** Set the head index of the given \c node to the given \c headIndex. */
-  void hi(const NodeId node, const Idx headIndex) { r(c(node)) = headIndex; }
+  void hi(const nidx_t node, const nidx_t headIndex) { r(c(node)) = headIndex; }
   /** Set the suffix link of the given \c node to the given \c suffixLink. */
-  void sl(const NodeId node, NodeId suffixLink) { NodeId * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); *x = suffixLink & ~(VALID | COLOR); }
+  void sl(const nidx_t node, nidx_t suffixLink) { nidx_t * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); *x = suffixLink & ~(VALID | COLOR); }
 
   /** Add the node \c newChild as a new child according to the given \c chr (the first character of the edge leading from \c node to \c newChild) to the given \c node. */
-  void addChild(const NodeId node, NodeId newChild, Char chr);
+  void addChild(const nidx_t node, nidx_t newChild, Symbol chr);
 
 	/** Return the first character of the edge label leading from its parent to the \c node, where \c parentDepth specifies the depth of the parent node (this needs to be given since parent information is not stored in the suffix tree). */
-	Char key(const NodeId node, const Idx parentDepth) const { return at(hi(node) + parentDepth); }
+	Symbol key(const nidx_t node, const nidx_t parentDepth) const { return at(hi(node) + parentDepth); }
 
   /** Create a new leaf at the current position according to \c currentPos in the suffix tree\. If the \c currentPos is not an internal node, then a new internal node is created also\. The \c swap parameter only plays a role in the last case, and means, when set to \c false, that the new leaf will always be the second child of the new internal node, regardless of the correct ordering (this is used for \c temporary \c internal \c nodes)\. Finally, the suffix-link leading to this (new) node is set\. Note that this function invalidates the \c edgePtr of the \c currentPos ! */
   void createNewLeaf(bool swap = true);
 
-  /** Create internal nodes as if a terminal symbol was appended to the \c text at the current position\. These are needed to be able to count the number of occurrences of a substring by counting the number of leaves below the corresponding node. */
+  /** Create internal nodes as if a terminal symbol was appended to the \c sequence at the current position\. These are needed to be able to count the number of occurrences of a substring by counting the number of leaves below the corresponding node. */
   void createTemporaryInternalNodes();
 	/** Remove the temporary internal nodes created by \ref createTemporaryInternalNodes()\. After calling this function, the suffix tree can be extended further. */
   void removeTemporaryInternalNodes();
@@ -131,36 +131,36 @@ private:
 	void annotate();
 
 private:
-	/** A \c LeafNode consists of a left and right \c NodeId. */
+	/** A \c LeafNode consists of a left and right \c nidx_t. */
   class LeafNode {
 	public:
-		/** Create a \c LeafNode with zero (hence null) left and right \c NodeId. */
+		/** Create a \c LeafNode with zero (hence null) left and right \c nidx_t. */
     LeafNode() : l(0), r(0) {}
-		/** Create a \c LeafNode with the given left (\c l_) and right (\c r_) \c NodeId. */
-    LeafNode(NodeId l_, NodeId r_) : l(l_), r(r_) {}
-    NodeId l; //< the left \c NodeId.
-		NodeId r; //< the right \c NodeId.
+		/** Create a \c LeafNode with the given left (\c l_) and right (\c r_) \c nidx_t. */
+    LeafNode(nidx_t l_, nidx_t r_) : l(l_), r(r_) {}
+    nidx_t l; //< the left \c nidx_t.
+		nidx_t r; //< the right \c nidx_t.
   };
 
-	/** An \c InternalNode consists of a left, right and child \c NodeId. */
+	/** An \c InternalNode consists of a left, right and child \c nidx_t. */
   class InternalNode
   { public:
-		/** Create a \c LeafNode with zero (hence null) left, right and child \c NodeId. */
+		/** Create a \c LeafNode with zero (hence null) left, right and child \c nidx_t. */
     InternalNode() : l(0), r(0), c(0) {}
-		/** Create a \c LeafNode with the given left (\c l_), right (\c r_) and child (\c c_) \c NodeId. */
-    InternalNode(NodeId l_, NodeId r_, NodeId c_) : l(l_), r(r_), c(c_) {}
-    NodeId l; //< the left \c NodeId.
-		NodeId r; //< the right \c NodeId.
-    NodeId c; //< the child \c NodeId.
+		/** Create a \c LeafNode with the given left (\c l_), right (\c r_) and child (\c c_) \c nidx_t. */
+    InternalNode(nidx_t l_, nidx_t r_, nidx_t c_) : l(l_), r(r_), c(c_) {}
+    nidx_t l; //< the left \c nidx_t.
+		nidx_t r; //< the right \c nidx_t.
+    nidx_t c; //< the child \c nidx_t.
   };
 
 	/** An object specifying the node traits for the underlying red-black tree implementation. */
   class RBTreeNodeTraits
   {
   public:
-    typedef NodeId RBNodePtr;
-    typedef Char RBKey;
-    RBTreeNodeTraits(STree* bst_, Idx parentDepth_ = 0) : bst(bst_), parentDepth(parentDepth_) {}
+    typedef nidx_t RBNodePtr;
+    typedef Symbol RBKey;
+    RBTreeNodeTraits(STree* bst_, nidx_t parentDepth_ = 0) : bst(bst_), parentDepth(parentDepth_) {}
     bool less(RBKey k, RBNodePtr n) const { return (k < bst->key(n, parentDepth)); }
     bool equals(RBKey k, RBNodePtr n) const { return (k == bst->key(n, parentDepth)); }
     bool isNull(RBNodePtr n) const { return !(n & VALID); }
@@ -172,39 +172,39 @@ private:
     void setColor(RBNodePtr& n, bool c) const { if (c) n |= COLOR; else n &= ~COLOR; }
   private:
     STree* bst;
-    Idx parentDepth;
+    nidx_t parentDepth;
   }; // class RBTreeNodeTraits
 
   typedef RBTree<RBTreeNodeTraits> rbt;
 
-  /** A \c Position refers to the location in the suffix tree that corresponds to some substring of the represented \c String\. This position is unique, but can either be an expicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c STreePos instead! */
+  /** A \c Position refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an expicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c STreePos instead! */
 	class Position {
 	public:
 		/** Create a \c Position corresponding to the root of the suffix tree */
 		Position() : node(ROOT), hIndex(0), depth(0) { edgePtr = &node; }
 
-		NodeId node;     //< The last / deepest node on the path from the root to the represented position in the suffix tree
-		NodeId * edgePtr; //< If the represented position lies on an edge (i.e., it is an implicit internal node), then this is  a pointer from the parent \c node to the next node, which defines this edge. Otherwise, this is a pointer from the parent to the current \c node. Note that this pointer is invalidated by any change to the data structures underlying the suffix tree (the \c nodes and \c leaves arrays).
-		Idx hIndex;    //< The index in the underlying \c String corresponding to the represented substring
-		Idx depth;     //< The length of the represented substring = depth in the (uncompressed) suffix trie
+		nidx_t node;     //< The last / deepest node on the path from the root to the represented position in the suffix tree
+		nidx_t * edgePtr; //< If the represented position lies on an edge (i.e., it is an implicit internal node), then this is  a pointer from the parent \c node to the next node, which defines this edge. Otherwise, this is a pointer from the parent to the current \c node. Note that this pointer is invalidated by any change to the data structures underlying the suffix tree (the \c nodes and \c leaves arrays).
+		nidx_t hIndex;    //< The index in the underlying \c Sequence corresponding to the represented substring
+		nidx_t depth;     //< The length of the represented substring = depth in the (uncompressed) suffix trie
 
-		/** If the current STreePosition corresponds to the substring \c str, then attempt to move to \c str concatenated with \c chr\. Return true if this is successful, i.e., if \c str + \c chr is also a substring of the represented \c text. */
-		bool followChar(STree* stree, const Char chr);
+		/** If the current STreePosition corresponds to the substring \c str, then attempt to move to \c str concatenated with \c chr\. Return true if this is successful, i.e., if \c str + \c chr is also a substring of the represented \c sequence. */
+		bool followSymbol(STree* stree, const Symbol chr);
 		inline void preCanonize(STree* stree);
 		inline void canonize(STree* stree);
 		void followSuffixLink(STree* stree);
 		/** Return \c true if the \c STreePosition corresponds to an explicit node. */
-		bool isExplicit() const {return (*edgePtr & (NODE | INDEX)) == (node & (NODE | INDEX));}
+		bool isExplicit() const {return (*edgePtr & (INTERNAL | INDEX)) == (node & (INTERNAL | INDEX));}
 	}; // class Position
 
   std::vector<InternalNode> nodes;   //< the vector of internal nodes
   std::vector<LeafNode> leaves;      //< the vector of leaf nodes
-  Idx nTemporaryInternalNodes;       //< the number of temporary internal nodes created by \ref createTemporaryInternalNodes().
-	std::vector<Idx> nOccurrences;     //< for each internal node, the number of occurrences of the corresponding substring in the represented text.
+  nidx_t nTemporaryInternalNodes;       //< the number of temporary internal nodes created by \ref createTemporaryInternalNodes().
+	std::vector<nidx_t> nOccurrences;     //< for each internal node, the number of occurrences of the corresponding substring in the represented sequence.
 
 	Position currentPos;               //< the current position in the suffix tree construction
-  Idx pos;                           //< the position in the \c text corresponding to the current step in the construction process
-  NodeId suffixLinkFrom;
+  nidx_t pos;                           //< the position in the \c sequence corresponding to the current step in the construction process
+  nidx_t suffixLinkFrom;
 
 public:
 	std::string serialize() {

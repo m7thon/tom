@@ -37,11 +37,11 @@ class Estimator
 	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
 	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : stree_(sfxTree) {
 		s_.pos_ = stree::STreePos(stree_.get());
-		nO_ = sfxTree->text_.nO(); nU_ = stree_->text_.nU();
+		nO_ = sfxTree->sequence_.nO(); nU_ = stree_->sequence_.nU();
 		len_ = ( (nU_ == 0) ? stree_->size_ : stree_->size_ / 2 );
 		uProbs_ = Eigen::VectorXd::Ones(std::max(1, nU_));
 		for (Symbol u = 0; u < nU_; ++u) {
-			s_.pos_.setRoot(); s_.pos_.addChar(u);
+			s_.pos_.setRoot(); s_.pos_.addSymbol(u);
 			uProbs_(u) = (double)(s_.pos_.count()) / len_;
 		}
 		s_.pos_.setRoot();
@@ -185,10 +185,10 @@ private:
 	void reset(const State& s) { s_ = s; }
 
 	void extendBy(Symbol o, Symbol u = 0) {
-		if (nU_ == 0) s_.pos_.addChar(o);
+		if (nU_ == 0) s_.pos_.addSymbol(o);
 		else {
-			s_.pos_.addChar(u); double cu = s_.pos_.count();
-			s_.pos_.addChar(o); double co = s_.pos_.count();
+			s_.pos_.addSymbol(u); double cu = s_.pos_.count();
+			s_.pos_.addSymbol(o); double co = s_.pos_.count();
 			if (cu == 0) s_.f_ *= ( (double)(1) / nO_ );
 			else         s_.f_ *= ( (double)(co) / cu );
 			if (estimateVariance_) {
@@ -205,7 +205,7 @@ private:
 	}
 
 	void extendBy(const Sequence& seq) {
-		if (nU_ == 0) s_.pos_.addString(seq);
+		if (nU_ == 0) s_.pos_.addSequence(seq);
 		else for (unsigned int i = 0; i < seq.length(); ++i) extendBy(seq.o(i), seq.u(i));
 	}
 

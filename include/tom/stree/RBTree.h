@@ -1,11 +1,3 @@
-/**
- * @file   RBTree.h
- * @author Michael Thon
- * @date   Sun Jun 13 02:26:50 2010
- *
- * @brief This file provides an implementation of left-leaning red-black trees following the implementation in "Left-Leaning Red-Black Trees" by Robert Sedgewick from 2008.
- */
-
 #ifndef RBTREE_H
 #define RBTREE_H
 
@@ -62,7 +54,7 @@ class RBTreeNodeTraitsTemplate {
 
 
 /**
- * An implementation of red-black tree algorithms. The functions can be used with generic kinds of nodes that need to be specified by providing an \c RBTreeNodeTraits object when calling the functions.
+ * An implementation of left-leaning red-black trees following "Left-Leaning Red-Black Trees" by Robert Sedgewick from 2008. The functions can be used with generic kinds of nodes that need to be specified by providing an \c RBTreeNodeTraits object when calling the functions.
  *
  * Note that the red-black tree will be threaded if a \c NULL \c RBNodePtr can still address a node. This allows iterating over the stored values in their order merely by following the left or right pointers (even if \c NULL). The left-and rightmost \c RBNodePtr will be inherited from the left and right \c RBNodePtr of the original root, i.e., the first node \c RBNodePtr used in the first insertion operation when constructing the red-black tree, while every threaded right or left \c RBNodePtr will be set to the according \c RBNodePtr and then marked as a thread by calling the function \c setThread. It is up to the user to implement a suitable \c RBNodePtr structure to be able to distinguish the left-/rightmost \c RBNodePtr from a threaded \c RBNodePtr (e.g., if the color of nodes is stored in the \c RBNodePtr, even if \c NULL, then a threaded \c RBNodePtr may be \c NULL and colored red, while the left-/rightmost \c RBNodePtr may be \c NULL and black).
  */
