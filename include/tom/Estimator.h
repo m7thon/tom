@@ -59,8 +59,8 @@ class Estimator
 	/** return a variance estimate for the current estiamte */
 	double v(const Sequence& seq) { estimateVariance_ = true; reset(); extendBy(seq); eval(); return s_.v_; }
 
-  OUTMATRIXXD(F)
-  OUTMATRIXXD(V)
+  SWIGCODE(%apply Eigen::MatrixXd& OUTPUT { Eigen::MatrixXd& F };)
+  SWIGCODE(%apply Eigen::MatrixXd& OUTPUT { Eigen::MatrixXd& V };)
   /** return (in the output argument \c F) the matrix of estimates \f$\hat{F}^{I,J}=[\hat{f}(\bar{x}_j\bar{x}_i)]_{i,j}\f$ for the given set \c chaSeqs of characteristic sequences \f$\bar{x}_i\f$ and the set \c indSeqs of indicative sequences \f$\bar{x}_j\f$. */
 	void f(Eigen::MatrixXd& F, const Sequences& chaSeqs, const Sequences& indSeqs) {
 		unsigned int rows = chaSeqs.size(), cols = indSeqs.size();
@@ -153,8 +153,8 @@ class Estimator
 		}
 	}
 
-  CLEAROUTMATRIXXD(F)
-  CLEAROUTMATRIXXD(V)
+  SWIGCODE(%clear Eigen::MatrixXd& F;)
+  SWIGCODE(%clear Eigen::MatrixXd& V;)
 
 	int nO_;              ///< the size of the output alphabet
 	int nU_;              ///< the size of the input alphabet

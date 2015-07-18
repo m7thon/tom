@@ -206,11 +206,10 @@ bool Oom::setBack() {
 }
 
 Sequence Oom::generate(unsigned long length, Random& r, const Policy& policy) {
-	PG_INFO("Generating sequence")
   Sequence seq(length, nO_, nU_);
 	Symbol u,o;
 	for (unsigned long l = 0; l < length; l++) {
-		PG_MARK(l,length)
+		LOOP_PROGRESS("Generating sequence", l, length)
 		if (nU_ != 0) { // IO-OOM
 			u = (policy.nU_ == 0 ? r.integer(nU()) : policy.u(wt(), r));
 			condition(u);
@@ -224,15 +223,14 @@ Sequence Oom::generate(unsigned long length, Random& r, const Policy& policy) {
 			update(o);
 		}
 	}
-	PG_DONE
+	LOOP_DONE("Generating sequence")
 	return seq;
 }
 Sequence Oom::generate(unsigned long length, Random& r, double alpha, const Policy& policy) {
-	PG_INFO("Generating sequence")
   Sequence seq(length, nO_, nU_);
 	Symbol u,o;
 	for (unsigned long l = 0; l < length; l++) {
-		PG_MARK(l,length)
+		LOOP_PROGRESS("Generating sequence", l, length)
 		if (nU_ != 0) { // IO-OOM
 			u = (policy.nU_ == 0 ? r.integer(nU()) : policy.u(wt(), r));
 			condition(u);
@@ -246,7 +244,7 @@ Sequence Oom::generate(unsigned long length, Random& r, double alpha, const Poli
 			update(o);
 		}
 	}
-	PG_DONE
+	LOOP_DONE("Generating sequence")
 	return seq;
 }
 

@@ -116,16 +116,16 @@ private:
 	Learner& operator=(const Learner&);
 };
 
-TEMPLATE(C,Learner::C,MatrixMd)
-TEMPLATE(Q,Learner::Q,MatrixMd)
-TEMPLATE(F,Learner::F,MatrixMd)
-TEMPLATE(FI,Learner::FI,MatrixMd)
-TEMPLATE(FJ,Learner::FJ,MatrixMd)
-TEMPLATE(Fz,Learner::Fz,MatrixMd)
-TEMPLATE(W,Learner::W,MatrixMd)
-TEMPLATE(WI,Learner::WI,MatrixMd)
-TEMPLATE(WJ,Learner::WJ,MatrixMd)
-TEMPLATE(Wz,Learner::Wz,MatrixMd)
+SWIGCODE(%template(C) Learner::C<MatrixMd>;)
+SWIGCODE(%template(Q) Learner::Q<MatrixMd>;)
+SWIGCODE(%template(F) Learner::F<MatrixMd>;)
+SWIGCODE(%template(FI) Learner::FI<MatrixMd>;)
+SWIGCODE(%template(FJ) Learner::FJ<MatrixMd>;)
+SWIGCODE(%template(Fz) Learner::Fz<MatrixMd>;)
+SWIGCODE(%template(W) Learner::W<MatrixMd>;)
+SWIGCODE(%template(WI) Learner::WI<MatrixMd>;)
+SWIGCODE(%template(WJ) Learner::WJ<MatrixMd>;)
+SWIGCODE(%template(Wz) Learner::Wz<MatrixMd>;)
 
 
 

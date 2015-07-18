@@ -31,7 +31,6 @@
 %include "tomdoc.i"
 
 %include "../include/tom/tom.h"
-%include "../include/tom/Macros.h"
 %include "../include/tom/CerealTom.h"
 
 %include "../include/tom/LinearAlgebra.h"

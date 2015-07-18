@@ -26,7 +26,7 @@ double normalize(const Eigen::DenseBase<T>& mat) {
 	const_cast< Eigen::DenseBase<T>& >(mat) /= mat_sum;
 	return mat_sum;
 }
-TEMPLATE(normalize, normalize, MatrixMd)
+SWIGCODE(%template(normalize) normalize<MatrixMd>;)
 
 template <typename T>
 bool normalizeRows(const Eigen::DenseBase<T>& mat) {
@@ -38,7 +38,7 @@ bool normalizeRows(const Eigen::DenseBase<T>& mat) {
 	}
 	return true;
 }
-TEMPLATE(normalizeRows, normalizeRows, MatrixMd)
+SWIGCODE(%template(normalizeRows) normalizeRows<MatrixMd>;)
 
 template <typename T>
 bool normalizeCols(const Eigen::DenseBase<T>& mat) {
@@ -50,12 +50,12 @@ bool normalizeCols(const Eigen::DenseBase<T>& mat) {
 	}
 	return true;
 }
-TEMPLATE(normalizeCols, normalizeCols, MatrixMd)
+SWIGCODE(%template(normalizeCols) normalizeCols<MatrixMd>;)
 
 /**
  * return in the output argument \c AB the Kronecker-product \f$A\otimes B\f$ of the matrices \c A and \c B.
  */
-OUTMAP(AB)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& AB };)
 template <typename D1, typename D2, typename D3>
 void kron(const Eigen::MatrixBase<D1>& AB, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& B) {
 	const_cast<Eigen::MatrixBase<D1>&>(AB).derived().resize(A.rows() * B.rows(), A.cols() * B.cols());
@@ -65,8 +65,8 @@ void kron(const Eigen::MatrixBase<D1>& AB, const Eigen::MatrixBase<D2>& A, const
 		}
 	}
 }
-TEMPLATE(kron, kron, MatrixXd, MatrixMd, MatrixMd)
-CLEAROUTMAP(result)
+SWIGCODE(%template(kron) kron<MatrixXd, MatrixMd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& result;)
 
 template< typename D1, typename D2 >
 Eigen::MatrixXd kron(const Eigen::MatrixBase<D1>& A, const Eigen::MatrixBase<D2>& B) {
@@ -99,21 +99,21 @@ Eigen::MatrixXd kron(const Eigen::MatrixBase<D1>& A, const Eigen::MatrixBase<D2>
 /**
  * for the given matrix \c M of size m x n, return in the output argument \c result the matrix \f$(M^\top M)^{-1}M^\top\f$ if m >= n, or \f$M^\top(MM^\top)^{-1}\f$ if m < n, which is computed as the OLS solution X to \f$MX\approx I\f$, or \f$XM\approx I\f$, respectively, using a \c method from {"LLT" (default), "LDLT"}\. \b Note that for this the matrix \c M must not be rank deficient!
  */
-OUTMAP(result)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& result };)
 template< typename D1, typename D2 >
 void pinvFast(const Eigen::MatrixBase<D1>& result, const Eigen::MatrixBase<D2>& M, const std::string& method = "LLT");
-TEMPLATE(pinvFast, pinvFast, MatrixXd, MatrixMd)
-CLEAROUTMAP(result)
+SWIGCODE(%template(pinvFast) pinvFast<MatrixXd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& result;)
 
 
 /**
  * return in the output argument \c result the pseudoinverse \f$M^\dagger = \f$ of the given matrix \c M, computed using a \c method from {"BDCSVD" (default), "SVD"}\. All singular values below \c tolerance are treated as zero\. If \c tolerance = -1, the default tolerance is used.
  */
-OUTMAP(result)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& result };)
 template< typename D1, typename D2 >
 void pinv(const Eigen::MatrixBase<D1>& result, const Eigen::MatrixBase<D2>& M, double tolerance = -1, const std::string& method = "BDCSVD");
-TEMPLATE(pinv, pinv, MatrixXd, MatrixMd)
-CLEAROUTMAP(result)
+SWIGCODE(%template(pinv) pinv<MatrixXd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& result;)
 
 
 template< typename D >
@@ -125,52 +125,52 @@ void eigensolve(Eigen::VectorXcd& eigenvals, Eigen::MatrixXcd& eigenvecs, const 
 
 
 /** return in the output argument \c X the OLS solution the overdetermined problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the overdetermined problem \f$AX\approx M\f$, using a \c method from {"LLT" (default), "LDLT"}. **/
-OUTMAP(X)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& X };)
 template< typename D1, typename D2, typename D3 >
 void solveFastOLS(const Eigen::MatrixBase<D1>& X, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& M, bool transposed = false, const std::string& method = "LLT");
-TEMPLATE(solveFastOLS, solveFastOLS, MatrixXd, MatrixMd, MatrixMd)
-CLEAROUTMAP(X)
+SWIGCODE(%template(solveFastOLS) solveFastOLS<MatrixXd, MatrixMd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& X;)
 
 
 /** return in the output argument \c X the OLS solution to the problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the problem \f$AX\approx M\f$, using a \c method from {"BDCSVD" (default), "SVD"}. **/
-OUTMAP(X)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& X };)
 template< typename D1, typename D2, typename D3 >
 void solveOLS(const Eigen::MatrixBase<D1>& X, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& M, bool transposed = false, const std::string& method = "BDCSVD");
-TEMPLATE(solveOLS, solveOLS, MatrixXd, MatrixMd, MatrixMd)
-CLEAROUTMAP(X)
+SWIGCODE(%template(solveOLS) solveOLS<MatrixXd, MatrixMd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& X;)
 
 /** return in the output argument \c X the WLS solution the overdetermined problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the overdetermined problem \f$AX\approx M\f$, with element-wise weights \c W, using a \c method from {"LLT" (default), "LDLT"}. **/
-OUTMAP(X)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& X };)
 template< typename D1, typename D2 , typename D3, typename D4>
 void solveFastWLS(const Eigen::MatrixBase<D1>& X, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& M, const Eigen::MatrixBase<D4>& W, bool transposed = false, const std::string& method = "LLT");
-TEMPLATE(solveFastWLS, solveFastWLS, MatrixXd, MatrixMd, MatrixMd, MatrixMd)
-CLEAROUTMAP(X)
+SWIGCODE(%template(solveFastWLS) solveFastWLS<MatrixXd, MatrixMd, MatrixMd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& X;)
 
 /** return in the output argument \c X the WLS solution the problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the problem \f$AX\approx M\f$, with element-wise weights W given by \c sqrtW such that (\c sqrtW)^2 = W, using a \c method from {"BDCSVD" (default), "SVD"}. **/
-OUTMAP(X)
+SWIGCODE(%apply const Eigen::MatrixBase<Eigen::MatrixXd>& OUTPUT { const Eigen::MatrixBase<Eigen::MatrixXd>& X };)
 template< typename D1, typename D2 , typename D3, typename D4>
 void solveWLS(const Eigen::MatrixBase<D1>& X, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& M, const Eigen::MatrixBase<D4>& sqrtW, bool transposed = false, const std::string& method = "BDCSVD");
-TEMPLATE(solveWLS, solveWLS, MatrixXd, MatrixMd, MatrixMd, MatrixMd)
-CLEAROUTMAP(X)
+SWIGCODE(%template(solveWLS) solveWLS<MatrixXd, MatrixMd, MatrixMd, MatrixMd>;)
+SWIGCODE(%clear const Eigen::MatrixBase<Eigen::MatrixXd>& X;)
 
 /** return in the output argument \c X the GLS solution the overdetermined problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the overdetermined problem \f$AX\approx M\f$, with weights \c W, using a \c method from {"LLT" (default), "LDLT"}\. Note that \c W will in general be a matrix of size mn x mn for a matrix \c M of size m x n\. However, if a matrix \c W of size m x mn is passed, it is assumed that \c W = [W_1, W_2, ..., W_n] and the block-diagonal weight matrix D(W_1, W_2, ..., W_n) will be used. **/
-OUTMATRIXXD(X)
+SWIGCODE(%apply Eigen::MatrixXd& OUTPUT { Eigen::MatrixXd& X };)
 template< typename D1, typename D2 >
 void solveFastGLS(Eigen::MatrixXd& X, const Eigen::MatrixBase<D1>& A, const Eigen::MatrixXd& M, const Eigen::MatrixBase<D2>& W, bool transposed = false, const std::string& method = "LLT");
-TEMPLATE(solveFastGLS, solveFastGLS, MatrixMd, MatrixMd)
-CLEAROUTMATRIXXD(X)
+SWIGCODE(%template(solveFastGLS) solveFastGLS<MatrixMd, MatrixMd>;)
+SWIGCODE(%clear Eigen::MatrixXd& X;)
 
 /** return in the output argument \c X the GLS solution the overdetermined problem \f$XA\approx M\f$, or if \c transposed is set to \c true, to the overdetermined problem \f$AX\approx M\f$, with weights W given by \c S such that \f$S^\top S = W\f$, using a \c method from {"BDCSVD" (default), "SVD"}. **/
-OUTMATRIXXD(X)
+SWIGCODE(%apply Eigen::MatrixXd& OUTPUT { Eigen::MatrixXd& X };)
 template< typename D1, typename D2 >
 void solveGLS(Eigen::MatrixXd& X, const Eigen::MatrixBase<D1>& A, const Eigen::MatrixXd& M, const Eigen::MatrixBase<D2>& S, bool transposed = false, const std::string& method = "BDCSVD");
-TEMPLATE(solveGLS, solveGLS, MatrixMd, MatrixMd)
-CLEAROUTMATRIXXD(X)
+SWIGCODE(%template(solveGLS) solveGLS<MatrixMd, MatrixMd>;)
+SWIGCODE(%clear Eigen::MatrixXd& X;)
 
 /** return in the output arguments \c B and \c A (an approximation to) the best weighted rank-d approximation to \c M with element-wise weights \c W such that \f$\|BA - M\|_W\f$ is minimized.*/
 template< typename D1, typename D2 , typename D3, typename D4>
 double improveWLRA(const Eigen::MatrixBase<D1>& B, const Eigen::MatrixBase<D2>& A, const Eigen::MatrixBase<D3>& M, const Eigen::MatrixBase<D4>& W, double convergenceThreshold = 1e-5, int maxIterations = 100, const std::string& method = "BDCSVD");
-TEMPLATE(improveWLRA, improveWLRA, MatrixMd, MatrixMd, MatrixMd, MatrixMd)
+SWIGCODE(%template(improveWLRA) improveWLRA<MatrixMd, MatrixMd, MatrixMd, MatrixMd>;)
 
 
 // /** return the the elementwise-weighted total least squares (EW-TLS) solution \c X for \f$XA \approx B\f$ with weights \c WA and \c WB.\ Note that it is assumed that \c A and \c B are of size n-times-m with n << m and that \c A has full row rank. */
