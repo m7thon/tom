@@ -251,17 +251,17 @@ void STree::annotate() {
 	}
 	for (PostfixIterator it = PostfixIterator(this); it.isValid(); it.next()) {
 		if (it.isLeaf())
-			nOccurrences[it.getParent().index()]++;
+			nOccurrences[it.parent().index()]++;
 		else if (it.nAncestors() > 0) {
-			nOccurrences[it.getParent().index()] += nOccurrences[it.index()];
+			nOccurrences[it.parent().index()] += nOccurrences[it.index()];
 		}
 	}
 }
 
-STreeNode STree::getDeepestVirtualLeafBranch() {
+Node STree::getDeepestVirtualLeafBranch() {
   Position deepestVirtualLeafBranch = currentPos;
   deepestVirtualLeafBranch.canonize(this);
-  return STreeNode(this, deepestVirtualLeafBranch.node | VALID);
+  return Node(this, deepestVirtualLeafBranch.node | VALID);
 }
 
 } // namespace stree

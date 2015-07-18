@@ -23,16 +23,16 @@ std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std
 
   // (4) Associate reverse states with leaves and sum depth-first through suffix tree
   MatrixXf CF_i = MatrixXf::Zero(oom.dim(), rStree.nInternalNodes());
-  for (stree::STreeNode tnode = rStree.getDeepestVirtualLeafBranch(); tnode.isValid(); tnode.suffixLink()) {
+  for (stree::Node tnode = rStree.getDeepestVirtualLeafBranch(); tnode.isValid(); tnode.toSuffixlink()) {
     CF_i.col(tnode.index()) = CF_l->col(seq.length() - tnode.depth());
   }
   for (auto it = stree::PostfixIterator(&rStree); it.isValid(); it.next()) {
     // if (it.isLeaf()) CF_l.col(it.index()) = CF_l.col(it.headIndex());
     if (!(it.isLeaf())) {
-      stree::STreeNode child = it.getChild();
+      stree::Node child = it.child();
       while (child.isValid()) {
         CF_i.col(it.index()) += child.isLeaf() ? CF_l->col(child.index()) : CF_i.col(child.index());
-        child.sibling();
+        child.toSibling();
       }
     }
   }
@@ -46,7 +46,7 @@ std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std
   //     and compute tau operators
   MatrixXd CF = MatrixXd::Zero(oom.dim(), indNodes->size());
   for (int i = 0; i < indNodes->size(); ++i) {
-    stree::STreeNode indNode(&rStree, indNodes->at(i));
+    stree::Node indNode(&rStree, indNodes->at(i));
     CF.col(i) = indNode.isLeaf() ? CF_l->col(indNode.index()).cast<double>() : CF_i.col(indNode.index()).cast<double>();
   }
   RowVectorXd colSums = CF.colwise().sum().cwiseSqrt();
@@ -57,9 +57,9 @@ std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std
   for (Symbol o = 0; o < seq.nO(); ++o) {
     MatrixXd CFz = MatrixXd::Zero(oom.dim(), indNodes->size());
     for (int i = 0; i < indNodes->size(); ++i) {
-      stree::STreePos pos(&rStree); // root
-      pos.addSymbol(o); pos.addSequence(stree::STreeNode(&rStree, indNodes->at(i)).string());
-      stree::STreeNode node = pos.edge();
+      stree::Pos pos(&rStree); // root
+      pos.toSymbol(o); pos.toSequence(stree::Node(&rStree, indNodes->at(i)).asSequence());
+      stree::Node node = pos.edge();
       if (node.isValid()) {
         CFz.col(i) = node.isLeaf() ? CF_l->col(node.index()).cast<double>() : CF_i.col(node.index()).cast<double>();
       }

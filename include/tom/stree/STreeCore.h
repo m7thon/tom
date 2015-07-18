@@ -65,7 +65,7 @@ public:
   //@}
 
   /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
-  STreeNode getDeepestVirtualLeafBranch();
+  Node getDeepestVirtualLeafBranch();
 
   /* Return the number of leaves below this \c node, which is the same as the number of occurrences of the substring corresponding to this \c node in the \c sequence. */
 	nidx_t n(const nidx_t node) const { if (!((annotated_) and (node & VALID))) return 0;

@@ -10,56 +10,56 @@
 
 namespace stree {
 
-class PrefixIterator : public STreePath {
+class PrefixIterator : public Path {
 public:
-	PrefixIterator(const STree* stree) : STreePath(stree) {}
+	PrefixIterator(const STree* stree) : Path(stree) {}
 	void next() { assert(isValid());
-		child();
+		toChild();
 		if (isValid()) return;
-		setValid(); sibling();
+		setValid(); toSibling();
 		if (isValid()) return;
 		while(!isValid()) {
-			setValid(); parent();
+			setValid(); toParent();
 			if (!isValid()) return;
-			sibling();
+			toSibling();
 		}
 		return;
 	}
 };
 
-class PostfixIterator : public STreePath {
+class PostfixIterator : public Path {
 public:
-	PostfixIterator(const STree* stree) : STreePath(stree) {
-		while(isValid()) child();
+	PostfixIterator(const STree* stree) : Path(stree) {
+		while(isValid()) toChild();
 		setValid();
 	}
 	void next() { assert(isValid());
-		sibling();
-		if (!isValid()) { setValid(); parent(); return; }
-		while(isValid()) child();
+		toSibling();
+		if (!isValid()) { setValid(); toParent(); return; }
+		while(isValid()) toChild();
 		setValid();
 		return;
 	}
 };
 
-class DFSIterator : public STreePath {
+class DFSIterator : public Path {
 public:
-	DFSIterator(const STree* stree) : STreePath(stree), firstVisit(true) {}
+	DFSIterator(const STree* stree) : Path(stree), firstVisit(true) {}
 	void next() {
 		assert(isValid());
 		if (firstVisit) {
-			child();
+			toChild();
 			if (isValid()) return;
-			setValid(); sibling();
+			setValid(); toSibling();
 			if (isValid()) return;
 			firstVisit = false;
-			setValid(); parent();
+			setValid(); toParent();
 			return;
 		}
 		else {
-			sibling();
+			toSibling();
 			if (isValid()) { firstVisit = true; return; }
-			setValid(); parent();
+			setValid(); toParent();
 			return;
 		}
 	}

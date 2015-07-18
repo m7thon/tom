@@ -20,10 +20,10 @@ typedef tom::Symbol Symbol;
 
 // forward declarations
 class STree;
-class STreeNode;
-class STreeEdge;
-class STreePath;
-class STreePos;
+class Node;
+class Edge;
+class Path;
+class Pos;
 
 class PrefixIterator;
 class PostfixIterator;

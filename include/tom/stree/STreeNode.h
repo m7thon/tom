@@ -1,8 +1,3 @@
-/**
- * @file   STreeNode.h
- * @brief  This file provides several objects for navigating within the suffix tree structure.
- */
-
 #ifndef STREE_NODE_H
 #define STREE_NODE_H
 
@@ -10,62 +5,62 @@
 
 namespace stree {
 
-/**
- * This class represents a node in the suffix tree\. It contains a pointer internally to the \c STree that it belongs to.
+/** This class represents a node in the suffix tree\. It contains a pointer internally to the \c STree that it belongs to.
  */
-class STreeNode {
+class Node {
 public:
-  /** construct an uninitialized and invalid \c STreeNode */
-	STreeNode() : stree_(NULL), nidx_(INTERNAL) {}
-	/** construct a \c STreeNode initialized as the root of the given \c stree */
-	STreeNode(const STree* stree) : stree_(stree), nidx_(ROOT) {}
-	/** construct a \c STreeNode initialized to the given \c node \c nidx_t. */
-	STreeNode(const STree* stree, nidx_t node) : stree_(stree), nidx_(node) {}
+	/** construct an uninitialized and invalid \c Node */
+	Node() : stree_(NULL), nidx_(INTERNAL) {}
+	/** construct a \c Node initialized as the root of the given \c stree
+	 */
+	Node(const STree* stree) : stree_(stree), nidx_(ROOT) {}
+	/** construct a \c Node initialized to the given \c nidx.
+	 */
+	Node(const STree* stree, nidx_t nidx) : stree_(stree), nidx_(nidx) {}
 
-	/** return \c true if valid, otherwise return \c false. */
+	/** return \c true if valid, otherwise return \c false.
+	 */
 	bool isValid() const { return stree_ and (nidx_ & VALID); }
+
+	/** mark this \c Node as \c valid (or invalid, if \c valid is \c false).
+	 */
 	void setValid(bool valid = true) { if (valid) nidx_ |= VALID; else nidx_ &= ~VALID;}
-	bool isNode() const { return (nidx_ & INTERNAL); }
-	bool isLeaf() const { return !isNode(); }
-  bool isRoot() const { return isNode() and index() == 0; }
+	bool isInternal() const { return (nidx_ & INTERNAL); }
+	bool isLeaf() const { return !isInternal(); }
+	bool isRoot() const { return isInternal() and index() == 0; }
 
 	nidx_t index() const { return nidx_ & INDEX; }
 	nidx_t nodeIndex() const { return nidx_ & (INDEX | INTERNAL); }
 	nidx_t nidx() const { return nidx_; }
 
-	bool operator ==(const STreeNode& other) const { return ((nidx_ | COLOR) == (other.nidx() | COLOR)); }
-
-	bool operator <(const STreeNode& other) const { return count() < other.count(); }
+	bool operator ==(const Node& other) const { return ((nidx_ | COLOR) == (other.nidx() | COLOR)); }
+	bool operator <(const Node& other) const { return count() < other.count(); }
 
 	nidx_t depth() const { return stree_->d(nidx_); }
 	nidx_t headIndex() const { return stree_->hi(nidx_); }
 	nidx_t count() const { return stree_->n(nidx_); }
 
-	STreeNode getChild() const { if (isValid() and isNode()) return STreeNode(stree_, stree_->c(nidx_)); else return STreeNode(); }
-	void child() { if (isValid() and isNode()) nidx_ = stree_->c(nidx_); else setValid(false); }
-	STreeNode getChild(Symbol chr) const { if (isValid() and isNode()) return STreeNode(stree_, stree_->c(nidx_, chr)); else return STreeNode(); }
-	void child(Symbol chr) {
-		if (isValid() and isNode()) { nidx_t chld = stree_->c(nidx_, chr); if (chld & VALID) nidx_ = chld; else setValid(false); }
+	Node child() const { if (isValid() and isInternal()) return Node(stree_, stree_->c(nidx_)); else return Node(); }
+	void toChild() { if (isValid() and isInternal()) nidx_ = stree_->c(nidx_); else setValid(false); }
+	Node child(Symbol chr) const { if (isValid() and isInternal()) return Node(stree_, stree_->c(nidx_, chr)); else return Node(); }
+	void toChild(Symbol chr) {
+		if (isValid() and isInternal()) { nidx_t chld = stree_->c(nidx_, chr); if (chld & VALID) nidx_ = chld; else setValid(false); }
 		else setValid(false);
 	}
 
-	STreeNode getSibling() const { if (isValid()) return STreeNode(stree_, stree_->sib(nidx_)); else return STreeNode(); }
-	void sibling() { if (isValid()) { nidx_t sbl = stree_->sib(nidx_); if (sbl & VALID) nidx_ = sbl; else setValid(false); } }
+	Node sibling() const { if (isValid()) return Node(stree_, stree_->sib(nidx_)); else return Node(); }
+	void toSibling() { if (isValid()) { nidx_t sbl = stree_->sib(nidx_); if (sbl & VALID) nidx_ = sbl; else setValid(false); } }
 
-	STreeNode getSuffixLink() const {
-		if (isValid() and isNode() and (index() != 0)) return STreeNode(stree_, stree_->sl(nidx_) | VALID);
-		else return STreeNode();
+	Node suffixlink() const {
+		if (isValid() and isInternal() and (index() != 0)) return Node(stree_, stree_->sl(nidx_) | VALID);
+		else return Node();
 	}
-	void suffixLink() {
-		if (isValid() and isNode() and (index() != 0)) { nidx_ = stree_->sl(nidx_) | VALID; }
+	void toSuffixlink() {
+		if (isValid() and isInternal() and (index() != 0)) { nidx_ = stree_->sl(nidx_) | VALID; }
 		else { setValid(false); }
 	}
 
-	Sequence string() const { return stree_->sequence_.rawSub(headIndex(), depth()); }
-	Sequence label(nidx_t parentDepth) const {
-		assert(parentDepth <= depth());
-		return stree_->sequence_.rawSub(headIndex() + parentDepth, depth() - parentDepth);
-	}
+	Sequence asSequence() const { return stree_->sequence_.rawSub(headIndex(), depth()); }
 
 	std::string dataStr(int width = 5) const {
 		assert(isValid());
@@ -74,9 +69,9 @@ public:
 			<< " | hi = " << std::setw(4) << headIndex()
 			<< " | d = " << std::setw(4) << depth()
 			<< " | n = " << std::setw(4) << count();
-		if (isNode()) {
-			s << " | c = " << getChild().indexStr(width)
-				<< " | sl = " << getSuffixLink().indexStr(width);
+		if (isInternal()) {
+			s << " | c = " << child().indexStr(width)
+				<< " | sl = " << suffixlink().indexStr(width);
 		}
 		s << " ]";
 		return s.str();
@@ -84,7 +79,7 @@ public:
 
 	std::string indexStr(int width = 5) const {
 		std::stringstream s;
-		s << (isValid() ? (isNode() ? "N" : "L") : (isNode() ? "n" : "l"))
+		s << (isValid() ? (isInternal() ? "N" : "L") : (isInternal() ? "n" : "l"))
 			<< ((nidx_ & COLOR) ? std::setfill(':') : std::setfill('.'))
 			<< std::setw(width-2) << (nidx_ & INDEX);
 		return s.str();
@@ -97,74 +92,75 @@ protected:
 
 
 
-class STreeEdge : public STreeNode {
-	friend class STreePos;
+class Edge : public Node {
+	friend class Pos;
 public:
-	STreeEdge() : STreeNode(), parent_(INTERNAL) {}
-	STreeEdge(const STree* stree) : STreeNode(stree), parent_(INTERNAL) {}
-	STreeEdge(const STree* stree, nidx_t nidx, nidx_t parent) : STreeNode(stree, nidx), parent_(parent) {}
-	STreeEdge(const STreeNode& node, nidx_t parent) : STreeNode(node), parent_(parent) {}
+	Edge() : Node(), parent_(INTERNAL) {}
+	Edge(const STree* stree) : Node(stree), parent_(INTERNAL) {}
+	Edge(const STree* stree, nidx_t nidx, nidx_t parent) : Node(stree, nidx), parent_(parent) {}
+	Edge(const Node& node, nidx_t parent) : Node(node), parent_(parent) {}
 
 	nidx_t parentDepth() const { return stree_->d(this->parent_); }
-	STreeNode getParent() const { return STreeNode(stree_, parent_); }
- 	STreeEdge getChild() const { return STreeEdge(STreeNode::getChild(), nidx_); }
-	void child() { nidx_t par = nidx_; STreeNode::child(); if (isValid()) parent_ = par; }
-	STreeEdge getChild(Symbol chr) const { return STreeEdge(STreeNode::getChild(chr), nidx_); }
-	void child(Symbol chr) { nidx_t par = nidx_; STreeNode::child(chr); if (isValid()) parent_ = par; }
-	STreeEdge getSibling() const { return STreeEdge(STreeNode::getSibling(), parent_); }
+	Node parent() const { return Node(stree_, parent_); }
+ 	Edge child() const { return Edge(Node::child(), nidx_); }
+	void toChild() { nidx_t par = nidx_; Node::toChild(); if (isValid()) parent_ = par; }
+	Edge child(Symbol chr) const { return Edge(Node::child(chr), nidx_); }
+	void toChild(Symbol chr) { nidx_t par = nidx_; Node::toChild(chr); if (isValid()) parent_ = par; }
+	Edge sibling() const { return Edge(Node::sibling(), parent_); }
 
-	Sequence label() const { return STreeNode::label(parentDepth()); }
+	Sequence edgeLabel() const { return stree_->sequence_.rawSub(headIndex() + parentDepth(), depth() - parentDepth()); }
 
 private:
-	using STreeNode::getSuffixLink;
-	using STreeNode::suffixLink;
+	using Node::suffixlink;
+	using Node::toSuffixlink;
 protected:
 	nidx_t parent_;
 }; // class STreeEdge
 
 
 
-class STreePath : public STreeNode {
+class Path : public Node {
 public:
-	STreePath() : STreeNode(), path() {}
-	STreePath(const STree* stree) : STreeNode(stree), path() {}
+	Path() : Node(), path() {}
+	Path(const STree* stree) : Node(stree), path() {}
 
-	void child() { nidx_t current = nidx_; STreeNode::child(); if (isValid()) path.push_back(current); }
-	void child(Symbol chr) { nidx_t current = nidx_; STreeNode::child(chr); if (isValid()) path.push_back(current); }
-	STreeNode getParent() const { if (path.empty()) return STreeNode(stree_, INTERNAL); return STreeNode(stree_, path.back()); }
-	STreeNode getAncestor(nidx_t generations) const {
-		if (generations > path.size()) return STreeNode(stree_, INTERNAL);
+	void toChild() { nidx_t current = nidx_; Node::toChild(); if (isValid()) path.push_back(current); }
+	void toChild(Symbol chr) { nidx_t current = nidx_; Node::toChild(chr); if (isValid()) path.push_back(current); }
+	Node parent() const { if (path.empty()) return Node(stree_, INTERNAL); return Node(stree_, path.back()); }
+	Node ancestor(nidx_t generations) const {
+		if (generations > path.size()) return Node(stree_, INTERNAL);
 		if (generations == 0) return *this;
-		return STreeNode(stree_, path.at(path.size()-generations));
+		return Node(stree_, path.at(path.size()-generations));
 	}
-	void parent() { if (isValid()) {
+	void toParent() { if (isValid()) {
 			if (path.empty()) setValid(false);
 			else { nidx_ = path.back(); path.pop_back(); }
 		}}
 	nidx_t nAncestors() const { return path.size(); }
 	nidx_t parentDepth() const { if (path.empty()) return 0; else return stree_->d(path.back()); }
 
-	Sequence label() const { return STreeNode::label(parentDepth()); }
+	Sequence edgeLabel() const { return stree_->sequence_.rawSub(headIndex() + parentDepth(), depth() - parentDepth()); }
 
 private:
-	using STreeNode::getSuffixLink;
-	using STreeNode::suffixLink;
+	using Node::suffixlink;
+	using Node::toSuffixlink;
 protected:
 	std::deque<nidx_t> path;
 }; // class STreePath
 
 
 
-class STreePos {
+class Pos {
 public:
-	STreePos() : edge_(), depth_(0) {}
-	STreePos(const STree* stree) : edge_(stree), depth_(0) {}
+	Pos() : edge_(), depth_(0) {}
+	Pos(const STree* stree) : edge_(stree), depth_(0) {}
 
-	void setRoot() { edge_ = STreeEdge(edge_.stree_); depth_ = 0; }
+	void setRoot() { edge_ = Edge(edge_.stree_); depth_ = 0; }
 
 	bool isValid() const { return edge_.isValid(); }
 	void setValid(bool valid = true) { edge_.setValid(valid); }
 	bool isExplicit() const { return (depth_ == edge_.depth()); }
+    bool isInternal() const { return !isLeaf(); }
 	bool isLeaf() const { return (isExplicit() and edge_.isLeaf()); }
 
 	nidx_t count() const { return edge_.count(); }
@@ -172,9 +168,9 @@ public:
 	nidx_t depth() const { return depth_; }
 	nidx_t parentDepth() const { return edge_.parentDepth(); }
 
-  STreeEdge& edge() { return edge_; }
+  Edge& edge() { return edge_; }
 
-	void suffixLink() { if (isValid()) {
+	void toSuffix() { if (isValid()) {
 			if (edge_.stree_->symbolSize_ > depth_) { setValid(false); return; }
 			depth_-= edge_.stree_->symbolSize_;
 			nidx_t hi = headIndex() + edge_.stree_->symbolSize_;
@@ -182,29 +178,29 @@ public:
 			edge_.nidx_ = edge_.parent_;
 			edge_.setValid();
 			while (edge_.isValid() and (edge_.depth() < depth_))
-				edge_.child(edge_.stree_->at(hi + edge_.depth()));
+				edge_.toChild(edge_.stree_->at(hi + edge_.depth()));
 		}}
 
-	void addSymbol(Symbol chr) {
+	void toSymbol(Symbol chr) {
 		if (!isValid()) return;
 		if (isExplicit()) {
-			edge_.child(chr);
+			edge_.toChild(chr);
 			if (isValid()) depth_++;
 		}
 		else
 			if (edge_.stree_->at(edge_.headIndex() + depth_) == chr) depth_++;
 			else edge_.setValid(false);
 	}
-	void addSequence(const Sequence& str) {
+	void toSequence(const Sequence& str) {
 		for (nidx_t pos = 0; ((pos < str.rawSize()) and (edge_.isValid())); ++pos)
-			addSymbol(str.rawAt(pos));
+			toSymbol(str.rawAt(pos));
 	}
 
-	Sequence string() const { return edge_.stree_->sequence_.rawSub(headIndex(), depth_); }
-	Sequence label() const { return edge_.stree_->sequence_.rawSub(headIndex() + parentDepth(), depth_ - parentDepth()); }
+	Sequence asSequence() const { return edge_.stree_->sequence_.rawSub(headIndex(), depth_); }
+	Sequence edgeLabel() const { return edge_.stree_->sequence_.rawSub(headIndex() + parentDepth(), depth_ - parentDepth()); }
 
 private:
-	STreeEdge edge_;
+	Edge edge_;
 	nidx_t depth_;
 
 }; // class STreePos

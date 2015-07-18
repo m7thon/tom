@@ -13,9 +13,9 @@ def canonicalizeSuffixTree(stree):
     it = tom.tomlib.PrefixIterator(stree)
     while it.isValid():
         nodeData = [it.nodeIndex(), it.headIndex(), it.depth()]
-        nodeData += [it.getChild().nodeIndex() if it.getChild().isValid() else -1]
-        nodeData += [it.getSibling().nodeIndex() if it.getSibling().isValid() else -1]
-        nodeData += [it.getSuffixLink().nodeIndex() if it.isNode() else -1]
+        nodeData += [it.child().nodeIndex() if it.child().isValid() else -1]
+        nodeData += [it.sibling().nodeIndex() if it.sibling().isValid() else -1]
+        nodeData += [it.suffixlink().nodeIndex() if it.isInternal() else -1]
         nodeData += [it.count()]
         cForm += [nodeData]
         it.next()
@@ -25,7 +25,7 @@ def canonicalizeSuffixTree(stree):
 def verifySuffixTreeCounts(seq, stree):
     it = tom.tomlib.PrefixIterator(stree)
     while it.isValid():
-        if seq.count(it.string()) != it.count():
+        if seq.count(it.asSequence()) != it.count():
             return False
         it.next()
     return True
