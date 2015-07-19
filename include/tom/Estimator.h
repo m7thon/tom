@@ -37,8 +37,8 @@ class Estimator
 	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
 	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : stree_(sfxTree) {
 		s_.pos_ = stree::Pos(stree_.get());
-		nO_ = sfxTree->sequence_.nO(); nU_ = stree_->sequence_.nU();
-		len_ = ( (nU_ == 0) ? stree_->size_ : stree_->size_ / 2 );
+		nO_ = sfxTree->sequence().nO(); nU_ = stree_->sequence().nU();
+		len_ = ( stree_->sequence().length() );
 		uProbs_ = Eigen::VectorXd::Ones(std::max(1, nU_));
 		for (Symbol u = 0; u < nU_; ++u) {
 			s_.pos_.setRoot(); s_.pos_.toSymbol(u);

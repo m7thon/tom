@@ -8,7 +8,7 @@ nidx_t & STree::c(const nidx_t node, Symbol chr) {
   child = &(l(*child));
   if (!(*child & VALID)) return *child;
   if (key(*child, d(node)) == chr) return *child;
-  return rbt::find(l(*child), chr, RBTreeNodeTraits(this, d(node)));
+    return internal::RBSiblingTree::find(l(*child), chr, internal::RBTreeNodeTraits(this, d(node)));
 }
 
 const nidx_t & STree::c(const nidx_t node, Symbol chr) const {
@@ -17,7 +17,7 @@ const nidx_t & STree::c(const nidx_t node, Symbol chr) const {
 
 
 void STree::addChild(const nidx_t node, nidx_t newChild, Symbol chr) {
-  RBTreeNodeTraits rbnt(this, d(node));
+    internal::RBTreeNodeTraits rbnt(this, d(node));
   nidx_t * x = &(c(node));
   if (rbnt.less(chr, *x)) {
     l(newChild) = l(*x);
@@ -40,7 +40,7 @@ void STree::addChild(const nidx_t node, nidx_t newChild, Symbol chr) {
 			l(newChild) = *x & ~COLOR;
 			r(newChild) = *x & ~COLOR;
 		}
-    rbt::insert(*x, newChild, chr, rbnt);
+    internal::RBSiblingTree::insert(*x, newChild, chr, rbnt);
   }
   else { // This case is *only* called when adding the second child to the root
     *x = newChild | COLOR;
@@ -78,81 +78,81 @@ nidx_t STree::sib(const nidx_t node) const {
 
 void STree::createNewLeaf(bool swap) {
 	// NOTE: this function invalidates the edgePtr of the currentPos
-  if (!currentPos.isExplicit()) {
-    const nidx_t oldEdge = *currentPos.edgePtr;
-    const nidx_t newNode = (VALID | INTERNAL | (*currentPos.edgePtr & COLOR) | (nidx_t)(nodes.size()));
-    *currentPos.edgePtr = newNode;
-    currentPos.edgePtr = NULL; // ... since it is invalidated anyway by the following:
-    if (swap and (at(pos) < at(currentPos.hIndex + currentPos.depth))) {
-      nodes.push_back(InternalNode(l(oldEdge), r(oldEdge), (VALID | leaves.size())));
-      leaves.push_back(LeafNode((oldEdge | COLOR), (pos - currentPos.depth)));
+  if (!currentPos_.isExplicit()) {
+    const nidx_t oldEdge = *currentPos_.edgePtr_;
+    const nidx_t newNode = (VALID | INTERNAL | (*currentPos_.edgePtr_ & COLOR) | (nidx_t)(nodes_.size()));
+    *currentPos_.edgePtr_ = newNode;
+    currentPos_.edgePtr_ = NULL; // ... since it is invalidated anyway by the following:
+    if (swap and (at(pos_) < at(currentPos_.hIndex_ + currentPos_.depth_))) {
+        nodes_.push_back(internal::InternalNode(l(oldEdge), r(oldEdge), (VALID | leaves_.size())));
+      leaves_.push_back(internal::LeafNode((oldEdge | COLOR), (pos_ - currentPos_.depth_)));
       l(oldEdge) = 0;
-      r(oldEdge) = currentPos.depth; // sets depth of the new internal node
+      r(oldEdge) = currentPos_.depth_; // sets depth of the new internal node
     }
     else {
-      nodes.push_back(InternalNode(l(oldEdge), r(oldEdge), oldEdge));
-      leaves.push_back(LeafNode(0, currentPos.depth));
-      l(oldEdge) = VALID | COLOR | (leaves.size() - 1);
-      r(oldEdge) = pos - currentPos.depth; // sets hi of the new internal node
+      nodes_.push_back(internal::InternalNode(l(oldEdge), r(oldEdge), oldEdge));
+      leaves_.push_back(internal::LeafNode(0, currentPos_.depth_));
+      l(oldEdge) = VALID | COLOR | (leaves_.size() - 1);
+      r(oldEdge) = pos_ - currentPos_.depth_; // sets hi of the new internal node
     }
 		if (r(newNode) & (VALID | INTERNAL | COLOR)) // the new node is organized in an RBTree structure
-				rbt::fixThreading(newNode, RBTreeNodeTraits(this));
+				internal::RBSiblingTree::fixThreading(newNode, internal::RBTreeNodeTraits(this));
     // At this point we can set the suffix link leading TO this internal node:
-    if (suffixLinkFrom & VALID) sl(suffixLinkFrom, newNode);
-    suffixLinkFrom = newNode;
+    if (suffixLinkFrom_ & VALID) sl(suffixLinkFrom_, newNode);
+    suffixLinkFrom_ = newNode;
   }
   else {
-    leaves.push_back(LeafNode());
-    addChild(currentPos.node, ((leaves.size()-1) | VALID), at(pos));
+    leaves_.push_back(internal::LeafNode());
+    addChild(currentPos_.node_, ((leaves_.size()-1) | VALID), at(pos_));
   }
 }
 
 
 void STree::createTemporaryInternalNodes() {
-  assert(suffixLinkFrom == 0);
-  Position currentPosOld = currentPos;
-  nTemporaryInternalNodes = 0;
-  while (!currentPos.isExplicit()) {
+  assert(suffixLinkFrom_ == 0);
+  internal::Position currentPosOld = currentPos_;
+  nTemporaryInternalNodes_ = 0;
+  while (!currentPos_.isExplicit()) {
     createNewLeaf(false);
-    l(nodes.back().c) &= ~VALID; // the sentinel is not counted as a "real" leaf
-    nTemporaryInternalNodes++;
-    currentPos.followSuffixLink(this);
+    l(nodes_.back().c_) &= ~VALID; // the sentinel is not counted as a "real" leaf
+    nTemporaryInternalNodes_++;
+    currentPos_.followSuffixLink(this);
   }
-	if (suffixLinkFrom & VALID) sl(suffixLinkFrom, currentPos.node);
-	suffixLinkFrom = 0;
+	if (suffixLinkFrom_ & VALID) sl(suffixLinkFrom_, currentPos_.node_);
+	suffixLinkFrom_ = 0;
   // Reset the current tree position:
-  currentPos = currentPosOld;
-  if (nTemporaryInternalNodes > 0)
-    currentPos.edgePtr = NULL; // since it will have been invalidated!
+  currentPos_ = currentPosOld;
+  if (nTemporaryInternalNodes_ > 0)
+    currentPos_.edgePtr_ = NULL; // since it will have been invalidated!
 }
 
 void STree::removeTemporaryInternalNodes() {
-  if (nTemporaryInternalNodes > 0) {
-    Position currentPosOld = currentPos;
-    currentPos.preCanonize(this);
-    for (nidx_t nToDo = nTemporaryInternalNodes; nToDo > 0; nToDo--) {
-      nidx_t newEdge = *(currentPos.edgePtr);
+  if (nTemporaryInternalNodes_ > 0) {
+    internal::Position currentPosOld = currentPos_;
+    currentPos_.preCanonize(this);
+    for (nidx_t nToDo = nTemporaryInternalNodes_; nToDo > 0; nToDo--) {
+      nidx_t newEdge = *(currentPos_.edgePtr_);
       nidx_t oldEdge = c(newEdge);
-      *(currentPos.edgePtr) = oldEdge;
+      *(currentPos_.edgePtr_) = oldEdge;
       l(oldEdge) = l(newEdge);
       r(oldEdge) = r(newEdge);
 			if (r(oldEdge) & (VALID | INTERNAL | COLOR)) // the oldEdge is organized in an RBTree structure
-				rbt::fixThreading(oldEdge, RBTreeNodeTraits(this));
-			currentPos.node = sl(currentPos.node);
-			if (symbolSize_ > currentPos.depth) {
-				currentPos.hIndex += currentPos.depth;
-				currentPos.depth = 0;
+				internal::RBSiblingTree::fixThreading(oldEdge, internal::RBTreeNodeTraits(this));
+			currentPos_.node_ = sl(currentPos_.node_);
+			if (symbolSize_ > currentPos_.depth_) {
+				currentPos_.hIndex_ += currentPos_.depth_;
+				currentPos_.depth_ = 0;
 			}
 			else {
-				currentPos.hIndex += symbolSize_;
-				currentPos.depth -= symbolSize_;
+				currentPos_.hIndex_ += symbolSize_;
+				currentPos_.depth_ -= symbolSize_;
 			}
-      currentPos.preCanonize(this);
+      currentPos_.preCanonize(this);
     }
-    leaves.resize(leaves.size()-nTemporaryInternalNodes);
-    nodes.resize(nodes.size()-nTemporaryInternalNodes);
-    currentPos = currentPosOld;
-    nTemporaryInternalNodes = 0;
+    leaves_.resize(leaves_.size()-nTemporaryInternalNodes_);
+    nodes_.resize(nodes_.size()-nTemporaryInternalNodes_);
+    currentPos_ = currentPosOld;
+    nTemporaryInternalNodes_ = 0;
   }
 }
 
@@ -160,108 +160,108 @@ void STree::extendTo(nidx_t size) {
 	assert(size >= size_);
   size_ = size;
 	removeTemporaryInternalNodes();
-  leaves.reserve(size_); // This may invalidate the current Position:
-  currentPos.canonize(this);
-  while (pos < size_) {
-    if ((currentPos.depth != 0) or (pos % symbolSize_ == 0)) {
-      while (!currentPos.followSymbol(this, at(pos))) {
+  leaves_.reserve(size_); // This may invalidate the current Position:
+  currentPos_.canonize(this);
+  while (pos_ < size_) {
+    if ((currentPos_.depth_ != 0) or (pos_ % symbolSize_ == 0)) {
+      while (!currentPos_.followSymbol(this, at(pos_))) {
 				createNewLeaf();
-				if (currentPos.depth == 0) break;
-				currentPos.followSuffixLink(this);
-				if ((suffixLinkFrom & VALID) and currentPos.isExplicit()) {
-					sl(suffixLinkFrom, currentPos.node);
-					suffixLinkFrom = 0;
+				if (currentPos_.depth_ == 0) break;
+				currentPos_.followSuffixLink(this);
+				if ((suffixLinkFrom_ & VALID) and currentPos_.isExplicit()) {
+					sl(suffixLinkFrom_, currentPos_.node_);
+					suffixLinkFrom_ = 0;
 				}
-				if ((currentPos.depth == 0) and (pos % symbolSize_ != 0)) break;
+				if ((currentPos_.depth_ == 0) and (pos_ % symbolSize_ != 0)) break;
       }
     }
-		pos++;
+		pos_++;
   }
 	createTemporaryInternalNodes();
-	if (annotated_) annotate();
+	annotate();
 }
 
-void  STree::initialize(const Sequence& sequence, nidx_t size, unsigned int symbolSize, bool annotated) {
-	size_ = size; annotated_ = annotated; symbolSize_ = symbolSize;
+void  STree::initialize(const Sequence& sequence, nidx_t size) {
+    size_ = size; symbolSize_ = sequence.isIO() ? 2 : 1;
 	sequence_ = sequence;
 	if (size_ == 0) size_ = sequence_.rawSize();
-  leaves.push_back(LeafNode((INTERNAL), (0)));
-  nodes.push_back(InternalNode((INTERNAL), (0), (VALID)));
-  suffixLinkFrom = 0;
-  pos = 1;
-  nTemporaryInternalNodes = 0;
+  leaves_.push_back(internal::LeafNode((INTERNAL), (0)));
+  nodes_.push_back(internal::InternalNode((INTERNAL), (0), (VALID)));
+  suffixLinkFrom_ = 0;
+  pos_ = 1;
+  nTemporaryInternalNodes_ = 0;
   extendTo(size_);
 }
 
-bool STree::Position::followSymbol(STree* stree, const Symbol chr) {
+bool internal::Position::followSymbol(STree* stree, const Symbol chr) {
   if (isExplicit()) {
-    nidx_t * nextNode = &(stree->c(node, chr));
+    nidx_t * nextNode = &(stree->c(node_, chr));
     if (!(*nextNode & VALID)) return false;
-    edgePtr = nextNode;
-    hIndex = stree->hi(*edgePtr);
+    edgePtr_ = nextNode;
+    hIndex_ = stree->hi(*edgePtr_);
   }
   else {
-    if (chr != (stree->at(hIndex + depth)))
+    if (chr != (stree->at(hIndex_ + depth_)))
       return false;
   }
-  depth++;
-  if ((*edgePtr & INTERNAL) and (stree->d(*edgePtr) == depth))
-    node = *edgePtr;
+  depth_++;
+  if ((*edgePtr_ & INTERNAL) and (stree->d(*edgePtr_) == depth_))
+    node_ = *edgePtr_;
   return true;
 }
 
 
-void STree::Position::preCanonize(STree* stree) {
-  edgePtr = &node;
-  while (stree->d(*edgePtr) < depth) {
-    node = *edgePtr;
-    edgePtr = &(stree->c(node, stree->at(hIndex + stree->d(node))));
+void internal::Position::preCanonize(STree* stree) {
+  edgePtr_ = &node_;
+  while (stree->d(*edgePtr_) < depth_) {
+    node_ = *edgePtr_;
+    edgePtr_ = &(stree->c(node_, stree->at(hIndex_ + stree->d(node_))));
   }
-  hIndex = stree->hi(*edgePtr);
+  hIndex_ = stree->hi(*edgePtr_);
 }
 
 
-void STree::Position::canonize(STree* stree) {
+void internal::Position::canonize(STree* stree) {
   preCanonize(stree);
-  if ((*edgePtr & INTERNAL) and (stree->d(*edgePtr) == depth))
-    node = *edgePtr;
+  if ((*edgePtr_ & INTERNAL) and (stree->d(*edgePtr_) == depth_))
+    node_ = *edgePtr_;
 }
 
 
-void STree::Position::followSuffixLink(STree* stree) {
-  node = stree->sl(node);
-  if (stree->symbolSize_ > depth) {
-    depth = 0;
-    hIndex += depth;
+void internal::Position::followSuffixLink(STree* stree) {
+  node_ = stree->sl(node_);
+  if (stree->symbolSize_ > depth_) {
+    depth_ = 0;
+    hIndex_ += depth_;
   }
   else {
-    hIndex += stree->symbolSize_;
-    depth -= stree->symbolSize_;
+    hIndex_ += stree->symbolSize_;
+    depth_ -= stree->symbolSize_;
   }
   canonize(stree);
 }
 
 void STree::annotate() {
-	nOccurrences.assign(nodes.size(), 0);
-	if (currentPos.depth > 0) {
-		Position tempIntNode = currentPos;
+	nOccurrences_.assign(nodes_.size(), 0);
+	if (currentPos_.depth_ > 0) {
+		internal::Position tempIntNode = currentPos_;
 		tempIntNode.canonize(this);
-		for (nidx_t tnode = tempIntNode.node; (tnode & INDEX) != 0; tnode = sl(tnode))
-			nOccurrences[tnode & INDEX]++;
+		for (nidx_t tnode = tempIntNode.node_; (tnode & INDEX) != 0; tnode = sl(tnode))
+			nOccurrences_[tnode & INDEX]++;
 	}
 	for (PostfixIterator it = PostfixIterator(this); it.isValid(); it.next()) {
 		if (it.isLeaf())
-			nOccurrences[it.parent().index()]++;
+			nOccurrences_[it.parent().index()]++;
 		else if (it.nAncestors() > 0) {
-			nOccurrences[it.parent().index()] += nOccurrences[it.index()];
+			nOccurrences_[it.parent().index()] += nOccurrences_[it.index()];
 		}
 	}
 }
 
 Node STree::getDeepestVirtualLeafBranch() {
-  Position deepestVirtualLeafBranch = currentPos;
+  internal::Position deepestVirtualLeafBranch = currentPos_;
   deepestVirtualLeafBranch.canonize(this);
-  return Node(this, deepestVirtualLeafBranch.node | VALID);
+  return Node(this, deepestVirtualLeafBranch.node_ | VALID);
 }
 
 } // namespace stree

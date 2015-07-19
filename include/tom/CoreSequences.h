@@ -36,14 +36,14 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
                                          int minCounts = 1,
                                          int maxCoreSeq = -1,
                                          bool unique = true) {
-	int IO = sfxTree->symbolSize_;
+    int IO = sfxTree->sequence().isIO() ? 2 : 1;
 	if (maxSeqLen <= minSeqLen) maxSeqLen = minSeqLen;
 	std::shared_ptr<Sequences> coreSeqs(new Sequences());
 
 	stree::Edge node = stree::Edge(sfxTree);
 	std::priority_queue<stree::Edge> nodeQueue;
 	nodeQueue.push(node);
-	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->sequence_.rawSub(0,0)); // handles root case
+	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->sequence().rawSub(0,0)); // handles root case
 	while (!nodeQueue.empty() and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
 		node = nodeQueue.top();
 		nodeQueue.pop();
@@ -60,12 +60,12 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 		stree::nidx_t d = node.parentDepth() + 1; if ((IO == 2) and (d & 1)) d++;
 		if (d < IO * minSeqLen) d = IO * minSeqLen;
 		if (unique) {
-			if (d <= node_depth) coreSeqs->push_back(sfxTree->sequence_.rawSub(node.headIndex(), d));
+			if (d <= node_depth) coreSeqs->push_back(sfxTree->sequence().rawSub(node.headIndex(), d));
 		}
 		else {
 			stree::nidx_t head_index = node.headIndex();
 			while (d <= node_depth and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
-				coreSeqs->push_back(sfxTree->sequence_.rawSub(head_index, d));
+				coreSeqs->push_back(sfxTree->sequence().rawSub(head_index, d));
 				d += IO;
 			}
 		}
