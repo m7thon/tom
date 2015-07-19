@@ -62,26 +62,27 @@ public:
 
 	Sequence asSequence() const { return stree_->sequence_.rawSub(headIndex(), depth()); }
 
-	std::string dataStr(int width = 5) const {
+	std::string dataStr(int width = 3) const {
 		assert(isValid());
 		std::stringstream s;
 		s << "[ " << indexStr(width)
-			<< " | hi = " << std::setw(4) << headIndex()
-			<< " | d = " << std::setw(4) << depth()
-			<< " | n = " << std::setw(4) << count();
+          << " | hi = " << std::setw(width) << headIndex()
+          << " | d = "  << std::setw(width) << depth()
+          << " | n = "  << std::setw(width) << count();
 		if (isInternal()) {
-			s << " | c = " << child().indexStr(width)
-				<< " | sl = " << suffixlink().indexStr(width);
+			s << " | c = "  << child().indexStr(width)
+              << " | sl = " << suffixlink().indexStr(width);
 		}
 		s << " ]";
 		return s.str();
 	}
 
-	std::string indexStr(int width = 5) const {
+	std::string indexStr(int width = 3) const {
 		std::stringstream s;
-		s << (isValid() ? (isInternal() ? "N" : "L") : (isInternal() ? "n" : "l"))
-			<< ((nidx_ & COLOR) ? std::setfill(':') : std::setfill('.'))
-			<< std::setw(width-2) << (nidx_ & INDEX);
+		s << ( (nidx_ & VALID)    ? '+' : '-' )
+          << ( (nidx_ & INTERNAL) ? '+' : '-' )
+          << ( (nidx_ & COLOR)    ? '+' : '-' )
+          << std::setw(width) << std::setfill('0') << (nidx_ & INDEX);
 		return s.str();
 	}
 

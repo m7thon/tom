@@ -17,14 +17,12 @@ constexpr nidx_t ROOT = VALID | INTERNAL; // corresponds to the root node of the
 typedef tom::Sequence Sequence;
 typedef tom::Symbol Symbol;
 
-
 // forward declarations
 class STree;
 class Node;
 class Edge;
 class Path;
 class Pos;
-
 class PrefixIterator;
 class PostfixIterator;
 class DFSIterator;

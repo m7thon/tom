@@ -40,7 +40,7 @@ class TestSuffixTree(unittest.TestCase):
             f = bz2.BZ2File(current_dir + s + '.stree.bz2')
             streeForm = pickle.load(f)
             f.close()
-            symbolSize = 2 if seq.nU() > 1 else 1
+            symbolSize = 2 if seq.nU() > 0 else 1
             # create SuffixTree in several random steps:
             sizes = sorted([rnd.randint(1, seq.length() - 1) for i in range(5)]) + [seq.length()]
             stree = tom.tomlib.STree(seq, symbolSize, symbolSize)
