@@ -4,10 +4,10 @@ namespace stree {
 
 nidx_t & STree::c(const nidx_t node, Symbol chr) {
   nidx_t *child = &(c(node));
-  if (key(*child, d(node)) == chr) return *child;
+  if (edgeKey(*child, d(node)) == chr) return *child;
   child = &(l(*child));
   if (!(*child & VALID)) return *child;
-  if (key(*child, d(node)) == chr) return *child;
+  if (edgeKey(*child, d(node)) == chr) return *child;
     return internal::RBSiblingTree::find(l(*child), chr, internal::RBTreeNodeTraits(this, d(node)));
 }
 
@@ -83,7 +83,7 @@ void STree::createNewLeaf(bool swap) {
     const nidx_t newNode = (VALID | INTERNAL | (*currentPos_.edgePtr_ & COLOR) | (nidx_t)(nodes_.size()));
     *currentPos_.edgePtr_ = newNode;
     currentPos_.edgePtr_ = NULL; // ... since it is invalidated anyway by the following:
-    if (swap and (at(pos_) < at(currentPos_.hIndex_ + currentPos_.depth_))) {
+    if (swap and (sequence_.rawAt(pos_) < sequence_.rawAt(currentPos_.hIndex_ + currentPos_.depth_))) {
         nodes_.push_back(internal::InternalNode(l(oldEdge), r(oldEdge), (VALID | leaves_.size())));
       leaves_.push_back(internal::LeafNode((oldEdge | COLOR), (pos_ - currentPos_.depth_)));
       l(oldEdge) = 0;
@@ -103,7 +103,7 @@ void STree::createNewLeaf(bool swap) {
   }
   else {
     leaves_.push_back(internal::LeafNode());
-    addChild(currentPos_.node_, ((leaves_.size()-1) | VALID), at(pos_));
+    addChild(currentPos_.node_, ((leaves_.size()-1) | VALID), sequence_.rawAt(pos_));
   }
 }
 
@@ -156,15 +156,15 @@ void STree::removeTemporaryInternalNodes() {
   }
 }
 
-void STree::extendTo(nidx_t size) {
-	assert(size >= size_);
-  size_ = size;
+void STree::extendTo(nidx_t length) {
+	assert(length * symbolSize_ >= size_);
+  size_ = length * symbolSize_;
 	removeTemporaryInternalNodes();
   leaves_.reserve(size_); // This may invalidate the current Position:
   currentPos_.canonize(this);
   while (pos_ < size_) {
     if ((currentPos_.depth_ != 0) or (pos_ % symbolSize_ == 0)) {
-      while (!currentPos_.followSymbol(this, at(pos_))) {
+      while (!currentPos_.followSymbol(this, sequence_.rawAt(pos_))) {
 				createNewLeaf();
 				if (currentPos_.depth_ == 0) break;
 				currentPos_.followSuffixLink(this);
@@ -181,16 +181,16 @@ void STree::extendTo(nidx_t size) {
 	annotate();
 }
 
-void  STree::initialize(const Sequence& sequence, nidx_t size) {
-    size_ = size; symbolSize_ = sequence.isIO() ? 2 : 1;
-	sequence_ = sequence;
-	if (size_ == 0) size_ = sequence_.rawSize();
-  leaves_.push_back(internal::LeafNode((INTERNAL), (0)));
-  nodes_.push_back(internal::InternalNode((INTERNAL), (0), (VALID)));
-  suffixLinkFrom_ = 0;
-  pos_ = 1;
-  nTemporaryInternalNodes_ = 0;
-  extendTo(size_);
+void  STree::initialize(const Sequence& sequence, nidx_t length) {
+    sequence_ = sequence;
+    symbolSize_ = sequence_.isIO() ? 2 : 1;
+    size_ = (length == 0 ? sequence_.rawSize() : length * symbolSize_);
+    leaves_.push_back(internal::LeafNode((INTERNAL), (0)));
+    nodes_.push_back(internal::InternalNode((INTERNAL), (0), (VALID)));
+    suffixLinkFrom_ = 0;
+    pos_ = 1;
+    nTemporaryInternalNodes_ = 0;
+    extendTo(size_ / symbolSize_);
 }
 
 bool internal::Position::followSymbol(STree* stree, const Symbol chr) {
@@ -201,7 +201,7 @@ bool internal::Position::followSymbol(STree* stree, const Symbol chr) {
     hIndex_ = stree->hi(*edgePtr_);
   }
   else {
-    if (chr != (stree->at(hIndex_ + depth_)))
+    if (chr != (stree->sequence_.rawAt(hIndex_ + depth_)))
       return false;
   }
   depth_++;
@@ -215,7 +215,7 @@ void internal::Position::preCanonize(STree* stree) {
   edgePtr_ = &node_;
   while (stree->d(*edgePtr_) < depth_) {
     node_ = *edgePtr_;
-    edgePtr_ = &(stree->c(node_, stree->at(hIndex_ + stree->d(node_))));
+    edgePtr_ = &(stree->c(node_, stree->sequence_.rawAt(hIndex_ + stree->d(node_))));
   }
   hIndex_ = stree->hi(*edgePtr_);
 }

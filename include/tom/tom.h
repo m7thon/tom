@@ -26,8 +26,10 @@
 /** Define a simple macro `SWIGCODE(...)` that facilitates writing SWIG code directly into the C++ source. This is hidden when not parsing by SWIG. */
 #ifdef SWIG
     #define SWIGCODE(...) __VA_ARGS__
+    #define NOSWIG(...)
 #else
     #define SWIGCODE(...)
+    #define NOSWIG(...) __VA_ARGS__
 #endif
 
 //#define VERBOSE

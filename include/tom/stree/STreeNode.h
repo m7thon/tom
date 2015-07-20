@@ -62,16 +62,19 @@ public:
 
 	Sequence asSequence() const { return stree_->sequence_.rawSub(headIndex(), depth()); }
 
-	std::string dataStr(int width = 3) const {
-		assert(isValid());
-		std::stringstream s;
+	std::string dataStr(int width = 5) const {
+        std::stringstream s;
+		if (not isValid()) {
+		    s << "[ " << indexStr(width) << " ]";
+		    return s.str();
+		}
 		s << "[ " << indexStr(width)
-          << " | hi = " << std::setw(width) << headIndex()
-          << " | d = "  << std::setw(width) << depth()
-          << " | n = "  << std::setw(width) << count();
+          << " | hIdx = " << std::setw(width) << headIndex()
+          << " | size = "  << std::setw(width) << depth()
+          << " | nOcc = "  << std::setw(width) << count();
 		if (isInternal()) {
-			s << " | c = "  << child().indexStr(width)
-              << " | sl = " << suffixlink().indexStr(width);
+			s << " | chld = "  << child().indexStr(width)
+              << " | sfxL = " << suffixlink().indexStr(width);
 		}
 		s << " ]";
 		return s.str();
@@ -179,7 +182,7 @@ public:
 			edge_.nidx_ = edge_.parent_;
 			edge_.setValid();
 			while (edge_.isValid() and (edge_.depth() < depth_))
-				edge_.toChild(edge_.stree_->at(hi + edge_.depth()));
+				edge_.toChild(edge_.stree_->sequence_.rawAt(hi + edge_.depth()));
 		}}
 
 	void toSymbol(Symbol chr) {
@@ -189,7 +192,7 @@ public:
 			if (isValid()) depth_++;
 		}
 		else
-			if (edge_.stree_->at(edge_.headIndex() + depth_) == chr) depth_++;
+			if (edge_.stree_->sequence_.rawAt(edge_.headIndex() + depth_) == chr) depth_++;
 			else edge_.setValid(false);
 	}
 	void toSequence(const Sequence& str) {

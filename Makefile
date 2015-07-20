@@ -158,9 +158,7 @@ clean:
 	@rm -f swig/tomlib_wrap.cpp swig/tomlib_wrap.h swig/tomlib.py
 	@rm -f python/tom/tomlib.py python/tom/_tomlib.so
 	@$(PYTHON) setup.py -q clean --all 2>/dev/null
-	@find python -name '__pycache__' -exec rm -rf {} \;
-	@find python -name '*.pyc' -exec rm -f {} \;
-	@find . -name 'tom.egg-info' -exec rm -rf {} \;
+	@find . | grep -E "(__pycache__|\.pyc|\.egg-info)$$" | xargs rm -rf
 	@rm -rf dist build
 	@echo "Squeaky clean!"
 
