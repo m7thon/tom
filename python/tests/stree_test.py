@@ -43,9 +43,9 @@ class TestSuffixTree(unittest.TestCase):
             symbolSize = 2 if seq.nU() > 0 else 1
             # create SuffixTree in several random steps:
             sizes = sorted([rnd.randint(1, seq.length() - 1) for i in range(5)]) + [seq.length()]
-            stree = tom.tomlib.STree(seq, 1)
+            stree = tom.tomlib.STree(seq.sub(0,0))
             for sz in sizes:
-                stree.extendTo(sz)
+                stree.extendTo(seq.sub(0,sz))
                 self.assertTrue(verifySuffixTreeCounts(seq.sub(0, sz), stree),
                                 "!!! SuffixTree test NOT passed !!! Substring count discrepancy.")
             streeFormNew = canonicalizeSuffixTree(stree)

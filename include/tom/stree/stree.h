@@ -12,7 +12,7 @@ constexpr nidx_t VALID    =   1 << 31;
 constexpr nidx_t INTERNAL =   1 << 30;
 constexpr nidx_t COLOR    =   1 << 29;
 constexpr nidx_t INDEX    = ~(7 << 29);
-constexpr nidx_t ROOT = VALID | INTERNAL; // corresponds to the root node of the suffix tree
+constexpr nidx_t ROOT = VALID | INTERNAL;
 
 typedef tom::Sequence Sequence;
 typedef tom::Symbol Symbol;

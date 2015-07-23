@@ -6,7 +6,6 @@
 #include "stree.h"
 
 namespace stree {
-    
 namespace internal {
     
 /** A \c LeafNode consists of a left and right \c nidx_t. */
@@ -32,8 +31,8 @@ class InternalNode
     nidx_t c_; //< the child \c nidx_t.
 };
 
-/** A \c Position refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an expicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c STreePos instead! */
-    class Position {
+/** A \c Position refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an explicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c stree::Pos instead! */
+class Position {
 public:
     /** Create a \c Position corresponding to the root of the suffix tree */
     Position() : node_(ROOT), hIndex_(0), depth_(0) { edgePtr_ = &node_; }
@@ -56,15 +55,32 @@ class RBTreeNodeTraits;
 typedef RBTree<RBTreeNodeTraits> RBSiblingTree;
 
 } //namespace internal
-    
+
+
 /**
- * An implementation of suffix trees for generic string types. For string types other than \c std::string, one must define \c stree::STREE_STRING_TYPE which must conform to a standard string interface. (Note that template arguments are avoided on purpose to insure better compatibility to a python interface). The children of an internal node are stored in a self-balancing binary tree, so that this implementation is suitable especially for strings over large alphabets. The space requirement of the index structure (including suffix links) is at most 5 * 4 bytes / input symbol, and the maximum string length is 2**29-1.
+ * An implementation of suffix trees for the `Sequence` type, which can represent a plain or io-sequence.
  *
+ * Features
+ * --------
+ *
+ * - Sequences are not required to end in a unique termination symbol:
+ *   - Every suffix is guaranteed to end in a leaf *or* internal node. The suffixes ending in internal nodes are given by `internalSuffixes()`.
+ *   - `.count()` always means the number of occurrences as a subsequence in the represented sequence. This is *not* the same as the leaf count.
+ * - `extendTo(seq)` can be used to efficiently "extend" a suffix tree representation for a sequence `s` to a suffix tree for the sequence `seq` if `s` is a prefix of `seq`.
+ * - Io-sequences are basically treated as raw sequences, but only every second suffix (that is io-aligned) is represented in the suffix tree. Therefore:
+ *   - Occurrence counts are supported also for io-sequences of the form $u_0o_0, ..., u_k$ (not back aligned).
+ *   - The suffix of $u_0o_0...u_ko_k$ is considered to be $u_1o_1...u_ko_k$.
+ * - Sequences of size up to $2^29 - 1$ are supported.
+ * - The space requirement is at most 24 bytes / symbol, i.e., less than 12 GB for the maximum supported sequence size.
+ *
+ * Details
+ * -------
  * In the following comes a brief description of the internal structure of this suffix tree implementation:
+ *
  * - The suffix tree has two types of nodes (internal and leaf nodes), which are stored in vectors \c nodes and \c leaves respectively.
  * - Nodes are addressed by a 32-bit \c nidx_t ("node index"). The first three bits of a \c nidx_t indicate whether the \c nidx_t is valid (1) or nil (0), addresses an (internal) node (1) or a leaf (0), and is "colored" (1) or not (0), respectively. In the case of a valid \c nidx_t, the remaining 29 bits form the index value of the addressed node in the \c nodes or \c leaves vector. Otherwise, these can have some other significance.
  * - Every node (internal or leaf) has a left and right \c nidx_t. Internal nodes have an additional child \c nidx_t, which addresses the first child in the suffix tree structure.
- * - The children of any node (which are siblings) are basically organized in a self-balancing binary tree structure formed by the left and right \c nidx_t "pointers". For this, a left-leaning red-black tree is used (which uses the color flag of the \c nidx_t). However, the first two children of any node have special roles:
+ * - The children (which are siblings) of any internal node are basically organized in a self-balancing binary tree structure formed by the left and right \c nidx_t "pointers". For this, a left-leaning red-black tree is used (which uses the color flag of the \c nidx_t). However, the first two children of any node have special roles:
  *   - The right \c nidx_t of the first child encodes the headindex of the parent node, while the right \c nidx_t of the second child encodes the depth of the parent node. Both right \c nidx_t addresses of the first two children have their first three bits set to zero.
  *   - The left \c nidx_t of the first child addresses the second child and has its color flag set. The left \c nidx_t of the second child addresses the root of the red-black tree in which all further siblings are organized, and has its color flag unset (to be able to distinguish first and second children). However, if there are only two siblings, then the left \c nidx_t of the second child will be marked as invalid, but will address the suffix-link of the parent. Still, the color flag will be unset.
  * - Suffix-links of any (internal) node are stored in the right \c nidx_t of the rightmost (in the binary tree) child, or alternatively in the left \c nidx_t of the second child if there are only two children. This \c nidx_t will always be marked as invalid and uncolored, but as addressing a node.
@@ -81,36 +97,25 @@ class STree {
     friend class Path;
     friend class Pos;
 public:
-    /** Create an uninitialized \c STree object. */
-    STree() {}
-    
-    /** Create a suffix tree for `sequence.sub(0,length)` if `length` is non-zero.  Otherwise, built a suffix tree for the entire `sequence`.  Either way, the full `sequence` is stored internally, which allows extending the suffix tree representation to a longer prefix of the `sequence` at a later stage using `extendTo(longer)`.
+    /** Create a suffix tree for the given `sequence`. Note that the sequence must have size at least one.
      */
-    STree(const Sequence& sequence, nidx_t length = 0) { initialize(sequence, length); };
-    
-    /** Extend the suffix tree representation to a longer prefix of given `length` of the underlying sequence data.  Note that the underlying `sequence` given in the construction of this suffix tree must have at least the given length.
-     */
-    void extendTo(nidx_t length);
-
-    /** Return the represented sequence. Note that if this suffix tree was constructed by `STree(sequence, length)`, then the represented sequence is `sequence.sub(0, length)` even though the full sequence is stored internally.
-     */
-    const Sequence sequence() const { return sequence_.rawSub(0, size_); }
-    
-    NOSWIG(__attribute__ ((deprecated)))
-    std::string serialize() const {
-        std::stringstream os;
-        os << "Nodes:" << std::endl;
-        for (int i = 0; i < nodes_.size(); ++i)
-            os << nodes_[i].l_ << " " << nodes_[i].r_ << " " << nodes_[i].c_ << " " << nOccurrences_[i] << std::endl;
-        os << "Leaves:" << std::endl;
-        for (int i = 0; i < leaves_.size(); ++i)
-            os << leaves_[i].l_ << " " << leaves_[i].r_ << std::endl;
-        os << "nTemporaryInternalNodes: " << nTemporaryInternalNodes_ << std::endl;
-        return os.str();
+    STree(const Sequence& sequence) {
+        sequence_ = sequence.rawSub(0,0);
+        symbolSize_ = sequence_.isIO() ? 2 : 1;
+        size_ = sequence_.rawSize();
+        extendTo(sequence);
     }
+    
+    /** Extend the current suffix tree representation to a representation for a given `sequence`, which requires that the current suffix tree represents a prefix of the given `sequence`.
+     */
+    void extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argument));
+
+    /** Return the represented sequence.
+     */
+    const Sequence sequence() const { return sequence_; }
 
     /** Return the number of leaf nodes in the suffix tree. */
-    nidx_t nLeaves() const { return leaves_.size(); }
+    nidx_t nLeafNodes() const { return leaves_.size(); }
     
     /** Return the number of internal nodes in the suffix tree. */
     nidx_t nInternalNodes() const { return nodes_.size(); }
@@ -118,7 +123,6 @@ public:
     /** Return the number of nodes (internal and leaves) in the suffix tree. */
     nidx_t nNodes() const { return leaves_.size() + nodes_.size(); }
     
-    //FIXME: This simply does not work!
     /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
     Node getDeepestVirtualLeafBranch();
 
@@ -130,19 +134,11 @@ private:
     
     std::vector<internal::InternalNode> nodes_;   //< the vector of internal nodes
     std::vector<internal::LeafNode> leaves_;      //< the vector of leaf nodes
-    nidx_t nTemporaryInternalNodes_;       //< the number of temporary internal nodes created by \ref createTemporaryInternalNodes().
+    nidx_t nTemporaryInternalNodes_ = 0;       //< the number of temporary internal nodes created by \ref createTemporaryInternalNodes().
     std::vector<nidx_t> nOccurrences_;     //< for each internal node, the number of occurrences of the corresponding substring in the represented sequence.
-    
     internal::Position currentPos_;               //< the current position in the suffix tree construction
-    nidx_t pos_;                           //< the position in the \c sequence corresponding to the current step in the construction process
-    nidx_t suffixLinkFrom_;
-    
-    /** (Re-)Initialize the \c STree object.
-     *
-     * \param sequence The sequence that should be represented by the suffix tree
-     * \param size The size of the \c sequence that should be represented, or 0 if the entire sequence should be represented
-     */
-    void initialize(const Sequence& sequence, nidx_t size = 0);
+    nidx_t pos_ = 1;                           //< the position in the \c sequence corresponding to the current step in the construction process
+    nidx_t suffixLinkFrom_ = 0;
     
     /* Return the number of leaves below this \c node, which is the same as the number of occurrences of the substring corresponding to this \c node in the \c sequence. */
     nidx_t n(const nidx_t node) const { if (!(node & VALID)) return 0;
@@ -219,6 +215,7 @@ private:
     void annotate();
     
 }; // class STree
+
 
 namespace internal {
     /** An object specifying the node traits for the underlying red-black tree implementation. */
