@@ -35,7 +35,7 @@ class Estimator
 	//Estimator() : pos_() {};
 
 	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
-	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : stree_(sfxTree) {
+	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : s_(sfxTree.get()), stree_(sfxTree) {
 		s_.pos_ = stree::Pos(stree_.get());
 		nO_ = sfxTree->sequence().nO(); nU_ = stree_->sequence().nU();
 		len_ = ( stree_->sequence().length() );
@@ -169,6 +169,7 @@ class Estimator
 
 private:
   struct State {
+      State(const stree::STree* stree) : pos_(stree) {}
 		stree::Pos pos_; ///< the position in the suffix tree for the currently estimated sequence.
 		double f_  = 1;       ///< related to the current estimate (used internally in different ways)
 		double v_  = 1;

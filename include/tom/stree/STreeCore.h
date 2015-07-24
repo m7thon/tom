@@ -93,7 +93,7 @@ class STree {
     friend class internal::Position;
     friend class internal::RBTreeNodeTraits;
     friend class Node;
-    friend class Edge;
+    friend class EdgeNode;
     friend class Path;
     friend class Pos;
 public:
@@ -102,7 +102,6 @@ public:
     STree(const Sequence& sequence) {
         sequence_ = sequence.rawSub(0,0);
         symbolSize_ = sequence_.isIO() ? 2 : 1;
-        size_ = sequence_.rawSize();
         extendTo(sequence);
     }
     
@@ -123,13 +122,20 @@ public:
     /** Return the number of nodes (internal and leaves) in the suffix tree. */
     nidx_t nNodes() const { return leaves_.size() + nodes_.size(); }
     
-    /** return the deepest node in the SuffixTree having a virtual / temporary leaf attached\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other virtual leaf branches can be found by traversing the suffix links until reaching the root node. */
-    Node getDeepestVirtualLeafBranch();
+    /** Return the deepest internal node in the SuffixTree representing a suffix\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other internal nodes representing a suffix can be found by traversing the suffix links until reaching the root node. */
+    Node deepestInternalSuffix();
+
+    /** Return a `Node` corresponding to the given `nidx`, which defaults to the root of the suffix tree. If no node corresponding to the given `nidx` exists, the returned `Node` will be `invalid`. The `valid` and `color` flags of the given `nidx` are ignored.
+     */
+    Node node(nidx_t nidx = ROOT) const;
+
+    /** Return a (degenerate) `EdgeNode` corresponding to the given `nidx`, which defaults to the root of the suffix tree. If no node corresponding to the given `nidx` exists, the returned `Node` will be `invalid`. The `valid` and `color` flags of the given `nidx` are ignored.
+     */
+    EdgeNode edge(nidx_t nidx = ROOT) const;
 
 //MARK: private:
 private:
     Sequence sequence_; //< a copy of the underlying sequence for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree.
-    nidx_t size_; //< the size of the represented sequence
     unsigned int symbolSize_; //< 1 if every suffix of the sequence is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
     
     std::vector<internal::InternalNode> nodes_;   //< the vector of internal nodes
@@ -149,7 +155,7 @@ private:
     /** @name Node data manipulation */ /**@{*/ //MARK: Node data manipulation
 
     /** Return the depth of the \c node, i.e., the size of the substring represented by the \c node. */
-    nidx_t d(const nidx_t node) const { return (node & INTERNAL) ? r(l(c(node))) : size_ - ((node & INDEX) * symbolSize_); }
+    nidx_t d(const nidx_t node) const { return (node & INTERNAL) ? r(l(c(node))) : sequence_.rawSize() - ((node & INDEX) * symbolSize_); }
 
     /** Set the depth of the given \c node to the given \c depth. */
     void d(const nidx_t node, const nidx_t depth) { r(l(c(node))) = depth; }

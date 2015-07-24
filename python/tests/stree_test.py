@@ -1,6 +1,7 @@
 import unittest
 import tom
 import os
+from tom import tomlib
 
 current_dir = os.path.abspath(os.path.dirname(__file__)) + '/'
 
@@ -8,24 +9,27 @@ import pickle
 import bz2
 import random as rnd
 
+def nodeIndex(node):
+    return node.nidx() & (tomlib.INTERNAL | tomlib.INDEX)
+
 def canonicalizeSuffixTree(stree):
     cForm = []
     it = tom.tomlib.PrefixIterator(stree)
     while it.isValid():
-        nodeData = [it.nodeIndex(), it.headIndex(), it.depth()]
-        nodeData += [it.child().nodeIndex() if it.child().isValid() else -1]
-        nodeData += [it.sibling().nodeIndex() if it.sibling().isValid() else -1]
-        nodeData += [it.suffixlink().nodeIndex() if it.isInternal() else -1]
+        nodeData = [nodeIndex(it), it.headIndex(), it.depth()]
+        nodeData += [nodeIndex(it.child()) if it.child().isValid() else -1]
+        nodeData += [nodeIndex(it.sibling()) if it.sibling().isValid() else -1]
+        nodeData += [nodeIndex(it.suffix()) if it.isInternal() else -1]
         nodeData += [it.count()]
         cForm += [nodeData]
         it.next()
-    return cForm, stree.getDeepestVirtualLeafBranch().nodeIndex()
+    return cForm, nodeIndex(stree.deepestInternalSuffix())
 
 
 def verifySuffixTreeCounts(seq, stree):
     it = tom.tomlib.PrefixIterator(stree)
     while it.isValid():
-        if seq.count(it.asSequence()) != it.count():
+        if seq.count(it.sequence()) != it.count():
             return False
         it.next()
     return True

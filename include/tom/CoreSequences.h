@@ -40,8 +40,8 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	if (maxSeqLen <= minSeqLen) maxSeqLen = minSeqLen;
 	std::shared_ptr<Sequences> coreSeqs(new Sequences());
 
-	stree::Edge node = stree::Edge(sfxTree);
-	std::priority_queue<stree::Edge> nodeQueue;
+	stree::EdgeNode node = sfxTree->edge();
+	std::priority_queue<stree::EdgeNode> nodeQueue;
 	nodeQueue.push(node);
 	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->sequence().rawSub(0,0)); // handles root case
 	while (!nodeQueue.empty() and (maxCoreSeq == -1 or coreSeqs->size() < maxCoreSeq)) {
@@ -49,7 +49,7 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 		nodeQueue.pop();
 		stree::nidx_t node_depth = node.depth();
 		if (node_depth < IO * maxSeqLen) {
-			stree::Edge child = node.child();
+			stree::EdgeNode child = node.child();
 			while (child.isValid()) {
 				if (child.count() >= minCounts) nodeQueue.push(child);
 				child.toSibling();

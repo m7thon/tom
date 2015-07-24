@@ -268,7 +268,7 @@ public:
 
 /** @name IO-functions */ //@{
 	INSERT_JSON_IO_FUNCTIONS()
-	/** return a string representation to display in python. */
+	/** Return a string representation to display in python. */
 	std::string repr() const;
 private:
     template<class Archive>

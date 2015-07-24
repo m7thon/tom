@@ -154,16 +154,15 @@ void STree::extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argumen
     }
 #endif
     if (sequence.rawSize() == 0) { return; }
-    if (size_ == 0) {
+    if (sequence_.rawSize() == 0) {
         leaves_.push_back(internal::LeafNode((INTERNAL), (0)));
         nodes_.push_back(internal::InternalNode((INTERNAL), (0), (VALID)));
     }
     sequence_ = sequence;
-    size_ = sequence.rawSize();
     removeTemporaryInternalNodes();
-    leaves_.reserve(size_); // This may invalidate the current Position:
+    leaves_.reserve(sequence_.rawSize()); // This may invalidate the current Position:
     currentPos_.canonize(this);
-    while (pos_ < size_) {
+    while (pos_ < sequence_.rawSize()) {
         if ((currentPos_.depth_ != 0) or (pos_ % symbolSize_ == 0)) {
             while (!currentPos_.followSymbol(this, sequence_.rawAt(pos_))) {
                 createNewLeaf();
@@ -238,10 +237,29 @@ void STree::annotate() {
     }
 }
 
-Node STree::getDeepestVirtualLeafBranch() {
+Node STree::deepestInternalSuffix() {
     internal::Position deepestVirtualLeafBranch = currentPos_;
     deepestVirtualLeafBranch.canonize(this);
-    return Node(this, deepestVirtualLeafBranch.node_ | VALID);
+    return node(deepestVirtualLeafBranch.node_ | VALID);
 }
+
+Node STree::node(nidx_t nidx) const {
+    if (nidx & INTERNAL) {
+        if ((nidx & INDEX) >= nInternalNodes()) { return Node(this, nidx &~VALID); }
+    } else {
+        if ((nidx & INDEX) >= nLeafNodes()) { return Node(this, nidx &~VALID); }
+    }
+    return Node(this, nidx);
+}
+
+EdgeNode STree::edge(nidx_t nidx) const {
+    if (nidx & INTERNAL) {
+            if ((nidx & INDEX) >= nInternalNodes()) { return EdgeNode(this, nidx &~VALID); }
+        } else {
+            if ((nidx & INDEX) >= nLeafNodes()) { return EdgeNode(this, nidx &~VALID); }
+        }
+        return EdgeNode(this, nidx);
+}
+
 
 } // namespace stree
