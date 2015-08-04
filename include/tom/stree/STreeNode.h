@@ -7,6 +7,12 @@ namespace stree {
 
 //TODO: Add checks to functions where required. These are currently interface functions that can crash tom with improper use!
 
+//TODO: Clean up iterator constructors. Both from stree and from objects should give same result.
+
+//TODO: Complete documentation
+
+//TODO: Write some tests to cover the various iterators.
+
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Node::repr;)
 /** This class represents a node in the suffix tree and can be used for extracting information or navigating the suffix tree. It contains a pointer internally to the \c STree that it belongs to. Use `STree.node()` to construct a `Node`.
  *

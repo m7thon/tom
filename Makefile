@@ -20,7 +20,7 @@
 #####################################################################
 
 # Path to eigen3 library if not in some standard location
-EIGEN3_INCLUDE = -I/usr/local/include/eigen3
+EIGEN3_INCLUDE = -I/opt/local/include/eigen3
 
 #####################################################################
 # The following configuration options take effect *ONLY* for

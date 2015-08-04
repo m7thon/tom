@@ -6,6 +6,7 @@
 .settings
 .project
 .cproject
+.pydevproject
 swig/tomlib_wrap.cxx
 swig/tomlib_wrap.cpp
 swig/tomlib_wrap.h
