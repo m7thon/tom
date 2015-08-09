@@ -57,7 +57,7 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 		}
 		if (node_depth < IO * minSeqLen) { continue; }
 		if (node_depth >= IO * maxSeqLen) node_depth = IO * maxSeqLen;
-		stree::nidx_t d = node.parentDepth() + 1; if ((IO == 2) and (d & 1)) d++;
+		stree::nidx_t d = node.parent().depth() + 1; if ((IO == 2) and (d & 1)) d++;
 		if (d < IO * minSeqLen) d = IO * minSeqLen;
 		if (unique) {
 			if (d <= node_depth) coreSeqs->push_back(sfxTree->sequence().rawSub(node.headIndex(), d));

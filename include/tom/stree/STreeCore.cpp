@@ -80,13 +80,13 @@ void STree::createNewLeaf(bool swap) {
         *currentPos_.edgePtr_ = newNode;
         currentPos_.edgePtr_ = NULL; // ... since it is invalidated anyway by the following:
         if (swap and (sequence_.rawAt(pos_) < sequence_.rawAt(currentPos_.hIndex_ + currentPos_.depth_))) {
-            nodes_.push_back(internal::InternalNode(l(oldEdge), r(oldEdge), (VALID | leaves_.size())));
-            leaves_.push_back(internal::LeafNode((oldEdge | COLOR), (pos_ - currentPos_.depth_)));
+            nodes_.push_back( { l(oldEdge), r(oldEdge), VALID | (nidx_t)(leaves_.size()) } );
+            leaves_.push_back( { oldEdge | COLOR, pos_ - currentPos_.depth_ } );
             l(oldEdge) = 0;
             r(oldEdge) = currentPos_.depth_; // sets depth of the new internal node
         } else {
-            nodes_.push_back(internal::InternalNode(l(oldEdge), r(oldEdge), oldEdge));
-            leaves_.push_back(internal::LeafNode(0, currentPos_.depth_));
+            nodes_.push_back( { l(oldEdge), r(oldEdge), oldEdge } );
+            leaves_.push_back( { 0, currentPos_.depth_ } );
             l(oldEdge) = VALID | COLOR | (leaves_.size() - 1);
             r(oldEdge) = pos_ - currentPos_.depth_; // sets hi of the new internal node
         }
@@ -96,14 +96,14 @@ void STree::createNewLeaf(bool swap) {
         if (suffixLinkFrom_ & VALID) sl(suffixLinkFrom_, newNode);
         suffixLinkFrom_ = newNode;
     } else {
-        leaves_.push_back(internal::LeafNode());
+        leaves_.push_back( { 0, 0 } );
         addChild(currentPos_.node_, ((leaves_.size() - 1) | VALID), sequence_.rawAt(pos_));
     }
 }
 
 void STree::createTemporaryInternalNodes() {
     assert(suffixLinkFrom_ == 0);
-    internal::Position currentPosOld = currentPos_;
+    internal::Pos currentPosOld = currentPos_;
     nTemporaryInternalNodes_ = 0;
     while (!currentPos_.isExplicit()) {
         createNewLeaf(false);
@@ -120,7 +120,7 @@ void STree::createTemporaryInternalNodes() {
 
 void STree::removeTemporaryInternalNodes() {
     if (nTemporaryInternalNodes_ > 0) {
-        internal::Position currentPosOld = currentPos_;
+        internal::Pos currentPosOld = currentPos_;
         currentPos_.preCanonize(this);
         for (nidx_t nToDo = nTemporaryInternalNodes_; nToDo > 0; nToDo--) {
             nidx_t newEdge = *(currentPos_.edgePtr_);
@@ -155,8 +155,8 @@ void STree::extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argumen
 #endif
     if (sequence.rawSize() == 0) { return; }
     if (sequence_.rawSize() == 0) {
-        leaves_.push_back(internal::LeafNode((INTERNAL), (0)));
-        nodes_.push_back(internal::InternalNode((INTERNAL), (0), (VALID)));
+        leaves_.push_back( { INTERNAL, 0 } );
+        nodes_.push_back( { INTERNAL, 0, VALID } );
     }
     sequence_ = sequence;
     removeTemporaryInternalNodes();
@@ -181,7 +181,7 @@ void STree::extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argumen
     annotate();
 }
 
-bool internal::Position::followSymbol(STree* stree, const Symbol chr) {
+bool internal::Pos::followSymbol(STree* stree, const Symbol chr) {
     if (isExplicit()) {
         nidx_t * nextNode = &(stree->c(node_, chr));
         if (!(*nextNode & VALID)) return false;
@@ -195,7 +195,7 @@ bool internal::Position::followSymbol(STree* stree, const Symbol chr) {
     return true;
 }
 
-void internal::Position::preCanonize(STree* stree) {
+void internal::Pos::preCanonize(STree* stree) {
     edgePtr_ = &node_;
     while (stree->d(*edgePtr_) < depth_) {
         node_ = *edgePtr_;
@@ -204,12 +204,12 @@ void internal::Position::preCanonize(STree* stree) {
     hIndex_ = stree->hi(*edgePtr_);
 }
 
-void internal::Position::canonize(STree* stree) {
+void internal::Pos::canonize(STree* stree) {
     preCanonize(stree);
     if ((*edgePtr_ & INTERNAL) and (stree->d(*edgePtr_) == depth_)) node_ = *edgePtr_;
 }
 
-void internal::Position::followSuffixLink(STree* stree) {
+void internal::Pos::followSuffixLink(STree* stree) {
     node_ = stree->sl(node_);
     if (stree->symbolSize_ > depth_) {
         depth_ = 0;
@@ -224,7 +224,7 @@ void internal::Position::followSuffixLink(STree* stree) {
 void STree::annotate() {
     nOccurrences_.assign(nodes_.size(), 0);
     if (currentPos_.depth_ > 0) {
-        internal::Position tempIntNode = currentPos_;
+        internal::Pos tempIntNode = currentPos_;
         tempIntNode.canonize(this);
         for (nidx_t tnode = tempIntNode.node_; (tnode & INDEX) != 0; tnode = sl(tnode))
             nOccurrences_[tnode & INDEX]++;
@@ -238,7 +238,7 @@ void STree::annotate() {
 }
 
 Node STree::deepestInternalSuffix() {
-    internal::Position deepestVirtualLeafBranch = currentPos_;
+    internal::Pos deepestVirtualLeafBranch = currentPos_;
     deepestVirtualLeafBranch.canonize(this);
     return node(deepestVirtualLeafBranch.node_ | VALID);
 }

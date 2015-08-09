@@ -22,7 +22,7 @@ class STree;
 class Node;
 class EdgeNode;
 class Path;
-class Pos;
+class Position;
 class PrefixIterator;
 class PostfixIterator;
 class DFSIterator;

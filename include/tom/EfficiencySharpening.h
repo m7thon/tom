@@ -57,7 +57,7 @@ std::shared_ptr<Oom> sharpenEfficiency(const Oom& oom, stree::STree& rStree, std
   for (Symbol o = 0; o < seq.nO(); ++o) {
     MatrixXd CFz = MatrixXd::Zero(oom.dim(), indNodes->size());
     for (int i = 0; i < indNodes->size(); ++i) {
-      stree::Pos pos(&rStree); // root
+      stree::Position pos(&rStree); // root
       pos.toSymbol(o); pos.toSequence(rStree.node(indNodes->at(i)).sequence());
       stree::Node node = pos.edge();
       if (node.isValid()) {

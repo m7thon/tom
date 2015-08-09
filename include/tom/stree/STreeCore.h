@@ -9,53 +9,42 @@ namespace stree {
 namespace internal {
     
 /** A \c LeafNode consists of a left and right \c nidx_t. */
-class LeafNode {
-public:
-    /** Create a \c LeafNode with zero (hence null) left and right \c nidx_t. */
-    LeafNode() : l_(0), r_(0) {}
-    /** Create a \c LeafNode with the given left (\c l_) and right (\c r_) \c nidx_t. */
-    LeafNode(nidx_t l, nidx_t r) : l_(l), r_(r) {}
-    nidx_t l_; //< the left \c nidx_t.
-    nidx_t r_; //< the right \c nidx_t.
+struct LeafNode {
+    nidx_t l_; /**< the left \c nidx_t. */
+    nidx_t r_; /**< the right \c nidx_t. */
 };
 
 /** An \c InternalNode consists of a left, right and child \c nidx_t. */
-class InternalNode
-{ public:
-    /** Create a \c LeafNode with zero (hence null) left, right and child \c nidx_t. */
-    InternalNode() : l_(0), r_(0), c_(0) {}
-    /** Create a \c LeafNode with the given left (\c l_), right (\c r_) and child (\c c_) \c nidx_t. */
-    InternalNode(nidx_t l, nidx_t r, nidx_t c) : l_(l), r_(r), c_(c) {}
+struct InternalNode {
     nidx_t l_; //< the left \c nidx_t.
     nidx_t r_; //< the right \c nidx_t.
     nidx_t c_; //< the child \c nidx_t.
 };
 
-/** A \c Position refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an explicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c stree::Pos instead! */
-class Position {
+/** A \c Pos refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an explicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c stree::Position instead! */
+class Pos {
 public:
-    /** Create a \c Position corresponding to the root of the suffix tree */
-    Position() : node_(ROOT), hIndex_(0), depth_(0) { edgePtr_ = &node_; }
+    /** Create a \c Pos corresponding to the root of the suffix tree */
+    Pos() : node_(ROOT), hIndex_(0), depth_(0) { edgePtr_ = &node_; }
     
     nidx_t node_;     //< The last / deepest node on the path from the root to the represented position in the suffix tree
     nidx_t * edgePtr_; //< If the represented position lies on an edge (i.e., it is an implicit internal node), then this is  a pointer from the parent \c node to the next node, which defines this edge. Otherwise, this is a pointer from the parent to the current \c node. Note that this pointer is invalidated by any change to the data structures underlying the suffix tree (the \c nodes and \c leaves arrays).
     nidx_t hIndex_;    //< The index in the underlying `Sequence` corresponding to the represented substring
     nidx_t depth_;     //< The length of the represented substring = depth in the (uncompressed) suffix trie
     
-    /** If the current STreePosition corresponds to the substring \c str, then attempt to move to \c str concatenated with \c chr\. Return true if this is successful, i.e., if \c str + \c chr is also a substring of the represented \c sequence. */
+    /** If the current `Pos` corresponds to the subsequence \c seq, then attempt to move to \c seq concatenated with \c chr\. Return true if this is successful, i.e., if \c seq + \c chr is also a substring of the represented \c sequence. */
     bool followSymbol(STree* stree, const Symbol chr);
     inline void preCanonize(STree* stree);
     inline void canonize(STree* stree);
     void followSuffixLink(STree* stree);
-    /** Return \c true if the \c STreePosition corresponds to an explicit node. */
+    /** Return \c true if the \c Pos corresponds to an explicit node. */
     bool isExplicit() const {return (*edgePtr_ & (INTERNAL | INDEX)) == (node_ & (INTERNAL | INDEX));}
-    }; // class Position
+    }; // class Pos
 
 class RBTreeNodeTraits;
 typedef RBTree<RBTreeNodeTraits> RBSiblingTree;
 
 } //namespace internal
-
 
 /**
  * An implementation of suffix trees for the `Sequence` type, which can represent a plain or io-sequence.
@@ -90,12 +79,12 @@ typedef RBTree<RBTreeNodeTraits> RBSiblingTree;
  *
  */
 class STree {
-    friend class internal::Position;
+    friend class internal::Pos;
     friend class internal::RBTreeNodeTraits;
     friend class Node;
     friend class EdgeNode;
     friend class Path;
-    friend class Pos;
+    friend class Position;
 public:
     /** Create a suffix tree for the given `sequence`. Note that the sequence must have size at least one.
      */
@@ -114,7 +103,7 @@ public:
     const Sequence sequence() const { return sequence_; }
 
     /** Return the number of leaf nodes in the suffix tree. */
-    nidx_t nLeafNodes() const { return leaves_.size(); }
+    nidx_t nLeafNodes() const { return leaves_.size() - nTemporaryInternalNodes_; }
     
     /** Return the number of internal nodes in the suffix tree. */
     nidx_t nInternalNodes() const { return nodes_.size(); }
@@ -135,20 +124,32 @@ public:
 
 //MARK: private:
 private:
-    Sequence sequence_; //< a copy of the underlying sequence for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree.
-    unsigned int symbolSize_; //< 1 if every suffix of the sequence is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so on
+    Sequence sequence_; /**< a copy of the underlying sequence for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree. */
+    unsigned int symbolSize_; /**< 1 if every suffix of the sequence is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so o.n */
     
     std::vector<internal::InternalNode> nodes_;   //< the vector of internal nodes
     std::vector<internal::LeafNode> leaves_;      //< the vector of leaf nodes
     nidx_t nTemporaryInternalNodes_ = 0;       //< the number of temporary internal nodes created by \ref createTemporaryInternalNodes().
     std::vector<nidx_t> nOccurrences_;     //< for each internal node, the number of occurrences of the corresponding substring in the represented sequence.
-    internal::Position currentPos_;               //< the current position in the suffix tree construction
+    internal::Pos currentPos_;               //< the current position in the suffix tree construction
     nidx_t pos_ = 1;                           //< the position in the \c sequence corresponding to the current step in the construction process
     nidx_t suffixLinkFrom_ = 0;
     
-    /* Return the number of leaves below this \c node, which is the same as the number of occurrences of the substring corresponding to this \c node in the \c sequence. */
+    /** Return the number of occurrences of the substring corresponding to this \c node in the represented \c sequence.
+     */
     nidx_t n(const nidx_t node) const { if (!(node & VALID)) return 0;
         if (node & INTERNAL) return nOccurrences_[node & INDEX]; else return 1;
+    }
+
+    /** Return `true` if the given `nidx` can refer to a valid node in the suffix tree. Note that the `valid` and `color` flags are ignored.
+     */
+    bool validate(nidx_t nidx) const {
+        if (nidx & INTERNAL) {
+            if ((nidx & INDEX) < nInternalNodes()) { return true; }
+        } else {
+            if ((nidx & INDEX) < nLeafNodes()) { return true; }
+        }
+        return false;
     }
 
 #ifndef STREE_NODE_DATA_MANIPULATION

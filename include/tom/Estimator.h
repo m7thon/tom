@@ -36,7 +36,7 @@ class Estimator
 
 	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
 	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : s_(sfxTree.get()), stree_(sfxTree) {
-		s_.pos_ = stree::Pos(stree_.get());
+		s_.pos_ = stree::Position(stree_.get());
 		nO_ = sfxTree->sequence().nO(); nU_ = stree_->sequence().nU();
 		len_ = ( stree_->sequence().length() );
 		uProbs_ = Eigen::VectorXd::Ones(std::max(1, nU_));
@@ -170,7 +170,7 @@ class Estimator
 private:
   struct State {
       State(const stree::STree* stree) : pos_(stree) {}
-		stree::Pos pos_; ///< the position in the suffix tree for the currently estimated sequence.
+		stree::Position pos_; ///< the position in the suffix tree for the currently estimated sequence.
 		double f_  = 1;       ///< related to the current estimate (used internally in different ways)
 		double v_  = 1;
 		double fB_ = 1;       ///< related to the current Bayesian estimate (used internally in different ways)
