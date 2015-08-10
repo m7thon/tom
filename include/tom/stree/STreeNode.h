@@ -107,7 +107,7 @@ public:
 
 	/** Return the first child node of this node. If no such node exists, a `Node` marked as invalid is returned. Note that the children are ordered lexicographically according to their edge labels.
 	 */
-	Node child() const { if (isValid() and isInternal()) return Node(stree_, stree_->c(nidx_)); else return Node(stree_, nidx_ & ~VALID); }
+	Node child() const { Node ret = Node(*this); ret.toChild(); return ret; }
 
 	/** Set this node to its first child if such a node exists, otherwise mark this node as invalid. Note that the children are ordered lexicographically according to their edge labels.
 	 */
@@ -115,7 +115,7 @@ public:
 
 	/** Return the child node along the edge leading away whose label begins with the given `symbol`. If no such node exists, a `Node` marked as invalid is returned.
 	 */
-	Node child(Symbol symbol) const { if (isValid() and isInternal()) return Node(stree_, stree_->c(nidx_, symbol)); else return Node(stree_, nidx_ & ~VALID); }
+	Node child(Symbol symbol) const { Node ret = Node(*this); ret.toChild(symbol); return ret; }
 
 	/** Set this node to the child node along the edge leading away whose label begins with the given `symbol`\. If no such node exists, mark this node as invalid instead.
 	 */
@@ -126,7 +126,7 @@ public:
 
 	/** Return the next sibling of this node. If no such node exists, a `Node` marked as invalid is returned. Note that the siblings are ordered lexicographically according to their edge labels.
 	 */
-	Node sibling() const { if (isValid()) return Node(stree_, stree_->sib(nidx_)); else return Node(stree_, nidx_ & ~VALID); }
+	Node sibling() const { Node ret = Node(*this); ret.toSibling(); return ret; }
 
 	/** Set this node to its next sibling if a next sibling exists, otherwise mark this node as invalid. Note that the siblings are ordered lexicographically according to their edge labels.
 	 */
@@ -134,23 +134,17 @@ public:
 
 	/** Return the node corresponding to the first suffix of the represented sequence. This follows the "suffix link" of the suffix tree. If no such node exists, a `Node` marked as invalid is returned.
 	 */
-	Node suffix() const {
-		if (isValid() and isInternal() and (index() != 0)) return Node(stree_, stree_->sl(nidx_) | VALID);
-		else return Node(stree_, nidx_ & ~VALID);
-	}
+	Node suffix() const { Node ret = Node(*this); ret.toSuffix(); return ret; }
 
 	/** Set this node to the node corresponding to the first suffix of the represented sequence\. If no such node exists, mark this node as invalid instead. This follows the "suffix link" of the suffix tree.
 	 */
-	void toSuffix() {
-		if (isValid() and isInternal() and (index() != 0)) { nidx_ = stree_->sl(nidx_) | VALID; }
-		else { setValid(false); }
-	}
+    void toSuffix();
 
 	/** Return the (sub-)sequence represented by this node. Note that this is `seq.rawSub(headIndex(), depth())`, where `seq` is the sequence represented by the suffix tree.
 	 */
 	Sequence sequence() const CHECK(throw(std::invalid_argument)) {
         CHECK(if (!isValid()) throw std::invalid_argument(".sequence() called on invalid node.");)
-	    return stree_->sequence_.rawSub(headIndex(), depth());
+	    return stree_->sequence().rawSub(headIndex(), depth());
 	}
 
 	/** Return a string representation of the data of this node\. This is useful for debugging or understanding the suffix tree structure.
@@ -224,13 +218,16 @@ public:
      */
     EdgeNode(const Node& node, const Node& parent) : Node(node), parent_(node.nidx() &~ VALID) { findParent(parent); }
 
-    /** Return the parent `Node` of this `EdgeNode`. If this `EdgeNode` is degenerate, i.e., no parent node exists or is known, a `Node` marked as invalid is returned.
+    /** Return the parent `Node` of this `EdgeNode`. If this `EdgeNode` is invalid or degenerate, i.e., no parent node exists or is known, a `Node` marked as invalid is returned.
      */
-	Node parent() const { return Node(stree_, parent_); }
+	Node parent() const {
+	    if (isValid()) return Node(stree_, parent_);
+	    return Node(stree_, nidx_);
+	}
 
 	/** Return the first child `EdgeNode` of this `EdgeNode`. If no child exists, an `EdgeNode` marked as invalid is returned. Note that the children are ordered lexicographically according to their edge labels.
      */
- 	EdgeNode child() const { return EdgeNode(Node::child(), nidx_); }
+ 	EdgeNode child() const { EdgeNode ret = EdgeNode(*this); ret.toChild(); return ret; }
 
     /** Set this `EdgeNode` to its first child (with edge leading to it) if such a node exists, otherwise mark this `EdgeNode` as invalid. Note that the children are ordered lexicographically according to their edge labels.
      */
@@ -238,31 +235,31 @@ public:
 
     /** Return the child `EdgeNode` leading away whose label begins with the given `symbol`. If no such `EdgeNode` exists, an `EdgeNode` marked as invalid is returned.
      */
- 	EdgeNode child(Symbol chr) const { return EdgeNode(Node::child(chr), nidx_); }
+ 	EdgeNode child(Symbol symbol) const { EdgeNode ret = EdgeNode(*this); ret.toChild(symbol); return ret; }
 
     /** Set this `EdgeNode` to the child `EdgeNode` leading away whose label begins with the given `symbol`\. If no such `EdgeNode` exists, mark this `EdgeNode` as invalid instead.
      */
- 	void toChild(Symbol chr) { nidx_t par = nidx_; Node::toChild(chr); if (isValid()) parent_ = par; }
+ 	void toChild(Symbol symbol) { nidx_t par = nidx_; Node::toChild(symbol); if (isValid()) parent_ = par; }
 
     /** Return the next sibling of this `EdgeNode`. If none exists, an `EdgeNode` marked as invalid is returned. Note that the siblings are ordered lexicographically according to their edge labels.
      */
- 	EdgeNode sibling() const { return EdgeNode(Node::sibling(), parent_); }
+ 	EdgeNode sibling() const { EdgeNode ret = EdgeNode(*this); ret.toSibling(); return ret; }
 
     /** Return the `EdgeNode` corresponding to the first suffix of the represented sequence. This follows the "suffix link" of the suffix tree (and finds the new parent accordingly). If no such node exists, a `Node` marked as invalid is returned.
      */
- 	EdgeNode suffix() const { return EdgeNode(Node::suffix(), Node(stree_, parent_).suffix()); }
+ 	EdgeNode suffix() const { EdgeNode ret = EdgeNode(*this); ret.toSuffix(); return ret; }
 
     /** Set this to the `EdgeNode` corresponding to the first suffix of the represented sequence\. If no such node exists, mark this node as invalid instead. This follows the "suffix link" of the suffix tree (and finds the new parent accordingly).
      */
  	void toSuffix() { Node::toSuffix(); if (isValid()) findParent(Node(stree_, parent_).suffix()); }
 
- 	/** Return the edge label. Note that this `EdgeNode` must not be degenerate.
+ 	/** Return the edge label.
  	 */
 	Sequence edgeLabel() const CHECK(throw(std::invalid_argument)) {
-	    Node par = parent();
-	    CHECK(if (!isValid()) throw std::invalid_argument(".edgeLabel() called on invalid EdgeNode.");)
-	    CHECK(if (!par.isValid()) throw std::invalid_argument(".edgeLabel() called on degenerate EdgeNode (no valid parent information).");)
-	    return stree_->sequence_.rawSub(headIndex() + par.depth(), depth() - par.depth());
+	    CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid EdgeNode.");)
+        Node par = parent();
+	    if (!par.isValid()) return stree_->sequence().rawSub(headIndex() + depth(), 0);
+	    return stree_->sequence().rawSub(headIndex() + par.depth(), depth() - par.depth());
 	}
 
     /** Return a string representation to display in python.
@@ -294,8 +291,10 @@ private:
         if (not isValid()) { return; }
         nidx_t d = depth();
         nidx_t par_depth;
+        Sequence seq = sequence();
+        if (not searchBelow.isValid()) searchBelow = Node(stree_, ROOT);
         while (searchBelow.isValid() and (par_depth = searchBelow.depth()) < d) {
-            Node par_child = searchBelow.child(sequence().rawAt(par_depth));
+            Node par_child = searchBelow.child(seq.rawAt(par_depth));
             if (par_child == *this) { parent_ = par_child.nidx(); return; }
             searchBelow = par_child;
         }
@@ -335,58 +334,173 @@ protected:
 
 
 
+/** This class represents any position in the suffix tree and can be used for extracting information or navigating the suffix tree. A `Position` that is a node (leaf or internal) of the suffix tree is considered "explicit", while a `Position` on some edge is called "implicit".
+ *
+ * The `to...()` methods are provided to navigate the suffix tree structure:
+ *
+ * - `to...()` sets this `Position` to its suffix, extension by a sequence, etc.
+ * - If no such exists, then it is simply marked as invalid.
+ * - For an invalid `Position`, the `to...()` methods have no effect.
+ * - Calling `setValid()` after the `Position` has been marked as invalid by a `to...()` method will reset the `Position` to the last valid one during the traversal.
+ */
 class Position {
 private:
-    EdgeNode edge_;
-    nidx_t depth_;
+    EdgeNode edge_; /**< the edge on which this position lies */
+    nidx_t depth_; /**< the depth of the position, i.e., the size of the represented subsequence */
 public:
 	Position(const STree* stree) : edge_(stree), depth_(0) {}
+	Position(const EdgeNode& node) : edge_(node), depth_(0) {
+	    if (isValid()) depth_ = node.depth();
+	}
 
-	void setRoot() { edge_ = EdgeNode(edge_.stree_); depth_ = 0; }
-
+    /** Return `true` if valid, otherwise return `false`.
+     */
 	bool isValid() const { return edge_.isValid(); }
+
+    /** Mark this `Position` as `valid` (default: `true`).
+     */
 	void setValid(bool valid = true) { edge_.setValid(valid); }
+
+    /** Return `true` if this is a node (internal or leaf). Otherwise, this `Position` is "implicit", i.e., it lies on some edge.
+     */
 	bool isExplicit() const { return (depth_ == edge_.depth()); }
-    bool isInternal() const { return !isLeaf(); }
+
+    /** Return `true` if this is an internal node or an implicit position.
+     */
+	bool isInternal() const { return !isLeaf(); }
+
+    /** Return `true` if this is a leaf node.
+     */
 	bool isLeaf() const { return (isExplicit() and edge_.isLeaf()); }
 
-	nidx_t count() const { return edge_.count(); }
-	nidx_t headIndex() const { return edge_.headIndex(); }
-	nidx_t depth() const { return depth_; }
-	nidx_t parentDepth() const { return edge_.parent().depth(); }
+    /** Return `true` if this is the root node.
+     */
+    bool isRoot() const { return edge_.isRoot(); }
 
-  EdgeNode& edge() { return edge_; }
+    /** Return `true` if this `Position` is the same as the given `other`.
+     */
+    bool operator ==(const Position& other) const { return edge_ == other.edge_ and depth_ == other.depth_; }
 
-	void toSuffix() { if (isValid()) {
-			if (edge_.stree_->symbolSize_ > depth_) { setValid(false); return; }
-			depth_-= edge_.stree_->symbolSize_;
-			nidx_t hi = headIndex() + edge_.stree_->symbolSize_;
-			edge_.parent_ = edge_.stree_->sl(edge_.parent_) | VALID;
-			edge_.nidx_ = edge_.parent_;
-			edge_.setValid();
-			while (edge_.isValid() and (edge_.depth() < depth_))
-				edge_.toChild(edge_.stree_->sequence_.rawAt(hi + edge_.depth()));
-		}}
+    /** Return `true` if this `Position` is the same as the given `other`.
+     */
+    bool operator ==(const Node& other) const { return edge_ == other and isExplicit(); }
 
-	void toSymbol(Symbol chr) {
+    /** Return `true` if the `other` `Position` occurs more often in the represented sequence than this node.
+     */
+    bool operator <(const Position& other) const CHECK(throw(std::invalid_argument)) {
+        CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+        return count() < other.count();
+    }
+
+    /** Return `true` if the `other` `Node` occurs more often in the represented sequence than this node.
+     */
+    bool operator <(const Node& other) const CHECK(throw(std::invalid_argument)) {
+        CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+        return count() < other.count();
+    }
+
+    /** Return the "depth" of this position, which is the size of the represented (sub-)sequence.
+     */
+    nidx_t depth() const CHECK(throw(std::invalid_argument)) {
+        CHECK(if (!isValid()) throw std::invalid_argument(".depth() called on invalid position.");)
+        return depth_;
+    }
+
+    /** Return the "headindex" of this node, which is an index in the sequence represented by the suffix tree where the (sub-)sequence represented by this node occurs. I.e., the (sub-)sequence represented by this position is `seq.rawSub(headindex(), depth())`, where `seq` is the sequence represented by the suffix tree.
+     */
+    nidx_t headIndex() const CHECK(throw(std::invalid_argument)) { return edge_.headIndex(); }
+
+    /** Return the number of occurrences of the sequence represented by this `Position` in the sequence represented by the suffix tree.
+     */
+    nidx_t count() const CHECK(throw(std::invalid_argument)) { return edge_.count(); }
+
+	/** Return the `EdgeNode` that this `Position` lies on. If this `Position` is explicit, then the `EdgeNode` will be the node (with edge leading to it) of the position.
+	 */
+    EdgeNode& edge() { return edge_; }
+
+    /** Return the `Position` corresponding to the first suffix of the represented sequence. This uses the "suffix link" of the suffix tree. If no suffix exists (i.e., this is the root), a `Position` marked as invalid is returned.
+     */
+    Position suffix() const { Position ret = Position(*this); ret.toSuffix(); return ret; }
+
+    /** Set this to the `Position` corresponding to the first suffix of the represented sequence\. If no suffix exists (i.e., this is the root) mark this `Position` as invalid instead. This uses the "suffix link" of the suffix tree.
+     */
+	void toSuffix() {
+	    if (not isValid()) { return; }
+	    Node par = edge_.parent();
+	    if (not par.isValid()) { /* root case */ setValid(false); return; }
+        par.toSuffix(); if (not par.isValid()) par = Node(edge_.stree_, ROOT);
+        Sequence seq = sequence().slice(1, tom::NoIndex);
+        depth_ = seq.rawSize();
+        edge_ = EdgeNode(par, par);
+		while (isValid() and (edge_.depth() < depth_)) {
+			edge_.toChild(seq.rawAt(edge_.depth()));
+		}
+		assert(isValid());
+	}
+
+	/** Update this `Position` such that it represents a subsequence extended by the given `symbol`. If no such position exists, this `Position` is unchanged but marked as invalid. For an invalid `Position` this function has no effect.
+	 */
+	void toSymbol(Symbol symbol) {
 		if (!isValid()) return;
 		if (isExplicit()) {
-			edge_.toChild(chr);
+			edge_.toChild(symbol);
 			if (isValid()) depth_++;
-		}
-		else
-			if (edge_.stree_->sequence_.rawAt(edge_.headIndex() + depth_) == chr) depth_++;
+		} else {
+			if (edge_.stree_->sequence().rawAt(edge_.headIndex() + depth_) == symbol) ++depth_;
 			else edge_.setValid(false);
-	}
-	void toSequence(const Sequence& str) {
-		for (nidx_t pos = 0; ((pos < str.rawSize()) and (edge_.isValid())); ++pos)
-			toSymbol(str.rawAt(pos));
+		}
 	}
 
-	Sequence sequence() const { return edge_.stree_->sequence_.rawSub(headIndex(), depth_); }
-	Sequence edgeLabel() const { return edge_.stree_->sequence_.rawSub(headIndex() + parentDepth(), depth_ - parentDepth()); }
+    /** Update this `Position` such that it represents a subsequence extended by the given `sequence`. If no such position exists, this `Position` is updated symbol-wise according to the given `sequence` as far as possible and then marked as invalid. For an invalid `Position` this function has no effect.
+     */
+	void toSequence(const Sequence& sequence) {
+		for (nidx_t idx = 0; ((idx < sequence.rawSize()) and (edge_.isValid())); ++idx) { toSymbol(sequence.rawAt(idx)); }
+	}
 
+    /** Return the (sub-)sequence represented by this `Position`. Note that this is `seq.rawSub(headIndex(), depth())`, where `seq` is the sequence represented by the suffix tree.
+     */
+	Sequence sequence() const { return edge_.stree_->sequence().rawSub(headIndex(), depth_); }
+
+    /** Return the sub-sequence of the edge label up to this position. For an explicit position this is just the edge label (see `edge.edgeLabel()`).
+     */
+    Sequence label() const CHECK(throw(std::invalid_argument)) {
+        CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid EdgeNode.");)
+        Node par = edge_.parent();
+        if (!par.isValid()) return edge_.stree_->sequence().rawSub(headIndex() + depth_, 0);
+        return edge_.stree_->sequence().rawSub(headIndex() + par.depth(), depth_ - par.depth());
+    }
 }; // class STreePos
+
+
+
+/* Implementation */
+#ifndef SWIG
+
+inline void Node::toSuffix() {
+    if (isValid()) {
+        if (isInternal()) {
+            if ((index() != 0)) {
+                nidx_ = stree_->sl(nidx_) | VALID;
+            } else {
+                nidx_ = ROOT & ~VALID;
+            }
+        } else {
+            /* Leaf case */
+            if (index() < stree_->nLeafNodes() - 1) {
+                ++nidx_;
+            } else {
+                /* "last" leaf. Suffix will be an internal node. */
+                Position pos = Position(stree_);
+                pos.toSequence(sequence().slice(1, tom::NoIndex));
+                nidx_ = pos.edge().nidx();
+            }
+        }
+    } else {
+        nidx_ = nidx_ & ~VALID;
+    }
+}
+
+#endif /* SWIG */
 
 } // namespace stree
 

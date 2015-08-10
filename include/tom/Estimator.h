@@ -41,10 +41,10 @@ class Estimator
 		len_ = ( stree_->sequence().length() );
 		uProbs_ = Eigen::VectorXd::Ones(std::max(1, nU_));
 		for (Symbol u = 0; u < nU_; ++u) {
-			s_.pos_.setRoot(); s_.pos_.toSymbol(u);
+			s_.pos_ = stree::Position(stree_.get()); s_.pos_.toSymbol(u);
 			uProbs_(u) = (double)(s_.pos_.count()) / len_;
 		}
-		s_.pos_.setRoot();
+		s_.pos_ = stree::Position(stree_.get());
 	}
 
 	/** return the size of the underlying input alphabet */
@@ -182,7 +182,7 @@ private:
 
 	const std::shared_ptr<stree::STree> stree_; ///< a pointer to the underlying \c STree
 
-	void reset() { s_.pos_.setRoot(); s_.f_ = s_.fB_ = s_.v_ = 1; }
+	void reset() { s_.pos_ = stree::Position(stree_.get()); s_.f_ = s_.fB_ = s_.v_ = 1; }
 	void reset(const State& s) { s_ = s; }
 
 	void extendBy(Symbol o, Symbol u = 0) {

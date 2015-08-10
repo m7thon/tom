@@ -194,10 +194,10 @@ private:
     /** Return the next sibling (according to lexicographic ordering of edge labels) of the given \c node, or a null \c nidx_t if no further sibling exists. */
     nidx_t sib(const nidx_t node) const;
 
-    /** Return the suffix link \c nidx_t\& of the given \c node. */
+    /** Return the suffix link \c nidx_t\& of the given internal `node`. */
     const nidx_t & sl(const nidx_t node) const { const nidx_t * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); return *x; }
     
-    /** Set the suffix link of the given \c node to the given \c suffixLink. */
+    /** Set the suffix link of the given internal \c node to the given \c suffixLink. */
     void sl(const nidx_t node, nidx_t suffixLink) { nidx_t * x = &(l(l(c(node)))); while (*x & VALID) x = &(r(*x)); *x = suffixLink & ~(VALID | COLOR); }
 
     //@}
