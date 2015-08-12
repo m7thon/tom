@@ -86,6 +86,8 @@ public:
     void rawAt(long idx, Symbol x) CHECK(throw (std::out_of_range)) { data_->seq_[ checkPos( rawIndexToPos( normalizeRawIndex( idx ) ) ) ] = x; }
 
     /** Return a subsequence starting at the given position index `idx` and of the given `size`, treating io-sequences as raw sequences. Negative indexing is supported, and if `size` is negative, a reverse sequence starting at the `idx` is returned.
+     *
+     *  The given `idx` must be a valid position index (i.e., not out of bounds), unless the requested `size` is zero, in which case always a `Sequence` of size zero is returned.
      */
     Sequence rawSub(long idx, long size) const CHECK(throw (std::out_of_range)) {
         if (size == 0) { Sequence seq(*this); seq.size_ = 0; return seq; }
@@ -99,17 +101,16 @@ public:
     }
 
     /** Return a subsequence from the \c begin index up to (and not including) the \c end index, or if \c forwards is set to \c false, a reverse sequence from the \c begin position up to (and not including) the \c end position. Negative indexing is supported, and \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the sequence, depending on `reverse`.
+     *
+     * Note that the requested slice must define a sub-sequence of this sequence or a sequence of size zero.
      */
     Sequence rawSlice(long begin = NoIndex, long end = NoIndex, bool forwards = true) const CHECK(throw (std::out_of_range)) {
         if (begin == NoIndex) { begin = forwards ? 0 : rawSize() - 1; }
         else { begin = normalizeRawIndex( begin ); }
         if (end == NoIndex) { end = forwards ? rawSize() : -1; }
-        else {
-            end = normalizeRawIndex( end );
-            CHECK( if (end < 0) throw std::out_of_range("sequence index out of range"); )
-        }
+        else { end = normalizeRawIndex( end ); }
         long size = end - begin;
-        CHECK( if ( (begin < 0 and size != 0) or (size < 0 and forwards) or (size > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
+        CHECK( if ( (size != 0 and begin < 0) or (size < 0 and forwards) or (size > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
         return rawSub(begin, size);
     }
 //}
@@ -172,6 +173,8 @@ public:
     long length() const { return nU() == 0 ? rawSize() : isFrontAligned() ? (rawSize() + 1) / 2 : rawSize() / 2 + 1; }
 
     /** Return a subsequence starting at the given position index `idx` and of the given `length`, where each index covers one io-pair. Negative indexing is supported, and if `length` is negative, a reverse sequence starting at the `idx` is returned.
+     *
+     *  The given `idx` must be a valid position index (i.e., not out of bounds), unless the requested `length` is zero, in which case always a `Sequence` of length zero is returned.
      */
     Sequence sub(long idx, long length) const CHECK(throw (std::out_of_range)) {
         if (nU() == 0) return rawSub(idx, length);
@@ -206,6 +209,8 @@ public:
     }
 
     /** Return a subsequence from the \c begin index up to (and not including) the \c end index, or if \c forwards is set to \c false, a reverse sequence from the \c begin position up to (and not including) the \c end position, where each index covers one io-pair. Negative indexing is supported, and \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the sequence, depending on `reverse`.
+     *
+     * Note that the requested slice must define a sub-sequence of this sequence or a sequence of size zero.
      */
     Sequence slice(long begin, long end = NoIndex, bool forwards = true) const CHECK(throw (std::out_of_range)) {
         if (begin == NoIndex) { begin = forwards ? 0 : length() - 1; }
@@ -213,7 +218,7 @@ public:
         if (  end == NoIndex) {   end = forwards ? length() : -1; }
         else { end = normalizeIndex( end ); }
         long length = end - begin;
-        CHECK( if ( (begin < 0 and length != 0) or (length < 0 and forwards) or (length > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
+        CHECK( if ( (length != 0 and begin < 0) or (length < 0 and forwards) or (length > 0 and not forwards) ) { throw std::out_of_range("sequence index out of range"); } )
         return sub(begin, length);
     }
 //@}
