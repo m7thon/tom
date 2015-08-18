@@ -115,8 +115,8 @@ deploy: swig/tomlib_wrap.cpp
 
 .PHONY: test
 test: swig/tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py install --user
-	CC=clang++ CXX=clang++ CPPFLAGS="$(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py test
+	CC=clang++ CXX=clang++ CPPFLAGS="-DTOM_DEBUG $(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py install --user
+	CC=clang++ CXX=clang++ CPPFLAGS="-DTOM_DEBUG $(EIGEN3_INCLUDE) -gline-tables-only -march=native -O3" python setup.py test
 
 .PHONY: install
 install:

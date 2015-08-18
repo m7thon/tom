@@ -1,5 +1,3 @@
-// -*- C++ -*-
-
 #ifndef STREE_CORE_H
 #define STREE_CORE_H
 
@@ -21,6 +19,7 @@ struct InternalNode {
     nidx_t c_; //< the child \c nidx_t.
 };
 
+SWIGCODE(%ignore Pos;)
 /** A \c Pos refers to the location in the suffix tree that corresponds to some substring of the represented \c Sequence\. This position is unique, but can either be an explicit node (internal or leaf) or an implicit internal node\. This class is only for internal use in the suffix tree construction\. Please use the class \c stree::Position instead! */
 class Pos {
 public:
@@ -41,6 +40,7 @@ public:
     bool isExplicit() const {return (*edgePtr_ & (INTERNAL | INDEX)) == (node_ & (INTERNAL | INDEX));}
     }; // class Pos
 
+SWIGCODE(%ignore RBTreeNodeTraits;)
 class RBTreeNodeTraits;
 typedef RBTree<RBTreeNodeTraits> RBSiblingTree;
 
@@ -83,7 +83,7 @@ class STree {
     friend class internal::RBTreeNodeTraits;
     friend class Node;
     friend class EdgeNode;
-    friend class Path;
+    friend class PathNode;
     friend class Position;
 public:
     /** Create a suffix tree for the given `sequence`. Note that the sequence must have size at least one.
@@ -111,18 +111,12 @@ public:
     /** Return the number of nodes (internal and leaves) in the suffix tree. */
     nidx_t nNodes() const { return leaves_.size() + nodes_.size(); }
     
-    /** Return the deepest internal node in the SuffixTree representing a suffix\. This occurs when the input sequence does not terminate with a unique symbol, and corresponds to the "active position" in the suffix tree construction\. The other internal nodes representing a suffix can be found by traversing the suffix links until reaching the root node. */
-    Node deepestInternalSuffix();
-
-    /** Return a `Node` corresponding to the given `nidx`, which defaults to the root of the suffix tree. If no node corresponding to the given `nidx` exists, the returned `Node` will be `invalid`. The `valid` and `color` flags of the given `nidx` are ignored.
+    /** Return the node index (`nidx_t`) of the deepest internal node in the suffix tree representing a suffix of the represented sequence. This can and should be converted to a `Node` by calling `Node(stree, stree.deepestInternalSuffix())`. [This is required for technical reasons of memory management safety].
+     *
+     * If the input sequence terminates with a unique symbol, then this will always be the root of the suffix tree, corresponding to the empty suffix. If the input sequence does not terminate with a unique symbol, this corresponds to the "active position" in the suffix tree construction, which will be an internal node. The other internal nodes representing a suffix can be found by traversing the suffix link (calling `toSuffix()` on the converted returned `Node`) until reaching the root node (to exclude the empty suffix) or until `toSuffix()` results in an invalid `Node` (to include the empty suffix). The remaining (longer) suffixes correspond to the leaf nodes.
      */
-    Node node(nidx_t nidx = ROOT) const;
+    nidx_t deepestInternalSuffixNidx() const;
 
-    /** Return a (degenerate) `EdgeNode` corresponding to the given `nidx`, which defaults to the root of the suffix tree. If no node corresponding to the given `nidx` exists, the returned `Node` will be `invalid`. The `valid` and `color` flags of the given `nidx` are ignored.
-     */
-    EdgeNode edge(nidx_t nidx = ROOT) const;
-
-//MARK: private:
 private:
     Sequence sequence_; /**< a copy of the underlying sequence for which the suffix tree is built. This must not be changed during the lifetime of the suffix tree. */
     unsigned int symbolSize_; /**< 1 if every suffix of the sequence is represented; 2 if only every second suffix is represented (so in a sense one symbol consists of two characters), and so o.n */
@@ -152,8 +146,8 @@ private:
         return false;
     }
 
-#ifndef STREE_NODE_DATA_MANIPULATION
-    /** @name Node data manipulation */ /**@{*/ //MARK: Node data manipulation
+#ifndef FOLDABLE_CODE_GROUP_HACK /** @name Node data manipulation */
+    /**@{*/ //MARK: Node data manipulation
 
     /** Return the depth of the \c node, i.e., the size of the substring represented by the \c node. */
     nidx_t d(const nidx_t node) const { return (node & INTERNAL) ? r(l(c(node))) : sequence_.rawSize() - ((node & INDEX) * symbolSize_); }
@@ -222,6 +216,7 @@ private:
     void annotate();
     
 }; // class STree
+
 
 
 namespace internal {

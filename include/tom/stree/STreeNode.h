@@ -5,16 +5,10 @@
 
 namespace stree {
 
-//TODO: Add checks to functions where required. These are currently interface functions that can crash tom with improper use!
-
-//TODO: Clean up iterator constructors. Both from stree and from objects should give same result.
-
-//TODO: Complete documentation
-
-//TODO: Write some tests to cover the various iterators.
+//TODO: Write some tests to cover the various classes.
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Node::repr;)
-/** This class represents a node in the suffix tree and can be used for extracting information or navigating the suffix tree. It contains a pointer internally to the \c STree that it belongs to. Use `STree.node()` to construct a `Node`.
+/** This class represents a node in the suffix tree and can be used for extracting information or navigating the suffix tree. It contains a pointer internally to the \c STree that it belongs to.
  *
  * The `to...()` methods are provided to navigate the suffix tree structure:
  *
@@ -28,13 +22,13 @@ class Node {
     friend class EdgeNode;
     friend class Position;
 protected:
-    const STree* stree_; /**< the `STree` that this node refers to */
+    std::shared_ptr<const STree> stree_; /**< the `STree` that this node refers to */
     nidx_t nidx_; /**< the internal node reference */
 
 public:
     /** Construct a `Node` for the given `stree` corresponding to the given `nidx`. If no `nidx` is given, it defaults to the root of the suffix tree.
      */
-    Node(const STree* stree, nidx_t nidx = ROOT) : stree_(stree), nidx_(nidx) {
+    Node(const std::shared_ptr<const STree>& stree, nidx_t nidx = ROOT) : stree_(stree), nidx_(nidx) {
         if (!stree_->validate(nidx_)) setValid(false);
     }
 
@@ -191,6 +185,8 @@ public:
 }; // class STreeNode
 
 
+
+SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") EdgeNode::repr;)
 /** This class represents a node together with the edge leading to it in the suffix tree and can be used for extracting information or navigating the suffix tree. Note that an `EdgeNode` can have a parent marked as invalid, and then contains no edge information. Such an `EdgeNode` is called "degenerate". This is normally only the case for the root, but can also happen when providing incorrect parent information when constructing an `EdgeNode`.
  *
  * The `to...()` methods are provided to navigate the suffix tree structure:
@@ -208,7 +204,7 @@ protected:
 public:
     /** Construct an `EdgeNode` for the given `stree` corresponding to the given `nidx` and parent information in `parent`. If no `nidx` is given, it defaults to the root of the suffix tree. This will search for the parent starting form the given `parent` (or root by default). If no parent can be found (e.g. for the root), this `EdgeNode` will be "degenerate" (have an invalid parent).
      */
-    EdgeNode(const STree* stree, nidx_t nidx = ROOT, nidx_t parent = ROOT) : Node(stree, nidx), parent_(nidx &~ VALID) { findParent(Node(stree_, parent)); }
+    EdgeNode(const std::shared_ptr<const STree>& stree, nidx_t nidx = ROOT, nidx_t parent = ROOT) : Node(stree, nidx), parent_(nidx &~ VALID) { findParent(Node(stree_, parent)); }
 
     /** Construct an `EdgeNode` from the given `Node`. This will search for the parent starting form the given `parent` (or root by default). If no parent can be found (e.g. for the root), this `EdgeNode` will be "degenerate" (have an invalid parent).
      */
@@ -255,7 +251,7 @@ public:
 
  	/** Return the edge label.
  	 */
-	Sequence edgeLabel() const CHECK(throw(std::invalid_argument)) {
+	Sequence label() const CHECK(throw(std::invalid_argument)) {
 	    CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid EdgeNode.");)
         Node par = parent();
 	    if (!par.isValid()) return stree_->sequence().rawSub(headIndex() + depth(), 0);
@@ -304,37 +300,102 @@ private:
 }; // class STreeEdge
 
 
-
-class Path : public Node {
+SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") PathNode::repr;)
+/** This class represents a node (together with the path of nodes leading to it) in the suffix tree and can be used for extracting information or navigating the suffix tree.
+ *
+ * The `to...()` methods are provided to navigate the suffix tree structure:
+ *
+ * - `to...()` sets this node (with path leading to it) to its e.g. child, suffix, sibling, etc.
+ * - If no such exists, then this node is simply marked as invalid.
+ * - For an invalid node, the `to...()` methods have no effect.
+ * - Calling `setValid()` after the node has been marked as invalid by a `to...()` method will reset this node (and path) to the last valid node during the traversal.
+ *
+ * Note that the plain methods (`child(), sibling(), parent()`, etc.) return `Node`s and not `PathNode`s. If `PathNode`s are required, use instead:
+ *
+ *     PathNode child = PathNode(thisPathNode);
+ *     child.toChild();
+ */
+class PathNode : public Node {
+protected:
+    using Node::suffix;
+    using Node::toSuffix;
+    std::deque<nidx_t> path_;
 public:
-    Path(const STree* stree) : Node(stree), path() {}
-	void toChild() { nidx_t current = nidx_; Node::toChild(); if (isValid()) path.push_back(current); }
-	void toChild(Symbol chr) { nidx_t current = nidx_; Node::toChild(chr); if (isValid()) path.push_back(current); }
-	Node parent() const { if (path.empty()) return stree_->node(INTERNAL); return stree_->node(path.back()); }
-	Node ancestor(nidx_t generations) const {
-		if (generations > path.size()) return stree_->node(INTERNAL);
-		if (generations == 0) return *this;
-		return stree_->node(path.at(path.size()-generations));
-	}
-	void toParent() { if (isValid()) {
-			if (path.empty()) setValid(false);
-			else { nidx_ = path.back(); path.pop_back(); }
-		}}
-	nidx_t nAncestors() const { return path.size(); }
-	nidx_t parentDepth() const { if (path.empty()) return 0; else return stree_->d(path.back()); }
+    /** Construct a `Node` for the given `stree` corresponding to the given `nidx`. If no `nidx` is given, it defaults to the root of the suffix tree.
+     */
+    PathNode(const std::shared_ptr<const STree>& stree, nidx_t nidx = ROOT) : Node(stree, nidx), path_() { findPath(); }
 
-	Sequence edgeLabel() const { return stree_->sequence_.rawSub(headIndex() + parentDepth(), depth() - parentDepth()); }
+    /** Construct a `PathNode` corresponding to the given `node`. */
+    PathNode(const Node& node) : Node(node), path_() { findPath(); }
+
+    /** Extend this `PathNode` to its first child if such a node exists, otherwise mark this `PathNode` as invalid instead. Note that the children are ordered lexicographically according to their edge labels.
+     */
+    void toChild() { nidx_t current = nidx_; Node::toChild(); if (isValid()) path_.push_back(current); }
+
+    /** Extend this `PathNode` to the child node along the edge leading away whose label begins with the given `symbol`\. If no such node exists, mark this `PathNode` as invalid instead.
+     */
+	void toChild(Symbol chr) { nidx_t current = nidx_; Node::toChild(chr); if (isValid()) path_.push_back(current); }
+
+	/** Return the parent `Node`. If none exists, return a `Node` marked as invalid.
+	 */
+	Node parent() const {
+	    if (path_.empty()) return Node(stree_, INTERNAL);
+	    return Node(stree_, path_.back());
+	}
+
+	/** Set this `PathNode` to the path to the parent of the current node, if such exists\. Otherwise, just mark this `PathNode` as invalid.
+	 */
+    void toParent() {
+        if (isValid()) {
+            if (path_.empty()) setValid(false);
+            else { nidx_ = path_.back(); path_.pop_back(); }
+        }
+    }
+
+    /** Return the edge label for the edge leading to the current node. If no edge exists, this will be an empty `Sequence`.
+     */
+	Sequence label() const CHECK(throw(std::invalid_argument)) {
+        CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid PathNode.");)
+        Node par = parent();
+        if (!par.isValid()) return stree_->sequence().rawSub(headIndex(), 0);
+        return stree_->sequence_.rawSub(headIndex() + par.depth(), depth() - par.depth()); }
+
+    /** Return a string representation to display in python.
+     */
+    std::string repr() const {
+        std::stringstream s;
+        s << ( (nidx_ & VALID)    ? "" : "invalid " )
+          << ( (nidx_ & INTERNAL) ? "internal " : "leaf ")
+          << "node with path information";
+        return s.str();
+    }
+
+    /** Set this to the `PathNode` corresponding to the first suffix of the represented sequence\. If no suffix exists (i.e., this is the root) mark this `PathNode` as invalid instead. This uses the "suffix link" of the suffix tree, but needs to recompute the path.
+     */
+    void toSuffix() {
+        Node::toSuffix();
+        findPath();
+    }
 
 private:
-	using Node::suffix;
-	using Node::toSuffix;
-protected:
-	std::deque<nidx_t> path;
+    /** Find and set the path leading to this node. */
+    void findPath() {
+        if (not isValid()) { return; }
+        nidx_t d = depth();
+        Sequence seq = sequence();
+        Node ancestor = Node(stree_, ROOT);
+        path_.clear();
+        while (ancestor.isValid() and (ancestor.depth()) < d) {
+            path_.push_back(ancestor.nidx());
+            ancestor.toChild(seq.rawAt(ancestor.depth()));
+        }
+    }
 }; // class STreePath
 
 
 
-/** This class represents any position in the suffix tree and can be used for extracting information or navigating the suffix tree. A `Position` that is a node (leaf or internal) of the suffix tree is considered "explicit", while a `Position` on some edge is called "implicit".
+SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Position::repr;)
+/** This class represents any position in the suffix tree. A `Position` that is a node (leaf or internal) of the suffix tree is considered "explicit", while a `Position` on some edge is called "implicit".
  *
  * The `to...()` methods are provided to navigate the suffix tree structure:
  *
@@ -348,7 +409,12 @@ private:
     EdgeNode edge_; /**< the edge on which this position lies */
     nidx_t depth_; /**< the depth of the position, i.e., the size of the represented subsequence */
 public:
-	Position(const STree* stree) : edge_(stree), depth_(0) {}
+    /** Construct the `Position` in the given `stree` corresponding to the given `sequence`. If no corresponding position exists, this `Position` will correspond to the longest possible prefix of the provided `sequence` and will be marked as invalid.
+     */
+	Position(const std::shared_ptr<const STree>& stree, Sequence sequence = Sequence()) : edge_(stree), depth_(0) { toSequence(sequence); }
+
+	/** Construct a `Position` from the given `node` of type `EdgeNode`.
+	 */
 	Position(const EdgeNode& node) : edge_(node), depth_(0) {
 	    if (isValid()) depth_ = node.depth();
 	}
@@ -416,7 +482,7 @@ public:
 
 	/** Return the `EdgeNode` that this `Position` lies on. If this `Position` is explicit, then the `EdgeNode` will be the node (with edge leading to it) of the position.
 	 */
-    EdgeNode& edge() { return edge_; }
+    EdgeNode edge() { return edge_; }
 
     /** Return the `Position` corresponding to the first suffix of the represented sequence. This uses the "suffix link" of the suffix tree. If no suffix exists (i.e., this is the root), a `Position` marked as invalid is returned.
      */
@@ -461,14 +527,24 @@ public:
      */
 	Sequence sequence() const { return edge_.stree_->sequence().rawSub(headIndex(), depth_); }
 
-    /** Return the sub-sequence of the edge label up to this position. For an explicit position this is just the edge label (see `edge.edgeLabel()`).
+    /** Return the sub-sequence of the edge label up to this position. For an explicit position this is just the edge label (see `edge.label()`).
      */
     Sequence label() const CHECK(throw(std::invalid_argument)) {
-        CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid EdgeNode.");)
+        CHECK(if (!isValid()) throw std::invalid_argument(".label() called on invalid Position.");)
         Node par = edge_.parent();
-        if (!par.isValid()) return edge_.stree_->sequence().rawSub(headIndex() + depth_, 0);
+        if (!par.isValid()) return edge_.stree_->sequence().rawSub(headIndex(), depth_);
         return edge_.stree_->sequence().rawSub(headIndex() + par.depth(), depth_ - par.depth());
     }
+
+    /** Return a string representation to display in python.
+     */
+    std::string repr() const {
+        std::stringstream s;
+        s << ( isValid()  ? "" : "invalid " )
+          << "suffix tree position";
+        return s.str();
+    }
+
 }; // class STreePos
 
 

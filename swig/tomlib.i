@@ -15,13 +15,11 @@
 %include "std_shared_ptr.i"
 %include "std_string.i"
 %include "std_iostream.i"
-%include "std_vector.i"
+%include "std_vector.i" // this should provide swig::stop_iteration
 %template(IntVector) std::vector<int>;
 %template(DoubleVector) std::vector<double>;
 
 %include "attribute.i"
-
-
 
 %include "eigen3.i"
 %init %{
@@ -43,10 +41,6 @@
 %template(Sequences) std::vector<tom::Sequence>;
 
 %include "../include/tom/stree/stree.h"
-%shared_ptr(stree::STree);
-%shared_ptr(std::vector<stree::nidx_t>);
-%template(NidxVector) std::vector<stree::nidx_t>;
-
 %include "../include/tom/stree/STreeCore.h"
 %include "../include/tom/stree/STreeNode.h"
 %include "../include/tom/stree/STreeIterators.h"

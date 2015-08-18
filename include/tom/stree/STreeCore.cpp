@@ -229,37 +229,23 @@ void STree::annotate() {
         for (nidx_t tnode = tempIntNode.node_; (tnode & INDEX) != 0; tnode = sl(tnode))
             nOccurrences_[tnode & INDEX]++;
     }
-    for (PostfixIterator it = PostfixIterator(this); it.isValid(); it.next()) {
+    for (auto it = PostfixIterator(std::shared_ptr<STree>(this, nodelete())); it.isValid(); it.toNext()) {
         if (it.isLeaf()) nOccurrences_[it.parent().index()]++;
-        else if (it.nAncestors() > 0) {
-            nOccurrences_[it.parent().index()] += nOccurrences_[it.index()];
+        else {
+            auto parent = it.parent();
+            if (parent.isValid()) {
+                nOccurrences_[parent.index()] += nOccurrences_[it.index()];
+            }
         }
     }
 }
 
-Node STree::deepestInternalSuffix() {
+nidx_t STree::deepestInternalSuffixNidx() const {
     internal::Pos deepestVirtualLeafBranch = currentPos_;
-    deepestVirtualLeafBranch.canonize(this);
-    return node(deepestVirtualLeafBranch.node_ | VALID);
+    deepestVirtualLeafBranch.canonize(const_cast<STree*>(this));
+    nidx_t ret = deepestVirtualLeafBranch.node_ | VALID;
+    if (not validate(ret)) ret &= ~VALID;
+    return ret;
 }
-
-Node STree::node(nidx_t nidx) const {
-    if (nidx & INTERNAL) {
-        if ((nidx & INDEX) >= nInternalNodes()) { return Node(this, nidx &~VALID); }
-    } else {
-        if ((nidx & INDEX) >= nLeafNodes()) { return Node(this, nidx &~VALID); }
-    }
-    return Node(this, nidx);
-}
-
-EdgeNode STree::edge(nidx_t nidx) const {
-    if (nidx & INTERNAL) {
-            if ((nidx & INDEX) >= nInternalNodes()) { return EdgeNode(this, nidx &~VALID); }
-        } else {
-            if ((nidx & INDEX) >= nLeafNodes()) { return EdgeNode(this, nidx &~VALID); }
-        }
-        return EdgeNode(this, nidx);
-}
-
 
 } // namespace stree

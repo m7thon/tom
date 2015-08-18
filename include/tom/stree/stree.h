@@ -21,13 +21,24 @@ typedef tom::Symbol Symbol;
 class STree;
 class Node;
 class EdgeNode;
-class Path;
+class PathNode;
 class Position;
 class PrefixIterator;
 class PostfixIterator;
 class DFSIterator;
 
+SWIGCODE(%ignore nodelete;)
+/** Hack needed to convert a normal pointer to a `std::shared_ptr` safely */
+struct nodelete {
+    template <typename T>
+    void operator()( T * ) {}
+};
+
 } // namespace stree
+
+SWIGCODE(%shared_ptr(stree::STree);)
+SWIGCODE(%shared_ptr(std::vector<stree::nidx_t>);)
+SWIGCODE(%template(NidxVector) std::vector<stree::nidx_t>;)
 
 #include "RBTree.h"
 #include "STreeCore.h"

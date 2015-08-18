@@ -1,10 +1,3 @@
-/**
- * @file   Estimator.h
- * @author Michael Thon <mthon@jacobs-university.de>
- *
- * @brief  Provides functions to get required estimates from data.
- */
-
 #ifndef ESTIMATOR_H
 #define ESTIMATOR_H
 
@@ -29,22 +22,22 @@ double ApproxNormalCDFInverse(double p) {
 /**
  * This class computes estimates \f$\hat{f}(\bar{x})\f$ and corresponding variance estimates for sequences \f$\bar{x}\f$ based on a suffix tree representation of a sample sequence.
 */
-class Estimator
-{ public:
+class Estimator {
+    public:
 	///** create an uninitialized \c Estimator. */
 	//Estimator() : pos_() {};
 
 	/** create an \c Estimator from a given \c sfxTree -- a suffix tree representation of a sample sequence */
-	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : s_(sfxTree.get()), stree_(sfxTree) {
-		s_.pos_ = stree::Position(stree_.get());
-		nO_ = sfxTree->sequence().nO(); nU_ = stree_->sequence().nU();
+	Estimator(const std::shared_ptr<stree::STree>& sfxTree) : s_(sfxTree), stree_(sfxTree) {
+		s_.pos_ = stree::Position(stree_);
+		nO_ = stree_->sequence().nO(); nU_ = stree_->sequence().nU();
 		len_ = ( stree_->sequence().length() );
 		uProbs_ = Eigen::VectorXd::Ones(std::max(1, nU_));
 		for (Symbol u = 0; u < nU_; ++u) {
-			s_.pos_ = stree::Position(stree_.get()); s_.pos_.toSymbol(u);
+			s_.pos_ = stree::Position(stree_); s_.pos_.toSymbol(u);
 			uProbs_(u) = (double)(s_.pos_.count()) / len_;
 		}
-		s_.pos_ = stree::Position(stree_.get());
+		s_.pos_ = stree::Position(stree_);
 	}
 
 	/** return the size of the underlying input alphabet */
@@ -169,7 +162,7 @@ class Estimator
 
 private:
   struct State {
-      State(const stree::STree* stree) : pos_(stree) {}
+      State(const std::shared_ptr<stree::STree> stree) : pos_(stree) {}
 		stree::Position pos_; ///< the position in the suffix tree for the currently estimated sequence.
 		double f_  = 1;       ///< related to the current estimate (used internally in different ways)
 		double v_  = 1;
@@ -182,7 +175,7 @@ private:
 
 	const std::shared_ptr<stree::STree> stree_; ///< a pointer to the underlying \c STree
 
-	void reset() { s_.pos_ = stree::Position(stree_.get()); s_.f_ = s_.fB_ = s_.v_ = 1; }
+	void reset() { s_.pos_ = stree::Position(stree_); s_.f_ = s_.fB_ = s_.v_ = 1; }
 	void reset(const State& s) { s_ = s; }
 
 	void extendBy(Symbol o, Symbol u = 0) {

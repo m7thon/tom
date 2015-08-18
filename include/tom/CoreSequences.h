@@ -12,10 +12,10 @@
 
 namespace tom {
 
-/** reverse all the sequences in the \c Sequences vector \c seqs. */
-void reverseSequences(std::shared_ptr<Sequences> seqs) {
-	for (unsigned long i = 0; i < seqs->size(); ++i)
-		(*seqs).at(i).reverse();
+/** Reverse all sequences in the \c sequences vector. */
+void reverseSequences(std::shared_ptr<Sequences> sequences) {
+	for (unsigned long i = 0; i < sequences->size(); ++i)
+		sequences->at(i).reverse();
 }
 
 /**
@@ -30,7 +30,7 @@ void reverseSequences(std::shared_ptr<Sequences> seqs) {
  *
  * @return the core sequences
  */
-std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
+std::shared_ptr<Sequences> coreSequences(const std::shared_ptr<const stree::STree>& sfxTree,
                                          int minSeqLen = 0,
                                          int maxSeqLen = -1,
                                          int minCounts = 1,
@@ -38,9 +38,9 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
                                          bool unique = true) {
     int IO = sfxTree->sequence().isIO() ? 2 : 1;
 	if (maxSeqLen <= minSeqLen) maxSeqLen = minSeqLen;
-	std::shared_ptr<Sequences> coreSeqs(new Sequences());
+	auto coreSeqs = std::make_shared<Sequences>();
 
-	stree::EdgeNode node = sfxTree->edge();
+	stree::EdgeNode node = stree::EdgeNode(sfxTree);
 	std::priority_queue<stree::EdgeNode> nodeQueue;
 	nodeQueue.push(node);
 	if (minSeqLen == 0) coreSeqs->push_back(sfxTree->sequence().rawSub(0,0)); // handles root case
@@ -73,17 +73,15 @@ std::shared_ptr<Sequences> coreSequences(const stree::STree* sfxTree,
 	return coreSeqs;
 }
 
-std::shared_ptr<std::vector<stree::nidx_t> > getIndicativeSequenceNodes(stree::STree* reverseSTree, int minIndCount, int maxIndLen) {
-  std::shared_ptr<std::vector<stree::nidx_t> > indNodes(new std::vector<stree::nidx_t>);
-  for (stree::DFSIterator node = stree::DFSIterator(reverseSTree); node.isValid(); node.next()) {
-		if (node.isFirstVisit()) {
-			if (node.count() < minIndCount) { node.setUpPass(); continue; }
-			long nodeDepth = node.depth();
-			if (nodeDepth > maxIndLen) { node.setUpPass(); continue; }
-      indNodes->push_back(node.nidx());
+std::shared_ptr<std::vector<stree::nidx_t> > getIndicativeSequenceNodes(const std::shared_ptr<stree::STree> reverseSTree, int minIndCount, int maxIndLen) {
+    auto indNodes = std::make_shared<std::vector<stree::nidx_t> >();
+    for (auto node = stree::DFSIterator(reverseSTree); node.isValid(); node.toNext()) {
+        if (node.isFirstVisit()) {
+            if (node.count() < minIndCount or node.depth() > maxIndLen) { node.setUpPass(); }
+            else { indNodes->push_back(node.nidx()); }
+        }
     }
-  }
-  return indNodes;
+    return indNodes;
 }
 
 } // namespace tom

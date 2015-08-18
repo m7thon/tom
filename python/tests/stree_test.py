@@ -14,24 +14,20 @@ def nodeIndex(node):
 
 def canonicalizeSuffixTree(stree):
     cForm = []
-    it = tom.tomlib.PrefixIterator(stree)
-    while it.isValid():
+    for it in tom.tomlib.PrefixIterator(stree):
         nodeData = [nodeIndex(it), it.headIndex(), it.depth()]
         nodeData += [nodeIndex(it.child()) if it.child().isValid() else -1]
         nodeData += [nodeIndex(it.sibling()) if it.sibling().isValid() else -1]
         nodeData += [nodeIndex(it.suffix()) if it.isInternal() else -1]
         nodeData += [it.count()]
         cForm += [nodeData]
-        it.next()
-    return cForm, nodeIndex(stree.deepestInternalSuffix())
+    return cForm, nodeIndex(tom.tomlib.Node(stree, stree.deepestInternalSuffixNidx()))
 
 
 def verifySuffixTreeCounts(seq, stree):
-    it = tom.tomlib.PrefixIterator(stree)
-    while it.isValid():
-        if seq.count(it.sequence()) != it.count():
+    for node in tom.tomlib.PrefixIterator(stree):
+        if seq.count(node.sequence()) != node.count():
             return False
-        it.next()
     return True
 
 class TestSuffixTree(unittest.TestCase):
