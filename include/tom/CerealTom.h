@@ -15,20 +15,21 @@ namespace tom {
 #define VAR(AR, T) AR(cereal::make_nvp(#T, T))
 #define OMVAR(AR, T) try { MVAR(AR, T); } catch(...) {}
 #define OVAR(AR, T) try { VAR(AR, T); } catch(...) {}
-#define INSERT_JSON_IO_FUNCTIONS()																			\
-	std::string toJSON() const {																					\
-		std::stringstream oss;																							\
-		{																																		\
-			cereal::JSONOutputArchive ar( oss );															\
-      save( ar );																												\
-		}																																		\
-		return oss.str();																										\
-	}																																			\
-	void fromJSON(const char * string ) {																	\
-		{																																		\
-			cereal::JSONInputArchive ar( string );														\
-			load( ar );																												\
-		}																																		\
+#define INSERT_JSON_IO_FUNCTIONS()                          \
+	std::string toJSON() const {                            \
+		std::stringstream oss;                              \
+		{                                                   \
+			cereal::JSONOutputArchive ar( oss );            \
+            save( ar );                                     \
+		}                                                   \
+		return oss.str();                                   \
+	}                                                       \
+	void fromJSON(const std::string& string) {              \
+	    std::istringstream iss(string);                     \
+		{                                                   \
+			cereal::JSONInputArchive ar( iss );             \
+			load( ar );                                     \
+		}                                                   \
 	}
 }
 

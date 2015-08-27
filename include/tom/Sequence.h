@@ -53,7 +53,7 @@ public:
 
     /** Construct a `Sequence` corresponding to the given string `json_representation`. The format must correspond to what `toJSON()` produces.
      */
-    Sequence(const std::string& json_representation) { fromJSON(json_representation.c_str()); }
+    Sequence(const std::string& json_representation) { fromJSON(json_representation); }
 //@}
     
 /** @name Accessors and Properties */
