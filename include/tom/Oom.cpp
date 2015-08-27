@@ -40,8 +40,8 @@ void Oom::setSize(int dim, int nO, int nU) {
 			tau_(o, u) = MatrixXd::Identity(dim_, dim_) / nO_;
 		}
 	}
-	temp_dim_(dim_);
-	temp_nO_(nO_);
+	temp_dim_.resize(dim_);
+	temp_nO_.resize(nO_);
   init();
 }
 
