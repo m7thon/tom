@@ -29,8 +29,8 @@
 #ifndef CEREAL_ARCHIVES_JSON_HPP_
 #define CEREAL_ARCHIVES_JSON_HPP_
 
-#include <cereal/cereal.hpp>
-#include <cereal/details/util.hpp>
+#include "../cereal.hpp"
+#include "../details/util.hpp"
 
 namespace cereal
 {
@@ -46,11 +46,11 @@ namespace cereal
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
-#include <cereal/external/rapidjson/prettywriter.h>
-#include <cereal/external/rapidjson/genericstream.h>
-#include <cereal/external/rapidjson/reader.h>
-#include <cereal/external/rapidjson/document.h>
-#include <cereal/external/base64.hpp>
+#include "../external/rapidjson/prettywriter.h"
+#include "../external/rapidjson/genericstream.h"
+#include "../external/rapidjson/reader.h"
+#include "../external/rapidjson/document.h"
+#include "../external/base64.hpp"
 
 #include <limits>
 #include <sstream>
