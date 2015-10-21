@@ -29,8 +29,8 @@
 #ifndef CEREAL_ARCHIVES_JSON_HPP_
 #define CEREAL_ARCHIVES_JSON_HPP_
 
-#include "../cereal.hpp"
-#include "../details/util.hpp"
+#include <cereal/cereal.hpp>
+#include <cereal/details/util.hpp>
 
 namespace cereal
 {
@@ -46,11 +46,11 @@ namespace cereal
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
-#include "../external/rapidjson/prettywriter.h"
-#include "../external/rapidjson/genericstream.h"
-#include "../external/rapidjson/reader.h"
-#include "../external/rapidjson/document.h"
-#include "../external/base64.hpp"
+#include <cereal/external/rapidjson/prettywriter.h>
+#include <cereal/external/rapidjson/genericstream.h>
+#include <cereal/external/rapidjson/reader.h>
+#include <cereal/external/rapidjson/document.h>
+#include <cereal/external/base64.hpp>
 
 #include <limits>
 #include <sstream>
@@ -753,7 +753,7 @@ namespace cereal
       that may be given data by the type about to be archived
 
       Minimal types do not start or finish nodes */
-  template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+  template <class T, traits::DisableIf<(std::is_arithmetic<T>::value) ||
                                        traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, JSONOutputArchive>::value ||
                                        traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
   inline void prologue( JSONOutputArchive & ar, T const & )
@@ -762,7 +762,7 @@ namespace cereal
   }
 
   //! Prologue for all other types for JSON archives
-  template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+  template <class T, traits::DisableIf<(std::is_arithmetic<T>::value) ||
                                        traits::has_minimal_base_class_serialization<T, traits::has_minimal_input_serialization, JSONInputArchive>::value ||
                                        traits::has_minimal_input_serialization<T, JSONInputArchive>::value> = traits::sfinae>
   inline void prologue( JSONInputArchive & ar, T const & )
@@ -775,7 +775,7 @@ namespace cereal
   /*! Finishes the node created in the prologue
 
       Minimal types do not start or finish nodes */
-  template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+  template <class T, traits::DisableIf<(std::is_arithmetic<T>::value) ||
                                        traits::has_minimal_base_class_serialization<T, traits::has_minimal_output_serialization, JSONOutputArchive>::value ||
                                        traits::has_minimal_output_serialization<T, JSONOutputArchive>::value> = traits::sfinae>
   inline void epilogue( JSONOutputArchive & ar, T const & )
@@ -784,7 +784,7 @@ namespace cereal
   }
 
   //! Epilogue for all other types other for JSON archives
-  template <class T, traits::DisableIf<std::is_arithmetic<T>::value ||
+  template <class T, traits::DisableIf<(std::is_arithmetic<T>::value) ||
                                        traits::has_minimal_base_class_serialization<T, traits::has_minimal_input_serialization, JSONInputArchive>::value ||
                                        traits::has_minimal_input_serialization<T, JSONInputArchive>::value> = traits::sfinae>
   inline void epilogue( JSONInputArchive & ar, T const & )

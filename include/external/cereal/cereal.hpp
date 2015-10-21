@@ -39,10 +39,10 @@
 #include <cstdint>
 #include <functional>
 
-#include "macros.hpp"
-#include "details/traits.hpp"
-#include "details/helpers.hpp"
-#include "types/base_class.hpp"
+#include <cereal/macros.hpp>
+#include <cereal/details/traits.hpp>
+#include <cereal/details/helpers.hpp>
+#include <cereal/types/base_class.hpp>
 
 namespace cereal
 {
@@ -91,7 +91,7 @@ namespace cereal
 
       @relates SizeTag
       @ingroup Utility */
-  template <class T>
+  template <class T> inline
   SizeTag<T> make_size_tag( T && sz )
   {
     return {std::forward<T>(sz)};
@@ -104,14 +104,14 @@ namespace cereal
       state or output extra information for a type, specialize this function
       for the archive type and the types that require the extra information.
       @ingroup Internal */
-  template <class Archive, class T>
+  template <class Archive, class T> inline
   void prologue( Archive & /* archive */, T const & /* data */)
   { }
 
   //! Called after a type is serialized to tear down any special archive state
   //! for processing some type
   /*! @ingroup Internal */
-  template <class Archive, class T>
+  template <class Archive, class T> inline
   void epilogue( Archive & /* archive */, T const & /* data */)
   { }
 
@@ -950,6 +950,6 @@ namespace cereal
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
-#include "types/common.hpp"
+#include <cereal/types/common.hpp>
 
 #endif // CEREAL_CEREAL_HPP_

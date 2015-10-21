@@ -30,7 +30,7 @@
 #ifndef CEREAL_TYPES_BASE_CLASS_HPP_
 #define CEREAL_TYPES_BASE_CLASS_HPP_
 
-#include "../details/traits.hpp"
+#include <cereal/details/traits.hpp>
 
 namespace cereal
 {

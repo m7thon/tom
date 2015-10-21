@@ -33,8 +33,8 @@
 #include <iostream>
 #include <cstdint>
 
-#include "macros.hpp"
-#include "details/helpers.hpp"
+#include <cereal/macros.hpp>
+#include <cereal/details/helpers.hpp>
 
 namespace cereal
 {
