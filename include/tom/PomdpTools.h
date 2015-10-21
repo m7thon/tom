@@ -51,7 +51,7 @@ private:
 		}
 	private:
 		template<class Archive>
-		void serialize(Archive& ar) { MVAR(ar, u); MVAR(ar, indices); MVAR(ar, vals); }
+		void serialize(Archive& ar) { CEREALIZE(ar,  u_,  u); CEREALIZE(ar,  indices_,  indices); CEREALIZE(ar,  vals_,  vals); }
 
 		int u_;
 		std::vector<int> indices_;
@@ -60,17 +60,17 @@ private:
 
 	template<class Archive>
 	void save(Archive& ar) const {
-		std::string type = "POLICY";
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar, nU); MVAR(ar, exploration);
-		MVAR(ar, planes);
+		const std::string type = "POLICY";
+		CEREALIZE(ar, type, Type);
+		CEREALIZE(ar,  nU_,  nU); CEREALIZE(ar,  exploration_,  exploration);
+		CEREALIZE(ar,  planes_,  planes);
 	}
 	template<class Archive>
 	void load(Archive& ar) {
 		std::string type = "POLICY";
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar, nU); MVAR(ar, exploration);
-		MVAR(ar, planes);
+        CEREALIZE(ar, type, Type);
+		CEREALIZE(ar,  nU_,  nU); CEREALIZE(ar,  exploration_,  exploration);
+		CEREALIZE(ar,  planes_,  planes);
 	}
 
 	std::vector<Plane> planes_;

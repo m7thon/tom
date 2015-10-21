@@ -1,20 +1,13 @@
-/**
- * @file   CerealTom.h
- * @author Michael Thon
- *
- * @brief  This file provides some "cerealization" support functions.
- */
-
 #ifndef CEREAL_TOM_H
 #define CEREAL_TOM_H
 
 #include "tom.h"
 
 namespace tom {
-#define MVAR(AR, T) AR(cereal::make_nvp(#T, T ## _))
-#define VAR(AR, T) AR(cereal::make_nvp(#T, T))
-#define OMVAR(AR, T) try { MVAR(AR, T); } catch(...) {}
-#define OVAR(AR, T) try { VAR(AR, T); } catch(...) {}
+
+#define CEREALIZE_HELPER(ar, variable, name, ...) ar(cereal::make_nvp(#name, variable))
+#define CEREALIZE(ar, ...) CEREALIZE_HELPER(ar, __VA_ARGS__, __VA_ARGS__, dummy)
+#define CEREALIZE_OPTIONAL(ar, ...) try { CEREALIZE(ar, __VA_ARGS__); } catch(...) {}
 #define INSERT_JSON_IO_FUNCTIONS()                          \
 	std::string toJSON() const {                            \
 		std::stringstream oss;                              \
@@ -31,7 +24,9 @@ namespace tom {
 			load( ar );                                     \
 		}                                                   \
 	}
-}
+
+} /* namespace tom */
+
 
 namespace cereal {
 
@@ -87,6 +82,6 @@ load(Archive & ar, const Eigen::Array<_Scalar, _Rows, _Cols, _Options, _MaxRows,
 	}
 }
 
-} // namespace cereal
+} /* namespace cereal */
 
 #endif // CEREAL_TOM_H

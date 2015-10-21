@@ -205,25 +205,29 @@ private:
   void writeOptionalPropertiesToStream(std::ostream &ostream) const;
 
 #ifndef SWIG
-	template<class Archive>
+  template<class Archive>
   void save(Archive & ar) const {
-		const std::string type = "OOM";
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar,nU); MVAR(ar,nO); MVAR(ar,dim);
-		MVAR(ar,sig); MVAR(ar,tau); MVAR(ar,w0);
-		MVAR(ar,minPrediction); MVAR(ar,maxPredictionError); MVAR(ar,maxSetback);
+      const std::string type = "OOM";
+      CEREALIZE(ar, type, Type);
+      CEREALIZE(ar, nU_, nU); CEREALIZE(ar, nO_, nO); CEREALIZE(ar, dim_, dim);
+      CEREALIZE(ar, sig_, sig); CEREALIZE(ar, tau_, tau); CEREALIZE(ar, w0_, w0);
+      CEREALIZE(ar, minPrediction_, minPrediction);
+      CEREALIZE(ar, maxPredictionError_, maxPredictionError);
+      CEREALIZE(ar, maxSetback_, maxSetback);
   }
 
   template<class Archive>
   void load(Archive & ar) {
-		std::string type;
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar,nU); MVAR(ar,nO); MVAR(ar,dim);
-		MVAR(ar,sig); MVAR(ar,tau); MVAR(ar,w0);
-		OMVAR(ar,minPrediction); OMVAR(ar,maxPredictionError); OMVAR(ar,maxSetback);
-		init();
-		validate();
-	}
+      std::string type;
+      CEREALIZE(ar, type, Type);
+      CEREALIZE(ar, nU_, nU); CEREALIZE(ar, nO_, nO); CEREALIZE(ar, dim_, dim);
+      CEREALIZE(ar, sig_, sig); CEREALIZE(ar, tau_, tau); CEREALIZE(ar, w0_, w0);
+      CEREALIZE_OPTIONAL(ar, minPrediction_, minPrediction);
+      CEREALIZE_OPTIONAL(ar, maxPredictionError_, maxPredictionError);
+      CEREALIZE_OPTIONAL(ar, maxSetback_, maxSetback);
+      init();
+      validate();
+  }
 #endif // SWIG
 };
 

@@ -79,18 +79,18 @@ private:
 	double backwardsWithCache(const Sequence& x, MatrixXd& betaBlock, MatrixXd& betaCache, VectorXd& betaLog2Scale);
 	template<class Archive>
   void save(Archive & ar) const {
-		std::string type = "HMM";
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar,nU); MVAR(ar,nO); MVAR(ar,dim);
-		MVAR(ar,T); MVAR(ar,E); MVAR(ar,pi);
+      const std::string type = "HMM";
+      CEREALIZE(ar, type, Type);
+      CEREALIZE(ar, nU_, nU); CEREALIZE(ar, nO_, nO); CEREALIZE(ar, dim_, dim);
+      CEREALIZE(ar, T_, T); CEREALIZE(ar, E_, E); CEREALIZE(ar, pi_, pi);
   }
   template<class Archive>
   void load(Archive & ar) {
-    std::string type = "HMM";
-		ar(cereal::make_nvp("Type", type));
-		MVAR(ar,nU); MVAR(ar,nO); MVAR(ar,dim);
-		MVAR(ar,T); MVAR(ar,E); MVAR(ar,pi);
-    init();
+      std::string type = "HMM";
+      CEREALIZE(ar, type, Type);
+      CEREALIZE(ar, nU_, nU); CEREALIZE(ar, nO_, nO); CEREALIZE(ar, dim_, dim);
+      CEREALIZE(ar, T_, T); CEREALIZE(ar, E_, E); CEREALIZE(ar, pi_, pi);
+      init();
   }
 };
 
