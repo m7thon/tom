@@ -1,5 +1,4 @@
 PYTHON = python
-
 SWIG_FLAGS = -c++ -python -naturalvar -builtin -O
 
 CXX_SRC := $(shell find include/tom -type f -name '*.h' -o -name '*.cpp' -o -name '*.hpp')
@@ -28,7 +27,7 @@ debug: swig/tomlib_wrap.cpp
 	CPPFLAGS="-DTOM_DEBUG -g" $(PYTHON) setup.py build_ext
 
 deploy: swig/tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="-g -march=native -O2 -DTOM_DEBUG" $(PYTHON) setup.py install --user
+	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O3" $(PYTHON) setup.py install --user
 
 deploy_quickly: swig/tomlib_wrap.cpp
 	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -O0 -DTOM_DEBUG" $(PYTHON) setup.py install --user
@@ -38,7 +37,6 @@ deploy_optimized: swig/tomlib_wrap.cpp
 
 doc:
 	doxygen doc/tom.doxyfile
-	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
 
 swig: swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/tomlib_wrap.cpp swig/tomlib.i
@@ -50,12 +48,12 @@ clean:
 	@rm -rf dist build
 
 cleanall: clean
-	@rm -rf doc/html doc/xml
+	@rm -rf doc/html doc/xml doc/latex
 	@rm -f swig/tomdoc.i
 	@rm -f swig/tomlib_wrap.cpp swig/tomlib_wrap.h python/tom/tomlib.py
 
-doc/xml/index.xml: $(CXX_SRC)
-	doxygen doc/tom.doxyfile
+doc/xml/index.xml: $(CXX_SRC) doc/tom_xml.doxyfile
+	doxygen doc/tom_xml.doxyfile
 
 swig/tomdoc.i: doc/doxy2swig/doxy2swig.py doc/xml/index.xml
 	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i

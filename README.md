@@ -50,7 +50,10 @@ Notes:
 - You can also install tom into a user-local python package directory using  
   `python setup.py install --user`. For details, see the
   [distutils documentation](https://docs.python.org/3/install/index.html#alternate-installation).
-- A Makefile is provided with some targets useful for development of the toolkit
+- A Makefile is provided with some useful targets, such as:
+  + `doc` to make the C++ documentation
+  + `clean` to clean up the build
+  + targets to make the swig wrappers and python documentation
 
 Using the toolkit
 -----------------
