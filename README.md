@@ -10,15 +10,18 @@ The core functionality is written in C++ for maximum performance. A Python inter
 Requirements
 ------------
 
-This toolkit relies on the following software:
+This toolkit requires the following software:
 
 - Eigen3: This is a convenient C++ matrix library that provides the basic
     linear algebra routines. Currently, the most recent (development) verision is required, which
-    should correspond to a version >= 3.3.0.
+    corresponds to a version >= 3.3.0.
 - A recent C++ compiler supporting the current C++11 standard, e.g., gcc > 4.8, clang, ...
-- SWIG: For generating the Python wrappers to the C++ code. A current version is required.
-- Python and SciPy
-- doxygen: To generate documentation from the source code
+- Python (with numpy): To use the library and gain extra functionality
+
+For development, one needs in addition:
+
+- SWIG: For generating the python wrappers to the C++ code. A current version is required.
+- doxygen: To generate documentation (including the python docstrings) from the source code
 
 Furthermore, the toolkit makes use of the following open source software that is included for convenience:
 
@@ -31,16 +34,15 @@ Installation
 
 1. Install the required dependencies
 2. Modify setup.cfg to set the path to the eigen3 header files if not in a standard path
-3. run `python setup.py install`
-
-Optionally,
-- run `doxygen doc/tom.doxyfile` to generate the documentation in the subdirectory doc/html
-- run `python setup.py clean --all` to clean up the build directory
+3. Run either of
+   - `python setup.py install`
+   - `make` followed by `make install`
 
 Notes:
+
 - The compiler and compile options can be modified by setting the environment variables `CC`, `CXX` and
-  `CPPFLAGS`. Note that setup.py uses the compiler specified in `CC` for compiling and `CXX` for linking
-  swig wrapped C++ extensions for unknown reasons, so always specify both. Example:  
+  `CPPFLAGS`. Note that setup.py seems to use the compiler specified in `CC` for compiling and `CXX` for
+  linking of C++ extensions for unknown reasons, so always specify both. Example:  
   `CC=g++ CXX=g++ CPPFLAGS=-I/usr/local/include/eigen3 python setup.py install`.
 - Useful flags / variables to define are:
   + `-DTOM_DEBUG` -- enable all debugging checks (asserts and bounds checking)
@@ -48,23 +50,7 @@ Notes:
 - You can also install tom into a user-local python package directory using  
   `python setup.py install --user`. For details, see the
   [distutils documentation](https://docs.python.org/3/install/index.html#alternate-installation).
-- A Makefile is provided with some useful targets:
-  + `make doc` -- make the documentation
-  + `make clean` -- clean up
-  + `make build` -- call `python setup.py build_ext`
-  + `make install` -- call `python setup.py install`
-  + `make debug_build_clang` -- compile with flags for debugging (`-DTOM_DEBUG`)
-  + `make optimized_build_gcc5_on_OSX` -- compile the fastest version on my system with no bounds checking (`-DTOM_NCHECK`)
-  + `make list` -- list all available targets
-- Also, the Makefile allows building the toolkit without python's setuptools. For this
-  1. Modify the first section in the Makefile to suit your local needs
-  2. run `make build_without_setuptools`
-  3. From python, include the directory python/tom into the search path:
-     ```python
-	import sys, os
-	sys.path.append(os.path.abspath('.')+"/python/tom")
-	import tom
-    ```
+- A Makefile is provided with some targets useful for development of the toolkit
 
 Using the toolkit
 -----------------

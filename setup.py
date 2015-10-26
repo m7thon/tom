@@ -23,56 +23,24 @@ cxx_flags = ['-std=c++11', '-Wno-unused-variable', '-Wno-sign-compare']
 # when compiling on OSX with gcc and using -march=native (enabling avx instructions), use 
 # the clang assembler, since the provided GNU as command does not support AVX instructions:
 #cxx_flags += ['-Wa,-q']
-#
-# obsolete options that were once required (older swig + older clang):
-# cxx_flags += ['-stdlib=libc++']
 
 try:
     from setuptools import setup,Extension
-    from setuptools.command.install import install
 except ImportError:
     from distutils.core import setup,Extension
-    from distutils.command.install import install 
-from distutils.command.build import build
 
-import sys, os
+import os
 import numpy as np
-
-swig_flags = ['-c++', '-naturalvar', '-builtin', '-O', '-Iswig', '-DTOM_DEBUG']
-swig_flags += ['-outdir', 'python/tom']
-if sys.version_info >= (3,): swig_flags += ['-py3']
-
-def is_source_file(filename):
-    extensions = ['.h', '.cpp', '.i', '.hpp']
-    for ext in extensions:
-        if filename.endswith(ext): return True
-    return False
 
 def make_depends():
     depends = []
-    source_dirs = ['include/tom', 'swig']
-    for source_dir in source_dirs:
+    for source_dir in ['include', 'swig']:
         for root, dirs, files in os.walk(source_dir):
             for file in files:
-                if is_source_file(file):
+                if os.path.splitext(file)[1] in ['.h', '.cpp', '.i', '.hpp']:
                     depends.append(os.path.join(root,file))
     return depends
 
-# Unfortunately, python setuptools has a long-standing bug when building swig extensions
-# To work around, one needs to make sure build_ext is always called first:
-class PatchedBuild(build):
-    def run(self):
-        self.run_command('build_ext')
-        build.run(self)
-class PatchedInstall(install):
-    def run(self):
-        self.run_command("build_ext")
-        return install.run(self)
-
-tomlib_extension = [Extension('tom._tomlib', sources = ['swig/tomlib.i'], swig_opts = swig_flags,
-                              language='c++', extra_compile_args = cxx_flags,
-                              include_dirs = [np.get_include(), 'include/tom', 'include/external'],
-                              depends = make_depends() )]
 setup(
     name = "tom",
     version = "0.4.0",
@@ -82,8 +50,10 @@ setup(
     license = "MIT",
     url = "https://gitlab.com/m7.thon/tom",
     package_dir = {'': 'python'},
-    ext_modules = tomlib_extension,
     packages = ['tom', 'tom.hmm'],
-    cmdclass={'build': PatchedBuild, 'install': PatchedInstall},
+    ext_modules = [Extension('tom._tomlib', sources = ['swig/tomlib_wrap.cpp'], language='c++',
+                             extra_compile_args = cxx_flags,
+                             include_dirs = [np.get_include(), 'include/tom', 'include/external'],
+                             depends = make_depends() )],
     test_suite = 'tests',
 )
