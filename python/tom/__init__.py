@@ -1,11 +1,9 @@
-from __future__ import division as _devision
+#import tom.tomlib as _tomlib
+from ._tomlib import Oom
 
-from . import tomlib
-from .tomlib import Random, Sequence, Sequences, STree, Oom, Policy, Estimator, NoIndex
-
-from ._io import load, save
-#from .sequences import generateSequences, stringToSequence
-#from .learn import numericalRank, estimateDimension, identifySubspace, learnSpectral, learnWeightedSpectral
-from . import hmm
+from . import sequence
 from . import stree
-#from .tools import *
+from . import hmm
+from . import linalg
+from . import learn
+from . import util

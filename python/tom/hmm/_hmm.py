@@ -1,8 +1,7 @@
-from .. import tomlib as _tomlib
-import numpy as _np
-import scipy.linalg as _linalg
+from __future__ import (division, absolute_import, print_function, unicode_literals)
+from .. import _tomlib
 
-from ..tomlib import Hmm, EMStopCondition
+import numpy as np
 
 try:
     import ghmm
@@ -39,14 +38,14 @@ def random_HMM(alphabet_size, dim, exponent = 1):
     well as the initial state distribution are normalized to sum to one.
     """
 
-    pi = _np.random.rand(dim)**exponent
+    pi = np.random.rand(dim)**exponent
     pi /= sum(pi)
-    T = _np.random.rand(dim,dim)**exponent
+    T = np.random.rand(dim,dim)**exponent
     for row in T: row /= sum(row)
-    E = _np.random.rand(dim,alphabet_size)**exponent
+    E = np.random.rand(dim,alphabet_size)**exponent
     for row in E: row /= sum(row)
     pi_old = np.zeros(dim)
-    while _linalg.norm(pi - pi_old) > 1e-12: pi_old = pi; pi = pi.dot(T); pi /= sum(pi)
+    while np.linalg.norm(pi - pi_old) > 1e-12: pi_old = pi; pi = pi.dot(T); pi /= sum(pi)
     return (T, E, pi)
 
 def convert_HMM_to_OOM(T, E, pi):
@@ -78,12 +77,12 @@ def convert_HMM_to_OOM(T, E, pi):
                     
     """
 
-    T = _np.array(T); E = _np.array(E); pi = _np.array(pi)
+    T = np.array(T); E = np.array(E); pi = np.array(pi)
     dim = E.shape[0]; nO = E.shape[1]
     oom = _tomlib.Oom()
     oom.setSize(dim, nO, 0)
     for o in range(nO):   oom.tau( o,0, T.transpose() * E[:,o] )
-    oom.sig( _np.ones((1,dim)) )
+    oom.sig( np.ones((1,dim)) )
     oom.w0( pi[:,None] )
     # oom.w0( oom.stationaryState() )
     oom.init()

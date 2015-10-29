@@ -1,8 +1,8 @@
-from .tomlib import *
+from __future__ import (division, absolute_import, print_function, unicode_literals)
+from .. import _tomlib
+#from . import linalg
 
 import numpy as np
-import scipy.linalg as linalg
-import scipy.sparse.linalg
 import itertools
 
 def numericalRank(M, V, weightExp = 1):
@@ -23,13 +23,13 @@ def numericalRank(M, V, weightExp = 1):
     """
     
     if weightExp == 0:
-        s = linalg.svdvals(M)
+        s = np.linalg.svd(M, compute_uv=False)
         err = np.sum( np.sqrt(V) ) / np.sqrt( V.size )
     else:
         tV = np.maximum( 1e-15, V)
         wI = ( 1/( np.average(tV, 1)[:,np.newaxis] ) )**(0.5 * weightExp)
         wJ = ( 1/( np.average(tV, 0)[np.newaxis,:] ) )**(0.5 * weightExp)
-        s = linalg.svdvals(wI * M * wJ)
+        s = np.linalg.svd(wI * M * wJ, compute_uv=False)
         err = np.sum( wI * np.sqrt(V) * wJ ) / np.sqrt( V.size )
     dim = 0
     while dim < s.size and s[dim] > err: dim += 1
@@ -66,14 +66,14 @@ def estimateDimension(estimator, X, Y, eF = None, weightExp = 1):
 
 def identifySubspace(eF, dim, W = None):
     if W is None: # We don't use any weights
-        U,s,VT = linalg.svd(eF)
+        U,s,VT = np.linalg.svd(eF)
         s = np.sqrt(s[:dim])
         B = U[:,:dim] * s[None,:]; A = s[:,None] * VT[:dim,:]
     elif type(W) in [list, tuple]: # row/column weights
         wI = np.sqrt(W[0]); wJ = np.sqrt(W[1])
         if wI.ndim == 1: wI = wI[:,None]
         if wJ.ndim == 1: wJ = wJ[None,:]
-        U,s,VT = linalg.svd( wI * eF * wJ )
+        U,s,VT = np.linalg.svd( wI * eF * wJ )
         s = np.sqrt(s[:dim])
         B = 1/wI * U[:,:dim] * s[None,:]
         A = s[:,None] * VT[:dim,:] * 1/wJ
@@ -144,7 +144,7 @@ def learnSpectral(estimator, X, Y, dimension = 0, weightExp = 0):
     Unified Learning Framework*, JMLR, 2014, pg. 15"""
     
     nU = estimator.nU(); nO = estimator.nO()
-    e = Sequences(1)
+    e = _tomlib.Sequences(1)
     threshold = 1e-12
 
     dim = dimension
@@ -159,7 +159,7 @@ def learnSpectral(estimator, X, Y, dimension = 0, weightExp = 0):
         wI = ( np.sum(V, 1)[:,None] / len(Y) )**-(0.5 * weightExp)
         wJ = ( np.sum(V, 0)[None,:] / len(X) )**-(0.5 * weightExp)
 
-    U,s,V_T = linalg.svd(wI * estimator.f(Y, X) * wJ)
+    U,s,V_T = np.linalg.svd(wI * estimator.f(Y, X) * wJ)
     Ud = U[:,:dim]; Sd_inv = s[:dim]; Vd_T = V_T[:dim,:]
     for i in range(dim):
         Sd_inv[i] = 1 / Sd_inv[i] if Sd_inv[i] > threshold else 0
@@ -168,7 +168,7 @@ def learnSpectral(estimator, X, Y, dimension = 0, weightExp = 0):
     Q = wJ.transpose() * Vd_T.transpose() * Sd_inv
 
     # Get OOM:
-    oom = Oom()
+    oom = _tomlib.Oom()
     oom.setSize(dim, nO, nU)
     for u, o in itertools.product(range(max(1,nU)), range(nO)):
         oom.tau(o,u, C.dot(estimator.f(Y, X, o, u)).dot(Q) )
@@ -181,7 +181,7 @@ def learnSpectral(estimator, X, Y, dimension = 0, weightExp = 0):
 
 def learnWeightedSpectral(estimator, X, Y, dimension = 0, method = 'GLS', subspace = None):
     nU = estimator.nU(); nO = estimator.nO()
-    e = Sequences(1)
+    e = _tomlib.Sequences(1)
     dim = dimension
     if dim == 0: dim = estimateDimension(estimator, X, Y)
 
@@ -190,7 +190,7 @@ def learnWeightedSpectral(estimator, X, Y, dimension = 0, method = 'GLS', subspa
     else:
         [B,A] = subspace
 
-    oom = Oom()
+    oom = _tomlib.Oom()
     oom.setSize(dim, nO, nU)
     
     for u, o in itertools.product(range(max(1,nU)), range(nO)):
@@ -217,4 +217,99 @@ def learnWeightedSpectral(estimator, X, Y, dimension = 0, method = 'GLS', subspa
         
     oom.init()
     return oom
+
+
+# Old ??
+
+# r/c weighted spectal learning:
+# input: sets of characteristic and indicative sequences, estimator
+# output: model
+
+# 1. Make sure ind[0] (= char[0]) = empty word
+# 2. Get F and row wX and column weights wY, as well as wz for each z.
+#    These will be 1/counts.
+# 3. Set DX = diag(wX)**0.5 and DY = diag(wY)**0.5
+# 5. Ud, Sd, Vd_T = d-truncated SVD of DY*F*DX -- best weighted rank-d approx.
+# 5b. Alternatively, compute Ud, Sd, Vd_T = d-truncted SVD of DY*[F F_]*DX
+# 6. Set C = Ud^T * DY -- maps cols to d-dimensional representation
+# 7. Set A = Sd*Vd_T (first cols) = C*F*DX, and set Az = C*F_z*DX
+# 8. Set B = [A; wz**0.5 * Azs; (1/N)**0.5 * fX * DX]
+# 9. Set Ud, Sd, Vd_T = d-truncated SVD of B. Ud = [U; Uz1; ...; Uzn; Usig]
+# 10. Set tau_z = Uzd * Ud^{-1} / wz**0.5
     
+def simpleWeightedSpectral(est, Y, X, d, weights = 'average'):
+    nO = est.nO_
+    e = _tomlib.Sequences(1)
+    threshold = 1e-15
+
+        
+    # Weights:
+    wY = est.v(Y, e)**-0.5
+    wX = est.v(e, X)**-0.5
+
+    # Best weighted rank-d approx. to F
+    U,S,V_T = np.linalg.svd(wY * est.f(Y, X) * wX)
+    Ud = U[:,:d]; Sd_inv = S[:d]; Vd_T = V_T[:d,:]
+    for i in range(d):
+        Sd_inv[i] = 1 / Sd_inv[i] if Sd_inv[i] > threshold else 0
+    del U, S, V_T
+    
+    C = Ud.transpose() * wY.transpose()
+    Q = wX.transpose() * Vd_T.transpose() * Sd_inv
+
+    # Get OOM:
+    oom = _tomlib.Oom()
+    oom.setSize(d, nO, 0)
+    for z in range(nO):
+        oom.tau(z, 0, C.dot(est.f(Y, X, z)).dot(Q))
+    oom.sig(est.f(e,X).dot(Q))
+    # oom.w0(C.dot(est.f(Y,e)))
+    oom.w0(oom.stationaryState())
+    oom.reset()
+    return oom
+
+
+def weightedSpectral(est, Y, X, d, valueErrorBias = 1):
+    nO = est.nO_
+    e = _tomlib.Sequences(1)
+    
+    # Weights:
+    wY = est.v(Y, e)**-0.5
+    wX = est.v(e, X)**-0.5
+    wz = [(est.f(e, e, z)[0,0]+0.00001)/1.00001 for z in range(nO)]
+    wz = [(wz[z] * (1-wz[z]))**-0.5 for z in range(nO)]
+    # Use same column weights for Fz
+    # wz = [1 for z in range(nO)]
+
+    # Best weighted rank-d approx. to F
+    U,S,V_T = np.linalg.svd(wY * est.f(Y, X) * wX)
+    Ud = U[:,:d]; Sd = np.diag(S[:d]); Vd_T = V_T[:d,:]
+    del U, S, V_T
+    
+    A = np.zeros(( (nO+1)*d+1, X.size() ))
+    # A[:d,:] = Ud.transpose().dot(wY * est.f(Y,X) * wX)
+    A[:d,:] = Sd.dot(Vd_T) * valueErrorBias
+    for z in range(nO):
+        A[(z+1)*d:(z+2)*d,:] = Ud.transpose().dot(wY * est.f(Y, X, z) * wX * wz[z] )
+    A[-1:,:] = 1 * est.f(e, X) * wX # Note that the weight of f(e) should be 1
+
+    U,S,V_T = np.linalg.svd(A)
+    del A
+    Ud = U[:,:d]; Sd = np.diag(S[:d]); Vd_T = V_T[:d,:]
+    del U, S, V_T
+    Uinv = np.linalg.inv(Ud[:d,:] / valueErrorBias)
+
+    # Apinv = pinv(A[:d,:])
+    
+    # Get OOM:
+    oom = _tomlib.Oom()
+    oom.setSize(d, nO, 0)
+    for z in range(nO):
+        # oom.tau(z, 0, A[(z+1)*d:(z+2)*d,:].dot(Apinv) / wz[z] )
+        oom.tau(z, 0, Ud[(z+1)*d:(z+2)*d,:].dot(Uinv) / wz[z] )
+    # oom.sig(A[-1:, :].dot(Apinv))
+    oom.sig(Ud[-1:, :].dot(Uinv))
+    # ??? oom.w0(Ud.transpose().dot(wY * est.f(Y,e)))
+    oom.w0(oom.stationaryState())
+    oom.reset()
+    return oom
