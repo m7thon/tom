@@ -19,6 +19,14 @@ void reverseWords(std::shared_ptr<Sequences> words) {
 }
 
 SWIGCODE(%feature ("kwargs") wordsOverAlphabet;)
+/** Return in lexicographic order all words of length between `minLength` and `maxLength` over the alphabet with `nOutputSymbols` output symbols if `nInputSymbols` is zero, or otherwise over the alphabet of input-output symbol pairs with `nOutputSymbols` output symbols and `nInputSymbols` input symbols.
+ *
+ * @param nOutputSymbols the number of output symbols
+ * @param nInputSymbols the number of input symbols (default 0)
+ * @param minLength the minimum length for returned words (default 1)
+ * @param maxLength the maximum length for returned words (default 1)
+ * @return an array of words
+ */
 std::shared_ptr<Sequences> wordsOverAlphabet(int nOutputSymbols, int nInputSymbols = 0, int minLength = 1, int maxLength = 1) {
     auto words = std::make_shared<Sequences>();
     struct WordIterator {
