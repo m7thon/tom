@@ -7,3 +7,4 @@ from . import hmm
 from . import linalg
 from . import learn
 from . import util
+from . import io

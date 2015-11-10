@@ -39,9 +39,9 @@ class PlainPySequence:
     rawSub = sub
 
     def slice(self, begin, end, forwards):
-        if begin == tom.NoIndex:
+        if begin == tom.sequence.NoIndex:
             begin = None
-        if end == tom.NoIndex:
+        if end == tom.sequence.NoIndex:
             end = None
         return PlainPySequence(self.data[begin:end:1 if forwards else -1])
 
@@ -121,9 +121,9 @@ class IoPySequence:
         return ret
 
     def slice(self, begin, end, forwards):
-        if begin == tom.NoIndex:
+        if begin == tom.sequence.NoIndex:
             begin = None
-        if end == tom.NoIndex:
+        if end == tom.sequence.NoIndex:
             end = None
         ret = IoPySequence(self.data[begin:end:1 if forwards else -1])
         if not forwards:
@@ -147,7 +147,7 @@ class TestSequence(unittest.TestCase):
         size = 5
         l = list(range(1, size + 1))
         py_base = PlainPySequence(l)
-        tom_base = tom.Sequence(l, 10, 0)
+        tom_base = tom.sequence.Sequence(l, 10, 0)
         for b in range(size):
             for e in range(b, size + 1):
                 try:
@@ -168,7 +168,7 @@ class TestSequence(unittest.TestCase):
         for p in l:
             x.extend(p)
         py_base = IoPySequence(l)
-        tom_base = tom.Sequence(x, 10, 1)
+        tom_base = tom.sequence.Sequence(x, 10, 1)
         for b in range(2 * size):
             for e in range(b, 2 * size + 1):
                 tom_seq = tom_base.rawSlice(b, e, True)
@@ -182,21 +182,21 @@ class TestSequence(unittest.TestCase):
 
     def test_json_io(self):
         for tom_seq, py_seq in self.cases():
-            seq = tom.Sequence(tom_seq.toJSON())
+            seq = tom.sequence.Sequence(tom_seq.toJSON())
             self.assertTrue(seq == tom_seq, "to and from json gives non-equal sequence for" + str(tom_seq) + " and " + str(seq))
-            self.assertTrue(seq.nU() == tom_seq.nU(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
-            self.assertTrue(seq.nO() == tom_seq.nO(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
+            self.assertTrue(seq.nInputSymbols() == tom_seq.nInputSymbols(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
+            self.assertTrue(seq.nOutputSymbols() == tom_seq.nOutputSymbols(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
         json = """{"Type":"Sequence","nU":1,"nO":10,"data":[-1,1,-2,2],"size":4}"""
-        tom_seq = tom.Sequence(json)
+        tom_seq = tom.sequence.Sequence(json)
         py_seq = IoPySequence([(-1, 1), (-2, 2)])
-        self.assertTrue(tom_seq.nU() == 1 and tom_seq.nO() == 10 and py_seq.equals(tom_seq), "Error reading simple json-string")
+        self.assertTrue(tom_seq.nInputSymbols() == 1 and tom_seq.nOutputSymbols() == 10 and py_seq.equals(tom_seq), "Error reading simple json-string")
 
     def test_copy(self):
         for tom_seq, py_seq in self.cases():
             seq = tom_seq.copy()
             self.assertTrue(seq == tom_seq, ".copy() not equal:" + str(tom_seq) + " and " + str(seq))
-            self.assertTrue(seq.nU() == tom_seq.nU(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
-            self.assertTrue(seq.nO() == tom_seq.nO(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
+            self.assertTrue(seq.nInputSymbols() == tom_seq.nInputSymbols(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
+            self.assertTrue(seq.nOutputSymbols() == tom_seq.nOutputSymbols(), "alphabet changed: " + str(tom_seq) + " and " + str(seq))
 
     def test_accessors(self):
         for tom_seq, py_seq in self.cases():
@@ -234,39 +234,39 @@ class TestSequence(unittest.TestCase):
 
     def test_rawSlice(self):
         for tom_seq, py_seq in self.cases():
-            for b in [tom.NoIndex] + list(range(py_seq.raw().length())):
-                if b == tom.NoIndex:
-                    es = [tom.NoIndex] + list(range(py_seq.raw().length() + 1))
+            for b in [tom.sequence.NoIndex] + list(range(py_seq.raw().length())):
+                if b == tom.sequence.NoIndex:
+                    es = [tom.sequence.NoIndex] + list(range(py_seq.raw().length() + 1))
                 else:
-                    es = [tom.NoIndex] + list(range(b, py_seq.raw().length()+1))
+                    es = [tom.sequence.NoIndex] + list(range(b, py_seq.raw().length()+1))
                 for e in es:
                     self.assertTrue(py_seq.rawSlice(b, e, True).equals(tom_seq.rawSlice(b, e, True)), "Slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, True))
-                    self.assertTrue(tom_seq.rawSlice(b, e, True) == tom_seq[None if b == tom.NoIndex else b:None if e == tom.NoIndex else e],
+                    self.assertTrue(tom_seq.rawSlice(b, e, True) == tom_seq[None if b == tom.sequence.NoIndex else b:None if e == tom.sequence.NoIndex else e],
                                     "Python-slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, True))
-            for b in [tom.NoIndex] + list(range(py_seq.raw().length())):
-                if b == tom.NoIndex:
-                    es = [tom.NoIndex] + list(range(py_seq.raw().length()))
+            for b in [tom.sequence.NoIndex] + list(range(py_seq.raw().length())):
+                if b == tom.sequence.NoIndex:
+                    es = [tom.sequence.NoIndex] + list(range(py_seq.raw().length()))
                 else:
-                    es = [tom.NoIndex] + list(range(0, b+1))
+                    es = [tom.sequence.NoIndex] + list(range(0, b+1))
                 for e in es:
                     self.assertTrue(py_seq.rawSlice(b, e, False).equals(tom_seq.rawSlice(b, e, False)), "Slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, False))
-                    self.assertTrue(tom_seq.rawSlice(b, e, False) == tom_seq[None if b == tom.NoIndex else b:None if e == tom.NoIndex else e:-1],
+                    self.assertTrue(tom_seq.rawSlice(b, e, False) == tom_seq[None if b == tom.sequence.NoIndex else b:None if e == tom.sequence.NoIndex else e:-1],
                                     "Python-slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, False))
 
     def test_slice(self):
         for tom_seq, py_seq in self.cases():
-            for b in [tom.NoIndex] + list(range(py_seq.length())):
-                if b == tom.NoIndex:
-                    es = [tom.NoIndex] + list(range(py_seq.length() + 1))
+            for b in [tom.sequence.NoIndex] + list(range(py_seq.length())):
+                if b == tom.sequence.NoIndex:
+                    es = [tom.sequence.NoIndex] + list(range(py_seq.length() + 1))
                 else:
-                    es = [tom.NoIndex] + list(range(b, py_seq.length()+1))
+                    es = [tom.sequence.NoIndex] + list(range(b, py_seq.length()+1))
                 for e in es:
                     self.assertTrue(py_seq.slice(b, e, True).equals(tom_seq.slice(b, e, True)), "Slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, True))
-            for b in [tom.NoIndex] + list(range(py_seq.length())):
-                if b == tom.NoIndex:
-                    es = [tom.NoIndex] + list(range(py_seq.length()))
+            for b in [tom.sequence.NoIndex] + list(range(py_seq.length())):
+                if b == tom.sequence.NoIndex:
+                    es = [tom.sequence.NoIndex] + list(range(py_seq.length()))
                 else:
-                    es = [tom.NoIndex] + list(range(0, b+1))
+                    es = [tom.sequence.NoIndex] + list(range(0, b+1))
                 for e in es:
                     self.assertTrue(py_seq.slice(b, e, False).equals(tom_seq.slice(b, e, False)), "Slicing error: " + str(tom_seq) + " [%d:%d:%d]" % (b, e, False))
 

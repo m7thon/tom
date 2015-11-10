@@ -75,9 +75,9 @@ def load(filename):
         oom.sig(np.ones((1,pomdp['dim']),dtype=np.double))
         oom.w0(np.array([pomdp['b(s)']],dtype=np.double).transpose())
         oom.minPrediction_ = 0
-        oom.maxPredictionError_ = 10
+        oom.normalizationTolerance_ = 10
         oom.maxSetback(0)
-        oom.init()
+        oom.initialize()
         return oom
         
     return None
@@ -97,26 +97,26 @@ def save(object, filename):
 
 def getBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10):
     def addToCL(oom, v, v_seq, cl, sl, co):
-        for u, o in itertools.product(range(max(1,oom.nU())), range(oom.nO())):
+        for u, o in itertools.product(range(max(1,oom.nInputSymbols())), range(oom.nOutputSymbols())):
             v_n = v.dot(oom.tau(o,u)) if co else oom.tau(o, u).dot(v)
             cl.append(v_n)
-            if oom.nU() != 0:
+            if oom.nInputSymbols() != 0:
                 sl.append([u,o] + v_seq) if co else sl.append(v_seq + [u,o])
             else:
                 sl.append([o] + v_seq) if co else sl.append(v_seq + [o])
     v = oom.sig() if co else oom.w0()
     v_n = v/np.linalg.norm(v)
-    B = [v_n.reshape(oom.dim())]; S = [[]]
+    B = [v_n.reshape(oom.dimension())]; S = [[]]
     P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
     CL = []; SL = []
     addToCL(oom, v_n, [], CL, SL, co)
-    while (len(CL)>0 and len(S) < oom.dim()):
+    while (len(CL)>0 and len(S) < oom.dimension()):
         v = CL.pop(0); s = SL.pop(0)
         if np.linalg.norm(v) > eps_zero:
             v_n = v/np.linalg.norm(v)
             p_v_n = v_n.dot(P) if co else P.dot(v_n)
             if np.linalg.norm(p_v_n - v_n) > eps_ind:
-                B.append(v_n.reshape(oom.dim())); S.append(s)
+                B.append(v_n.reshape(oom.dimension())); S.append(s)
                 P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
                 addToCL(oom, v_n, s, CL, SL, co)
     B = np.matrix(B) if co else np.matrix(B).transpose()
@@ -124,11 +124,11 @@ def getBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10):
 
 def getGoodBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10, normalizeVectors=True):
     def addToCL(oom, l, L, co):
-        for u, o in itertools.product(range(max(1,oom.nU())), range(oom.nO())):
+        for u, o in itertools.product(range(max(1,oom.nInputSymbols())), range(oom.nOutputSymbols())):
             v = l[0].dot(oom.tau(o,u)) if co else oom.tau(o, u).dot(l[0])
             if np.linalg.norm(v) > eps_zero:
                 vn = v / np.linalg.norm(v_n) if normalizeVectors else v
-                if oom.nU() != 0:
+                if oom.nInputSymbols() != 0:
                     seq = [u,o] + l[1] if co else l[1] + [u,o]
                 else:
                     seq = [o] + l[1] if co else l[1] + [o]
@@ -142,14 +142,14 @@ def getGoodBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10, normalizeVectors
         
     v = oom.sig() if co else oom.w0()
     v_n = v / np.linalg.norm(v) if normalizeVectors else v
-    B = [v_n.reshape(oom.dim())]; S = [[]]
+    B = [v_n.reshape(oom.dimension())]; S = [[]]
     P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
     L = []
     addToCL(oom, [v_n, [], 0], L, co)
     sortCL(L, P, co)
-    while (len(L)>0 and len(S) < oom.dim()):
+    while (len(L)>0 and len(S) < oom.dimension()):
         (v,s,x) = L.pop(0)
-        B.append(v.reshape(oom.dim())); S.append(s)
+        B.append(v.reshape(oom.dimension())); S.append(s)
         P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
         addToCL(oom, (v,s,x), L, co)
         sortCL(L, P, co)

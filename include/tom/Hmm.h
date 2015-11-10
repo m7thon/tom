@@ -118,10 +118,9 @@ bool Hmm::normalize() {
 }
 
 void Hmm::randomize(double exponent, const Random& rnd) {
-	Random& r = const_cast<Random&>(rnd);
-	pi_ = r.random(dim_, 1).array().pow(exponent);
-	for (int a = 0; a < nU1_; ++a) { T_(a) = r.random(dim_, dim_).array().pow(exponent); }
-	for (int a = 0; a < nU1_; ++a) { for (int o = 0; o < nO_; ++o) { E_(o,a) = r.random(dim_,1).array().pow(exponent); }}
+	pi_ = rnd.random(dim_, 1).array().pow(exponent);
+	for (int a = 0; a < nU1_; ++a) { T_(a) = rnd.random(dim_, dim_).array().pow(exponent); }
+	for (int a = 0; a < nU1_; ++a) { for (int o = 0; o < nO_; ++o) { E_(o,a) = rnd.random(dim_, 1).array().pow(exponent); }}
 	normalize();
 	init();
 }

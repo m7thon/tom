@@ -215,7 +215,7 @@ def learnWeightedSpectral(estimator, X, Y, dimension = 0, method = 'GLS', subspa
     oom.sig( solveFastWLS(A, estimator.f(e,X), 1/estimator.v(e,X)) )
     oom.w0( solveFastWLS(B, estimator.f(Y,e), 1/estimator.v(Y,e), True) )
         
-    oom.init()
+    oom.initialize()
     return oom
 
 

@@ -1,6 +1,3 @@
-#ifndef CEREAL_TOM_H
-#define CEREAL_TOM_H
-
 #include "tom.h"
 
 namespace tom {
@@ -83,5 +80,3 @@ load(Archive & ar, const Eigen::Array<_Scalar, _Rows, _Cols, _Options, _MaxRows,
 }
 
 } /* namespace cereal */
-
-#endif // CEREAL_TOM_H

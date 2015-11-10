@@ -209,7 +209,7 @@ private:
     /** Create internal nodes as if a terminal symbol was appended to the \c sequence at the current position\. These are needed to be able to count the number of occurrences of a substring by counting the number of leaves below the corresponding node. */
     void createTemporaryInternalNodes();
 
-    /** Remove the temporary internal nodes created by \ref createTemporaryInternalNodes()\. After calling this function, the suffix tree can be extended further. */
+    /** Remove the temporary internal nodes created by `createTemporaryInternalNodes()`\. After calling this function, the suffix tree can be extended further. */
     void removeTemporaryInternalNodes();
     
     /** Annotate the suffix tree with leaf counts, i.e., for each node, count the number of leafs (= number of occurrences of the corresponding substring) and store this in \c nOccurrences. */

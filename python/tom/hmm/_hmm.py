@@ -85,7 +85,7 @@ def convert_HMM_to_OOM(T, E, pi):
     oom.sig( np.ones((1,dim)) )
     oom.w0( pi[:,None] )
     # oom.w0( oom.stationaryState() )
-    oom.init()
+    oom.initialize()
     return oom
 
 def learn_EM(train_seq, dim, n_init = 1, init_exponent = 1, max_iter = 100, min_improvement = 0.0001):

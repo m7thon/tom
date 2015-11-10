@@ -11,7 +11,7 @@ public:
 	unsigned int nU_;
 	double exploration_;
 	Policy(unsigned int nU = 0, double exploration = 1) : nU_(nU), exploration_(exploration) {};
-	int u(const Eigen::VectorXd& w, Random& r) const;
+	int u(const Eigen::VectorXd& w, const Random& r) const;
 	Eigen::VectorXd p(const Eigen::VectorXd& w) const;
 	void addPlane(int u, const std::vector<int>& indices, const std::vector<double> vals) {
 		planes_.push_back(Plane(u, indices, vals));
@@ -76,9 +76,9 @@ private:
 	std::vector<Plane> planes_;
 };
 
-inline int Policy::u(const Eigen::VectorXd& w, Random& r) const {
+inline int Policy::u(const Eigen::VectorXd& w, const Random& r) const {
 	if (nU_ == 0) return 0;
-	if (r.random() < exploration_) return r.integer(nU_);
+	if (exploration_ == 1 or r.random() < exploration_) return r.integer(nU_);
 	int act = r.integer(nU_);
 	double reward = -1e99;
 	for (auto p = planes_.begin(); p != planes_.end(); ++p) {

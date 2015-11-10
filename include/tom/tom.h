@@ -11,7 +11,6 @@
 #define TOM_CHECK
 #ifdef TOM_DEBUG
     #undef NDEBUG
-    #define TOM_CHECK
     #undef TOM_NCHECK
 #endif
 #ifdef TOM_NCHECK
@@ -68,6 +67,7 @@
 #include <random>
 
 //MARK: external libraries
+#include "Eigen/Core"
 #include "Eigen/Dense"
 namespace tom {
     using namespace Eigen;
@@ -95,7 +95,6 @@ namespace tom {
 #include "EfficiencySharpening.h"
 
 //MARK: tom implementation
-#include "Oom.cpp"
 #include "LinearAlgebra.cpp"
 
 #endif // TOM_H

@@ -33,11 +33,11 @@ std::shared_ptr<Sequences> wordsOverAlphabet(int nOutputSymbols, int nInputSymbo
         Sequence word;
         void increment(long position = 0, bool outputSymbol = true) {
             if (position == word.rawSize()) {
-                word = Sequence(word.isIO() ? position/2 + 1 : position + 1, word.nO(), word.nU());
+                word = Sequence(word.isIO() ? position/2 + 1 : position + 1, word.nOutputSymbols(), word.nInputSymbols());
                 return;
             }
             int new_value_at_pos = word.rawAt(-1-position) + 1;
-            if (new_value_at_pos == (outputSymbol ? word.nO() : word.nU())) {
+            if (new_value_at_pos == (outputSymbol ? word.nOutputSymbols() : word.nInputSymbols())) {
                 word.rawAt(-1-position, 0);
                 increment(position+1, not word.isIO() or not outputSymbol);
             } else {
