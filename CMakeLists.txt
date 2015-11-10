@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.3)
+project(tom)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(SOURCE_FILES src/tom.cpp include/tom)
+
+include_directories(include/external)
+include_directories(include/tom)
+include_directories(/opt/local/include/eigen3)
+
+add_executable(tom ${SOURCE_FILES})

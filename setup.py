@@ -24,7 +24,7 @@ setup(
     license = "MIT",
     url = "https://gitlab.com/m7.thon/tom",
     package_dir = {'': 'python'},
-    packages = ['tom', 'tom.hmm', 'tom.learn', 'tom.linalg', 'tom.sequence', 'tom.util'],
+    packages = ['tom', 'tom.hmm', 'tom.learn', 'tom.linalg', 'tom.sequence', 'tom.util', 'tom.io'],
     ext_modules = [Extension('tom.__tomlib', sources = ['swig/_tomlib_wrap.cpp'], language='c++',
                              extra_compile_args = ['-std=c++11', '-Wno-unused-variable', '-Wno-sign-compare'],
                              include_dirs = [np.get_include(), 'include/tom', 'include/external'],

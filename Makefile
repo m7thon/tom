@@ -10,6 +10,7 @@ PY_SRC := $(shell find python/tom -type f -name "*.py")
 .PHONY: test debug
 .PHONY: doc swig clean cleanall
 .PHONY: deploy deploy_quickly deploy_optimized
+.PHONY: tom
 
 build: swig/_tomlib_wrap.cpp
 	$(PYTHON) setup.py build_ext
@@ -37,6 +38,9 @@ deploy_optimized: swig/_tomlib_wrap.cpp
 
 doc:
 	doxygen doc/tom.doxyfile
+
+tom: $(CXX_SRC)
+	g++ -std=c++11 -I/opt/local/include/eigen3 -Iinclude/tom -Iinclude/external src/tom.cpp -o tom
 
 swig: swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/_tomlib_wrap.cpp swig/_tomlib.i
