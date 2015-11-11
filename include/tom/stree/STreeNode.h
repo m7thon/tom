@@ -39,6 +39,10 @@ public:
         if (!stree_->validate(nidx_)) setValid(false);
 	}
 
+    /** Set this `Node` to the given `node`, which must belong to the same suffix tree. This is a faster version of `(*this) = node)`.
+     */
+    void set(const Node& node) { nidx_ = node.nidx_; }
+
 	/** Return \c true if valid, otherwise return \c false.
 	 */
 	bool isValid() const { return stree_ and (nidx_ & VALID); }
@@ -228,6 +232,10 @@ public:
         parent_ = ROOT &~ VALID;
     }
 
+    /** Set this `EdgeNode` to the given `edgeNode`, which must belong to the same suffix tree. This is a faster version of `(*this) = edgeNode)`.
+    */
+    void set(const EdgeNode& edgeNode) { Node::set(edgeNode); parent_ = edgeNode.parent_; }
+
     /** Return the parent `Node` of this `EdgeNode`. If this `EdgeNode` is invalid or degenerate, i.e., no parent node exists or is known, a `Node` marked as invalid is returned.
      */
 	Node parent() const {
@@ -349,6 +357,10 @@ public:
         path_.clear();
     }
 
+    /** Set this `PathNode` to the given `pathNode`, which must belong to the same suffix tree.
+    */
+    void set(const PathNode& pathNode) { Node::set(pathNode); path_ = pathNode.path_; }
+
     /** Extend this `PathNode` to its first child if such a node exists, otherwise mark this `PathNode` as invalid instead. Note that the children are ordered lexicographically according to their edge labels.
      */
     void toChild() { nidx_t current = nidx_; Node::toChild(); if (isValid()) path_.push_back(current); }
@@ -440,9 +452,13 @@ public:
 	    if (isValid()) depth_ = node.depth();
 	}
 
-	/** Reset this position to the root of the suffix tree.
+	/** Reset this `Position` to the root of the suffix tree.
 	 */
 	void setRoot() { edge_.setRoot(); depth_ = 0; }
+
+    /** Set this `Position` to the given `position`, which must belong to the same suffix tree. This is a faster version of `(*this) = position)`.
+    */
+    void set(const Position& position) { edge_.set(position.edge_); depth_ = position.depth_; }
 
     /** Return `true` if valid, otherwise return `false`.
      */
