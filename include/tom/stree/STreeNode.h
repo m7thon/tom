@@ -32,6 +32,13 @@ public:
         if (!stree_->validate(nidx_)) setValid(false);
     }
 
+	/** Reset this `Node` to the root of the suffix tree.
+	 */
+	void setRoot() {
+		nidx_ = ROOT;
+        if (!stree_->validate(nidx_)) setValid(false);
+	}
+
 	/** Return \c true if valid, otherwise return \c false.
 	 */
 	bool isValid() const { return stree_ and (nidx_ & VALID); }
@@ -214,6 +221,13 @@ public:
      */
     EdgeNode(const Node& node, const Node& parent) : Node(node), parent_(node.nidx() &~ VALID) { findParent(parent); }
 
+    /** Reset this `EdgeNode` to the root of the suffix tree.
+     */
+    void setRoot() {
+        Node::setRoot();
+        parent_ = ROOT &~ VALID;
+    }
+
     /** Return the parent `Node` of this `EdgeNode`. If this `EdgeNode` is invalid or degenerate, i.e., no parent node exists or is known, a `Node` marked as invalid is returned.
      */
 	Node parent() const {
@@ -328,6 +342,13 @@ public:
     /** Construct a `PathNode` corresponding to the given `node`. */
     PathNode(const Node& node) : Node(node), path_() { findPath(); }
 
+    /** Reset this `PathNode` to the root of the suffix tree.
+     */
+    void setRoot() {
+        Node::setRoot();
+        path_.clear();
+    }
+
     /** Extend this `PathNode` to its first child if such a node exists, otherwise mark this `PathNode` as invalid instead. Note that the children are ordered lexicographically according to their edge labels.
      */
     void toChild() { nidx_t current = nidx_; Node::toChild(); if (isValid()) path_.push_back(current); }
@@ -418,6 +439,10 @@ public:
 	Position(const EdgeNode& node) : edge_(node), depth_(0) {
 	    if (isValid()) depth_ = node.depth();
 	}
+
+	/** Reset this position to the root of the suffix tree.
+	 */
+	void setRoot() { edge_.setRoot(); depth_ = 0; }
 
     /** Return `true` if valid, otherwise return `false`.
      */
