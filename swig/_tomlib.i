@@ -1,7 +1,7 @@
-/* -*- C -*-  (not really, but good for syntax highlighting) */
+/* -*- text -*-  (not really, but good for syntax highlighting) */
 %module(directors="1") _tomlib
 %naturalvar;
-//%feature("autodoc","1");
+//%feature("autodoc","0");
 
 %{ 
 #define SWIG_FILE_WITH_INIT
@@ -36,16 +36,17 @@
 //%shared_ptr(tom::Random)
 
 %include "../include/tom/Sequence.h"
+// note to self: don't touch the following 3 lines, and don't ask...
 %shared_ptr(std::vector<tom::Sequence>);
-//%shared_ptr(tom::Sequences);
 %template(Sequences) std::vector<tom::Sequence>;
+%shared_ptr(tom::Sequences);
 
 %include "../include/tom/stree/stree.h"
 %include "../include/tom/stree/STreeCore.h"
 %include "../include/tom/stree/STreeNode.h"
 %include "../include/tom/stree/STreeIterators.h"
 
-%include "../include/tom/PomdpTools.h"
+%include "../include/tom/Policy.h"
 
 %shared_ptr(tom::Oom);
 %include "../include/tom/Oom.h"
