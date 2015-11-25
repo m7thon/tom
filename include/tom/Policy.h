@@ -1,8 +1,3 @@
-#ifndef POMDP_TOOLS_H
-#define POMDP_TOOLS_H
-
-#include "tom.h"
-
 namespace tom {
 
 class Policy {
@@ -11,8 +6,36 @@ public:
 	unsigned int nU_;
 	double exploration_;
 	Policy(unsigned int nU = 0, double exploration = 1) : nU_(nU), exploration_(exploration) {};
-	int u(const Eigen::VectorXd& w, const Random& r) const;
-	Eigen::VectorXd p(const Eigen::VectorXd& w) const;
+	int u(const Eigen::VectorXd& w, const Random& r) const {
+		if (nU_ == 0) return 0;
+		if (exploration_ == 1 or r.random() < exploration_) return r.integer(nU_);
+		int act = r.integer(nU_);
+		double reward = -1e99;
+		for (auto p = planes_.begin(); p != planes_.end(); ++p) {
+			if (p->applicable(w)) {
+				double p_reward = p->value(w);
+				if (p_reward > reward) { reward = p_reward; act = p->u(); }
+			}
+		}
+		return act;
+
+	}
+	Eigen::VectorXd p(const Eigen::VectorXd& w) const {
+        if (nU_ == 0) return Eigen::VectorXd::Zero(0);
+        int act = -1;
+        double reward = -1e99;
+        for (auto p = planes_.begin(); p != planes_.end(); ++p) {
+            if (p->applicable(w)) {
+                double p_reward = p->value(w);
+                if (p_reward > reward) { reward = p_reward; act = p->u(); }
+            }
+        }
+        if (act == -1) return Eigen::VectorXd::Constant(nU_, double(1) / double(nU_));
+        Eigen::VectorXd p = Eigen::VectorXd::Constant(nU_, exploration_ * double(1) / double(nU_));
+        p(act) += (1 - exploration_);
+        return p;
+
+    }
 	void addPlane(int u, const std::vector<int>& indices, const std::vector<double> vals) {
 		planes_.push_back(Plane(u, indices, vals));
 		if (u >= nU_) nU_ = u + 1;
@@ -76,37 +99,4 @@ private:
 	std::vector<Plane> planes_;
 };
 
-inline int Policy::u(const Eigen::VectorXd& w, const Random& r) const {
-	if (nU_ == 0) return 0;
-	if (exploration_ == 1 or r.random() < exploration_) return r.integer(nU_);
-	int act = r.integer(nU_);
-	double reward = -1e99;
-	for (auto p = planes_.begin(); p != planes_.end(); ++p) {
-		if (p->applicable(w)) {
-			double p_reward = p->value(w);
-			if (p_reward > reward) { reward = p_reward; act = p->u(); }
-		}
-	}
-	return act;
-}
-
-inline Eigen::VectorXd Policy::p(const Eigen::VectorXd& w) const {
-	if (nU_ == 0) return Eigen::VectorXd::Zero(0);
-	int act = -1;
-	double reward = -1e99;
-	for (auto p = planes_.begin(); p != planes_.end(); ++p) {
-		if (p->applicable(w)) {
-			double p_reward = p->value(w);
-			if (p_reward > reward) { reward = p_reward; act = p->u(); }
-		}
-	}
-	if (act == -1) return Eigen::VectorXd::Constant(nU_, double(1) / double(nU_));
-	Eigen::VectorXd p = Eigen::VectorXd::Constant(nU_, exploration_ * double(1) / double(nU_));
-	p(act) += (1 - exploration_);
-	return p;
-}
-
-
 } //namespace tom
-
-#endif // POMDP_TOOLS_H
