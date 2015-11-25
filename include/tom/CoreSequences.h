@@ -15,7 +15,7 @@ namespace tom {
 /** Reverse all words in the \c words vector in-place. */
 void reverseWords(std::shared_ptr<Sequences> words) {
     for (unsigned long i = 0; i < words->size(); ++i)
-        (*words)[i].reverse();
+        (*words)[i] = (*words)[i].reverse();
 }
 
 SWIGCODE(%feature ("kwargs") wordsOverAlphabet;)
@@ -117,6 +117,43 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
             while (node_min_depth <= node_depth and (maxWords == 0 or words->size() < maxWords)) {
                 words->push_back(sequence.rawSub(head_index, node_min_depth));
                 node_min_depth += IO;
+            }
+        }
+    }
+    return words;
+}
+
+SWIGCODE(%feature ("kwargs") wordsFromModel;)
+/** Return all words satisfying the given constraints sorted (descending) by their probability according to the given `oom`.
+ *
+ * @param oom the `Oom` model from which to compute the word probabilities
+ * @param minLength the minimum length for returned words (default 0)
+ * @param maxLength the maximum length for returned words, or `0` (default) for no limit
+ * @param minProbability the minimum probability for returned words (default 1e-5)
+ * @param maxWords the maximum number of returned words, or `0` (default) for no limit
+ */
+std::shared_ptr<Sequences> wordsFromModel(Oom &oom, long minLength = 0, long maxLength = 0, double minProbability = 1e-5, long maxWords = 0) {
+    auto words = std::make_shared<Sequences>();
+    auto compare = [] (const std::pair<double, Sequence>& a, const std::pair<double, Sequence>& b) {
+        return a.first < b.first or (a.first == b.first and a.second.length() > b.second.length());
+    };
+    std::priority_queue<std::pair<double, Sequence>, std::vector<std::pair<double, Sequence> >, decltype(compare) > wordQueue (compare);
+    wordQueue.push(std::make_pair(1.0, Sequence(0, oom.nOutputSymbols(), oom.nInputSymbols())));
+    while ((not wordQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
+        double p_word = wordQueue.top().first;
+        Sequence word = wordQueue.top().second;
+        wordQueue.pop();
+        if (word.length() >= minLength) { words->push_back(word); }
+        if (word.length() < maxLength or maxLength == 0) {
+            for (Symbol u = 0; u < (oom.isIO() ? oom.nInputSymbols() : 1); ++u) {
+                for (Symbol o = 0; o < oom.nOutputSymbols(); ++o) {
+                    Sequence nextWord(word);
+                    if (oom.isIO()) { nextWord = nextWord + u; }
+                    nextWord = nextWord + o;
+                    double p_nextWord = oom.f(nextWord);
+                    if (oom.isIO()) { p_nextWord *= std::pow(1.0/oom.nInputSymbols(), nextWord.length()); }
+                    if (p_nextWord > minProbability) { wordQueue.push(std::make_pair(p_nextWord, nextWord)); }
+                }
             }
         }
     }
