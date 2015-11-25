@@ -103,12 +103,9 @@ public:
 	    return stree_->hi(nidx_);
 	}
 
-	/** Return the number of occurrences of the sequence represented by this node in the sequence represented by the suffix tree.
+	/** Return the number of occurrences of the sequence represented by this node in the sequence represented by the suffix tree. For an invalid node, zero is returned.
 	 */
-	nidx_t count() const CHECK(throw(std::invalid_argument)) {
-        CHECK(if (!isValid()) throw std::invalid_argument(".count() called on invalid node.");)
-	    return stree_->n(nidx_);
-	}
+	nidx_t count() const { return isValid() ? stree_->n(nidx_) : 0; }
 
 	/** Return the first child node of this node. If no such node exists, a `Node` marked as invalid is returned. Note that the children are ordered lexicographically according to their edge labels.
 	 */
@@ -517,9 +514,9 @@ public:
      */
     nidx_t headIndex() const CHECK(throw(std::invalid_argument)) { return edge_.headIndex(); }
 
-    /** Return the number of occurrences of the sequence represented by this `Position` in the sequence represented by the suffix tree.
+    /** Return the number of occurrences of the sequence represented by this `Position` in the sequence represented by the suffix tree. For an invalid `Position`, zero is returned.
      */
-    nidx_t count() const CHECK(throw(std::invalid_argument)) { return edge_.count(); }
+    nidx_t count() const { return edge_.count(); }
 
 	/** Return the `EdgeNode` that this `Position` lies on. If this `Position` is explicit, then the `EdgeNode` will be the node (with edge leading to it) of the position.
 	 */
