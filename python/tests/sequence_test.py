@@ -158,7 +158,7 @@ class TestSequence(unittest.TestCase):
                 self.assertTrue(py_seq.equals(tom_seq), "Error creating test cases by rawSlice for " + str(tom_seq) + " and " + str(py_seq))
                 yield (tom_seq, py_seq)
                 py_seq = py_seq.reverse()
-                tom_seq.reverse()
+                tom_seq = tom_seq.reverse()
                 self.assertTrue(py_seq.equals(tom_seq), "Error creating test cases by rawSlice for " + str(tom_seq) + " and " + str(py_seq))
                 yield (tom_seq, py_seq)
         i = list(range(-1, -size - 1, -1))
@@ -176,7 +176,7 @@ class TestSequence(unittest.TestCase):
                 self.assertTrue(py_seq.equals(tom_seq), "Error creating test cases by rawSlice for " + str(tom_seq) + " and " + str(py_seq))
                 yield (tom_seq, py_seq)
                 py_seq = py_seq.reverse()
-                tom_seq.reverse()
+                tom_seq = tom_seq.reverse()
                 self.assertTrue(py_seq.equals(tom_seq), "Error creating test cases by rawSlice for " + str(tom_seq) + " and " + str(py_seq))
                 yield (tom_seq, py_seq)
 
