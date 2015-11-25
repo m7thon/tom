@@ -28,6 +28,10 @@
 
 namespace Eigen {
     const int Dynamic = -1;
+    template<typename D> class EigenBase;
+    template<typename D> class DenseBase;
+    template<typename D> class ArrayBase;
+    template<typename D> class MatrixBase;
     template<typename T, typename D1, typename D2> class Matrix;
     template<typename T, typename D1, typename D2> class Array;
     typedef Matrix<   int, -1, -1> MatrixXi;
@@ -44,7 +48,7 @@ namespace Eigen {
     typedef  Array<double, -1, -1> ArrayXXd;
     typedef  Array<   int, -1,  1> ArrayXi;
     typedef  Array< float, -1,  1> ArrayXf;
-typedef  Array<double, -1,  1> ArrayXd;
+    typedef  Array<double, -1,  1> ArrayXd;
 }
 
 /*****************************************************************************
