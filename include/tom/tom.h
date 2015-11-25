@@ -82,19 +82,32 @@ namespace tom {
 namespace tom {
     typedef int Symbol;
 }
+
+#define C1(a) a
+#define C2(a,b) a,b
+#define C3(a,b,c) a,b,c
+#define C4(a,b,c,d) a,b,c,d
+#define C5(a,b,c,d,e) a,b,c,d,e
+#define C6(a,b,c,d,e,f) a,b,c,d,e,f
+#define C7(a,b,c,d,e,f,g) a,b,c,d,e,f,g
+#define PY1(a)
+#define PY2(a,b)
+#define PY3(a,b,c)
+#define PY4(a,b,c,d)
+#define PY5(a,b,c,d,e)
+#define PY6(a,b,c,d,e,f)
+#define PY7(a,b,c,d,e,f,g)
+
 #include "Random.h"
 #include "Sequence.h"
 #include "stree/stree.h"
 
 #include "LinearAlgebra.h"
-#include "PomdpTools.h"
+#include "Policy.h"
 #include "Oom.h"
 #include "Hmm.h"
 #include "CoreSequences.h"
 #include "Estimator.h"
 #include "EfficiencySharpening.h"
-
-//MARK: tom implementation
-#include "LinearAlgebra.cpp"
 
 #endif // TOM_H

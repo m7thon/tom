@@ -622,7 +622,7 @@ GENERATE_DEPRECATEDLIST= YES
 # sections, marked by \if <section_label> ... \endif and \cond <section_label>
 # ... \endcond blocks.
 
-ENABLED_SECTIONS       =
+ENABLED_SECTIONS       = PY
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines that the
 # initial value of a variable or macro / define can have for it to appear in the
@@ -1980,8 +1980,23 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             = NOSWIG(...):= \
-                         PYDOC=1
+PREDEFINED = NOSWIG(...):= \
+             PY=1 \
+             C1(a)= \
+             C2(a,b)= \
+             C3(a,b,c)= \
+             C4(a,b,c,d)= \
+             C5(a,b,c,d,e)= \
+             C6(a,b,c,d,e,f)= \
+             C7(a,b,c,d,e,f,g)= \
+             PY1(a)=a \
+             PY2(a,b)=a,b \
+             PY3(a,b,c)=a,b,c \
+             PY4(a,b,c,d)=a,b,c,d \
+             PY5(a,b,c,d,e)=a,b,c,d,e \
+             PY6(a,b,c,d,e,f)=a,b,c,d,e,f \
+             PY7(a,b,c,d,e,f,g)=a,b,c,d,e,f,g \
+
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The
