@@ -146,19 +146,34 @@ public:
 
     /* <editor-fold desc="Stabilization"> */ /** @name Stabilization */ //@{
     SWIGCODE(%feature ("kwargs") stabilization;)
+    SWIGCODE(%apply double *OUTPUT { double *minPredictionOut, double *normalizationToleranceOut, double *impossibilityThresholdOut };)
+    SWIGCODE(%apply int *OUTPUT { int *maxSetbackOut };)
     /**
-     * Set the stabilization parameters for the `Oom`. This is done as follows:
-     * - First, if a `preset` ("none" / "default") is specified, all stabilization parameters are set accordingly.
-     * - Next, any non-default argument causes the corresponding stabilization parameter to be set to the given value, while any argument left at its default value (-1) has no effect.
-     *
-     * @param minPrediction The minimum probability for any observation symbol\. The `prediction()` is normalized at each time-step such that every output symbol has at least this probability.
-     * @param normalizationTolerance The maximum allowed tolerance between the unnormalized and normalized prediction vector before invoking a `setBack()`\. The tolerance is computed as 1.5 * `nOutputSymbols()` * squared norm of the difference\. See also `normalizePrediction()`.
-     * @param maxSetback The maximum number of steps to "replay" during a `setBack()` operation.
-     * @param impossibilityThreshold The smallest probability value considered as non-zero\. If an observation symbol is encountered that this model predicts to have a probability lower than `impossibilityThreshold()`, this is considered as an impossible event and a `setBack()` must be performed, as the state `wt()` can no longer be normalized.
-     * @param preset A preset for the stabilization parameters to apply before setting the other parameters.\ This can be either "none" to disable stabilization, or "default" to use the default stabilization settings.
-     */
-    void stabilization(double minPrediction = -1, double normalizationTolerance = -1, int maxSetback = -1,
-                       double impossibilityThreshold = -1, std::string preset = "") throw(std::invalid_argument) {
+    Set (optional) and then return the stabilization parameters for the `Oom`. This is done as follows:
+    - First, if a `preset` ("none" / "default") is specified, all stabilization parameters are set accordingly.
+    - Next, any non-default argument causes the corresponding stabilization parameter to be set to the given value, while any argument left at its default value (-1) has no effect.
+    - Finally, the current stabilization parameters are returned
+    \if PY
+    in a tuple in the same order as they appear as function arguments. This allows writing python code such as:
+    \verbatim
+    old_params = oom.stabilization()
+    ...
+    oom.stabilization(*old_params)
+    \endverbatim
+    \else
+    in the corresponding output arguments `...Out` (if not NULL).
+    \endif
+
+    @param minPrediction The minimum probability for any observation symbol\. The `prediction()` is normalized at each time-step such that every output symbol has at least this probability.
+    @param normalizationTolerance The maximum allowed tolerance between the unnormalized and normalized prediction vector before invoking a `setBack()`\. The tolerance is computed as 1.5 * `nOutputSymbols()` * squared norm of the difference\. See also `normalizePrediction()`.
+    @param maxSetback The maximum number of steps to "replay" during a `setBack()` operation.
+    @param impossibilityThreshold The smallest probability value considered as non-zero\. If an observation symbol is encountered that this model predicts to have a probability lower than `impossibilityThreshold()`, this is considered as an impossible event and a `setBack()` must be performed, as the state `wt()` can no longer be normalized.
+    @param preset A preset for the stabilization parameters to apply before setting the other parameters.\ This can be either "none" to disable stabilization, or "default" to use the default stabilization settings.
+    */
+    C1(void) PY1(tuple)
+    stabilization(C5(double *minPredictionOut, double *normalizationToleranceOut, int *maxSetbackOut, double *impossibilityThresholdOut,)
+                  double minPrediction = -1, double normalizationTolerance = -1, int maxSetback = -1, double impossibilityThreshold = -1,
+                  std::string preset = "") throw(std::invalid_argument) {
         if (preset == "default") {
             minPrediction_ = 0.0003;
             normalizationTolerance_ = 0.02;
@@ -176,7 +191,24 @@ public:
         if (normalizationTolerance != -1) this->normalizationTolerance(normalizationTolerance);
         if (impossibilityThreshold != -1) this->impossibilityThreshold(impossibilityThreshold);
         if (maxSetback >= 0) this->maxSetback((unsigned int)maxSetback);
+        if (minPredictionOut) *minPredictionOut = this->minPrediction_;
+        if (normalizationToleranceOut) *normalizationToleranceOut = this->normalizationTolerance_;
+        if(maxSetbackOut) *maxSetbackOut = this->maxSetback_;
+        if(impossibilityThresholdOut) *impossibilityThresholdOut = this->impossibilityThreshold_;
     }
+    SWIGCODE(%clear double *minPredictionOut, double *normalizationToleranceOut, double *impossibilityThresholdOut;)
+    SWIGCODE(%clear int *maxSetbackOut;)
+
+#ifndef SWIG
+#ifndef PY
+    /**
+     * Set the stabilization parameters for the `Oom`. This is a convenience function that simply calls `stabilization(NULL, NULL, NULL, NULL, minPrediction, normalizationTolerance, maxSetback, impossibilityThreshold, preset);` */
+    void stabilization(double minPrediction = -1, double normalizationTolerance = -1, int maxSetback = -1,
+                       double impossibilityThreshold = -1, std::string preset = "") throw(std::invalid_argument) {
+        stabilization(NULL, NULL, NULL, NULL, minPrediction, normalizationTolerance, maxSetback, impossibilityThreshold, preset);
+    }
+#endif
+#endif
 
     /**
      * Return the minimum probability for any observation symbol. The `prediction()` is normalized at each time-step such that every output symbol has at least this probability. */
@@ -297,7 +329,7 @@ public:
     }
 
     /**
-     * Compute and normalize the prediction vector of the next output symbol probabilities according to the current state `wt()` and input `u`, i.e., compute P( . | `u`, `wt()` ).
+     * Compute and normalize the prediction vector of the next output symbol probabilities according to the current state `wt()` and input `u`, i.e., compute P( · | `u`, `wt()` ).
      *
      * Note that this function calls `setback()` if the `normalizationTolerance()` is exceeded. Therefore, calling e.g., `condition(0)` after `condition(1)` may not give the same result as calling just `condition(0)`. */
     void condition(Symbol u = 0) {
@@ -339,10 +371,13 @@ public:
 
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the value for the given output symbol `z` of the prediction function for the state `wt()`, i.e., the "probability" P( `z` | `wt()` ), and update the state. */
-    double f(Symbol z, bool reset = true) { return f(z, 0, reset); }
+    double f(Symbol z, bool reset = true) throw(std::invalid_argument) {
+        if (nU_ != 0) throw std::invalid_argument("input symbol required");
+        return f(z, 0, reset);
+    }
 
     /**
-     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the value for the given input-output pair (`u`,`o`) of the prediction function for the state `wt()`, i.e., the "probability" P( `o` | `u`, `wt()` ), and update the state. */
+     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the value for the given input-output pair (`u`,`o`) of the prediction function for the state `wt()`, i.e., the "probability" P( `o` | `u`, `wt()` ), and update the state. In the case of an output-only `Oom`, the input `u` is simply ignored. */
     double f(Symbol o, Symbol u, bool reset = true) {
         if (reset) { this->reset(); }
         if (nU_ != 0) condition(u);
@@ -364,6 +399,26 @@ public:
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences. */
     MatrixXd f(const Sequences &X, const Sequences &Y, bool reset = true) {
+        return f(X, Sequence(0, nO_, nU_), Y, reset);
+    }
+
+    /**
+     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given output symbol `z`. */
+    MatrixXd f(const Sequences &X, Symbol z, const Sequences &Y, bool reset = true) {
+        if (!isIO()) return f(X, Sequence(std::vector<Symbol>{z}, nO_, nU_), Y, reset);
+        else         return MatrixXd();
+    }
+
+    /**
+     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given input-output symbol pair z = (`u`, `o`). In the case of an output-only `Oom`, the input `u` is simply ignored. */
+    MatrixXd f(const Sequences &X, Symbol o, Symbol u, const Sequences &Y, bool reset = true) {
+        if (isIO()) return f(X, Sequence(std::vector<Symbol>{u, o}, nO_, nU_), Y, reset);
+        else        return f(X, Sequence(std::vector<Symbol>{o}, nO_, nU_), Y, reset);
+    }
+
+    /**
+     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x s y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given `Sequence` `s`. */
+    MatrixXd f(const Sequences &X, Sequence s, const Sequences &Y, bool reset = true) {
         if (reset) { this->reset(); }
         double f_temp;
         VectorXd wt_temp;
@@ -379,41 +434,13 @@ public:
             history_temp = history();
             for (unsigned int i = 0; i < Frows; ++i) {
                 wt(wt_temp, history_temp);
+                f_temp *= f(s, false);
                 F.coeffRef(i, j) = f_temp * f(Y[i], false);
             }
         }
         return F;
     }
 
-    /**
-     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given output symbol `z`. */
-    MatrixXd f(const Sequences &X, Symbol z, const Sequences &Y, bool reset = true) {
-        return f(X, z, 0, Y, reset);
-    }
-
-    /**
-     * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for an input-output symbol pair z = (`u`, `o`). */
-    MatrixXd f(const Sequences &X, Symbol o, Symbol u, const Sequences &Y, bool reset = true) {
-        if (reset) { this->reset(); }
-        double f_temp;
-        VectorXd wt_temp;
-        Sequence history_temp;
-        VectorXd wt_old = wt_;
-        Sequence history_old = history();
-        unsigned long Frows = Y.size(), Fcols = X.size();
-        MatrixXd F = MatrixXd::Zero(Frows, Fcols);
-        for (unsigned int j = 0; j < Fcols; ++j) {
-            wt(wt_old, history_old);
-            f_temp = f(X[j], false);
-            wt_temp = wt_;
-            history_temp = history();
-            for (unsigned int i = 0; i < Frows; ++i) {
-                wt(wt_temp, history_temp);
-                F.coeffRef(i, j) = f_temp * f(o, u, false) * f(Y[i], false);
-            }
-        }
-        return F;
-    }
 
     SWIGCODE(%feature ("kwargs") log2_f;)
     /**
