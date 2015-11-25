@@ -1,5 +1,6 @@
 namespace tom {
 
+/* Delete this soon...
 SWIGCODE(%ignore ApproxNormalCDFInverse;)
 double ApproxNormalCDFInverse(double p) {
     constexpr double c[] = {2.515517, 0.802853, 0.010328};
@@ -13,7 +14,7 @@ double ApproxNormalCDFInverse(double p) {
         return t - ((c[2] * t + c[1]) * t + c[0]) / (((d[2] * t + d[1]) * t + d[0]) * t + 1.0);
     }
 }
-
+*/
 
 /**
  * This class computes estimates for \f$f( x )\f$ and corresponding variance estimates for sequences \f$x\f$ based on a suffix tree representation of a sample sequence.
