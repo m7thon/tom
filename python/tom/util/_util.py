@@ -161,3 +161,14 @@ def minimize(oom, eps=1e-5):
     oom.conjugate(np.linalg.pinv(B), B)
     B, S = getBasis(oom, True, eps)
     oom.conjugate(B, np.linalg.pinv(B))
+
+def computeStates(oom, words, co = False):
+    """
+    Return a matrix whose columns are the states of the given `oom` corresponding to the given `words`, or, if `co` is set to true, whose rows are the corresponding co-states.
+    """
+    room = oom.reverse(False) if co else oom
+    S = np.zeros((oom.dimension(), len(words)))
+    for i in range(len(words)):
+        f = room.f(words[i].reverse() if co else words[i])
+        S[:,i] = room.wt()[:,0] * f
+    return S.transpose() if co else S
