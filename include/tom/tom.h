@@ -102,6 +102,7 @@ namespace tom {
 #include "Sequence.h"
 #include "stree/stree.h"
 
+#include "StopCondition.h"
 #include "LinearAlgebra.h"
 #include "Policy.h"
 #include "Oom.h"

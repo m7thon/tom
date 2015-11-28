@@ -225,6 +225,14 @@ namespace Eigen {
         $1 = &temp;
     }
 
+    // (InOut) const & Eigen::Derived [makes copy, passes Eigen::Derived object]
+    %typemap(in, fragment="Eigen_NumPy_Utilities")
+      const EIGEN_BASE<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >& INOUT
+    {
+        %array_conversion_code(DATA_TYPECODE, ROWS, COLS, DIM);
+        $1 = new EIGEN_TYPE<DATA_TYPE, ROWS, COLS>(Eigen::Map<EIGEN_TYPE<DATA_TYPE, -1, -1>, 0, Eigen::Stride<-1, -1> > ((DATA_TYPE*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner)));
+    }
+
     // MARK: (Argout) const & OUTPUT [creates new object, passes ownership]
     %typemap(in, numinputs=0)
       const EIGEN_BASE<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >& OUTPUT
@@ -232,7 +240,8 @@ namespace Eigen {
         $1 = new EIGEN_TYPE<DATA_TYPE, ROWS, COLS>();
     }
     %typemap(argout)
-      const EIGEN_BASE<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >& OUTPUT
+      const EIGEN_BASE<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >& OUTPUT,
+      const EIGEN_BASE<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >& INOUT
     {
         npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
         PyObject* res = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) $1->derived().data(), 0, NPY_ARRAY_FARRAY, NULL);
