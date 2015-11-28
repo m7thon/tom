@@ -488,19 +488,19 @@ public:
 
     /**
      * Return the `float` matrix of the `sequence.length()` states (in its columns) occurring during the computation of `f(sequence, reset)`. */
-    MatrixXf *harvestStates(const Sequence &sequence, bool reset = true) {
+    MatrixXf harvestStates(const Sequence &sequence, bool reset = true) {
         if (reset) { this->reset(); }
         long sequence_length = sequence.length();
         Symbol u = 0;
-        MatrixXf *W = new MatrixXf(dim_, sequence_length + 1);
-        W->col(0) = wt().cast<float>();
+        MatrixXf W(dim_, sequence_length + 1);
+        W.col(0) = wt().cast<float>();
         for (long i = 0; i < sequence_length; ++i) {
             if (nU_ != 0) {
                 u = sequence.u(i);
                 condition(u);
             }
             update(sequence.o(i), u);
-            W->col(i + 1) = wt().cast<float>();
+            W.col(i + 1) = wt().cast<float>();
         }
         return W;
     }
