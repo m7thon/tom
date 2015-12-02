@@ -31,6 +31,7 @@
 %include "../include/tom/tom.h"
 %include "../include/tom/CerealTom.h"
 
+%include "../include/tom/StopCondition.h"
 %include "../include/tom/LinearAlgebra.h"
 %include "../include/tom/Random.h"
 //%shared_ptr(tom::Random)
