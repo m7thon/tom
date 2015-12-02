@@ -1,10 +1,10 @@
-#import tom.tomlib as _tomlib
-from ._tomlib import Oom
+from ._tomlib import Oom, Sequence, Sequences, STree, Random, Estimator, StopCondition, NoIndex
+from ._tomlib import wordsFromData, wordsFromModel, wordsOverAlphabet, reverseWords
 
-from . import sequence
 from . import stree
 from . import hmm
 from . import linalg
 from . import learn
 from . import util
-from . import io
+
+from .util import load, save
