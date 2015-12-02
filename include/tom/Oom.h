@@ -218,7 +218,7 @@ public:
      * Set the minimum probability for any observation symbol to the given `new_value`. The `prediction()` is normalized at each time-step such that every output symbol has at least this probability. */
     void minPrediction(double new_value) throw(std::invalid_argument) {
         if (new_value < 0) throw std::invalid_argument("minPrediction must be >= 0");
-        else if (new_value > 1 / nO_) throw std::invalid_argument("minPrediction must be <= 1 / nOutputSymbols");
+        else if (new_value > 1.0 / nO_) throw std::invalid_argument("minPrediction must be <= 1 / nOutputSymbols");
         minPrediction_ = new_value;
     }
 
@@ -398,27 +398,27 @@ public:
 
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences. */
-    MatrixXd f(const Sequences &X, const Sequences &Y, bool reset = true) {
-        return f(X, Sequence(0, nO_, nU_), Y, reset);
+    MatrixXd f(const Sequences &Y, const Sequences &X, bool reset = true) {
+        return f(Y, Sequence(0, nO_, nU_), X, reset);
     }
 
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given output symbol `z`. */
-    MatrixXd f(const Sequences &X, Symbol z, const Sequences &Y, bool reset = true) {
-        if (!isIO()) return f(X, Sequence(std::vector<Symbol>{z}, nO_, nU_), Y, reset);
+    MatrixXd f(const Sequences &Y, Symbol z, const Sequences &X, bool reset = true) {
+        if (!isIO()) return f(Y, Sequence(std::vector<Symbol>{z}, nO_, nU_), X, reset);
         else         return MatrixXd();
     }
 
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x z y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given input-output symbol pair z = (`u`, `o`). In the case of an output-only `Oom`, the input `u` is simply ignored. */
-    MatrixXd f(const Sequences &X, Symbol o, Symbol u, const Sequences &Y, bool reset = true) {
-        if (isIO()) return f(X, Sequence(std::vector<Symbol>{u, o}, nO_, nU_), Y, reset);
-        else        return f(X, Sequence(std::vector<Symbol>{o}, nO_, nU_), Y, reset);
+    MatrixXd f(const Sequences &Y, Symbol o, Symbol u, const Sequences &X, bool reset = true) {
+        if (isIO()) return f(Y, Sequence(std::vector<Symbol>{u, o}, nO_, nU_), X, reset);
+        else        return f(Y, Sequence(std::vector<Symbol>{o}, nO_, nU_), X, reset);
     }
 
     /**
      * If `reset` is `true` (default), perform a state `reset()` first\. Then return the matrix of prediction function values \f$[ f(x s y) ]_{y \in Y, x \in X}\f$ with rows indexed by the given set `Y` of characteristic sequences and columns indexed by the given set `X` of indicative sequences for a given `Sequence` `s`. */
-    MatrixXd f(const Sequences &X, Sequence s, const Sequences &Y, bool reset = true) {
+    MatrixXd f(const Sequences &Y, Sequence s, const Sequences &X, bool reset = true) {
         if (reset) { this->reset(); }
         double f_temp;
         VectorXd wt_temp;
