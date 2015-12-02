@@ -484,19 +484,28 @@ SWIGCODE(%template(improveWLRA) improveWLRA<MatrixMd, MatrixMd, MatrixXd, Matrix
 SWIGCODE(%apply const MatrixBase<MatrixXd>& OUTPUT { const MatrixBase<MatrixXd> &B, const MatrixBase<MatrixXd> &A };)
 template<typename D1, typename D2, typename D3, typename D4>
 C1(void) PY2(tuple<MatrixXd, MatrixXd>)
-computeWLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W,
-            int rank = 0, double p = 1, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "LDLT") {
-    VectorXd sqrt_rowW = rowwiseMean(W, p).array().pow(0.25);
-    RowVectorXd sqrt_colW = colwiseMean(W, p).array().pow(0.25);
-    // Var[sqrt_rowW_i * m_ij * sqrt_colW_j] approx 1.
+computeLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W,
+           int dimension = 0, double p = 1, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "LDLT") throw(std::invalid_argument) {
+    VectorXd sqrt_rowW; RowVectorXd sqrt_colW;
+    if (W.size() == 0) {
+        sqrt_rowW = VectorXd::Ones(M.rows());
+        sqrt_colW = VectorXd::Ones(M.cols());
+    } else if (W.rows() == M.rows() and W.cols() == M.cols()) {
+        sqrt_rowW = rowwiseMean(W, p).array().pow(0.25);
+        sqrt_colW = colwiseMean(W, p).array().pow(0.25);
+        // Var[sqrt_rowW_i * m_ij * sqrt_colW_j] approx 1.
+    } else if (W.cols() == 1 and W.size() == M.rows() + M.cols()) { // row + column weights
+        sqrt_rowW = W.col(0).head(M.rows()).cwiseSqrt();
+        sqrt_colW = W.col(0).tail(M.cols()).cwiseSqrt();
+    } else { throw std::invalid_argument("size mismatch for M and W"); }
     BDCSVD<MatrixXd> svd(sqrt_rowW.asDiagonal() * M * sqrt_colW.asDiagonal(), ComputeThinU | ComputeThinV);
-    if (rank == 0) throw std::invalid_argument("rank estimation not implemented yet");
-    VectorXd s = svd.singularValues().head(rank).cwiseSqrt();
-    const_cast<MatrixBase<D1>&>(B).derived() = sqrt_rowW.cwiseInverse().asDiagonal() * svd.matrixU().leftCols(rank) * s.asDiagonal();
-    const_cast<MatrixBase<D2>&>(A).derived() = s.asDiagonal() * svd.matrixV().leftCols(rank).transpose() * sqrt_colW.cwiseInverse().asDiagonal();
-    improveWLRA(B, A, M, W, stopCondition, method);
+    if (dimension == 0) throw std::invalid_argument("rank estimation not implemented yet");
+    VectorXd s = svd.singularValues().head(dimension).cwiseSqrt();
+    const_cast<MatrixBase<D1>&>(B).derived() = sqrt_rowW.cwiseInverse().asDiagonal() * svd.matrixU().leftCols(dimension) * s.asDiagonal();
+    const_cast<MatrixBase<D2>&>(A).derived() = s.asDiagonal() * svd.matrixV().leftCols(dimension).transpose() * sqrt_colW.cwiseInverse().asDiagonal();
+    if (W.cols() == 1 and W.size() == M.rows() + M.cols()) { improveWLRA(B, A, M, W, stopCondition, method); }
 }
-SWIGCODE(%template(computeWLRA) computeWLRA<MatrixXd, MatrixXd, MatrixXd, MatrixXd >;)
+SWIGCODE(%template(computeLRA) computeLRA<MatrixXd, MatrixXd, MatrixXd, MatrixXd >;)
 
 SWIGCODE(%clear const MatrixBase<MatrixXd> &X, const MatrixBase<MatrixXd> &B, const MatrixBase<MatrixXd> &A;)
 SWIGCODE(%clearkwargs;)
