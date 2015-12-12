@@ -5,38 +5,21 @@ from .. import _tomlib
 import numpy as np
 import itertools
 
-def numericalRank(M, V, weightExp = 1):
-    """Estimate the numerical rank of the matrix ``M`` with element-wise
-    variances ``V``.
 
-    Parameters
-    ----------
-    M : np.array
-        The estimated matrix estimator(Y,X). This is recomputed if not given
-    V : np.array
-        The element-wise variances of the entries in M
-    
-    Returns
-    -------
-    dim : int
-        The numerical rank of ``M``.
-    """
-    
-    if weightExp == 0:
-        s = np.linalg.svd(M, compute_uv=False)
-        err = np.sum( np.sqrt(V) ) / np.sqrt( V.size )
+def rowColWeights(estimator, Y, z, X, p=-0.5, q=1):
+    if p is None:
+        e = _tomlib.Sequences(1)
+        return (estimator.v(Y,e)**-q, estimator.v(e,z,X)**-q)
     else:
-        tV = np.maximum( 1e-15, V)
-        wI = ( 1/( np.average(tV, 1)[:,np.newaxis] ) )**(0.5 * weightExp)
-        wJ = ( 1/( np.average(tV, 0)[np.newaxis,:] ) )**(0.5 * weightExp)
-        s = np.linalg.svd(wI * M * wJ, compute_uv=False)
-        err = np.sum( wI * np.sqrt(V) * wJ ) / np.sqrt( V.size )
-    dim = 0
-    while dim < s.size and s[dim] > err: dim += 1
-    return dim
+        V = estimator.v(Y,z,X)
+    if p > 0:
+        W = 1/V
+        return (_tomlib.rowwiseMean(W, p)**q, _tomlib.colwiseMean(W, p)**q)
+    else:
+        return (_tomlib.rowwiseMean(V, -p)**-q, _tomlib.colwiseMean(V, -p)**-q)
 
 
-def estimateDimension(estimator, X, Y, eF = None, weightExp = 1):
+def estimateDimension(estimator, X, Y, p = -0.5, q = 1, weighted=False, frob=False):
     """Estimate the model dimension for the underlying matrix F.
 
     Parameters
@@ -47,46 +30,99 @@ def estimateDimension(estimator, X, Y, eF = None, weightExp = 1):
         The set of indicative sequences, each of type tom.Sequence.
     Y : tom.Sequences (or list of tom.Sequence ?)
         The set of characteristic sequences, each of type tom.Sequence.
-    eF : np.array, optional
-        The estimated matrix estimator(Y,X). This is recomputed if not given
-        
+
     Returns
     -------
     dim : int
     The estimated model dimension.
     """
 
-    if eF is None: eF = estimator.f(Y,X)
-    varianceParams = { p: getattr(estimator, p) for p in EstimatorVarianceParams }
-    [setattr(estimator, p, val) for p, val in EstimatorExactVarianceParams.items()];
-    V = estimator.v(Y, X)
-    [setattr(estimator, p, val) for p, val in varianceParams.items()];
-    return numericalRank(eF, V, weightExp)
+    e = _tomlib.Sequences(1)
+    vP = estimator.regularization()
+    estimator.regularization(preset='none')
+    F, Vexact = estimator.fv(Y,X)
+    estimator.regularization(*vP)
+
+    if weighted:
+        wI, wJ = rowColWeights(estimator, Y,e,X, p, q)
+    else:
+        wI = np.ones((len(Y),1))
+        wJ = np.ones((1,len(X)))
+    sqrt_wI = np.sqrt(wI)
+    sqrt_wJ = np.sqrt(wJ)
+
+    wU, ws, wVT = np.linalg.svd(sqrt_wI * F * sqrt_wJ)
+    if frob:
+        wef = np.sum(wI * Vexact * wJ)
+        s2_tailsum = 0
+        d = ws.size
+        if d == 0: return d
+        while d > 0 and s2_tailsum <= wef:
+            s2_tailsum += ws[d-1]**2
+            d -= 1
+        return d+1
+    else:
+        we = np.sum(sqrt_wI * np.sqrt(Vexact) * sqrt_wJ) / np.sqrt(F.size)
+        d = 0
+        while d < ws.size and ws[d] > we:
+            d += 1
+        return d
+
+def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=1, vP = (0,0,1,1)):
+    if method == 'Standard': method = 'SPEC'
+    if method == 'RowColWeighted': method = 'RCW'
+    if method not in ['SPEC', 'RCW']:
+        raise ValueError('unsupported method: ' + method)
+
+    nU = estimator.sequence().nInputSymbols()
+    nO = estimator.sequence().nOutputSymbols()
+    e = _tomlib.Sequence(0, nO, nU)
+    E = _tomlib.Sequences()
+    E.append(e)
+    threshold = 1e-12
+
+    if type(dimensions) in [list, tuple]:
+        dims = dimensions
+    else:
+        dims = [dimensions]
+
+    F = estimator.f(Y,X)
+    if method == 'SPEC':
+        sqrt_wI = np.ones((len(Y), 1))
+        sqrt_wJ = np.ones((1, len(X)))
+    else: # compute row / col weights and their square roots
+        wI, wJ = rowColWeights(estimator, Y,e,X, p, q)
+        sqrt_wI = np.sqrt(wI)
+        sqrt_wJ = np.sqrt(wJ)
+
+    U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
+
+    res = []
+    for dim in dims:
+        if dim == 0:
+            raise ValueError('dimension estimation not yet implemented')
+            dim = estimateDimension(estimator, X, Y)
+
+        Ud = U[:, :dim]; sd = np.sqrt(s[:dim]); VdT = VT[:dim, :]
+        for i in range(dim):
+            sd[i] = 1 / sd[i] if sd[i] > threshold else 0
+        C = sd[:,None] * Ud.transpose() * sqrt_wI.transpose()
+        Q = sqrt_wJ.transpose() * VdT.transpose() * sd[None,:]
+        oom = _tomlib.Oom(dim, nO, nU)
+        for u, o in itertools.product(range(max(1,nU)), range(nO)):
+            oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
+        oom.sig( estimator.f(E, X).dot(Q) )
+        oom.w0( C.dot(estimator.f(Y, E)) )
+        oom.initialize()
+        oom.stabilization(preset='default')
+        res.append(oom)
+    if type(dimensions) in [list, tuple]:
+        return res
+    else:
+        return res[0]
 
 
-def identifySubspace(F, W = None, dim = 0):
-    if W is None: # We don't use any weights
-        U,s,VT = np.linalg.svd(F)
-        s = np.sqrt(s[:dim])
-        B = U[:,:dim] * s[None,:]; A = s[:,None] * VT[:dim,:]
-    elif type(W) in [list, tuple]: # row/column weights
-        wI = np.sqrt(W[0]); wJ = np.sqrt(W[1])
-        if wI.ndim == 1: wI = wI[:,None]
-        if wJ.ndim == 1: wJ = wJ[None,:]
-        U,s,VT = np.linalg.svd(wI * F * wJ)
-        s = np.sqrt(s[:dim])
-        B = 1/wI * U[:,:dim] * s[None,:]
-        A = s[:,None] * VT[:dim,:] * 1/wJ
-    else: # element-wise weights
-        wI = ( 1 / np.sqrt( np.average(1/W, 1) ) )[:,None]
-        wJ = ( 1 / np.sqrt( np.average(1/W, 0) ) )[None,:]
-        B,A = identifySubspace(F, dim, [wI, wJ])
-        B = B.copy(order='F'); A = A.copy(order='F')
-        improveWLRA(B, A, F, W, 1e-7, 1000, "LLT")
-    return B,A
-
-
-def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'Standard', p=-1, q=1, stopConditionWLRA = None):
+def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p=-0.5, q=1, stopConditionWLRA = None):
     """Spectral learning algorithm for (IO)-OOMs.
 
     This function returns an (IO)-OOM that is estimated using the (weighted) spectral
@@ -142,58 +178,65 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'Standard
     Observable Operator Models and Predictive State Representations -- a
     Unified Learning Framework*, JMLR, 2014, pg. 15"""
 
-    if method not in ['Standard', 'RowColWeighted', 'WLS', 'GLS']:
+    if method == 'Standard': method = 'SPEC'
+    if method == 'RowColWeighted': method = 'RCW'
+    if method not in ['SPEC', 'RCCQ', 'RCW', 'WLS', 'GLS']:
         raise ValueError('unknown method: ' + method)
 
     nU = estimator.sequence().nInputSymbols()
     nO = estimator.sequence().nOutputSymbols()
-    e = _tomlib.Sequences(1)
+    e = _tomlib.Sequence(0, nO, nU)
+    E = _tomlib.Sequences()
+    E.append(e)
     threshold = 1e-12
 
-    if method in ['Standard', 'RowColWeighted'] or subspace in [None, []]:
+    if method in ['SPEC', 'RCW', 'RCCQ'] or subspace in [None, []]:
         if dimension == 0:
             raise ValueError('dimension estimation not yet implemented')
             dimension = estimateDimension(estimator, X, Y)
 
-        if method == 'Standard':
-            F = estimator.f(Y,X)
-            wI = np.ones((len(Y), 1))
-            wJ = np.ones((1, len(X)))
-        else:
-            F, V = estimator.fv(Y,X)
-            W = 1/V
-            if p is None:
-                F = estimator.f(Y,X)
-                wI = estimator.v(Y,e)**q
-                wJ = estimator.v(e,X)**q
-            else:
-                wI = _tomlib.rowwiseMean(W, p)**q
-                wJ = _tomlib.colwiseMean(W, p)**q
+        F = estimator.f(Y,X)
 
-        U,s,VT = np.linalg.svd(wI * F * wJ, full_matrices=0)
+        if method == 'SPEC':
+            sqrt_wI = np.ones((len(Y), 1))
+            sqrt_wJ = np.ones((1, len(X)))
+        else: # compute row / col weights and their square roots
+            sqrt_wI, sqrt_wJ = rowColWeights(estimator, Y,e,X, p, 0.5*q)
+
+        U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
         U = U[:,:dimension]; s = np.sqrt(s[:dimension]); VT = VT[:dimension,:]
 
-        B = 1/wI * U * s[None,:]
-        A = s[:,None] * VT * 1/wJ
+        B = 1/sqrt_wI * U * s[None,:]
+        A = s[:,None] * VT * 1/sqrt_wJ
         if type(subspace) is list:
             subspace.clear()
             subspace.append(B)
             subspace.append(A)
 
-        if method in ['Standard', 'RowColWeighted']:
+        if method in ['SPEC', 'RCCQ']:
             for i in range(dimension):
                 s[i] = 1 / s[i] if s[i] > threshold else 0
-            C = s[:,None] * U.transpose() * wI.transpose()
-            Q = wJ.transpose() * VT.transpose() * s[None,:]
+            C = s[:,None] * U.transpose() * sqrt_wI.transpose()
+            Q = sqrt_wJ.transpose() * VT.transpose() * s[None,:]
             oom = _tomlib.Oom(dimension, nO, nU)
-            for u, o in itertools.product(range(max(1,nU)), range(nO)):
-                oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
-            oom.sig( estimator.f(e, X).dot(Q) )
-            oom.w0( C.dot(estimator.f(Y, e)) )
+            for z in _tomlib.wordsOverAlphabet(nO, nU):
+                oom.tau(z, C.dot(estimator.f(Y, z, X)).dot(Q))
+            oom.sig( estimator.f(E, X).dot(Q) )
+            oom.w0( C.dot(estimator.f(Y, E)) )
             oom.initialize()
             oom.stabilization(preset='default')
             return oom
-
+        elif method in ['RCW']:
+            oom = _tomlib.Oom(dimension, nO, nU)
+            for z in _tomlib.wordsOverAlphabet(nO, nU):
+                wIz, wJz = rowColWeights(estimator, Y, z, X, p, q)
+                Az = _tomlib.solveLS(B, estimator.f(Y,z,X), wIz, transposed=False)
+                oom.tau(z, _tomlib.solveLS(A, Az, wJz, transposed=True))
+            oom.sig( _tomlib.solveLS(A, estimator.f(E,X), estimator.v(E,X)**-q, transposed=True) )
+            oom.w0( _tomlib.solveLS(B, estimator.f(Y,E), estimator.v(Y,E)**-q, transposed=False) )
+            oom.initialize()
+            oom.stabilization(preset='default')
+            return oom
         del U, s, VT
     else:
         B, A = subspace
@@ -201,9 +244,9 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'Standard
             dimension = B.shape[1]
         if dimension != B.shape[1]:
             raise ValueError('given dimension does not match given subspace')
-        F, V = estimator.fv(Y,X)
-        W = 1/V
 
+    F, V = estimator.fv(Y,X)
+    W = 1/V
     if stopConditionWLRA is None:
         stopConditionWLRA = _tomlib.StopCondition(100, 1e-5, 1e-7)
     _tomlib.improveWLRA(B, A, F, W, stopCondition = stopConditionWLRA)
@@ -214,8 +257,8 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'Standard
         Az = _tomlib.solveLS(B, estimator.f(Y, o, u, X), Wz, transposed=False)
         WAz = _tomlib.transformWeights(Wz, B, covariances = (method == 'GLS'))
         oom.tau(o,u, _tomlib.solveLS(A, Az, WAz, transposed=True))
-    oom.sig( _tomlib.solveLS(A, estimator.f(e,X), 1/estimator.v(e,X), transposed=True) )
-    oom.w0( _tomlib.solveLS(B, estimator.f(Y,e), 1/estimator.v(Y,e), transposed=False) )
+    oom.sig( _tomlib.solveLS(A, estimator.f(E,X), 1/estimator.v(E,X), transposed=True) )
+    oom.w0( _tomlib.solveLS(B, estimator.f(Y,E), 1/estimator.v(Y,E), transposed=False) )
 
     #oom.w0( oom.stationaryState() )
     oom.initialize()
@@ -224,7 +267,7 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'Standard
 
 
 
-def rowColWeightedTLS(est, Y, X, d, valueErrorBias = 1):
+def RCWTLS(est, Y, X, d, valueErrorBias = 1):
     nO = est.nO_
     e = _tomlib.Sequences(1)
     
