@@ -125,6 +125,17 @@ public:
     const MatrixXd &tau(Symbol o, Symbol u = 0) const { return tau_(o, u); }
 
     /**
+     * Return the observable operator corresponding to the symbol `z` given as a `Sequence` of length one. */
+    const MatrixXd &tau(const Sequence& z) const throw(std::invalid_argument) {
+        if (z.length() != 1 or nO_ != z.nOutputSymbols() or nU_ != z.nInputSymbols()) throw std::invalid_argument("invalid symbol z for this Oom");
+        return tau_(z.o(0), z.u(0));
+    }
+
+    /**
+     * Set the observable operator corresponding to the symbol `z` given as a `Sequence` of length one to the given matrix `new_value`. Note that you *must* call `initialize()` after re-setting the `Oom` parameters `sig` or `tau(o,u)`. */
+    void tau(const Sequence& z, const MatrixXd &new_value) throw(std::invalid_argument) { const_cast<MatrixXd&>(tau(z)) = new_value; }
+
+    /**
      * Set the observable operator corresponding to observation \c o and input \c u to the given matrix `new_value`. Note that you *must* call `initialize()` after re-setting the `Oom` parameters `sig` or `tau(o,u)`. */
     void tau(Symbol o, Symbol u, const MatrixXd &new_value) { tau_(o, u) = new_value; }
 
