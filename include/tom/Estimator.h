@@ -296,8 +296,8 @@ public:
                    double exponent = -1,
                    std::string preset = "") throw(std::invalid_argument) {
         if (preset == "default") {
-            nPseudoCounts_           = 2;
-            zConfidenceIntervalSize_ = 1.5;
+            nPseudoCounts_           = 1;
+            zConfidenceIntervalSize_ = 1;
             minimumVariance_         = 1;
             exponent_                = 0.5;
         } else if (preset == "none") {
@@ -404,12 +404,10 @@ private:
     void extendBy(Symbol o, Symbol u = 0) {
         state_.len_++;
         if (nU_ == 0) {
+            double ch = state_.pos_.count();
             state_.pos_.toSymbol(o);
-            if (estimateVariance_) {
-                double n = len_ - state_.len_ + 1;
-                if (n <= 0) { state_.fB_ *= 0.5; }
-                else { state_.fB_ *= (state_.pos_.count() + 0.5 * nPseudoCounts_) / (state_.fB_ * n + nPseudoCounts_); }
-            }
+            double cz = state_.pos_.count();
+            state_.fB_ *= (ch == 0 ? 0.5 : (cz + 0.5 * nPseudoCounts_) / (ch + nPseudoCounts_));
         } else { // IO-case
             state_.pos_.toSymbol(u);
             double cu = state_.pos_.count(); // (c)ount of input (u) after current history
@@ -437,62 +435,35 @@ private:
      */
     void eval() {
         if (nU_ == 0) {
-            double n = len_ - state_.len_ + 1;
+            double n = std::max(len_ - state_.len_ + 1, 1L);
             double x = state_.pos_.count();
-            if (n <= 0) { state_.f_ = 0; }
-            else { state_.f_ = x / n; }
+            state_.f_ = x / n;
 
             if (estimateVariance_) {
-                if (n < 2) { state_.v_ = 0.25; }
-                else {
-                    // Compute a confidence interval for the estimate f, and use the bound that is closer to 1/2 to estimate the variance:
-                    // double fB = (x + 0.5 * nPseudoCounts_) / (n + nPseudoCounts_);
-                    double fB = state_.fB_;
-                    double confidenceIntervalRadius =
-                            zConfidenceIntervalSize_ * std::sqrt(fB * (1 - fB) / (n + nPseudoCounts_));
-                    if (fB <= 0.5) fB = std::min(fB + confidenceIntervalRadius, (double) (0.5));
-                    else fB = std::max((double) (0.5), fB - confidenceIntervalRadius);
-                    state_.v_ = fB * (1 - fB) / (n);
-                }
-                if (minimumVariance_ == 1) {
-                    state_.v_ = std::max(state_.v_, 1.0/nO_ * 1.0/((double)len_ * (double)len_));
-                    state_.v_ = std::max(state_.v_, 1e-15);
-                } else {
-                    state_.v_ = std::max(state_.v_, minimumVariance_);
-                }
-                state_.v_ = std::pow(state_.v_, exponent_);
+                // Compute a confidence interval for the estimate f, and use the bound that is closer to 1/2 to estimate the variance:
+                // double fB = (x + 0.5 * nPseudoCounts_) / (n + nPseudoCounts_);
+                double fB = state_.fB_;
+                double confidenceIntervalRadius =
+                        zConfidenceIntervalSize_ * std::sqrt(fB * (1 - fB) / (n + nPseudoCounts_));
+                if (fB <= 0.5) fB = std::min(fB + confidenceIntervalRadius, (double) (0.5));
+                else fB = std::max((double) (0.5), fB - confidenceIntervalRadius);
+                state_.v_ = fB * (1 - fB) / (n);
             }
-            // 		else if (useExactCI_ == true){
-            // 			// Compute a Clopper-Pearson "exact" confidence interval for the estimate, and use the bound closer to 1/2 to estimate the variance:
-            // 			double fB = s_.f_;
-            // 			if (fB < 0.5) {
-            // 				double a = x+1; double b = n-x;
-            // 				double log_beta = std::lgamma(a) + std::lgamma(b) - std::lgamma(a+b);
-            // 				int error = 0;
-            // 				fB = xinbta(a, b, log_beta, 1-maxProbAlphaError_, error);
-            // 				if (fB > 0.5) fB = 0.5;
-            // 			}
-            // 			else if (fB > 0.5) {
-            // 				double a = x; double b = n-x+1;
-            // 				double log_beta = std::lgamma(a) + std::lgamma(b) - std::lgamma(a+b);
-            // 				int error = 0;
-            // 				fB = xinbta(a, b, log_beta, maxProbAlphaError_, error);
-            // 				if (fB < 0.5) fB = 0.5;
-            // 			}
-            // 			s_.v_ = std::max( fB * ( 1 - fB ) / (n), (double)(1) / ( (double)(n) * (double)(n) ) );
-            // 		}
-            // 	}
         }
         else if (estimateVariance_) { // IO-case
-            state_.v_ = (state_.v_ == 1 ? 1.0/nO_ * (double) (1) / ((double) (len_) * (double) (len_)) :
-                         state_.fB_ * state_.fB_ - state_.v_);
+            state_.v_ = std::max(state_.fB_ * state_.fB_ - state_.v_, 0.0);
+        }
+        if (estimateVariance_) {
+            state_.v_ = std::pow(state_.v_, exponent_);
+            if (state_.len_ == 0) {
+                state_.v_ = 1.0 / (nO_ * (double) (len_) * (double) (len_));
+            }
             if (minimumVariance_ == 1) {
-                state_.v_ = std::max(state_.v_, 1.0/nO_ * 1.0/((double)len_ * (double)len_));
+                state_.v_ = std::max(state_.v_, 1.0/(nO_ * (double)len_ * (double)len_));
                 state_.v_ = std::max(state_.v_, 1e-15);
             } else {
                 state_.v_ = std::max(state_.v_, minimumVariance_);
             }
-            state_.v_ = std::pow(state_.v_, exponent_);
         }
     }
 
