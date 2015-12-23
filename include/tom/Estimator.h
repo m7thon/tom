@@ -419,11 +419,17 @@ private:
             if (estimateVariance_) {
                 if (cu < 2) { state_.v_ *= 0.75; }
                 else {
-                    double pB = (co + 1/nO_ * nPseudoCounts_) / (cu + nPseudoCounts_);
-                    state_.fB_ *= pB;
+                    //double pB = (co + 1/nO_ * nPseudoCounts_) / (cu + nPseudoCounts_);
                     double pBv = (co + 0.5 * nPseudoCounts_) / (cu + nPseudoCounts_);
                     double vB = pBv * (1 - pBv) / (cu);
-                    state_.v_ *= std::max(pB * pB - vB, (double) (0));
+                    double confidenceIntervalRadius =
+                            zConfidenceIntervalSize_ * std::sqrt(vB);
+                    if (pBv <= 0.5) pBv = std::min(pBv + confidenceIntervalRadius, 0.5);
+                    else pBv = std::max(0.5, pBv - confidenceIntervalRadius);
+                    state_.fB_ *= pBv;
+                    vB = pBv * (1 - pBv) / (cu);
+
+                    state_.v_ *= std::max(pBv * pBv - vB, 0.0);
                 }
             }
         }
@@ -456,7 +462,7 @@ private:
         if (estimateVariance_) {
             state_.v_ = std::pow(state_.v_, exponent_);
             if (state_.len_ == 0) {
-                state_.v_ = 1.0 / (nO_ * (double) (len_) * (double) (len_));
+                state_.v_ = 1.0 / (nO_ * (double)(len_));
             }
             if (minimumVariance_ == 1) {
                 state_.v_ = std::max(state_.v_, 1.0/(nO_ * (double)len_ * (double)len_));
