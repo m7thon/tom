@@ -94,7 +94,7 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
     nodeQueue.push(node);
     if (minLength == 0) { words->push_back(sequence.rawSub(0, 0)); minLength = 1; }
 
-    while (not nodeQueue.empty() and (maxWords == 0 or words->size() < maxWords)) {
+    while ((not nodeQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
         node = nodeQueue.top();
         nodeQueue.pop();
         stree::nidx_t node_depth = node.depth();
