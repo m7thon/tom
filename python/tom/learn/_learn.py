@@ -79,7 +79,7 @@ def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=
     e = _tomlib.Sequence(0, nO, nU)
     E = _tomlib.Sequences()
     E.append(e)
-    threshold = 1e-12
+    threshold = 1e-15
 
     if type(dimensions) in [list, tuple]:
         dims = dimensions
@@ -104,22 +104,57 @@ def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=
             dim = estimateDimension(estimator, X, Y)
 
         Ud = U[:, :dim]; sd = np.sqrt(s[:dim]); VdT = VT[:dim, :]
-        for i in range(dim):
-            sd[i] = 1 / sd[i] if sd[i] > threshold else 0
-        C = sd[:,None] * Ud.transpose() * sqrt_wI.transpose()
-        Q = sqrt_wJ.transpose() * VdT.transpose() * sd[None,:]
-        oom = _tomlib.Oom(dim, nO, nU)
-        for u, o in itertools.product(range(max(1,nU)), range(nO)):
-            oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
-        oom.sig( estimator.f(E, X).dot(Q) )
-        oom.w0( C.dot(estimator.f(Y, E)) )
-        oom.initialize()
-        oom.stabilization(preset='default')
-        res.append(oom)
+        try:
+            for i in range(dim):
+                sd[i] = 1 / sd[i] if sd[i] > threshold else 0
+        except: # target dimension much too large
+            oom = _tomlib.Oom(0, nO, nU)
+            oom.stabilization(preset='default')
+            res.append(oom)
+        else:
+            C = sd[:,None] * Ud.transpose() * sqrt_wI.transpose()
+            Q = sqrt_wJ.transpose() * VdT.transpose() * sd[None,:]
+            oom = _tomlib.Oom(dim, nO, nU)
+            for u, o in itertools.product(range(max(1,nU)), range(nO)):
+                oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
+            oom.sig( estimator.f(E, X).dot(Q) )
+            oom.w0( C.dot(estimator.f(Y, E)) )
+            oom.initialize()
+            oom.stabilization(preset='default')
+            res.append(oom)
     if type(dimensions) in [list, tuple]:
         return res
     else:
         return res[0]
+
+def rcSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
+    e = _tomlib.Sequence(0, nO, nU)
+    E = _tomlib.Sequences()
+    E.append(e)
+    threshold = 1e-15
+
+    sqrt_wI, sqrt_wJ = np.sqrt(wI), np.sqrt(wJ)
+
+    U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
+    U = U[:, :dim]; s = np.sqrt(s[:dim]); VT = VT[:dim, :]
+
+    try:
+        for i in range(dim):
+            s[i] = 1 / s[i] if s[i] > threshold else 0
+    except: # target dimension much too large
+        oom = _tomlib.Oom(0, nO, nU)
+        oom.stabilization(preset='default')
+        return oom
+    C = s[:,None] * U.transpose() * sqrt_wI.transpose()
+    Q = sqrt_wJ.transpose() * VT.transpose() * s[None,:]
+    oom = _tomlib.Oom(dim, nO, nU)
+    for z, zid in zip(_tomlib.wordsOverAlphabet(nO, nU), range(10000)):
+        oom.tau(z, C.dot(Fz[zid]).dot(Q))
+    oom.sig(Fsig.dot(Q))
+    oom.w0( C.dot(Fw0) )
+    oom.initialize()
+    oom.stabilization(preset='default')
+    return oom
 
 
 def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p=-0.5, q=1, stopConditionWLRA = None):
