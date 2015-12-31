@@ -178,8 +178,18 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
         The set of characteristic sequences, each of type tom.Sequence.
     dimension : int, optional
         The model target dimension. Determined numerically by default.
-    weightExp : double, optional
-        The exponent to apply to the weights for the regression step (default 1).
+    method : { 'SPEC', 'RCCQ', 'RCW', 'WLS', 'GLS' }
+        The (weighted) spectral learning method to use. The default 'SPEC'
+        is the standard spectral learning with no weights.
+    subspace : [ B, A ], optional
+        Provides a method to cache the decomposition F = BA. Safe to ignore.
+    p, q : double, optional
+        Control the averaging used to obtain row / column weights.
+    stopConditionWLRA : tom.util.StopCondition, optional
+        Determines the stopping condition for the iterative computation of
+        the weighted low-rank approximation of F in the case of methods
+        'WLS' or 'GLS'. Safe to leave at the default.
+
         
     Returns
     -------
@@ -188,25 +198,10 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
  
     Notes
     -----
-    The data is provided in the form of an estimator object. This may be
-    a tom.Estimator, or an object that provides the following interface:
-        nU() -> returns the size of the input alphabet
-        nO() -> returns the size of the observation alphabet
-        f(Y,X) -> returns the matrix of estimates f(xy)
-        v(Y,X) -> returns the corresponding variance estimates  
-        f(Y,X,o,u=0) -> returns the matrix of estimates f(x[u]oy)
-        v(Y,X,o,u=0) -> returns the corresponding variance estimates
-
     If the target dimension is not specified (``dimension = 0``), an
     appropriate target dimension is selected based on the numerical rank
     of the matrix F = f(Y,X).
 
-    Simple row and column weights can be used, and are computed as the inverse
-    of the row-/column-wise average variance estimates of F, taken to the power
-    given in ``weightExp``. The same row and column weights will also be used in
-    the second step of the algorithm when solving the equations
-    F * tau_z = F_z for tau_z.
-    
     References
     ----------
     .. [1] M. Thon, H. Jaeger, *Links Between Multiplicity Automata,
@@ -227,7 +222,7 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
 
     if method in ['SPEC', 'RCW', 'RCCQ'] or subspace in [None, []]:
         if dimension == 0:
-            raise ValueError('dimension estimation not yet implemented')
+            # raise ValueError('dimension estimation not yet implemented')
             dimension = estimateDimension(estimator, X, Y)
 
         F = estimator.f(Y,X)
