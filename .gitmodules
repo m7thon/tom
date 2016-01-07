@@ -1,3 +1,0 @@
-[submodule "doc/doxy2swig"]
-	path = doc/doxy2swig
-	url = https://github.com/m7thon/doxy2swig.git

@@ -59,8 +59,8 @@ cleanall: clean
 doc/xml/index.xml: $(CXX_SRC) doc/tom_xml.doxyfile
 	doxygen doc/tom_xml.doxyfile
 
-swig/tomdoc.i: doc/doxy2swig/doxy2swig.py doc/xml/index.xml
-	$(PYTHON) doc/doxy2swig/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
+swig/tomdoc.i: doc/doxy2swig.py doc/xml/index.xml
+	$(PYTHON) doc/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
 
 swig/_tomlib_wrap.cpp: Makefile $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/_tomlib_wrap.cpp swig/_tomlib.i
