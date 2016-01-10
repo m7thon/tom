@@ -58,17 +58,19 @@ Notes:
 Using the toolkit
 -----------------
 
-from python:
-```python
-import tom
-```
+See the file [doc/example.ipynb](https://github.com/m7thon/tom/blob/master/doc/example.ipynb) for a usage example from an IPython notebook.
 
 Authors
 -------
 
-Tom is being developed by Michael Thon as part of his PhD thesis.
+This toolkit (tom) was written and is currently being developed by Michael Thon, first under the DFG project JA 1210/5-1, 2009-2012, and later as part of his PhD thesis.
 
 License
 -------
 
-Tom is licensed under the permissive open source [MIT License](http://opensource.org/licenses/MIT).
+This toolkit (tom) is licensed under the permissive open source [MIT License](http://opensource.org/licenses/MIT).
+
+Acknowlegement
+--------------
+
+We gratefully acknowledge the funding by the German Research Foundation (DFG) under the project JA 1210/5-1.
