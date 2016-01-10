@@ -37,7 +37,7 @@ def estimateDimension(estimator, X, Y, p = -0.5, q = 1, weighted=False, frob=Fal
     The estimated model dimension.
     """
 
-    e = _tomlib.Sequences(1)
+    e = _tomlib.Sequence(0,0,0)
     vP = estimator.regularization()
     estimator.regularization(preset='none')
     F, Vexact = estimator.fv(Y,X)
