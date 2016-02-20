@@ -18,6 +18,11 @@
 #include "document.h"
 #include "internal/itoa.h"
 
+#ifdef __clang__
+RAPIDJSON_DIAG_PUSH
+RAPIDJSON_DIAG_OFF(switch-enum)
+#endif
+
 RAPIDJSON_NAMESPACE_BEGIN
 
 static const SizeType kPointerInvalidIndex = ~SizeType(0);  //!< Represents an invalid index in GenericPointer::Token
@@ -71,7 +76,7 @@ template <typename ValueType, typename Allocator = CrtAllocator>
 class GenericPointer {
 public:
     typedef typename ValueType::EncodingType EncodingType;  //!< Encoding type from Value
-    typedef typename EncodingType::Ch Ch;                   //!< Character type from Value
+    typedef typename ValueType::Ch Ch;                      //!< Character type from Value
 
     //! A token is the basic units of internal representation.
     /*!
@@ -96,7 +101,7 @@ public:
     //@{
 
     //! Default constructor.
-    GenericPointer() : allocator_(), ownAllocator_(), nameBuffer_(), tokens_(), tokenCount_(), parseErrorOffset_(), parseErrorCode_(kPointerParseErrorNone) {}
+    GenericPointer(Allocator* allocator = 0) : allocator_(allocator), ownAllocator_(), nameBuffer_(), tokens_(), tokenCount_(), parseErrorOffset_(), parseErrorCode_(kPointerParseErrorNone) {}
 
     //! Constructor that parses a string or URI fragment representation.
     /*!
@@ -155,7 +160,7 @@ public:
     GenericPointer(const Token* tokens, size_t tokenCount) : allocator_(), ownAllocator_(), nameBuffer_(), tokens_(const_cast<Token*>(tokens)), tokenCount_(tokenCount), parseErrorOffset_(), parseErrorCode_(kPointerParseErrorNone) {}
 
     //! Copy constructor.
-    GenericPointer(const GenericPointer& rhs) : allocator_(), ownAllocator_(), nameBuffer_(), tokens_(), tokenCount_(), parseErrorOffset_(), parseErrorCode_(kPointerParseErrorNone) {
+    GenericPointer(const GenericPointer& rhs, Allocator* allocator = 0) : allocator_(allocator), ownAllocator_(), nameBuffer_(), tokens_(), tokenCount_(), parseErrorOffset_(), parseErrorCode_(kPointerParseErrorNone) {
         *this = rhs;
     }
 
@@ -253,11 +258,12 @@ public:
     */
     GenericPointer Append(SizeType index, Allocator* allocator = 0) const {
         char buffer[21];
-        SizeType length = (sizeof(SizeType) == 4 ? internal::u32toa(index, buffer): internal::u64toa(index, buffer)) - buffer;
+        char* end = sizeof(SizeType) == 4 ? internal::u32toa(index, buffer) : internal::u64toa(index, buffer);
+        SizeType length = static_cast<SizeType>(end - buffer);
         buffer[length] = '\0';
 
         if (sizeof(Ch) == 1) {
-            Token token = { (Ch*)buffer, length, index };
+            Token token = { reinterpret_cast<Ch*>(buffer), length, index };
             return Append(token, allocator);
         }
         else {
@@ -271,7 +277,7 @@ public:
 
     //! Append a token by value, and return a new Pointer
     /*!
-        \param value Value (either Uint or String) to be appended.
+        \param token token to be appended.
         \param allocator Allocator for the newly return Pointer.
         \return A new Pointer with appended token.
     */
@@ -298,6 +304,9 @@ public:
     PointerParseErrorCode GetParseErrorCode() const { return parseErrorCode_; }
 
     //@}
+
+    //! Get the allocator of this pointer.
+    Allocator& GetAllocator() { return *allocator_; }
 
     //!@name Tokens
     //@{
@@ -390,7 +399,7 @@ public:
         bool exist = true;
         for (const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
             if (v->IsArray() && t->name[0] == '-' && t->length == 1) {
-                v->PushBack(Value().Move(), allocator);
+                v->PushBack(ValueType().Move(), allocator);
                 v = &((*v)[v->Size() - 1]);
                 exist = false;
             }
@@ -408,7 +417,7 @@ public:
                     if (t->index >= v->Size()) {
                         v->Reserve(t->index + 1, allocator);
                         while (t->index >= v->Size())
-                            v->PushBack(Value().Move(), allocator);
+                            v->PushBack(ValueType().Move(), allocator);
                         exist = false;
                     }
                     v = &((*v)[t->index]);
@@ -416,7 +425,7 @@ public:
                 else {
                     typename ValueType::MemberIterator m = v->FindMember(GenericStringRef<Ch>(t->name, t->length));
                     if (m == v->MemberEnd()) {
-                        v->AddMember(Value(t->name, t->length, allocator).Move(), Value().Move(), allocator);
+                        v->AddMember(ValueType(t->name, t->length, allocator).Move(), ValueType().Move(), allocator);
                         v = &(--v->MemberEnd())->value; // Assumes AddMember() appends at the end
                         exist = false;
                     }
@@ -435,7 +444,6 @@ public:
     //! Creates a value in a document.
     /*!
         \param document A document to be resolved.
-        \param allocator Allocator for creating the values if the specified value or its parents are not exist.
         \param alreadyExist If non-null, it stores whether the resolved value is already exist.
         \return The resolved newly created, or already exists value.
     */
@@ -452,9 +460,18 @@ public:
     //! Query a value in a subtree.
     /*!
         \param root Root value of a DOM sub-tree to be resolved. It can be any value other than document root.
+        \param unresolvedTokenIndex If the pointer cannot resolve a token in the pointer, this parameter can obtain the index of unresolved token.
         \return Pointer to the value if it can be resolved. Otherwise null.
+
+        \note
+        There are only 3 situations when a value cannot be resolved:
+        1. A value in the path is not an array nor object.
+        2. An object value does not contain the token.
+        3. A token is out of range of an array value.
+
+        Use unresolvedTokenIndex to retrieve the token index.
     */
-    ValueType* Get(ValueType& root) const {
+    ValueType* Get(ValueType& root, size_t* unresolvedTokenIndex = 0) const {
         RAPIDJSON_ASSERT(IsValid());
         ValueType* v = &root;
         for (const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
@@ -463,18 +480,23 @@ public:
                 {
                     typename ValueType::MemberIterator m = v->FindMember(GenericStringRef<Ch>(t->name, t->length));
                     if (m == v->MemberEnd())
-                        return 0;
+                        break;
                     v = &m->value;
                 }
-                break;
+                continue;
             case kArrayType:
                 if (t->index == kPointerInvalidIndex || t->index >= v->Size())
-                    return 0;
+                    break;
                 v = &((*v)[t->index]);
-                break;
+                continue;
             default:
-                return 0;
+                break;
             }
+
+            // Error: unresolved token
+            if (unresolvedTokenIndex)
+                *unresolvedTokenIndex = static_cast<size_t>(t - tokens_);
+            return 0;
         }
         return v;
     }
@@ -484,7 +506,9 @@ public:
         \param root Root value of a DOM sub-tree to be resolved. It can be any value other than document root.
         \return Pointer to the value if it can be resolved. Otherwise null.
     */
-    const ValueType* Get(const ValueType& root) const { return Get(const_cast<ValueType&>(root)); }
+    const ValueType* Get(const ValueType& root, size_t* unresolvedTokenIndex = 0) const { 
+        return Get(const_cast<ValueType&>(root), unresolvedTokenIndex);
+    }
 
     //@}
 
@@ -525,7 +549,7 @@ public:
 
     //! Query a value in a subtree with default primitive value.
     /*!
-        \tparam T \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
+        \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
     */
     template <typename T>
     RAPIDJSON_DISABLEIF_RETURN((internal::OrExpr<internal::IsPointer<T>, internal::IsGenericValue<T> >), (ValueType&))
@@ -555,7 +579,7 @@ public:
 
     //! Query a value in a document with default primitive value.
     /*!
-        \tparam T \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
+        \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
     */
     template <typename T, typename stackAllocator>
     RAPIDJSON_DISABLEIF_RETURN((internal::OrExpr<internal::IsPointer<T>, internal::IsGenericValue<T> >), (ValueType&))
@@ -601,7 +625,7 @@ public:
 
     //! Set a primitive value in a subtree.
     /*!
-        \tparam T \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
+        \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
     */
     template <typename T>
     RAPIDJSON_DISABLEIF_RETURN((internal::OrExpr<internal::IsPointer<T>, internal::IsGenericValue<T> >), (ValueType&))
@@ -637,7 +661,7 @@ public:
 
     //! Set a primitive value in a document.
     /*!
-    \tparam T \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
+    \tparam T Either \ref Type, \c int, \c unsigned, \c int64_t, \c uint64_t, \c bool
     */
     template <typename T, typename stackAllocator>
     RAPIDJSON_DISABLEIF_RETURN((internal::OrExpr<internal::IsPointer<T>, internal::IsGenericValue<T> >), (ValueType&))
@@ -759,11 +783,13 @@ private:
     }
 
     //! Parse a JSON String or its URI fragment representation into tokens.
+#ifndef __clang__ // -Wdocumentation
     /*!
         \param source Either a JSON Pointer string, or its URI fragment representation. Not need to be null terminated.
         \param length Length of the source string.
         \note Source cannot be JSON String Representation of JSON Pointer, e.g. In "/\u0000", \u0000 will not be unescaped.
     */
+#endif
     void Parse(const Ch* source, size_t length) {
         RAPIDJSON_ASSERT(source != NULL);
         RAPIDJSON_ASSERT(nameBuffer_ == 0);
@@ -857,7 +883,7 @@ private:
 
                 *name++ = c;
             }
-            token->length = name - token->name;
+            token->length = static_cast<SizeType>(name - token->name);
             if (token->length == 0)
                 isNumber = false;
             *name++ = '\0'; // Null terminator
@@ -944,6 +970,8 @@ private:
     */
     class PercentDecodeStream {
     public:
+        typedef typename ValueType::Ch Ch;
+
         //! Constructor
         /*!
             \param source Start of the stream
@@ -973,7 +1001,7 @@ private:
             return c;
         }
 
-        size_t Tell() const { return src_ - head_; }
+        size_t Tell() const { return static_cast<size_t>(src_ - head_); }
         bool IsValid() const { return valid_; }
 
     private:
@@ -1041,23 +1069,23 @@ typename DocumentType::ValueType& CreateValueByPointer(DocumentType& document, c
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
-typename T::ValueType* GetValueByPointer(T& root, const GenericPointer<typename T::ValueType>& pointer) {
-    return pointer.Get(root);
+typename T::ValueType* GetValueByPointer(T& root, const GenericPointer<typename T::ValueType>& pointer, size_t* unresolvedTokenIndex = 0) {
+    return pointer.Get(root, unresolvedTokenIndex);
 }
 
 template <typename T>
-const typename T::ValueType* GetValueByPointer(const T& root, const GenericPointer<typename T::ValueType>& pointer) {
-    return pointer.Get(root);
+const typename T::ValueType* GetValueByPointer(const T& root, const GenericPointer<typename T::ValueType>& pointer, size_t* unresolvedTokenIndex = 0) {
+    return pointer.Get(root, unresolvedTokenIndex);
 }
 
 template <typename T, typename CharType, size_t N>
-typename T::ValueType* GetValueByPointer(T& root, const CharType (&source)[N]) {
-    return GenericPointer<typename T::ValueType>(source, N - 1).Get(root);
+typename T::ValueType* GetValueByPointer(T& root, const CharType (&source)[N], size_t* unresolvedTokenIndex = 0) {
+    return GenericPointer<typename T::ValueType>(source, N - 1).Get(root, unresolvedTokenIndex);
 }
 
 template <typename T, typename CharType, size_t N>
-const typename T::ValueType* GetValueByPointer(const T& root, const CharType(&source)[N]) {
-    return GenericPointer<typename T::ValueType>(source, N - 1).Get(root);
+const typename T::ValueType* GetValueByPointer(const T& root, const CharType(&source)[N], size_t* unresolvedTokenIndex = 0) {
+    return GenericPointer<typename T::ValueType>(source, N - 1).Get(root, unresolvedTokenIndex);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1309,5 +1337,9 @@ bool EraseValueByPointer(T& root, const CharType(&source)[N]) {
 //@}
 
 RAPIDJSON_NAMESPACE_END
+
+#ifdef __clang__
+RAPIDJSON_DIAG_POP
+#endif
 
 #endif // RAPIDJSON_POINTER_H_

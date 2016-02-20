@@ -1,6 +1,6 @@
-/*! \file deque.hpp
-    \brief Support for types found in \<deque\>
-    \ingroup STLSupport */
+/*! \file polymorphic_impl_fwd.hpp
+    \brief Internal polymorphism support forward declarations
+    \ingroup Internal */
 /*
   Copyright (c) 2014, Randolph Voorhies, Shane Grant
   All rights reserved.
@@ -27,36 +27,39 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_DEQUE_HPP_
-#define CEREAL_TYPES_DEQUE_HPP_
 
-#include "../cereal.hpp"
-#include <deque>
+/* This code is heavily inspired by the boost serialization implementation by the following authors
+
+   (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
+   Use, modification and distribution is subject to the Boost Software
+   License, Version 1.0. (See http://www.boost.org/LICENSE_1_0.txt)
+
+    See http://www.boost.org for updates, documentation, and revision history.
+
+   (C) Copyright 2006 David Abrahams - http://www.boost.org.
+
+   See /boost/serialization/export.hpp and /boost/archive/detail/register_archive.hpp for their
+   implementation.
+*/
+
+#ifndef CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
+#define CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_
 
 namespace cereal
 {
-  //! Saving for std::deque
-  template <class Archive, class T, class A> inline
-  void CEREAL_SAVE_FUNCTION_NAME( Archive & ar, std::deque<T, A> const & deque )
+  namespace detail
   {
-    ar( make_size_tag( static_cast<size_type>(deque.size()) ) );
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    template <class Base, class Derived>
+    struct RegisterPolymorphicCaster;
 
-    for( auto const & i : deque )
-      ar( i );
-  }
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    struct PolymorphicCasters;
 
-  //! Loading for std::deque
-  template <class Archive, class T, class A> inline
-  void CEREAL_LOAD_FUNCTION_NAME( Archive & ar, std::deque<T, A> & deque )
-  {
-    size_type size;
-    ar( make_size_tag( size ) );
-
-    deque.resize( static_cast<size_t>( size ) );
-
-    for( auto & i : deque )
-      ar( i );
-  }
+    //! Forward declaration, see polymorphic_impl.hpp for more information
+    template <class Base, class Derived>
+    struct PolymorphicRelation;
+  } // namespace detail
 } // namespace cereal
 
-#endif // CEREAL_TYPES_DEQUE_HPP_
+#endif // CEREAL_DETAILS_POLYMORPHIC_IMPL_FWD_HPP_

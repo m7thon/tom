@@ -15,7 +15,13 @@
 #ifndef RAPIDJSON_MEMORYSTREAM_H_
 #define RAPIDJSON_MEMORYSTREAM_H_
 
-#include "rapidjson.h"
+#include "stream.h"
+
+#ifdef __clang__
+RAPIDJSON_DIAG_PUSH
+RAPIDJSON_DIAG_OFF(unreachable-code)
+RAPIDJSON_DIAG_OFF(missing-noreturn)
+#endif
 
 RAPIDJSON_NAMESPACE_BEGIN
 
@@ -57,5 +63,9 @@ struct MemoryStream {
 };
 
 RAPIDJSON_NAMESPACE_END
+
+#ifdef __clang__
+RAPIDJSON_DIAG_POP
+#endif
 
 #endif // RAPIDJSON_MEMORYBUFFER_H_
