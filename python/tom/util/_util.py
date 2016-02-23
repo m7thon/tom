@@ -49,15 +49,19 @@ def load(filename):
         oom = _tomlib.Oom()
         oom.fromJSON(content)
         return oom
-    if content.startswith('{"Type":"SEQUENCE"'):
+    elif content.startswith('{"Type":"SEQUENCE"'):
         seq = _tomlib.Sequence()
         seq.fromJSON(content)
         return seq
-    if content.startswith('{"Type":"POLICY"'):
+    elif content.startswith('{"Type":"POLICY"'):
         pol = _tomlib.Policy()
         pol.fromJSON(content)
-        return pol    
-    if content.startswith('# This file is a POMDP policy'):
+        return pol
+    elif content.startswith('{"Type":"HMM"'):
+        hmm = _tomlib.Hmm()
+        hmm.fromJSON(content)
+        return hmm
+    elif content.startswith('# This file is a POMDP policy'):
         content = re.sub(r'#.*\n', '', content)
         content = re.sub(r' ([a-zA-Z]+) =>', r' "\1":', content)
         content = re.sub(r'\s+', '', content)
@@ -66,20 +70,17 @@ def load(filename):
         for p in planes:
             policy.addPlane(p['action'], p['entries'][0::2], p['entries'][1::2])
         return policy
-    if content.startswith('{"Type":"POMDP"'):
+    elif content.startswith('{"Type":"POMDP"'):
         pomdp = ast.literal_eval(content)
-        oom = _tomlib.Oom()
-        oom.setSize(pomdp['dim'], pomdp['nO'], pomdp['nU'])
+        hmm = _tomlib.Hmm(pomdp['dim'], pomdp['nO'], pomdp['nU'], 0)
+        for a in range(pomdp['nU']):
+            hmm.T(a, np.matrix(pomdp['T(a,s,sp)'][a],dtype=np.double))
         for a, o in itertools.product(range(pomdp['nU']), range(pomdp['nO'])):
-            oom.tau(o,a, np.diag(np.array(pomdp['O(a,sp,o)'][a])[:,o]).dot(np.matrix(pomdp['T(a,s,sp)'][a],dtype=np.double).transpose()))
-        oom.sig(np.ones((1,pomdp['dim']),dtype=np.double))
-        oom.w0(np.array([pomdp['b(s)']],dtype=np.double).transpose())
-        oom.minPrediction_ = 0
-        oom.normalizationTolerance_ = 10
-        oom.maxSetback(0)
-        oom.initialize()
-        return oom
-        
+            hmm.E(o, a, np.matrix(pomdp['O(a,sp,o)'][a], dtype=np.double)[:,o])
+        hmm.pi(np.matrix([pomdp['b(s)']],dtype=np.double).transpose())
+        hmm.init()
+        return hmm
+
     return None
 
 def save(object, filename):
@@ -95,71 +96,66 @@ def save(object, filename):
         with open(filename, 'w') as f:
             f.write(object.toJSON())
 
-def getBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10):
-    def addToCL(oom, v, v_seq, cl, sl, co):
-        for u, o in itertools.product(range(max(1,oom.nInputSymbols())), range(oom.nOutputSymbols())):
-            v_n = v.dot(oom.tau(o,u)) if co else oom.tau(o, u).dot(v)
-            cl.append(v_n)
-            if oom.nInputSymbols() != 0:
-                sl.append([u,o] + v_seq) if co else sl.append(v_seq + [u,o])
-            else:
-                sl.append([o] + v_seq) if co else sl.append(v_seq + [o])
-    v = oom.sig() if co else oom.w0()
-    v_n = v/np.linalg.norm(v)
-    B = [v_n.reshape(oom.dimension())]; S = [[]]
-    P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
-    CL = []; SL = []
-    addToCL(oom, v_n, [], CL, SL, co)
-    while (len(CL)>0 and len(S) < oom.dimension()):
-        v = CL.pop(0); s = SL.pop(0)
-        if np.linalg.norm(v) > eps_zero:
-            v_n = v/np.linalg.norm(v)
-            p_v_n = v_n.dot(P) if co else P.dot(v_n)
-            if np.linalg.norm(p_v_n - v_n) > eps_ind:
-                B.append(v_n.reshape(oom.dimension())); S.append(s)
-                P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
-                addToCL(oom, v_n, s, CL, SL, co)
-    B = np.matrix(B) if co else np.matrix(B).transpose()
-    return B, S
+# def getBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10):
+#     def addToCL(oom, v, v_seq, cl, sl, co):
+#         for u, o in itertools.product(range(max(1,oom.nInputSymbols())), range(oom.nOutputSymbols())):
+#             v_n = v.dot(oom.tau(o,u)) if co else oom.tau(o, u).dot(v)
+#             cl.append(v_n)
+#             if oom.nInputSymbols() != 0:
+#                 sl.append([u,o] + v_seq) if co else sl.append(v_seq + [u,o])
+#             else:
+#                 sl.append([o] + v_seq) if co else sl.append(v_seq + [o])
+#     v = oom.sig() if co else oom.w0()
+#     v_n = v/np.linalg.norm(v)
+#     B = [v_n.reshape(oom.dimension())]; S = [[]]
+#     P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
+#     CL = []; SL = []
+#     addToCL(oom, v_n, [], CL, SL, co)
+#     while (len(CL)>0 and len(S) < oom.dimension()):
+#         v = CL.pop(0); s = SL.pop(0)
+#         if np.linalg.norm(v) > eps_zero:
+#             v_n = v/np.linalg.norm(v)
+#             p_v_n = v_n.dot(P) if co else P.dot(v_n)
+#             if np.linalg.norm(p_v_n - v_n) > eps_ind:
+#                 B.append(v_n.reshape(oom.dimension())); S.append(s)
+#                 P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
+#                 addToCL(oom, v_n, s, CL, SL, co)
+#     B = np.matrix(B) if co else np.matrix(B).transpose()
+#     return B, S
 
-def getGoodBasis(oom, co=False, eps_ind = 1e-5, eps_zero=1e-10, normalizeVectors=True):
-    def addToCL(oom, l, L, co):
-        for u, o in itertools.product(range(max(1,oom.nInputSymbols())), range(oom.nOutputSymbols())):
-            v = l[0].dot(oom.tau(o,u)) if co else oom.tau(o, u).dot(l[0])
-            if np.linalg.norm(v) > eps_zero:
-                vn = v / np.linalg.norm(v_n) if normalizeVectors else v
-                if oom.nInputSymbols() != 0:
-                    seq = [u,o] + l[1] if co else l[1] + [u,o]
-                else:
-                    seq = [o] + l[1] if co else l[1] + [o]
-                L.append([vn, seq, 0])
-    def sortCL(L, P, co):
-        for l in L:
-            vp = l[0].dot(P) if co else P.dot(l[0])
-            l[2] = np.linalg.norm(l[0] - vp)
-        L[:] = [l for l in L if l[2] > eps_ind]
-        L.sort(key= lambda l: l[2], reverse=True)
-        
-    v = oom.sig() if co else oom.w0()
-    v_n = v / np.linalg.norm(v) if normalizeVectors else v
-    B = [v_n.reshape(oom.dimension())]; S = [[]]
-    P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
-    L = []
-    addToCL(oom, [v_n, [], 0], L, co)
-    sortCL(L, P, co)
-    while (len(L)>0 and len(S) < oom.dimension()):
-        (v,s,x) = L.pop(0)
-        B.append(v.reshape(oom.dimension())); S.append(s)
-        P = np.linalg.pinv(np.matrix(B)) * np.matrix(B) if co else np.matrix(B).transpose() * np.linalg.pinv(np.matrix(B).transpose())
-        addToCL(oom, (v,s,x), L, co)
-        sortCL(L, P, co)
-    B = np.matrix(B) if co else np.matrix(B).transpose()
-    return B, S
+def getBasis(oom, co=False, eps_independence = 1e-5, eps_zero=1e-12, sort='length'):
+    v = oom.sig().transpose() if co else oom.w0()
+    v = v / np.linalg.norm(v)
+    candidates = [[_tomlib.Sequence(0, oom.nOutputSymbols(), oom.nInputSymbols()), v, 0]]
+    basis = np.zeros((oom.dimension(), 0), dtype=np.double)
+    basis_words = []
+    while (len(candidates) > 0 and len(basis_words) < oom.dimension()):
+        # pick next candidate on list
+        (word, state, independence) = candidates.pop(0)
+        basis = np.hstack((basis, state))
+        basis_words.append(word)
+        projection = basis.dot(np.linalg.pinv(basis))
+        # add new candidates:
+        for z in _tomlib.wordsOverAlphabet(oom.nOutputSymbols(), oom.nInputSymbols()):
+            candidate_state = oom.tau(z).transpose().dot(state) if co else oom.tau(z).dot(state)
+            if np.linalg.norm(candidate_state) > eps_zero:
+                candidate_state /= np.linalg.norm(candidate_state)
+                candidates.append([z + word if co else word + z, candidate_state, 0])
+        # update independence of remaining candidates and sort:
+        for candidate in candidates:
+            candidate[2] = np.linalg.norm(projection.dot(candidate[1]) - candidate[1])
+        candidates = [candidate for candidate in candidates if candidate[2] > eps_independence]
+        if sort == 'length':
+            candidates.sort(key= lambda c: (-len(c[0]), c[2]), reverse=True)
+        elif sort == 'best':
+            candidates.sort(key= lambda c: c[2], reverse=True)
+    if co: basis = basis.transpose()
+    return basis, basis_words
 
-def minimize(oom, eps=1e-5):
-    B, S = getBasis(oom, False, eps)
+def minimize(oom, eps_independence=1e-5):
+    B, words = getBasis(oom, co=False, eps_independence=eps_independence)
     oom.conjugate(np.linalg.pinv(B), B)
-    B, S = getBasis(oom, True, eps)
+    B, words = getBasis(oom, co=True, eps_independence=eps_independence)
     oom.conjugate(B, np.linalg.pinv(B))
 
 def computeStates(oom, words, co = False):

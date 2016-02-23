@@ -58,6 +58,21 @@ public:
      * Construct an `Oom` corresponding to the given string `json_representation`. The format must correspond to what `toJSON()` produces. */
     Oom(const std::string &json_representation) { fromJSON(json_representation); }
 
+    /**
+     * Construct an `Oom` equivalent to the `Hmm` given by `hmm`. */
+    Oom(const Hmm& hmm) {
+        setSize(hmm.nStates(), hmm.nObservations(), hmm.nInputs());
+        for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); u++) {
+            for (Symbol o = 0; o < nO_; o++) {
+                if (isIO()) tau_(o,u) = hmm.E(o,u).asDiagonal() * hmm.T(u).transpose();
+                else          tau_(o) = hmm.T().transpose() * hmm.E(o).asDiagonal();
+            }
+        }
+        w0_ = hmm.pi();
+        stabilization(-1, -1, -1, -1, "none");
+        initialize();
+    }
+
     /** Set the internal structure for an OOM of the desired size without performing any initialization.\ Typically, the parameters \c sig, \c tau(o,u) and \c w0 will be assigned next, and then \c initialize() must be called.
      * @param dimension the dimension of the OOM
      * @param nOutputSymbols the size of the output alphabet

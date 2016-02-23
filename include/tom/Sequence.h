@@ -65,7 +65,7 @@ public:
 
     /** Return a new `Sequence` with the `symbol` appended to the end.
      */
-    Sequence operator +(Symbol symbol) {
+    Sequence operator +(Symbol symbol) const {
         Sequence seq(*this);
         seq.size_ += seq.isReversed() ? -1 : 1; // Last symbol may be out of bounds!
         Sequence result(seq.length(), nOutputSymbols(), nInputSymbols());
@@ -75,6 +75,25 @@ public:
         result.rawAt(-1, symbol);
         return result;
     }
+
+    /** Return a new `Sequence` with the given `sequence` appended to the end.
+     */
+    Sequence operator +(Sequence sequence) const CHECK(throw (std::invalid_argument)) {
+        CHECK(if (isIO() xor sequence.isIO()) throw std::invalid_argument("sequences must both be normal or io");)
+        CHECK(if (isReversed() xor sequence.isReversed()) throw std::invalid_argument("sequences must both same directional");)
+        CHECK(if (not (isReversed() ? isFrontAligned() : isBackAligned())) throw std::invalid_argument("this sequence must end in an io-symbol");)
+        CHECK(if (not sequence.isAligned()) throw std::invalid_argument("the given sequence must begin with an io-symbol");)
+        Sequence seq(*this);
+        seq.size_ += sequence.size_; // Last symbol may be out of bounds!
+        Sequence result(seq.length(), std::max(nOutputSymbols(), sequence.nOutputSymbols()),
+                        std::max(nInputSymbols(), sequence.nInputSymbols()));
+        if (not seq.isFrontAligned()) { result.pos_++; }
+        result.size_ = seq.size_;
+        for (unsigned long i = 0; i < rawSize(); ++i) { result.rawAt(i, rawAt(i)); }
+        for (unsigned long i = 0; i < sequence.rawSize(); ++i) { result.rawAt(rawSize()+i, sequence.rawAt(i)); }
+        return result;
+    }
+
 
 /** @name Accessors and Properties */
 //@{

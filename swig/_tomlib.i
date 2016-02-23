@@ -49,11 +49,11 @@
 
 %include "../include/tom/Policy.h"
 
-%shared_ptr(tom::Oom);
-%include "../include/tom/Oom.h"
-
 %shared_ptr(tom::Hmm);
 %include "../include/tom/Hmm.h"
+
+%shared_ptr(tom::Oom);
+%include "../include/tom/Oom.h"
 
 %include "../include/tom/CoreSequences.h"
 %include "../include/tom/Estimator.h"

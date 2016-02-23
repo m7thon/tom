@@ -12,21 +12,6 @@
 
 namespace tom {
 
-SWIGCODE(%feature("director") EMStopCondition;)
-class EMStopCondition {
-public:
-	int maxEMIterations_;
-	double minRelativeImprovement_;
-	double previousLog2Likelihood_ = std::numeric_limits<double>::infinity();
-	EMStopCondition(int maxEMIterations = 100, double minRelativeImprovement = 0.0001) :
-		maxEMIterations_(maxEMIterations), minRelativeImprovement_(minRelativeImprovement) {}
-	virtual bool operator()(int iteration, double log2Likelihood) {
-		return ((1 - log2Likelihood / previousLog2Likelihood_ < minRelativeImprovement_) or (iteration >= maxEMIterations_));
-	}
-	virtual ~EMStopCondition() {};
-};
-
-
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Hmm::repr;)
 /**
  * This class provides provides a rudimentry structure for HMMs and POMDPs. It purpose is to
@@ -36,7 +21,6 @@ SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Hmm::repr;)
  */
 class Hmm {
 	friend class cereal::access;
-	friend class Oom;
 public:
 	Hmm(int nStates, int nObservations, int nInputs = 0, double exponent = 1, const Random& rnd = Random())
 		{ setSize(nStates, nObservations, nInputs); if (exponent != 0) randomize(exponent, rnd); else init(); }
@@ -45,23 +29,23 @@ public:
 	bool normalize();
 	void init();
 
-	double trainEM(const Sequence& trainSequence, const EMStopCondition& stopCondition = EMStopCondition());
+	double trainEM(const Sequence& trainSequence, const StopCondition& stopCondition = StopCondition(100, 1e-7, 0));
 
 	/** @name Accessors */ //@{
 	int nStates()       const { return dim_; }
 	int nObservations() const { return nO_; }
 	int nInputs()       const { return nU_; }
  	void setSize(int nStates, int nObservations, int nInputs, bool zeroParameters = false);
-	VectorXd& pi()                             { return pi_;      }
+	const VectorXd& pi() const                 { return pi_;      }
 	void pi(const VectorXd& _pi)               { pi_ = _pi;       }
-	MatrixXd& T(int a = 0 )                    { return T_(a);    }
+	const MatrixXd& T(int a = 0 ) const        { return T_(a);    }
 	void T(const MatrixXd& _T)                 { T_(0) = _T;      }
 	void T(int a, const MatrixXd& _Ta)         { T_(a) = _Ta;     }
-	VectorXd& E(int o, int a = 0)              { return E_(o,a);  }
+	const VectorXd& E(int o, int a = 0) const  { return E_(o,a);  }
 	void E(int o, int a, const VectorXd& _Eoa) { E_(o, a) = _Eoa; }
 	void E(int o, const VectorXd& _Eo)         { E_(o,0) = _Eo;   }
 
-	MatrixXd& Theta(int o, int a = 0 )         { return Theta_(o,a); }
+	//MatrixXd& Theta(int o, int a = 0 )         { return Theta_(o,a); }
   //@}
 
 	INSERT_JSON_IO_FUNCTIONS()
@@ -132,12 +116,12 @@ void Hmm::init() {
 }
 
 double Hmm::backwardsWithCache(const Sequence& x, MatrixXd& betaBlock, MatrixXd& betaCache, VectorXd& betaLog2Scale) {
-	int N = x.length();
-	int betaBlockSize = betaBlock.cols();
+	long N = x.length();
+	long betaBlockSize = betaBlock.cols();
 	VectorXd temp(dim_), beta(dim_);
 	beta /*N-1*/ = VectorXd::Ones(dim_);
 	betaLog2Scale(N-1) = 0;
-	for (int t = N-1, tb = t / betaBlockSize, tbi = t % betaBlockSize; t >= betaBlockSize; --t) {
+	for (long t = N-1, tb = t / betaBlockSize, tbi = t % betaBlockSize; t >= betaBlockSize; --t) {
 		temp.noalias() = Theta_(x.o(t), x.u(t)) * beta;
 		beta /*t-1*/ = temp;
 		betaLog2Scale(t-1) = betaLog2Scale(t) + std::log2( tom::normalize(beta) );
@@ -145,7 +129,7 @@ double Hmm::backwardsWithCache(const Sequence& x, MatrixXd& betaBlock, MatrixXd&
 		if (--tbi < 0) { tb--; tbi = betaBlockSize - 1; } // ensure t = tb * betaBlockSize + tbi
 	}
 	betaBlock.col(betaBlockSize-1) = betaCache.col(0);
-	for (int tbc = betaBlockSize-1; tbc > 0; --tbc) {
+	for (long tbc = betaBlockSize-1; tbc > 0; --tbc) {
 		betaBlock.col(tbc-1).noalias() = Theta_(x.o(tbc), x.u(tbc)) * betaBlock.col(tbc);
 		betaLog2Scale(tbc-1) = betaLog2Scale(tbc) + std::log2( tom::normalize( betaBlock.col(tbc-1) ) );
 	}
@@ -155,17 +139,17 @@ double Hmm::backwardsWithCache(const Sequence& x, MatrixXd& betaBlock, MatrixXd&
 	else { return betaLog2Scale(0) + std::log2( (beta.transpose() * E_(x.o(0), x.u(0)).asDiagonal() * pi_).value() ); }
 }
 
-double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCondition) {
-	int N = trainSequence.length(); if (N == 0) return 0;
+double Hmm::trainEM(const Sequence& trainSequence, const StopCondition& stopCondition) {
+	long N = trainSequence.length(); if (N == 0) return 0;
 	const Sequence& x = trainSequence;
 	bool pomdp = (nU_ != 0);
 	Hmm hmmOpt = Hmm(dim_, nO_, nU_, 0);
-	double llOpt = 0;
+	double llOpt;
 	double log2Px;
 
-	int betaBlockSize = ceil(sqrt(N));
+	long betaBlockSize = ceil(sqrt(N));
 	if (betaBlockSize < 3) { betaBlockSize = 1; }
-	int betaCacheSize = (N-1) / betaBlockSize;
+	long betaCacheSize = (N-1) / betaBlockSize;
 	MatrixXd betaCache(dim_, betaCacheSize);
 	MatrixXd betaBlock(dim_, betaBlockSize);
 	VectorXd betaLog2Scale(N);
@@ -177,11 +161,10 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 	VectorXd temp(dim_);
 	MatrixXd xi(dim_, dim_);
 
-	for (int it = 0;; ++it) { // The termination condition is checked in the loop
+    while (true) {
 		log2Px = backwardsWithCache(x, betaBlock, betaCache, betaLog2Scale);
 		llOpt = -log2Px / N;
-		if (const_cast<EMStopCondition&>(stopCondition)(it, llOpt)) { return llOpt; }
-		const_cast<EMStopCondition&>(stopCondition).previousLog2Likelihood_ = llOpt;
+		if (const_cast<StopCondition&>(stopCondition)(llOpt)) { return llOpt; }
 
 		hmmOpt.setSize(dim_, nO_, nU_, true);
 		beta /*0*/ = betaBlock.col(0);
@@ -200,17 +183,17 @@ double Hmm::trainEM(const Sequence& trainSequence, const EMStopCondition& stopCo
 			hmmOpt.E_(x.o(0), x.u(0)) = gamma;
 		}
 
-		for (int t = ( pomdp ? 0 : 1 ), tb = t / betaBlockSize, tbi = t % betaBlockSize; t < N; ++t) {
+		for (long t = ( pomdp ? 0 : 1 ), tb = t / betaBlockSize, tbi = t % betaBlockSize; t < N; ++t) {
 			if (tbi == 0) { // recompute betaBlock
 				if (tb == betaCacheSize) { // we are passed last cached value
 					betaBlock.col( (N-1) % betaCacheSize ).setOnes();
-					for (int tbc = (N-1) % betaCacheSize; tbc > 0; --tbc) {
+					for (long tbc = (N-1) % betaCacheSize; tbc > 0; --tbc) {
 						betaBlock.col(tbc-1).noalias() = Theta_(x.o(t+tbc), x.u(t+tbc)) * betaBlock.col(tbc);
 						tom::normalize( betaBlock.col(tbc-1) );
 					}
 				} else {
 					betaBlock.col(betaBlockSize-1) = betaCache.col(tb);
-					for (int tbc = betaBlockSize-1; tbc > 0; --tbc) {
+					for (long tbc = betaBlockSize-1; tbc > 0; --tbc) {
 						betaBlock.col(tbc-1).noalias() = Theta_(x.o(t+tbc), x.u(t+tbc)) * betaBlock.col(tbc);
 						tom::normalize( betaBlock.col(tbc-1) );
 					}
