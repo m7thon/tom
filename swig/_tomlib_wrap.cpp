@@ -20033,7 +20033,7 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Sequence_sub(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_Sequence_sub__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   tom::Sequence *arg1 = (tom::Sequence *) 0 ;
   long arg2 ;
@@ -20044,21 +20044,20 @@ SWIGINTERN PyObject *_wrap_Sequence_sub(PyObject *self, PyObject *args) {
   int ecode2 = 0 ;
   long val3 ;
   int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
   tom::Sequence result;
   
-  if (!SWIG_Python_UnpackTuple(args,"Sequence_sub",2,2,swig_obj)) SWIG_fail;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Sequence, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Sequence_sub" "', argument " "1"" of type '" "tom::Sequence const *""'"); 
   }
   arg1 = reinterpret_cast< tom::Sequence * >(argp1);
-  ecode2 = SWIG_AsVal_long(swig_obj[0], &val2);
+  ecode2 = SWIG_AsVal_long(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Sequence_sub" "', argument " "2"" of type '" "long""'");
   } 
   arg2 = static_cast< long >(val2);
-  ecode3 = SWIG_AsVal_long(swig_obj[1], &val3);
+  ecode3 = SWIG_AsVal_long(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Sequence_sub" "', argument " "3"" of type '" "long""'");
   } 
@@ -20074,6 +20073,65 @@ SWIGINTERN PyObject *_wrap_Sequence_sub(PyObject *self, PyObject *args) {
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Sequence_sub__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Sequence *arg1 = (tom::Sequence *) 0 ;
+  long arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  long val2 ;
+  int ecode2 = 0 ;
+  tom::Sequence result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Sequence, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Sequence_sub" "', argument " "1"" of type '" "tom::Sequence const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Sequence * >(argp1);
+  ecode2 = SWIG_AsVal_long(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Sequence_sub" "', argument " "2"" of type '" "long""'");
+  } 
+  arg2 = static_cast< long >(val2);
+  try {
+    result = ((tom::Sequence const *)arg1)->sub(arg2);
+  }
+  catch(std::out_of_range &_e) {
+    SWIG_exception_fail(SWIG_IndexError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_NewPointerObj((new tom::Sequence(static_cast< const tom::Sequence& >(result))), SWIGTYPE_p_tom__Sequence, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Sequence_sub(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Sequence_sub",0,3,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    return _wrap_Sequence_sub__SWIG_1(self, argc, argv);
+  }
+  if (argc == 3) {
+    return _wrap_Sequence_sub__SWIG_0(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Sequence_sub'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::Sequence::sub(long,long) const\n"
+    "    tom::Sequence::sub(long) const\n");
+  return 0;
 }
 
 
@@ -42013,16 +42071,27 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Sequence_methods[] = {
   { "sub", (PyCFunction) _wrap_Sequence_sub, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`sub(idx, length) -> Sequence`  \n"
+		"`sub(length) -> Sequence`  \n"
 		"\n"
-		"Return a subsequence starting at the given position index `idx` and of the given\n"
-		"`length`, where each index covers one io-pair.  \n"
+		"Overloaded function\n"
+		"-------------------\n"
+		"* `sub(idx, length) -> Sequence`  \n"
 		"\n"
-		"Negative indexing is supported, and if `length` is negative, a reverse sequence\n"
-		"starting at the `idx` is returned.  \n"
+		"    Return a subsequence starting at the given position index `idx` and of the\n"
+		"    given `length`, where each index covers one io-pair.  \n"
 		"\n"
-		"The given `idx` must be a valid position index (i.e., not out of bounds), unless\n"
-		"the requested `length` is zero, in which case always a `Sequence` of length zero\n"
-		"is returned.  \n"
+		"    Negative indexing is supported, and if `length` is negative, a reverse\n"
+		"    sequence starting at the `idx` is returned.  \n"
+		"\n"
+		"    The given `idx` must be a valid position index (i.e., not out of bounds),\n"
+		"    unless the requested `length` is zero, in which case always a `Sequence` of\n"
+		"    length zero is returned.  \n"
+		"\n"
+		"* `sub(length) -> Sequence`  \n"
+		"\n"
+		"    Return a subsequence of the given `length`, starting at the beginning of\n"
+		"    this sequence if the given `length` is positive, else a reverse substring\n"
+		"    starting at the end of this sequence.  \n"
 		"\n"
 		"" },
   { "slice", (PyCFunction) _wrap_Sequence_slice, METH_VARARGS, (char*) "\n"

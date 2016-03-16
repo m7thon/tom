@@ -276,6 +276,10 @@ public:
         return seq;
     }
 
+    /** Return a subsequence of the given `length`, starting at the beginning of this sequence if the given `length` is positive, else a reverse substring starting at the end of this sequence.
+    */
+    Sequence sub(long length) const CHECK(throw (std::out_of_range)) { return sub(length >= 0 ? 0 : -1, length); }
+
     /** Return a subsequence from the \c begin index up to (and not including) the \c end index, or if \c forwards is set to \c false, a reverse sequence from the \c begin position up to (and not including) the \c end position, where each index covers one io-pair. Negative indexing is supported, and \c begin and \c end may be set to \c NoIndex, and then extend to the beginning or end of the sequence, depending on `reverse`.
      *
      * Note that the requested slice must define a sub-sequence of this sequence or a sequence of size zero.

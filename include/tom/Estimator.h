@@ -404,9 +404,9 @@ private:
     void extendBy(Symbol o, Symbol u = 0) {
         state_.len_++;
         if (nU_ == 0) {
-            double ch = state_.pos_.count();
+            double ch = state_.pos_.count(); // (c)ount of current history
             state_.pos_.toSymbol(o);
-            double cz = state_.pos_.count();
+            double cz = state_.pos_.count(); // (c)ount of symbol (z) after current history
             state_.fB_ *= (ch == 0 ? 0.5 : (cz + 0.5 * nPseudoCounts_) / (ch + nPseudoCounts_));
         } else { // IO-case
             state_.pos_.toSymbol(u);
