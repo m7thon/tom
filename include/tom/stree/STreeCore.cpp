@@ -113,6 +113,9 @@ void STree::createTemporaryInternalNodes() {
     }
     if (suffixLinkFrom_ & VALID) sl(suffixLinkFrom_, currentPos_.node_);
     suffixLinkFrom_ = 0;
+    // For the existing nodes on the suffix-link path, update their headIndex to the last occurrence:
+    // Note: pos_ == sequence_.rawSize()
+    for (nidx_t tnode = currentPos_.node_; (tnode & INDEX) != 0; tnode = sl(tnode)) { hi(tnode, pos_ - d(tnode)); }
     // Reset the current tree position:
     currentPos_ = currentPosOld;
     if (nTemporaryInternalNodes_ > 0) currentPos_.edgePtr_ = NULL; // since it will have been invalidated!

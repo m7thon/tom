@@ -29,6 +29,14 @@ def verifySuffixTreeCounts(seq, stree):
             return False
     return True
 
+def verifySuffixTreeForm(seq, cform1, cform2):
+    if len(cform1) != len(cform2): return False
+    if cform1[-1] != cform2[-1]: return False
+    for n1, n2 in zip(cform1[0], cform2[0]):
+        if n1[0] != n2[0] or n1[2:] != n2[2:]: return False
+        if n1[1] != n2[1] and seq.rawSub(n1[1],n1[2]) != seq.rawSub(n2[1],n2[2]): return False
+    return True
+
 class TestSuffixTree(unittest.TestCase):
     def test_STree(self):
         testSeqs = ['10', 'mississippi', '10_10000', '4_3_10000', '4x3_10000', 'pc_10000']
@@ -48,4 +56,4 @@ class TestSuffixTree(unittest.TestCase):
                 self.assertTrue(verifySuffixTreeCounts(seq.sub(0, sz), stree),
                                 "!!! SuffixTree test NOT passed !!! Substring count discrepancy.")
             streeFormNew = canonicalizeSuffixTree(stree)
-            self.assertTrue(streeFormNew == streeForm, "!!! SuffixTree test NOT passed !!! Something has changed.")
+            self.assertTrue(verifySuffixTreeForm(seq, streeFormNew, streeForm), "!!! SuffixTree test NOT passed !!! Something has changed.")

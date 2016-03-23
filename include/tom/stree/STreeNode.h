@@ -70,6 +70,10 @@ public:
 	 */
 	bool isRoot() const { return isValid() and isInternal() and index() == 0; }
 
+	/** Return `true` if the subsequence represented by this node is a suffix of the underlying sequence. Note that this does not imply that this is a leaf.
+	 */
+	bool isSuffix() const { return isValid() and (stree_->hi(nidx_) + stree_->d(nidx_)  == stree_->sequence_.rawSize()); }
+
 	/** The `index` of a valid leaf or a valid internal node is a unique number between 0 and `STree.nLeafNodes()` or between 0 and `STree.nInternalNodes()`, respectively.
 	 */
 	nidx_t index() const { return nidx_ & INDEX; }
@@ -481,7 +485,12 @@ public:
      */
     bool isRoot() const { return edge_.isRoot(); }
 
-    /** Return `true` if this `Position` is the same as the given `other`.
+	/** Return `true` if the represented subsequence is a suffix of the underlying sequence. Note that this does not imply that this is a leaf.
+ 	*/
+	bool isSuffix() const { return isValid() and (edge_.headIndex() + depth_ == edge_.stree_->sequence_.rawSize()); }
+
+	//<editor-fold desc="Comparison operators">
+	/** Return `true` if this `Position` is the same as the given `other`.
      */
     bool operator ==(const Position& other) const { return edge_ == other.edge_ and depth_ == other.depth_; }
 
