@@ -632,6 +632,7 @@ public:
         dim_ = (int) rho.rows();
         initialize();
     }
+    //@} </editor-fold>
 
     bool operator==(const Oom &other) const {
         if (dimension() != other.dimension() or nOutputSymbols() != other.nOutputSymbols() or nInputSymbols() != other.nInputSymbols()) return false;
@@ -645,7 +646,8 @@ public:
             or impossibilityThreshold_ != other.impossibilityThreshold_) return false;
         return true;
     }
-    //@} </editor-fold>
+
+    bool operator!=(const Oom &other) const { return not operator==(other); }
 
     /* <editor-fold desc="IO-functions"> */ /** @name IO-functions */ //@{
     INSERT_JSON_IO_FUNCTIONS()

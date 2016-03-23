@@ -82,16 +82,43 @@ public:
 	 */
 	nidx_t nidx() const { return nidx_; }
 
+	//<editor-fold desc="Comparison operators">
 	/** Return `true` if this `Node` is the same as the given `other`.
 	 */
 	bool operator ==(const Node& other) const { return ((nidx_ | COLOR) == (other.nidx() | COLOR)); }
-    
-	/** Return `true` if the `other` node occurs more often in the represented sequence than this node.
+
+	/** Return `true` if this `Node` is not the same as the given `other`.
+	 */
+	bool operator !=(const Node& other) const { return not operator==(other); }
+
+	/** Return `true` if the `other` node occurs more often than this node in the represented sequence.
 	 */
 	bool operator <(const Node& other) const CHECK(throw(std::invalid_argument)) {
 	    CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
 	    return count() < other.count();
 	}
+
+	/** Return `true` if the `other` node occurs more often than this node or the same number of times in the represented sequence.
+	 */
+	bool operator <=(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() <= other.count();
+	}
+
+	/** Return `true` if the `other` node occurs less often than this node in the represented sequence.
+	 */
+	bool operator >(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() > other.count();
+	}
+
+	/** Return `true` if the `other` node occurs less often than this node or the same number of times in the represented sequence.
+	 */
+	bool operator >=(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() >= other.count();
+	}
+	//</editor-fold>
 
 	/** Return the "depth" of the node in the suffix tree, which is the size of the represented (sub-)sequence.
 	 */
@@ -498,19 +525,70 @@ public:
      */
     bool operator ==(const Node& other) const { return edge_ == other and isExplicit(); }
 
-    /** Return `true` if the `other` `Position` occurs more often in the represented sequence than this node.
+	/** Return `true` if this `Position` is not the same as the given `other`.
+     */
+	bool operator !=(const Position& other) const { return not operator==(other); }
+
+	/** Return `true` if this `Position` is not the same as the given `other`.
+     */
+	bool operator !=(const Node& other) const { return not operator==(other); }
+
+    /** Return `true` if the `other` `Position` occurs more often than this node in the represented sequence.
      */
     bool operator <(const Position& other) const CHECK(throw(std::invalid_argument)) {
         CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
         return count() < other.count();
     }
 
-    /** Return `true` if the `other` `Node` occurs more often in the represented sequence than this node.
+    /** Return `true` if the `other` `Node` occurs more often than this node in the represented sequence.
      */
     bool operator <(const Node& other) const CHECK(throw(std::invalid_argument)) {
         CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
         return count() < other.count();
     }
+
+	/** Return `true` if the `other` `Position` occurs less often than this node in the represented sequence.
+     */
+	bool operator >(const Position& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() > other.count();
+	}
+
+	/** Return `true` if the `other` `Node` occurs less often than this node in the represented sequence.
+     */
+	bool operator >(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() > other.count();
+	}
+
+	/** Return `true` if the `other` `Position` occurs more often than this node or the same number of times in the represented sequence.
+    */
+	bool operator <=(const Position& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() <= other.count();
+	}
+
+	/** Return `true` if the `other` `Node` occurs more often than this node or the same number of times in the represented sequence.
+     */
+	bool operator <=(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() <= other.count();
+	}
+
+	/** Return `true` if the `other` `Position` occurs less often than this node or the same number of times in the represented sequence.
+    */
+	bool operator >=(const Position& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() >= other.count();
+	}
+
+	/** Return `true` if the `other` `Node` occurs less often than this node or the same number of times in the represented sequence.
+     */
+	bool operator >=(const Node& other) const CHECK(throw(std::invalid_argument)) {
+		CHECK(if (!isValid() or !other.isValid()) throw std::invalid_argument("Cannot compare invalid nodes.");)
+		return count() >= other.count();
+	}
+	//</editor-fold>
 
     /** Return the "depth" of this position, which is the size of the represented (sub-)sequence.
      */

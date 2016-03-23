@@ -312,18 +312,20 @@ public:
      */
     Sequence reverse() { Sequence result(*this); result.size_ = -result.size_; return result; }
 
-    /** Return \c true if the given \c Sequence \c seq is equal to this \c Sequence
-     */
-    bool operator==(const Sequence &seq) const {
-        if ((nInputSymbols() == 0 and seq.nInputSymbols() > 0) or (nInputSymbols() > 0 and seq.nInputSymbols() == 0) or
-            (rawSize() != seq.rawSize()) or (isFrontAligned() != seq.isFrontAligned()))
+    /** Return `true` if the given `sequence` is equal to this `Sequence` */
+    bool operator==(const Sequence &sequence) const {
+        if ((nInputSymbols() == 0 and sequence.nInputSymbols() > 0) or (nInputSymbols() > 0 and sequence.nInputSymbols() == 0) or
+            (rawSize() != sequence.rawSize()) or (isFrontAligned() != sequence.isFrontAligned()))
             return false;
-        if (nInputSymbols() == 0 or ((isReversed() == seq.isReversed()))) {
-            for (unsigned int i = 0; i < rawSize(); ++i) if (rawAt(i) != seq.rawAt(i)) return false;
+        if (nInputSymbols() == 0 or ((isReversed() == sequence.isReversed()))) {
+            for (unsigned int i = 0; i < rawSize(); ++i) if (rawAt(i) != sequence.rawAt(i)) return false;
             return true;
         }
         return false;
     }
+
+    /** Return `true` if the given `sequence` is not equal to this `Sequence` */
+    bool operator!=(const Sequence &sequence) const { return  not operator==(sequence); }
 
     SWIGCODE(%ignore incr_as_python_iterator_only;)
 
