@@ -78,11 +78,7 @@ namespace tom {
 #include "cereal/archives/json.hpp"
 #include "CerealTom.h"
 
-//MARK: tom headers
-namespace tom {
-    typedef int Symbol;
-}
-
+/* The following C1 to C7 and PY1 to PY7 macros and are used to tweak the automatic documentation generation by doxygen for Python and C++. In code, the C macros just place their arguments verbatim, and the PY macros are ignored. */
 #define C1(a) a
 #define C2(a,b) a,b
 #define C3(a,b,c) a,b,c
@@ -98,6 +94,10 @@ namespace tom {
 #define PY6(a,b,c,d,e,f)
 #define PY7(a,b,c,d,e,f,g)
 
+//MARK: tom headers
+namespace tom {
+    typedef int Symbol;
+}
 #include "Random.h"
 #include "Sequence.h"
 #include "stree/stree.h"
