@@ -4075,39 +4075,40 @@ namespace Swig {
 #define SWIGTYPE_p_std__shared_ptrT_stree__STree_t swig_types[82]
 #define SWIGTYPE_p_std__shared_ptrT_tom__Hmm_t swig_types[83]
 #define SWIGTYPE_p_std__shared_ptrT_tom__Oom_t swig_types[84]
-#define SWIGTYPE_p_std__vectorT_double_std__allocatorT_double_t_t swig_types[85]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[86]
-#define SWIGTYPE_p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t swig_types[87]
-#define SWIGTYPE_p_std__vectorT_unsigned_int_std__allocatorT_unsigned_int_t_t swig_types[88]
-#define SWIGTYPE_p_streamoff swig_types[89]
-#define SWIGTYPE_p_streampos swig_types[90]
-#define SWIGTYPE_p_stree__DFSIterator swig_types[91]
-#define SWIGTYPE_p_stree__EdgeNode swig_types[92]
-#define SWIGTYPE_p_stree__Node swig_types[93]
-#define SWIGTYPE_p_stree__PathNode swig_types[94]
-#define SWIGTYPE_p_stree__Position swig_types[95]
-#define SWIGTYPE_p_stree__PostfixIterator swig_types[96]
-#define SWIGTYPE_p_stree__PrefixIterator swig_types[97]
-#define SWIGTYPE_p_stree__STree swig_types[98]
-#define SWIGTYPE_p_stree__internal__InternalNode swig_types[99]
-#define SWIGTYPE_p_stree__internal__LeafNode swig_types[100]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[101]
-#define SWIGTYPE_p_tom__Estimator swig_types[102]
-#define SWIGTYPE_p_tom__Hmm swig_types[103]
-#define SWIGTYPE_p_tom__Oom swig_types[104]
-#define SWIGTYPE_p_tom__Policy swig_types[105]
-#define SWIGTYPE_p_tom__Random swig_types[106]
-#define SWIGTYPE_p_tom__Sequence swig_types[107]
-#define SWIGTYPE_p_tom__StopCondition swig_types[108]
-#define SWIGTYPE_p_traits_type swig_types[109]
-#define SWIGTYPE_p_unsigned_char swig_types[110]
-#define SWIGTYPE_p_unsigned_int swig_types[111]
-#define SWIGTYPE_p_unsigned_long swig_types[112]
-#define SWIGTYPE_p_unsigned_long_long swig_types[113]
-#define SWIGTYPE_p_unsigned_short swig_types[114]
-#define SWIGTYPE_p_value_type swig_types[115]
-static swig_type_info *swig_types[117];
-static swig_module_info swig_module = {swig_types, 116, 0, 0, 0, 0};
+#define SWIGTYPE_p_std__string swig_types[85]
+#define SWIGTYPE_p_std__vectorT_double_std__allocatorT_double_t_t swig_types[86]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[87]
+#define SWIGTYPE_p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t swig_types[88]
+#define SWIGTYPE_p_std__vectorT_unsigned_int_std__allocatorT_unsigned_int_t_t swig_types[89]
+#define SWIGTYPE_p_streamoff swig_types[90]
+#define SWIGTYPE_p_streampos swig_types[91]
+#define SWIGTYPE_p_stree__DFSIterator swig_types[92]
+#define SWIGTYPE_p_stree__EdgeNode swig_types[93]
+#define SWIGTYPE_p_stree__Node swig_types[94]
+#define SWIGTYPE_p_stree__PathNode swig_types[95]
+#define SWIGTYPE_p_stree__Position swig_types[96]
+#define SWIGTYPE_p_stree__PostfixIterator swig_types[97]
+#define SWIGTYPE_p_stree__PrefixIterator swig_types[98]
+#define SWIGTYPE_p_stree__STree swig_types[99]
+#define SWIGTYPE_p_stree__internal__InternalNode swig_types[100]
+#define SWIGTYPE_p_stree__internal__LeafNode swig_types[101]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[102]
+#define SWIGTYPE_p_tom__Estimator swig_types[103]
+#define SWIGTYPE_p_tom__Hmm swig_types[104]
+#define SWIGTYPE_p_tom__Oom swig_types[105]
+#define SWIGTYPE_p_tom__Policy swig_types[106]
+#define SWIGTYPE_p_tom__Random swig_types[107]
+#define SWIGTYPE_p_tom__Sequence swig_types[108]
+#define SWIGTYPE_p_tom__StopCondition swig_types[109]
+#define SWIGTYPE_p_traits_type swig_types[110]
+#define SWIGTYPE_p_unsigned_char swig_types[111]
+#define SWIGTYPE_p_unsigned_int swig_types[112]
+#define SWIGTYPE_p_unsigned_long swig_types[113]
+#define SWIGTYPE_p_unsigned_long_long swig_types[114]
+#define SWIGTYPE_p_unsigned_short swig_types[115]
+#define SWIGTYPE_p_value_type swig_types[116]
+static swig_type_info *swig_types[118];
+static swig_module_info swig_module = {swig_types, 117, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -20370,6 +20371,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Sequence___ne__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Sequence *arg1 = (tom::Sequence *) 0 ;
+  tom::Sequence *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Sequence, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Sequence___ne__" "', argument " "1"" of type '" "tom::Sequence const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Sequence * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Sequence___ne__" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Sequence___ne__" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  arg2 = reinterpret_cast< tom::Sequence * >(argp2);
+  result = (bool)((tom::Sequence const *)arg1)->operator !=((tom::Sequence const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Sequence_count(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::Sequence *arg1 = (tom::Sequence *) 0 ;
@@ -26219,6 +26254,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Node_isSuffix(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Node *arg1 = (stree::Node *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Node_isSuffix",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Node, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Node_isSuffix" "', argument " "1"" of type '" "stree::Node const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Node * >(argp1);
+  result = (bool)((stree::Node const *)arg1)->isSuffix();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Node_index(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   stree::Node *arg1 = (stree::Node *) 0 ;
@@ -26297,6 +26354,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Node___ne__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Node *arg1 = (stree::Node *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Node, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Node___ne__" "', argument " "1"" of type '" "stree::Node const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Node * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Node___ne__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Node___ne__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  result = (bool)((stree::Node const *)arg1)->operator !=((stree::Node const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Node___lt__(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   stree::Node *arg1 = (stree::Node *) 0 ;
@@ -26325,6 +26416,126 @@ SWIGINTERN PyObject *_wrap_Node___lt__(PyObject *self, PyObject *args) {
   arg2 = reinterpret_cast< stree::Node * >(argp2);
   try {
     result = (bool)((stree::Node const *)arg1)->operator <((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Node___le__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Node *arg1 = (stree::Node *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Node, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Node___le__" "', argument " "1"" of type '" "stree::Node const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Node * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Node___le__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Node___le__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Node const *)arg1)->operator <=((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Node___gt__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Node *arg1 = (stree::Node *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Node, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Node___gt__" "', argument " "1"" of type '" "stree::Node const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Node * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Node___gt__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Node___gt__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Node const *)arg1)->operator >((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Node___ge__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Node *arg1 = (stree::Node *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Node, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Node___ge__" "', argument " "1"" of type '" "stree::Node const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Node * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Node___ge__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Node___ge__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Node const *)arg1)->operator >=((stree::Node const &)*arg2);
   }
   catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
@@ -28346,6 +28557,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Position_isSuffix(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_isSuffix",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_isSuffix" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  result = (bool)((stree::Position const *)arg1)->isSuffix();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Position___eq____SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   stree::Position *arg1 = (stree::Position *) 0 ;
@@ -28431,6 +28664,99 @@ check_1:
   
   if (argc == 2) {
     return _wrap_Position___eq____SWIG_1(self, argc, argv);
+  }
+  
+fail:
+  Py_INCREF(Py_NotImplemented);
+  return Py_NotImplemented;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ne____SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Position *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___ne__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Position,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___ne__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___ne__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Position * >(argp2);
+  result = (bool)((stree::Position const *)arg1)->operator !=((stree::Position const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ne____SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___ne__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___ne__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___ne__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  result = (bool)((stree::Position const *)arg1)->operator !=((stree::Node const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ne__(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Position___ne__",0,2,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_stree__Position, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_Position___ne____SWIG_0(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_Position___ne____SWIG_1(self, argc, argv);
   }
   
 fail:
@@ -28536,6 +28862,321 @@ check_1:
   
   if (argc == 2) {
     return _wrap_Position___lt____SWIG_1(self, argc, argv);
+  }
+  
+fail:
+  Py_INCREF(Py_NotImplemented);
+  return Py_NotImplemented;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___gt____SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Position *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___gt__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Position,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___gt__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___gt__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Position * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator >((stree::Position const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___gt____SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___gt__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___gt__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___gt__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator >((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___gt__(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Position___gt__",0,2,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_stree__Position, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_Position___gt____SWIG_0(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_Position___gt____SWIG_1(self, argc, argv);
+  }
+  
+fail:
+  Py_INCREF(Py_NotImplemented);
+  return Py_NotImplemented;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___le____SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Position *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___le__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Position,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___le__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___le__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Position * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator <=((stree::Position const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___le____SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___le__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___le__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___le__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator <=((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___le__(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Position___le__",0,2,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_stree__Position, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_Position___le____SWIG_0(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_Position___le____SWIG_1(self, argc, argv);
+  }
+  
+fail:
+  Py_INCREF(Py_NotImplemented);
+  return Py_NotImplemented;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ge____SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Position *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___ge__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Position,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___ge__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___ge__" "', argument " "2"" of type '" "stree::Position const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Position * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator >=((stree::Position const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ge____SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  stree::Node *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  bool result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position___ge__" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_stree__Node,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Position___ge__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Position___ge__" "', argument " "2"" of type '" "stree::Node const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Node * >(argp2);
+  try {
+    result = (bool)((stree::Position const *)arg1)->operator >=((stree::Node const &)*arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position___ge__(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Position___ge__",0,2,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_stree__Position, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_Position___ge____SWIG_0(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_Position___ge____SWIG_1(self, argc, argv);
   }
   
 fail:
@@ -28710,6 +29351,113 @@ SWIGINTERN PyObject *_wrap_Position_toSymbol(PyObject *self, PyObject *args) {
   } 
   arg2 = static_cast< stree::Symbol >(val2);
   (arg1)->toSymbol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position_toExplicit(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_toExplicit",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_toExplicit" "', argument " "1"" of type '" "stree::Position *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  (arg1)->toExplicit();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position_child(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  SwigValueWrapper< stree::Position > result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_child",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_child" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  result = ((stree::Position const *)arg1)->child();
+  resultobj = SWIG_NewPointerObj((new stree::Position(static_cast< const stree::Position& >(result))), SWIGTYPE_p_stree__Position, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position_toChild(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_toChild",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_toChild" "', argument " "1"" of type '" "stree::Position *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  (arg1)->toChild();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position_sibling(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  SwigValueWrapper< stree::Position > result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_sibling",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_sibling" "', argument " "1"" of type '" "stree::Position const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  result = ((stree::Position const *)arg1)->sibling();
+  resultobj = SWIG_NewPointerObj((new stree::Position(static_cast< const stree::Position& >(result))), SWIGTYPE_p_stree__Position, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Position_toSibling(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::Position *arg1 = (stree::Position *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Position_toSibling",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__Position, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Position_toSibling" "', argument " "1"" of type '" "stree::Position *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::Position * >(argp1);
+  (arg1)->toSibling();
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -35763,6 +36511,62 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Oom___ne__(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Oom *arg1 = (tom::Oom *) 0 ;
+  tom::Oom *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::shared_ptr< tom::Oom const > tempshared1 ;
+  std::shared_ptr< tom::Oom const > *smartarg1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Oom const > tempshared2 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom___ne__" "', argument " "1"" of type '" "tom::Oom const *""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared1 = *reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >(tempshared1.get());
+    } else {
+      smartarg1 = reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >((smartarg1 ? smartarg1->get() : 0));
+    }
+  }
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp2, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Oom___ne__" "', argument " "2"" of type '" "tom::Oom const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Oom___ne__" "', argument " "2"" of type '" "tom::Oom const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp2);
+      arg2 = const_cast< tom::Oom * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Oom * >(reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp2)->get());
+    }
+  }
+  result = (bool)((tom::Oom const *)arg1)->operator !=((tom::Oom const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Oom_toJSON(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::Oom *arg1 = (tom::Oom *) 0 ;
@@ -38423,11 +39227,11 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   PyObject *resultobj = 0;
   tom::Estimator *arg1 = (tom::Estimator *) 0 ;
   double *arg2 = (double *) 0 ;
-  double *arg3 = (double *) 0 ;
+  std::string *arg3 = (std::string *) 0 ;
   double *arg4 = (double *) 0 ;
   double *arg5 = (double *) 0 ;
   double arg6 = (double) -1 ;
-  double arg7 = (double) -1 ;
+  std::string arg7 = (std::string) "" ;
   double arg8 = (double) -1 ;
   double arg9 = (double) -1 ;
   std::string arg10 = (std::string) "" ;
@@ -38435,7 +39239,7 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   int res1 = 0 ;
   double temp2 ;
   int res2 = SWIG_TMPOBJ ;
-  double temp3 ;
+  std::string temp3 ;
   int res3 = SWIG_TMPOBJ ;
   double temp4 ;
   int res4 = SWIG_TMPOBJ ;
@@ -38443,8 +39247,6 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   int res5 = SWIG_TMPOBJ ;
   double val6 ;
   int ecode6 = 0 ;
-  double val7 ;
-  int ecode7 = 0 ;
   double val8 ;
   int ecode8 = 0 ;
   double val9 ;
@@ -38455,7 +39257,7 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   PyObject * obj4 = 0 ;
   PyObject * obj5 = 0 ;
   char *  kwnames[] = {
-    (char *) "nPseudoCounts",(char *) "zConfidenceIntervalSize",(char *) "minimumVariance",(char *) "exponent",(char *) "preset", NULL 
+    (char *) "zConfidenceIntervalSize",(char *) "confidenceIntervalType",(char *) "minimumVariance",(char *) "exponent",(char *) "preset", NULL 
   };
   
   arg2 = &temp2;
@@ -38476,11 +39278,15 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
     arg6 = static_cast< double >(val6);
   }
   if (obj2) {
-    ecode7 = SWIG_AsVal_double(obj2, &val7);
-    if (!SWIG_IsOK(ecode7)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "Estimator_regularization" "', argument " "7"" of type '" "double""'");
-    } 
-    arg7 = static_cast< double >(val7);
+    {
+      std::string *ptr = (std::string *)0;
+      int res = SWIG_AsPtr_std_string(obj2, &ptr);
+      if (!SWIG_IsOK(res) || !ptr) {
+        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "7"" of type '" "std::string""'"); 
+      }
+      arg7 = *ptr;
+      if (SWIG_IsNewObj(res)) delete ptr;
+    }
   }
   if (obj3) {
     ecode8 = SWIG_AsVal_double(obj3, &val8);
@@ -38522,10 +39328,10 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
     resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_double, new_flags));
   }
   if (SWIG_IsTmpObj(res3)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg3)));
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_std_string((*arg3)));
   } else {
     int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_double, new_flags));
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_std__string, new_flags));
   }
   if (SWIG_IsTmpObj(res4)) {
     resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg4)));
@@ -38545,22 +39351,22 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_nPseudoCounts(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_Estimator_confidenceIntervalType(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::Estimator *arg1 = (tom::Estimator *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  double result;
+  std::string result;
   
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_nPseudoCounts",0,0,0)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args,"Estimator_confidenceIntervalType",0,0,0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_nPseudoCounts" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_confidenceIntervalType" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
   }
   arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = (double)((tom::Estimator const *)arg1)->nPseudoCounts();
-  resultobj = SWIG_From_double(static_cast< double >(result));
+  result = ((tom::Estimator const *)arg1)->confidenceIntervalType();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;
@@ -38627,84 +39433,6 @@ SWIGINTERN PyObject *_wrap_Estimator_exponent(PyObject *self, PyObject *args) {
   arg1 = reinterpret_cast< tom::Estimator * >(argp1);
   result = (double)((tom::Estimator const *)arg1)->exponent();
   resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Estimator_uProbs__set(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
-  Eigen::VectorXd *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  Eigen::Matrix< double,-1,1 > temp2 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_uProbs__set" "', argument " "1"" of type '" "tom::Estimator *""'"); 
-  }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  {
-    /*@SWIG:swig/eigen3.i,85,%array_conversion_code@*/
-    PyArrayObject * ary = obj_to_array_no_conversion(swig_obj[0], NPY_DOUBLE);
-    if (ary == NULL) SWIG_fail;
-    if (array_numdims(ary) != 2) {
-      PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
-    }
-    int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
-      cols = rows; rows = 1; 
-    }
-    if (-1 != -1 and -1 != rows) {
-      PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
-    }
-    if (1 != -1 and 1 != cols) {
-      PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
-    }
-    int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
-    /*@SWIG@*/;
-    temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
-    ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
-    arg2 = &temp2;
-  }
-  if (arg1) (arg1)->uProbs_ = *arg2;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Estimator_uProbs__get(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  Eigen::VectorXd *result = 0 ;
-  
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_uProbs__get",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_uProbs__get" "', argument " "1"" of type '" "tom::Estimator *""'"); 
-  }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = (Eigen::VectorXd *) & ((arg1)->uProbs_);
-  {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
-      dims[1] = result->cols(); 
-    }
-    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
-    if (!resultobj) SWIG_fail;
-    array_setbase(resultobj,encapsulate(result, NULL));
-  }
   return resultobj;
 fail:
   return NULL;
@@ -41851,6 +42579,7 @@ SwigPyBuiltin__tom__Sequence_richcompare(PyObject *self, PyObject *other, int op
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Sequence___eq__(self, other); break;
+    case Py_NE : result = _wrap_Sequence___ne__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -42125,6 +42854,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Sequence_methods[] = {
 		"\n"
 		"" },
   { "__eq__", (PyCFunction) _wrap_Sequence___eq__, METH_O, (char*) "" },
+  { "__ne__", (PyCFunction) _wrap_Sequence___ne__, METH_O, (char*) "" },
   { "count", (PyCFunction) _wrap_Sequence_count, METH_O, (char*) "\n"
 		"\n"
 		"`count(seq) -> unsigned int`  \n"
@@ -43758,7 +44488,11 @@ SwigPyBuiltin__stree__Node_richcompare(PyObject *self, PyObject *other, int op) 
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -43824,6 +44558,16 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__stree__Node_methods[] = {
 		"Return `true` if this is the root node.  \n"
 		"\n"
 		"" },
+  { "isSuffix", (PyCFunction) _wrap_Node_isSuffix, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`isSuffix() -> bool`  \n"
+		"\n"
+		"Return `true` if the subsequence represented by this node is a suffix of the\n"
+		"underlying sequence.  \n"
+		"\n"
+		"Note that this does not imply that this is a leaf.  \n"
+		"\n"
+		"" },
   { "index", (PyCFunction) _wrap_Node_index, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`index() -> nidx_t`  \n"
@@ -43841,7 +44585,11 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__stree__Node_methods[] = {
 		"\n"
 		"" },
   { "__eq__", (PyCFunction) _wrap_Node___eq__, METH_O, (char*) "" },
+  { "__ne__", (PyCFunction) _wrap_Node___ne__, METH_O, (char*) "" },
   { "__lt__", (PyCFunction) _wrap_Node___lt__, METH_O, (char*) "" },
+  { "__le__", (PyCFunction) _wrap_Node___le__, METH_O, (char*) "" },
+  { "__gt__", (PyCFunction) _wrap_Node___gt__, METH_O, (char*) "" },
+  { "__ge__", (PyCFunction) _wrap_Node___ge__, METH_O, (char*) "" },
   { "depth", (PyCFunction) _wrap_Node_depth, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`depth() -> nidx_t`  \n"
@@ -44226,7 +44974,11 @@ SwigPyBuiltin__stree__EdgeNode_richcompare(PyObject *self, PyObject *other, int 
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -44640,7 +45392,11 @@ SwigPyBuiltin__stree__PathNode_richcompare(PyObject *self, PyObject *other, int 
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -44997,7 +45753,11 @@ SwigPyBuiltin__stree__Position_richcompare(PyObject *self, PyObject *other, int 
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Position___eq__(self, other); break;
+    case Py_LE : result = _wrap_Position___le__(self, other); break;
+    case Py_NE : result = _wrap_Position___ne__(self, other); break;
     case Py_LT : result = _wrap_Position___lt__(self, other); break;
+    case Py_GE : result = _wrap_Position___ge__(self, other); break;
+    case Py_GT : result = _wrap_Position___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -45073,8 +45833,22 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__stree__Position_methods[] = {
 		"Return `true` if this is the root node.  \n"
 		"\n"
 		"" },
+  { "isSuffix", (PyCFunction) _wrap_Position_isSuffix, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`isSuffix() -> bool`  \n"
+		"\n"
+		"Return `true` if the represented subsequence is a suffix of the underlying\n"
+		"sequence.  \n"
+		"\n"
+		"Note that this does not imply that this is a leaf.  \n"
+		"\n"
+		"" },
   { "__eq__", (PyCFunction) _wrap_Position___eq__, METH_VARARGS, (char*) "" },
+  { "__ne__", (PyCFunction) _wrap_Position___ne__, METH_VARARGS, (char*) "" },
   { "__lt__", (PyCFunction) _wrap_Position___lt__, METH_VARARGS, (char*) "" },
+  { "__gt__", (PyCFunction) _wrap_Position___gt__, METH_VARARGS, (char*) "" },
+  { "__le__", (PyCFunction) _wrap_Position___le__, METH_VARARGS, (char*) "" },
+  { "__ge__", (PyCFunction) _wrap_Position___ge__, METH_VARARGS, (char*) "" },
   { "depth", (PyCFunction) _wrap_Position_depth, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`depth() -> nidx_t`  \n"
@@ -45147,6 +45921,63 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__stree__Position_methods[] = {
 		"\n"
 		"If no such position exists, this `Position` is unchanged but marked as invalid.\n"
 		"For an invalid `Position` this function has no effect.  \n"
+		"\n"
+		"" },
+  { "toExplicit", (PyCFunction) _wrap_Position_toExplicit, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`toExplicit()`  \n"
+		"\n"
+		"If this `Position` is not explicit, i.e., it lies on an edge of the suffix tree\n"
+		"structure, then set this `Position` to the deeper node end-point of that edge,\n"
+		"making this position explicit.  \n"
+		"\n"
+		"" },
+  { "child", (PyCFunction) _wrap_Position_child, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`child() -> Position`  \n"
+		"\n"
+		"Return the first child `Position` in the suffix tree structure viewed as a\n"
+		"*suffix trie*, i.e., where all positions are seen as nodes and all edges have\n"
+		"length one.  \n"
+		"\n"
+		"If no child exists, a `Position` marked as invalid is returned. Note that the\n"
+		"children are ordered lexicographically according to their edge symbols.  \n"
+		"\n"
+		"" },
+  { "toChild", (PyCFunction) _wrap_Position_toChild, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`toChild()`  \n"
+		"\n"
+		"Set this `Position` to its first child position in the suffix tree structure\n"
+		"viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all\n"
+		"edges have length one.  \n"
+		"\n"
+		"If no child exists, mark this `Position` as invalid instead. Note that the\n"
+		"children are ordered lexicographically according to their edge symbols.  \n"
+		"\n"
+		"" },
+  { "sibling", (PyCFunction) _wrap_Position_sibling, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`sibling() -> Position`  \n"
+		"\n"
+		"Return the next sibling `Position` in the suffix tree structure viewed as a\n"
+		"*suffix trie*, i.e., where all positions are seen as nodes and all edges have\n"
+		"length one.  \n"
+		"\n"
+		"If no sibling exists, a `Position` marked as invalid is returned. Note that the\n"
+		"siblings are ordered lexicographically according to their edge symbols.  \n"
+		"\n"
+		"" },
+  { "toSibling", (PyCFunction) _wrap_Position_toSibling, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`toSibling()`  \n"
+		"\n"
+		"Set this `Position` to its next sibling position in the suffix tree structure\n"
+		"viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all\n"
+		"edges have length one.  \n"
+		"\n"
+		"If no sibling exists, mark this `Position` as invalid instead. Note that the\n"
+		"siblings are ordered lexicographically according to their edge symbols.  \n"
 		"\n"
 		"" },
   { "toSequence", (PyCFunction) _wrap_Position_toSequence, METH_O, (char*) "\n"
@@ -45429,7 +46260,11 @@ SwigPyBuiltin__stree__PrefixIterator_richcompare(PyObject *self, PyObject *other
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -45688,7 +46523,11 @@ SwigPyBuiltin__stree__PostfixIterator_richcompare(PyObject *self, PyObject *othe
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -45947,7 +46786,11 @@ SwigPyBuiltin__stree__DFSIterator_richcompare(PyObject *self, PyObject *other, i
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Node___eq__(self, other); break;
+    case Py_LE : result = _wrap_Node___le__(self, other); break;
+    case Py_NE : result = _wrap_Node___ne__(self, other); break;
     case Py_LT : result = _wrap_Node___lt__(self, other); break;
+    case Py_GE : result = _wrap_Node___ge__(self, other); break;
+    case Py_GT : result = _wrap_Node___gt__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -46835,6 +47678,7 @@ SwigPyBuiltin__tom__Oom_richcompare(PyObject *self, PyObject *other, int op) {
   PyObject *result = NULL;
   switch (op) {
     case Py_EQ : result = _wrap_Oom___eq__(self, other); break;
+    case Py_NE : result = _wrap_Oom___ne__(self, other); break;
     default : break;
   }
   if (!result) {
@@ -47354,6 +48198,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Oom_methods[] = {
 		"\n"
 		"" },
   { "__eq__", (PyCFunction) _wrap_Oom___eq__, METH_O, (char*) "" },
+  { "__ne__", (PyCFunction) _wrap_Oom___ne__, METH_O, (char*) "" },
   { "toJSON", (PyCFunction) _wrap_Oom_toJSON, METH_NOARGS, (char*) "" },
   { "fromJSON", (PyCFunction) _wrap_Oom_fromJSON, METH_O, (char*) "" },
   { "repr", (PyCFunction) _wrap_Oom_repr, METH_NOARGS, (char*) "\n"
@@ -47658,11 +48503,8 @@ SWIGINTERN SwigPyClientData SwigPyBuiltin__tom__Oom_clientdata = {0, 0, 0, 0, 0,
 
 SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_Estimator)
 static SwigPyGetSet Estimator___dict___getset = { SwigPyObject_get___dict__, 0 };
-static SwigPyGetSet Estimator_uProbs__getset = { _wrap_Estimator_uProbs__get, _wrap_Estimator_uProbs__set };
 SWIGINTERN PyGetSetDef SwigPyBuiltin__tom__Estimator_getset[] = {
     { (char*) "__dict__", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) 0, (char*)"tom::Estimator.__dict__", (void*) &Estimator___dict___getset }
-,
-    { (char*) "uProbs_", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) SwigPyBuiltin_FunpackSetterClosure, (char*)"tom::Estimator.uProbs_", (void*) &Estimator_uProbs__getset }
 ,
     {NULL, NULL, NULL, NULL, NULL} /* Sentinel */
 };
@@ -47876,7 +48718,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
 		"" },
   { "regularization", (PyCFunction) _wrap_Estimator_regularization, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
 		"\n"
-		"`regularization(nPseudoCounts=-1, zConfidenceIntervalSize=-1,\n"
+		"`regularization(zConfidenceIntervalSize=-1, confidenceIntervalType=\"\",\n"
 		"    minimumVariance=-1, exponent=-1, preset=\"\") -> tuple`  \n"
 		"\n"
 		"Set (optional) and then return the regularization parameters for the\n"
@@ -47899,9 +48741,9 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
 		"\n"
 		"\n"
 		"" },
-  { "nPseudoCounts", (PyCFunction) _wrap_Estimator_nPseudoCounts, METH_NOARGS, (char*) "\n"
+  { "confidenceIntervalType", (PyCFunction) _wrap_Estimator_confidenceIntervalType, METH_NOARGS, (char*) "\n"
 		"\n"
-		"`nPseudoCounts() -> double`  \n"
+		"`confidenceIntervalType() -> std::string`  \n"
 		"\n"
 		"" },
   { "zConfidenceIntervalSize", (PyCFunction) _wrap_Estimator_zConfidenceIntervalSize, METH_NOARGS, (char*) "\n"
@@ -47970,13 +48812,6 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
 		"\n"
 		"    Create an `Estimator` for a sample sequence data given by a suffix tree\n"
 		"    representation `stree`.  \n"
-		"\n"
-		"Attributes\n"
-		"----------\n"
-		"* `uProbs_` : `VectorXd`  \n"
-		"    the input Symbol probabilities for the case of an iid (\"blind\") input\n"
-		"    policy. These are estimated on constructing the `Estimator` and may be\n"
-		"    overwritten if they are known exactly.  \n"
 		"\n"
 		"C++ includes: Estimator.h\n"
 		"\n"
@@ -48301,6 +49136,7 @@ static swig_type_info _swigt__p_std__shared_ptrT_std__vectorT_tom__Sequence_std_
 static swig_type_info _swigt__p_std__shared_ptrT_stree__STree_t = {"_p_std__shared_ptrT_stree__STree_t", "std::shared_ptr< stree::STree > *", 0, 0, (void*)&SwigPyBuiltin__stree__STree_clientdata, 0};
 static swig_type_info _swigt__p_std__shared_ptrT_tom__Hmm_t = {"_p_std__shared_ptrT_tom__Hmm_t", "std::shared_ptr< tom::Hmm > *", 0, 0, (void*)&SwigPyBuiltin__tom__Hmm_clientdata, 0};
 static swig_type_info _swigt__p_std__shared_ptrT_tom__Oom_t = {"_p_std__shared_ptrT_tom__Oom_t", "std::shared_ptr< tom::Oom > *", 0, 0, (void*)&SwigPyBuiltin__tom__Oom_clientdata, 0};
+static swig_type_info _swigt__p_std__string = {"_p_std__string", "std::string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_double_std__allocatorT_double_t_t = {"_p_std__vectorT_double_std__allocatorT_double_t_t", "std::vector< double,std::allocator< double > > *|std::vector< double > *", 0, 0, (void*)&SwigPyBuiltin__std__vectorT_double_t_clientdata, 0};
 static swig_type_info _swigt__p_std__vectorT_int_std__allocatorT_int_t_t = {"_p_std__vectorT_int_std__allocatorT_int_t_t", "std::vector< int,std::allocator< int > > *|std::vector< int > *", 0, 0, (void*)&SwigPyBuiltin__std__vectorT_int_t_clientdata, 0};
 static swig_type_info _swigt__p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t = {"_p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t", "tom::Sequences *|std::vector< tom::Sequence > *|std::vector< tom::Sequence,std::allocator< tom::Sequence > > *", 0, 0, (void*)&SwigPyBuiltin__std__vectorT_tom__Sequence_t_clientdata, 0};
@@ -48419,6 +49255,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_std__shared_ptrT_stree__STree_t,
   &_swigt__p_std__shared_ptrT_tom__Hmm_t,
   &_swigt__p_std__shared_ptrT_tom__Oom_t,
+  &_swigt__p_std__string,
   &_swigt__p_std__vectorT_double_std__allocatorT_double_t_t,
   &_swigt__p_std__vectorT_int_std__allocatorT_int_t_t,
   &_swigt__p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t,
@@ -48537,6 +49374,7 @@ static swig_cast_info _swigc__p_std__shared_ptrT_std__vectorT_tom__Sequence_std_
 static swig_cast_info _swigc__p_std__shared_ptrT_stree__STree_t[] = {  {&_swigt__p_std__shared_ptrT_stree__STree_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__shared_ptrT_tom__Hmm_t[] = {  {&_swigt__p_std__shared_ptrT_tom__Hmm_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__shared_ptrT_tom__Oom_t[] = {  {&_swigt__p_std__shared_ptrT_tom__Oom_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__string[] = {  {&_swigt__p_std__string, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_double_std__allocatorT_double_t_t[] = {  {&_swigt__p_std__vectorT_double_std__allocatorT_double_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_int_std__allocatorT_int_t_t[] = {  {&_swigt__p_std__vectorT_int_std__allocatorT_int_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t[] = {  {&_swigt__p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -48655,6 +49493,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_std__shared_ptrT_stree__STree_t,
   _swigc__p_std__shared_ptrT_tom__Hmm_t,
   _swigc__p_std__shared_ptrT_tom__Oom_t,
+  _swigc__p_std__string,
   _swigc__p_std__vectorT_double_std__allocatorT_double_t_t,
   _swigc__p_std__vectorT_int_std__allocatorT_int_t_t,
   _swigc__p_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t,
