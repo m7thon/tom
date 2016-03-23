@@ -57,6 +57,7 @@ std::shared_ptr<Sequences> wordsOverAlphabet(int nOutputSymbols, int nInputSymbo
     return words;
 }
 
+
 SWIGCODE(%feature ("kwargs") wordsFromData;)
 /** Find words occurring in a sequence according to given constraints. This can be used to find sets of indicative or characteristic words from training data that are appropriate for the OOM learning algorithms.
  *
@@ -82,41 +83,38 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
                                                 long minLength = 0, long maxLength = 0, long minCount = 1, long maxWords = 0,
                                                 bool uniquePositions = false) {
     auto sequence = dataSuffixTree->sequence();
+    int nSymbols = sequence.nInputSymbols() * std::min(sequence.nOutputSymbols(), 1);
     int IO = sequence.isIO() ? 2 : 1;
     if (maxLength == 0) maxLength = sequence.length();
     auto words = std::make_shared<Sequences>();
-    auto compareEdgeNodes = [] (const stree::EdgeNode& a, const stree::EdgeNode& b) { return a.count() < b.count(); };
-    std::priority_queue<stree::EdgeNode, std::vector<stree::EdgeNode>, decltype(compareEdgeNodes) > nodeQueue (compareEdgeNodes);
+    auto comparePositions = [nSymbols, IO] (const stree::Position& a, const stree::Position& b) {
+        //return a.count() * std::pow(1.0/nSymbols, (double)(a.depth()) / IO) < b.count() * std::pow(1.0/nSymbols, (double)(b.depth()) / IO);
+        return a.count() < b.count() or (a.count() == b.count() and a.depth() > b.depth());
+    };
+    std::priority_queue<stree::Position, std::vector<stree::Position>, decltype(comparePositions) > positionQueue(comparePositions);
 
-    auto node = stree::EdgeNode(dataSuffixTree);
-    auto child = stree::EdgeNode(dataSuffixTree); // used later
-    if (maxLength < minLength or not node.isValid() or node.count() < minCount) return words;
-    nodeQueue.push(node);
-    if (minLength == 0) { words->push_back(sequence.rawSub(0, 0)); minLength = 1; }
+    auto position = stree::Position(dataSuffixTree);
+    if (maxLength < minLength or not position.isValid() or position.count() < minCount) { return words; }
+    positionQueue.push(position);
 
-    while ((not nodeQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
-        node = nodeQueue.top();
-        nodeQueue.pop();
-        stree::nidx_t node_depth = node.depth();
-        if (node_depth < IO * maxLength) {
-            child = node.child();
-            while (child.isValid()) {
-                if (child.count() >= minCount) nodeQueue.push(child);
-                child.toSibling();
-            }
-        }
-        if (node_depth < IO * minLength) { continue; }
-        if (node_depth > IO * maxLength) { node_depth = IO * maxLength; }
-        stree::nidx_t node_min_depth = node.parent().depth() + 1;
-        if ((IO == 2) and (node_min_depth & 1)) ++node_min_depth;
-        if (node_min_depth < IO * minLength) node_min_depth = IO * minLength;
-        if (uniquePositions) {
-            if (node_min_depth <= node_depth) words->push_back(sequence.rawSub(node.headIndex(), node_min_depth));
-        } else {
-            stree::nidx_t head_index = node.headIndex();
-            while (node_min_depth <= node_depth and (maxWords == 0 or words->size() < maxWords)) {
-                words->push_back(sequence.rawSub(head_index, node_min_depth));
-                node_min_depth += IO;
+    while ((not positionQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
+        position.set(positionQueue.top());
+        positionQueue.pop();
+        if (position.depth() >= IO * minLength) { words->push_back(position.sequence()); }
+        if (position.depth() < IO * maxLength) {
+            if (uniquePositions) { position.toExplicit(); }
+            if (position.depth() % IO == 0) { position.toChild(); }
+            while (position.isValid()) {
+                if (IO == 2) {
+                    auto grandchild = position.child();
+                    while (grandchild.isValid()) {
+                        if (grandchild.count() >= minCount) positionQueue.push(grandchild);
+                        grandchild.toSibling();
+                    }
+                } else {
+                    if (position.count() >= minCount) positionQueue.push(position);
+                }
+                position.toSibling();
             }
         }
     }
