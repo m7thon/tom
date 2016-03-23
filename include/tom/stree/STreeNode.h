@@ -564,6 +564,39 @@ public:
 		}
 	}
 
+	/** If this `Position` is not explicit, i.e., it lies on an edge of the suffix tree structure, then set this `Position` to the deeper node end-point of that edge, making this position explicit.
+	 */
+	void toExplicit() {
+		if (!isValid()) return;
+		depth_ = edge_.depth();
+	}
+
+	/** Return the first child `Position` in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no child exists, a `Position` marked as invalid is returned. Note that the children are ordered lexicographically according to their edge symbols.
+	 */
+	Position child() const { Position ret = Position(*this); ret.toChild(); return ret; }
+
+	/** Set this `Position` to its first child position in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no child exists, mark this `Position` as invalid instead. Note that the children are ordered lexicographically according to their edge symbols.
+	 */
+	void toChild() {
+		if (!isValid()) return;
+		if (isExplicit()) {
+			edge_.toChild();
+			if (isValid()) depth_++;
+		} else { ++depth_; }
+	}
+
+	/** Return the next sibling `Position` in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no sibling exists, a `Position` marked as invalid is returned. Note that the siblings are ordered lexicographically according to their edge symbols.
+ 	*/
+	Position sibling() const { Position ret = Position(*this); ret.toSibling(); return ret; }
+
+	/** Set this `Position` to its next sibling position in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no sibling exists, mark this `Position` as invalid instead. Note that the siblings are ordered lexicographically according to their edge symbols.
+ 	*/
+	void toSibling() {
+		if (!isValid()) return;
+		if (depth_ == edge_.parent().depth() + 1) { edge_.toSibling(); }
+		else setValid(false);
+	}
+
     /** Update this `Position` such that it represents a subsequence extended by the given `sequence`. If no such position exists, this `Position` is updated symbol-wise according to the given `sequence` as far as possible and then marked as invalid. For an invalid `Position` this function has no effect.
      */
 	void toSequence(const Sequence& sequence) {
