@@ -9,19 +9,12 @@ class Estimator {
 public:
     /**
      * Create an `Estimator` for a sample sequence data given by a suffix tree representation `stree`. */
-    Estimator(const std::shared_ptr<stree::STree> &stree)
-            : state_(stree), stree_(stree) {
+    Estimator(const std::shared_ptr<stree::STree> &stree) : state_(stree), stree_(stree) {
         nO_ = stree_->sequence().nOutputSymbols();
         nU_ = stree_->sequence().nInputSymbols();
-        len_ = (stree_->sequence().length());
-        uProbs_ = VectorXd::Ones(std::max(1, nU_));
-        for (Symbol u = 0; u < nU_; ++u) {
-            state_.pos_.setRoot();
-            state_.pos_.toSymbol(u);
-            uProbs_(u) = (double) (state_.pos_.count()) / len_;
-        }
+        N_ = (stree_->sequence().length());
         state_.pos_.setRoot();
-        regularization(-1, -1, -1, -1, "default");
+        regularization("default");
     }
 
     /** Return the data sequence. */
@@ -47,10 +40,8 @@ public:
     /**
      * Return an estimate of f( `sequence` ). */
     double f(const Sequence &sequence) {
-        estimateVariance_ = false;
         state_.reset();
         extendBy(sequence);
-        eval();
         return state_.f_;
     }
 
@@ -87,7 +78,6 @@ public:
                 state_ = state;
                 extendBy(s);
                 extendBy(Y[i]);
-                eval();
                 F.coeffRef(i, j) = state_.f_;
             }
         }
@@ -111,11 +101,9 @@ public:
     /**
      * Return a variance estimate for the estimate of f( `sequence` ). */
     double v(const Sequence &sequence) {
-        estimateVariance_ = true;
         state_.reset();
         extendBy(sequence);
-        eval();
-        return state_.v_;
+        return this->v();
     }
 
     /**
@@ -185,12 +173,10 @@ public:
      * an estimate of f( `sequence` ) together with the corresponding variance estimate `v`. */
     C1(void) PY2(tuple<double, double>)
     fv(C3(double &f, double &v,) const Sequence &sequence) {
-        estimateVariance_ = true;
         state_.reset();
         extendBy(sequence);
-        eval();
         f = state_.f_;
-        v = state_.v_;
+        v = this->v();
     }
 
     /**
@@ -256,9 +242,8 @@ public:
                 state_ = state;
                 extendBy(s);
                 extendBy(Y[i]);
-                eval();
                 F.coeffRef(i, j) = state_.f_;
-                V.coeffRef(i, j) = state_.v_;
+                V.coeffRef(i, j) = this->v();
             }
         }
     }
@@ -271,7 +256,8 @@ public:
 
     //<editor-fold desc="Regularization parameters">
     SWIGCODE(%feature ("kwargs") regularization;)
-    SWIGCODE(%apply double *OUTPUT { double *nPseudoCountsOut, double *zConfidenceIntervalSizeOut, double *minimumVarianceOut, double *exponentOut };)
+    SWIGCODE(%apply double *OUTPUT { double *zConfidenceIntervalSizeOut, double *minimumVarianceOut, double *exponentOut };)
+    SWIGCODE(%apply std::string *OUTPUT { std::string *confidenceIntervalTypeOut };)
     /**
      Set (optional) and then return the regularization parameters for the `Estimator`. This is done as follows:
      - First, if a `preset` ("none" / "default") is specified, all regularization parameters are set accordingly.
@@ -289,52 +275,58 @@ public:
      \endif
      */
     C1(void) PY1(tuple)
-    regularization(C5(double *nPseudoCountsOut, double *zConfidenceIntervalSizeOut, double *minimumVarianceOut, double *exponentOut,)
-                   double nPseudoCounts = -1,
+    regularization(C5(double *zConfidenceIntervalSizeOut, std::string *confidenceIntervalTypeOut, double *minimumVarianceOut, double *exponentOut,)
                    double zConfidenceIntervalSize = -1,
+                   std::string confidenceIntervalType = "",
                    double minimumVariance = -1,
                    double exponent = -1,
                    std::string preset = "") throw(std::invalid_argument) {
         if (preset == "default") {
-            nPseudoCounts_           = 1;
             zConfidenceIntervalSize_ = 1;
-            minimumVariance_         = 1;
-            exponent_                = 0.5;
+            confidenceIntervalType_ = "Wilson";
+            minimumVariance_         = 0;
+            exponent_                = 1;
         } else if (preset == "none") {
-            nPseudoCounts_           = 0;
             zConfidenceIntervalSize_ = 0;
+            confidenceIntervalType_ = "Wilson";
             minimumVariance_         = 0;
             exponent_                = 1;
         } else if (preset != "") {
             throw std::invalid_argument("unrecognized preset");
         }
-        if (nPseudoCounts           != -1) this->nPseudoCounts_ = nPseudoCounts;
         if (zConfidenceIntervalSize != -1) this->zConfidenceIntervalSize_ = zConfidenceIntervalSize;
+        if (confidenceIntervalType != "") this->confidenceIntervalType_ = confidenceIntervalType;
         if (minimumVariance         != -1) this->minimumVariance_ = minimumVariance;
         if (exponent                != -1) this->exponent_ = exponent;
-        if (nPseudoCountsOut) *nPseudoCountsOut = this->nPseudoCounts_;
         if (zConfidenceIntervalSizeOut) *zConfidenceIntervalSizeOut = this->zConfidenceIntervalSize_;
+        if (confidenceIntervalTypeOut) *confidenceIntervalTypeOut = this->confidenceIntervalType_;
         if (minimumVarianceOut) *minimumVarianceOut = this->minimumVariance_;
         if (exponentOut) *exponentOut = this->exponent_;
     }
 
     SWIGCODE(%clear double *nPseudoCountsOut, double *zConfidenceIntervalSizeOut, double *minimumVarianceOut, double *exponentOut;)
+    SWIGCODE(%clear std::string *confidenceIntervalTypeOut;)
 
 #ifndef SWIG
 #ifndef PY
     /**
      * Set the regularization parameters for the `Estimator`. This is a convenience function that simply calls `regularization(NULL, NULL, NULL, NULL, nPseudoCounts, zConfidenceIntervalSize, minimumVariance, exponent, preset);` */
-    void regularization(double nPseudoCounts = -1,
-                        double zConfidenceIntervalSize = -1,
+    void regularization(double zConfidenceIntervalSize = -1,
+                        std::string confidenceIntervalType = "",
                         double minimumVariance = -1,
                         double exponent = -1,
                         std::string preset = "") throw(std::invalid_argument) {
-        regularization(NULL, NULL, NULL, NULL, nPseudoCounts, zConfidenceIntervalSize, minimumVariance, exponent, preset);
+        regularization(NULL, NULL, NULL, NULL, zConfidenceIntervalSize, confidenceIntervalType, minimumVariance, exponent, preset);
+    }
+    /**
+    * Set the regularization parameters for the `Estimator` to the given `preset`. This is a convenience function that simply calls `regularization(NULL, NULL, NULL, NULL, -1, -1, -1, -1, preset);` */
+    void regularization(std::string preset) throw(std::invalid_argument) {
+        regularization(NULL, NULL, NULL, NULL, -1, "", -1, -1, preset);
     }
 #endif
 #endif
 
-    double nPseudoCounts() const { return nPseudoCounts_; }
+    std::string confidenceIntervalType() const { return confidenceIntervalType_; }
 
     double zConfidenceIntervalSize() const { return zConfidenceIntervalSize_; }
 
@@ -343,17 +335,15 @@ public:
     double exponent() const { return exponent_; }
     //</editor-fold>
 
-    VectorXd uProbs_; ///< the input Symbol probabilities for the case of an iid ("blind") input policy.\ These are estimated on constructing the \c Estimator and may be overwritten if they are known exactly.
-
 private:
     int nO_;              ///< the size of the output alphabet
     int nU_;              ///< the size of the input alphabet
-    long len_;            ///< the length of the sample sequence from which the estimates are calculated
+    long N_;            ///< the length of the sample sequence from which the estimates are calculated
 
-    double nPseudoCounts_ = 1;
-    double zConfidenceIntervalSize_ = 0;
-    double minimumVariance_ = 0;
-    double exponent_ = 1;
+    std::string confidenceIntervalType_;
+    double zConfidenceIntervalSize_;
+    double minimumVariance_;
+    double exponent_;
 
     SWIGCODE(%ignore State::operator=;)
     /**
@@ -377,23 +367,24 @@ private:
         State& operator=(const State& state) {
             pos_.set(state.pos_);
             f_ = state.f_;
+            f2_ = state.f2_;
             v_ = state.v_;
-            fB_ = state.fB_;
-            len_ = state.len_;
+            k_ = state.k_;
             return *this;
         }
 
         void reset() {
             pos_.setRoot();
-            f_ = fB_ = v_ = 1;
-            len_ = 0;
+            f_ = f2_ = 1;
+            v_ = 0;
+            k_ = 0;
         }
 
         stree::Position pos_; ///< the position in the suffix tree for the currently estimated sequence.
-        double f_ = 1;        ///< related to the current estimate (used internally in different ways)
-        double v_ = 1;
-        double fB_ = 1;       ///< related to the current Bayesian estimate (used internally in different ways)
-        long len_ = 0;
+        double f_ = 1;        ///< the current estimate
+        double f2_ = 1;
+        double v_ = 0;
+        long k_ = 0;          ///< the length of the currently parsed sequence
     };
 
     State state_;                   ///< captures the relevant information during the parsing of a sequence
@@ -402,75 +393,59 @@ private:
     const std::shared_ptr<stree::STree> stree_; ///< the suffix tree for the underlying sample sequence
 
     void extendBy(Symbol o, Symbol u = 0) {
-        state_.len_++;
-        if (nU_ == 0) {
-            double ch = state_.pos_.count(); // (c)ount of current history
-            state_.pos_.toSymbol(o);
-            double cz = state_.pos_.count(); // (c)ount of symbol (z) after current history
-            state_.fB_ *= (ch == 0 ? 0.5 : (cz + 0.5 * nPseudoCounts_) / (ch + nPseudoCounts_));
-        } else { // IO-case
-            state_.pos_.toSymbol(u);
-            double cu = state_.pos_.count(); // (c)ount of input (u) after current history
-            state_.pos_.toSymbol(o);
-            double co = state_.pos_.count(); // (c)ount of output (o) after current history and input u
-            if (cu == 0) state_.f_ *= (1.0 / nO_);
-            else         state_.f_ *= (co / cu) ;
+        state_.k_++;
+        /* `n` is the number of possible occurrences for `x_k`, and `c` is the number of occurrences of `x_k`. */
+        if (nU_ != 0) { state_.pos_.toSymbol(u); }
+        double n = state_.pos_.count();
+        if (state_.pos_.isSuffix()) { --n; }
+        state_.pos_.toSymbol(o);
+        double c = state_.pos_.count();
+        double p = (n == 0 ? 1.0 / nO_ : c / n);
+        state_.f_ *= p;
 
-            if (estimateVariance_) {
-                if (cu < 2) { state_.v_ *= 0.75; }
-                else {
-                    //double pB = (co + 1/nO_ * nPseudoCounts_) / (cu + nPseudoCounts_);
-                    double pBv = (co + 0.5 * nPseudoCounts_) / (cu + nPseudoCounts_);
-                    double vB = pBv * (1 - pBv) / (cu);
-                    double confidenceIntervalRadius =
-                            zConfidenceIntervalSize_ * std::sqrt(vB);
-                    if (pBv <= 0.5) pBv = std::min(pBv + confidenceIntervalRadius, 0.5);
-                    else pBv = std::max(0.5, pBv - confidenceIntervalRadius);
-                    state_.fB_ *= pBv;
-                    vB = pBv * (1 - pBv) / (cu);
-
-                    state_.v_ *= std::max(pBv * pBv - vB, 0.0);
+        /* Next we compute a confidence interval for p: */
+        double p_mid = (n == 0 ? 0.5 : c / n);
+        double ci_lower = 0.0, ci_upper = 0.0;
+        if (zConfidenceIntervalSize_ != 0) {
+            double z2 = zConfidenceIntervalSize_ * zConfidenceIntervalSize_;
+            ci_lower = ci_upper = 1.0;
+            if (n > 0) {
+                p_mid = (c + 0.5 * z2) / (n + z2);
+                if (confidenceIntervalType_ == "Agresti–Coull") {
+                    ci_lower = ci_upper = zConfidenceIntervalSize_ * std::sqrt(p_mid * (1 - p_mid) / (n + z2));
+                } else if (confidenceIntervalType_ == "Wilson") {
+                    ci_lower = ci_upper = zConfidenceIntervalSize_ * std::sqrt(n * p * (1 - p) + z2 / 4) / (n + z2);
+                } else if (confidenceIntervalType_ == "Wilson_CC") { // Wilson score interval with continuity correction (more conservative):
+                    if (c > 0) ci_lower = (0.5 + zConfidenceIntervalSize_ * std::sqrt(n * p * (1 - p) + z2 / 4 - 0.25 / n + p - 0.5)) / (n + z2);
+                    if (c < n) ci_upper = (0.5 + zConfidenceIntervalSize_ * std::sqrt(n * p * (1 - p) + z2 / 4 - 0.25 / n - p + 0.5)) / (n + z2);
                 }
             }
         }
+        double p_lower = std::max(p_mid - ci_lower, 0.0);
+        double p_upper = std::min(p_mid + ci_upper, 1.0);
+        double p_centered = (p_mid < 0.5 ? std::min(p_upper, 0.5) : std::max(p_lower, 0.5));
+        double p_extreme = std::min(p_lower, 1 - p_upper);
+
+        double E_p2_overestimate = p_upper * p_upper;
+        double var_p_overestimate = 0.5;
+        double var_p_underestimate = 0.0;
+        if (n > 0) {
+            var_p_overestimate = p_centered * (1 - p_centered) / n;
+            var_p_underestimate = p_extreme * (1 - p_extreme) / n;
+        }
+
+        state_.v_ = state_.v_ * (E_p2_overestimate - var_p_underestimate) + state_.f2_ * var_p_overestimate;
+        state_.f2_ *= E_p2_overestimate;
     }
 
     void extendBy(const Sequence &seq) { for (long i = 0; i < seq.length(); ++i) { extendBy(seq.o(i), seq.u(i)); } }
 
-    /** Call this after parsing a sequence by calls to `extendBy()` to finalize the parsing. This places the estimate in `state_.f_` and the corresponding variance estimate (if `estimateVariance = true`) in `state_.v_`.
-     */
-    void eval() {
-        if (nU_ == 0) {
-            double n = std::max(len_ - state_.len_ + 1, 1L);
-            double x = state_.pos_.count();
-            state_.f_ = x / n;
-
-            if (estimateVariance_) {
-                // Compute a confidence interval for the estimate f, and use the bound that is closer to 1/2 to estimate the variance:
-                // double fB = (x + 0.5 * nPseudoCounts_) / (n + nPseudoCounts_);
-                double fB = state_.fB_;
-                double confidenceIntervalRadius =
-                        zConfidenceIntervalSize_ * std::sqrt(fB * (1 - fB) / (n + nPseudoCounts_));
-                if (fB <= 0.5) fB = std::min(fB + confidenceIntervalRadius, (double) (0.5));
-                else fB = std::max((double) (0.5), fB - confidenceIntervalRadius);
-                state_.v_ = fB * (1 - fB) / (n);
-            }
-        }
-        else if (estimateVariance_) { // IO-case
-            state_.v_ = std::max(state_.fB_ * state_.fB_ - state_.v_, 0.0);
-        }
-        if (estimateVariance_) {
-            state_.v_ = std::pow(state_.v_, exponent_);
-            if (state_.len_ == 0) {
-                state_.v_ = 1.0 / (nO_ * (double)(len_));
-            }
-            if (minimumVariance_ == 1) {
-                state_.v_ = std::max(state_.v_, 1.0/(nO_ * (double)len_ * (double)len_));
-                state_.v_ = std::max(state_.v_, 1e-15);
-            } else {
-                state_.v_ = std::max(state_.v_, minimumVariance_);
-            }
-        }
+    double v() const {
+        //double var = state_.fB_ * (state_.fB_ - state_.fBm1_);
+        double var = state_.v_;
+        if (state_.k_ == 0) { var = 1e-15; }
+        var = std::pow(var, exponent_);
+        return var;
     }
 
 }; // class Estimator
