@@ -38892,7 +38892,13 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObj
       arg6 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6)->get());
     }
   }
-  (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,(tom::Sequences const &)*arg6);
+  try {
+    (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,(tom::Sequences const &)*arg6);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
   resultobj = SWIG_Py_Void();
   {
     npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
@@ -39229,12 +39235,10 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   double *arg2 = (double *) 0 ;
   std::string *arg3 = (std::string *) 0 ;
   double *arg4 = (double *) 0 ;
-  double *arg5 = (double *) 0 ;
-  double arg6 = (double) -1 ;
-  std::string arg7 = (std::string) "" ;
-  double arg8 = (double) -1 ;
-  double arg9 = (double) -1 ;
-  std::string arg10 = (std::string) "" ;
+  double arg5 = (double) -1 ;
+  std::string arg6 = (std::string) "" ;
+  double arg7 = (double) -1 ;
+  std::string arg8 = (std::string) "" ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   double temp2 ;
@@ -39243,78 +39247,65 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   int res3 = SWIG_TMPOBJ ;
   double temp4 ;
   int res4 = SWIG_TMPOBJ ;
-  double temp5 ;
-  int res5 = SWIG_TMPOBJ ;
-  double val6 ;
-  int ecode6 = 0 ;
-  double val8 ;
-  int ecode8 = 0 ;
-  double val9 ;
-  int ecode9 = 0 ;
+  double val5 ;
+  int ecode5 = 0 ;
+  double val7 ;
+  int ecode7 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
   PyObject * obj4 = 0 ;
-  PyObject * obj5 = 0 ;
   char *  kwnames[] = {
-    (char *) "zConfidenceIntervalSize",(char *) "confidenceIntervalType",(char *) "minimumVariance",(char *) "exponent",(char *) "preset", NULL 
+    (char *) "zConfidenceIntervalSize",(char *) "confidenceIntervalType",(char *) "minimumVariance",(char *) "preset", NULL 
   };
   
   arg2 = &temp2;
   arg3 = &temp3;
   arg4 = &temp4;
-  arg5 = &temp5;
-  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OOOOO:Estimator_regularization",kwnames,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OOOO:Estimator_regularization",kwnames,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_regularization" "', argument " "1"" of type '" "tom::Estimator *""'"); 
   }
   arg1 = reinterpret_cast< tom::Estimator * >(argp1);
   if (obj1) {
-    ecode6 = SWIG_AsVal_double(obj1, &val6);
-    if (!SWIG_IsOK(ecode6)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "Estimator_regularization" "', argument " "6"" of type '" "double""'");
+    ecode5 = SWIG_AsVal_double(obj1, &val5);
+    if (!SWIG_IsOK(ecode5)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Estimator_regularization" "', argument " "5"" of type '" "double""'");
     } 
-    arg6 = static_cast< double >(val6);
+    arg5 = static_cast< double >(val5);
   }
   if (obj2) {
     {
       std::string *ptr = (std::string *)0;
       int res = SWIG_AsPtr_std_string(obj2, &ptr);
       if (!SWIG_IsOK(res) || !ptr) {
-        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "7"" of type '" "std::string""'"); 
+        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "6"" of type '" "std::string""'"); 
       }
-      arg7 = *ptr;
+      arg6 = *ptr;
       if (SWIG_IsNewObj(res)) delete ptr;
     }
   }
   if (obj3) {
-    ecode8 = SWIG_AsVal_double(obj3, &val8);
-    if (!SWIG_IsOK(ecode8)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "Estimator_regularization" "', argument " "8"" of type '" "double""'");
+    ecode7 = SWIG_AsVal_double(obj3, &val7);
+    if (!SWIG_IsOK(ecode7)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "Estimator_regularization" "', argument " "7"" of type '" "double""'");
     } 
-    arg8 = static_cast< double >(val8);
+    arg7 = static_cast< double >(val7);
   }
   if (obj4) {
-    ecode9 = SWIG_AsVal_double(obj4, &val9);
-    if (!SWIG_IsOK(ecode9)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "Estimator_regularization" "', argument " "9"" of type '" "double""'");
-    } 
-    arg9 = static_cast< double >(val9);
-  }
-  if (obj5) {
     {
       std::string *ptr = (std::string *)0;
-      int res = SWIG_AsPtr_std_string(obj5, &ptr);
+      int res = SWIG_AsPtr_std_string(obj4, &ptr);
       if (!SWIG_IsOK(res) || !ptr) {
-        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "10"" of type '" "std::string""'"); 
+        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "8"" of type '" "std::string""'"); 
       }
-      arg10 = *ptr;
+      arg8 = *ptr;
       if (SWIG_IsNewObj(res)) delete ptr;
     }
   }
   try {
-    (arg1)->regularization(arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
+    (arg1)->regularization(arg2,arg3,arg4,arg5,arg6,arg7,arg8);
   }
   catch(std::invalid_argument &_e) {
     SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
@@ -39338,12 +39329,6 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   } else {
     int new_flags = SWIG_IsNewObj(res4) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
     resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg4), SWIGTYPE_p_double, new_flags));
-  }
-  if (SWIG_IsTmpObj(res5)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg5)));
-  } else {
-    int new_flags = SWIG_IsNewObj(res5) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg5), SWIGTYPE_p_double, new_flags));
   }
   return resultobj;
 fail:
@@ -39410,28 +39395,6 @@ SWIGINTERN PyObject *_wrap_Estimator_minimumVariance(PyObject *self, PyObject *a
   }
   arg1 = reinterpret_cast< tom::Estimator * >(argp1);
   result = (double)((tom::Estimator const *)arg1)->minimumVariance();
-  resultobj = SWIG_From_double(static_cast< double >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_Estimator_exponent(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  double result;
-  
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_exponent",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_exponent" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
-  }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = (double)((tom::Estimator const *)arg1)->exponent();
   resultobj = SWIG_From_double(static_cast< double >(result));
   return resultobj;
 fail:
@@ -48719,7 +48682,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
   { "regularization", (PyCFunction) _wrap_Estimator_regularization, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
 		"\n"
 		"`regularization(zConfidenceIntervalSize=-1, confidenceIntervalType=\"\",\n"
-		"    minimumVariance=-1, exponent=-1, preset=\"\") -> tuple`  \n"
+		"    minimumVariance=-1, preset=\"\") -> tuple`  \n"
 		"\n"
 		"Set (optional) and then return the regularization parameters for the\n"
 		"`Estimator`.  \n"
@@ -48754,11 +48717,6 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
   { "minimumVariance", (PyCFunction) _wrap_Estimator_minimumVariance, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`minimumVariance() -> double`  \n"
-		"\n"
-		"" },
-  { "exponent", (PyCFunction) _wrap_Estimator_exponent, METH_NOARGS, (char*) "\n"
-		"\n"
-		"`exponent() -> double`  \n"
 		"\n"
 		"" },
   { NULL, NULL, 0, NULL } /* Sentinel */
