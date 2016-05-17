@@ -12,30 +12,35 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef RAPIDJSON_INTERNAL_REGEX_H_
-#define RAPIDJSON_INTERNAL_REGEX_H_
+#ifndef CEREAL_RAPIDJSON_INTERNAL_REGEX_H_
+#define CEREAL_RAPIDJSON_INTERNAL_REGEX_H_
 
 #include "../allocators.h"
 #include "../stream.h"
 #include "stack.h"
 
 #ifdef __clang__
-RAPIDJSON_DIAG_PUSH
-RAPIDJSON_DIAG_OFF(padded)
-RAPIDJSON_DIAG_OFF(switch-enum)
-RAPIDJSON_DIAG_OFF(implicit-fallthrough)
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(padded)
+CEREAL_RAPIDJSON_DIAG_OFF(switch-enum)
+CEREAL_RAPIDJSON_DIAG_OFF(implicit-fallthrough)
 #endif
 
 #ifdef __GNUC__
-RAPIDJSON_DIAG_PUSH
-RAPIDJSON_DIAG_OFF(effc++)
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(effc++)
 #endif
 
-#ifndef RAPIDJSON_REGEX_VERBOSE
-#define RAPIDJSON_REGEX_VERBOSE 0
+#ifdef _MSC_VER
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(4512) // assignment operator could not be generated
 #endif
 
-RAPIDJSON_NAMESPACE_BEGIN
+#ifndef CEREAL_RAPIDJSON_REGEX_VERBOSE
+#define CEREAL_RAPIDJSON_REGEX_VERBOSE 0
+#endif
+
+CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -175,22 +180,22 @@ private:
     };
 
     State& GetState(SizeType index) {
-        RAPIDJSON_ASSERT(index < stateCount_);
+        CEREAL_RAPIDJSON_ASSERT(index < stateCount_);
         return states_.template Bottom<State>()[index];
     }
 
     const State& GetState(SizeType index) const {
-        RAPIDJSON_ASSERT(index < stateCount_);
+        CEREAL_RAPIDJSON_ASSERT(index < stateCount_);
         return states_.template Bottom<State>()[index];
     }
 
     Range& GetRange(SizeType index) {
-        RAPIDJSON_ASSERT(index < rangeCount_);
+        CEREAL_RAPIDJSON_ASSERT(index < rangeCount_);
         return ranges_.template Bottom<Range>()[index];
     }
 
     const Range& GetRange(SizeType index) const {
-        RAPIDJSON_ASSERT(index < rangeCount_);
+        CEREAL_RAPIDJSON_ASSERT(index < rangeCount_);
         return ranges_.template Bottom<Range>()[index];
     }
 
@@ -313,7 +318,7 @@ private:
             Patch(e->out, NewState(kRegexInvalidState, kRegexInvalidState, 0));
             root_ = e->start;
 
-#if RAPIDJSON_REGEX_VERBOSE
+#if CEREAL_RAPIDJSON_REGEX_VERBOSE
             printf("root: %d\n", root_);
             for (SizeType i = 0; i < stateCount_ ; i++) {
                 State& s = GetState(i);
@@ -324,7 +329,7 @@ private:
         }
 
         // Preallocate buffer for SearchWithAnchoring()
-        RAPIDJSON_ASSERT(stateSet_ == 0);
+        CEREAL_RAPIDJSON_ASSERT(stateSet_ == 0);
         if (stateCount_ > 0) {
             stateSet_ = static_cast<unsigned*>(states_.GetAllocator().Malloc(GetStateSetSize()));
             state0_.template Reserve<SizeType>(stateCount_);
@@ -370,14 +375,14 @@ private:
     bool Eval(Stack<Allocator>& operandStack, Operator op) {
         switch (op) {
             case kConcatenation:
-                if (operandStack.GetSize() >= sizeof(Frag) * 2) {
+                CEREAL_RAPIDJSON_ASSERT(operandStack.GetSize() >= sizeof(Frag) * 2);
+                {
                     Frag e2 = *operandStack.template Pop<Frag>(1);
                     Frag e1 = *operandStack.template Pop<Frag>(1);
                     Patch(e1.out, e2.start);
                     *operandStack.template Push<Frag>() = Frag(e1.start, e2.out, Min(e1.minIndex, e2.minIndex));
-                    return true;
                 }
-                return false;
+                return true;
 
             case kAlternation:
                 if (operandStack.GetSize() >= sizeof(Frag) * 2) {
@@ -408,7 +413,8 @@ private:
                 }
                 return false;
 
-            case kOneOrMore:
+            default: 
+                CEREAL_RAPIDJSON_ASSERT(op == kOneOrMore);
                 if (operandStack.GetSize() >= sizeof(Frag)) {
                     Frag e = *operandStack.template Pop<Frag>(1);
                     SizeType s = NewState(kRegexInvalidState, e.start, 0);
@@ -417,16 +423,12 @@ private:
                     return true;
                 }
                 return false;
-
-            default:
-                return false;
         }
     }
 
     bool EvalQuantifier(Stack<Allocator>& operandStack, unsigned n, unsigned m) {
-        RAPIDJSON_ASSERT(n <= m);
-        if (operandStack.GetSize() < sizeof(Frag))
-            return false;
+        CEREAL_RAPIDJSON_ASSERT(n <= m);
+        CEREAL_RAPIDJSON_ASSERT(operandStack.GetSize() >= sizeof(Frag));
 
         if (n == 0) {
             if (m == 0)                             // a{0} not support
@@ -466,17 +468,17 @@ private:
     static SizeType Min(SizeType a, SizeType b) { return a < b ? a : b; }
 
     void CloneTopOperand(Stack<Allocator>& operandStack) {
-        const Frag *src = operandStack.template Top<Frag>();
-        SizeType count = stateCount_ - src->minIndex; // Assumes top operand contains states in [src->minIndex, stateCount_)
+        const Frag src = *operandStack.template Top<Frag>(); // Copy constructor to prevent invalidation
+        SizeType count = stateCount_ - src.minIndex; // Assumes top operand contains states in [src->minIndex, stateCount_)
         State* s = states_.template Push<State>(count);
-        memcpy(s, &GetState(src->minIndex), count * sizeof(State));
+        memcpy(s, &GetState(src.minIndex), count * sizeof(State));
         for (SizeType j = 0; j < count; j++) {
             if (s[j].out != kRegexInvalidState)
                 s[j].out += count;
             if (s[j].out1 != kRegexInvalidState)
                 s[j].out1 += count;
         }
-        *operandStack.template Push<Frag>() = Frag(src->start + count, src->out + count, src->minIndex + count);
+        *operandStack.template Push<Frag>() = Frag(src.start + count, src.out + count, src.minIndex + count);
         stateCount_ += count;
     }
 
@@ -517,7 +519,7 @@ private:
                     return false;   // Error: nothing inside []
                 if (step == 2) { // Add trailing '-'
                     SizeType r = NewRange('-');
-                    RAPIDJSON_ASSERT(current != kRegexInvalidRange);
+                    CEREAL_RAPIDJSON_ASSERT(current != kRegexInvalidRange);
                     GetRange(current).next = r;
                 }
                 if (negate)
@@ -556,7 +558,7 @@ private:
                     break;
 
                 default:
-                    RAPIDJSON_ASSERT(step == 2);
+                    CEREAL_RAPIDJSON_ASSERT(step == 2);
                     GetRange(current).end = codepoint;
                     step = 0;
                 }
@@ -603,7 +605,7 @@ private:
 
     template <typename InputStream>
     bool SearchWithAnchoring(InputStream& is, bool anchorBegin, bool anchorEnd) const {
-        RAPIDJSON_ASSERT(IsValid());
+        CEREAL_RAPIDJSON_ASSERT(IsValid());
         DecodedStream<InputStream> ds(is);
 
         state0_.Clear();
@@ -642,8 +644,7 @@ private:
 
     // Return whether the added states is a match state
     bool AddState(Stack<Allocator>& l, SizeType index) const {
-        if (index == kRegexInvalidState)
-            return true;
+        CEREAL_RAPIDJSON_ASSERT(index != kRegexInvalidState);
 
         const State& s = GetState(index);
         if (s.out1 != kRegexInvalidState) { // Split
@@ -687,10 +688,14 @@ private:
 typedef GenericRegex<UTF8<> > Regex;
 
 } // namespace internal
-RAPIDJSON_NAMESPACE_END
+CEREAL_RAPIDJSON_NAMESPACE_END
 
 #ifdef __clang__
-RAPIDJSON_DIAG_POP
+CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
-#endif // RAPIDJSON_INTERNAL_REGEX_H_
+#ifdef _MSC_VER
+CEREAL_RAPIDJSON_DIAG_POP
+#endif
+
+#endif // CEREAL_RAPIDJSON_INTERNAL_REGEX_H_

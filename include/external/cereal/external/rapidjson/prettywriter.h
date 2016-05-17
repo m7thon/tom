@@ -12,17 +12,25 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef RAPIDJSON_PRETTYWRITER_H_
-#define RAPIDJSON_PRETTYWRITER_H_
+#ifndef CEREAL_RAPIDJSON_PRETTYWRITER_H_
+#define CEREAL_RAPIDJSON_PRETTYWRITER_H_
 
 #include "writer.h"
 
 #ifdef __GNUC__
-RAPIDJSON_DIAG_PUSH
-RAPIDJSON_DIAG_OFF(effc++)
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(effc++)
 #endif
 
-RAPIDJSON_NAMESPACE_BEGIN
+CEREAL_RAPIDJSON_NAMESPACE_BEGIN
+
+//! Combination of PrettyWriter format flags.
+/*! \see PrettyWriter::SetFormatOptions
+ */
+enum PrettyFormatOptions {
+    kFormatDefault = 0,         //!< Default pretty formatting.
+    kFormatSingleLineArray = 1  //!< Format arrays on a single line.
+};
 
 //! Writer with indentation and spacing.
 /*!
@@ -43,7 +51,7 @@ public:
         \param levelDepth Initial capacity of stack.
     */
     explicit PrettyWriter(OutputStream& os, StackAllocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) : 
-        Base(os, allocator, levelDepth), indentChar_(' '), indentCharCount_(4) {}
+        Base(os, allocator, levelDepth), indentChar_(' '), indentCharCount_(4), formatOptions_(kFormatDefault) {}
 
 
     explicit PrettyWriter(StackAllocator* allocator = 0, size_t levelDepth = Base::kDefaultLevelDepth) : 
@@ -55,9 +63,17 @@ public:
         \note The default indentation is 4 spaces.
     */
     PrettyWriter& SetIndent(Ch indentChar, unsigned indentCharCount) {
-        RAPIDJSON_ASSERT(indentChar == ' ' || indentChar == '\t' || indentChar == '\n' || indentChar == '\r');
+        CEREAL_RAPIDJSON_ASSERT(indentChar == ' ' || indentChar == '\t' || indentChar == '\n' || indentChar == '\r');
         indentChar_ = indentChar;
         indentCharCount_ = indentCharCount;
+        return *this;
+    }
+
+    //! Set pretty writer formatting options.
+    /*! \param options Formatting options.
+    */
+    PrettyWriter& SetFormatOptions(PrettyFormatOptions options) {
+        formatOptions_ = options;
         return *this;
     }
 
@@ -74,13 +90,19 @@ public:
     bool Uint64(uint64_t u64)   { PrettyPrefix(kNumberType); return Base::WriteUint64(u64);  }
     bool Double(double d)       { PrettyPrefix(kNumberType); return Base::WriteDouble(d); }
 
+    bool RawNumber(const Ch* str, SizeType length, bool copy = false) {
+        (void)copy;
+        PrettyPrefix(kNumberType);
+        return Base::WriteString(str, length);
+    }
+
     bool String(const Ch* str, SizeType length, bool copy = false) {
         (void)copy;
         PrettyPrefix(kStringType);
         return Base::WriteString(str, length);
     }
 
-#if RAPIDJSON_HAS_STDSTRING
+#if CEREAL_RAPIDJSON_HAS_STDSTRING
     bool String(const std::basic_string<Ch>& str) {
         return String(str.data(), SizeType(str.size()));
     }
@@ -96,8 +118,8 @@ public:
 	
     bool EndObject(SizeType memberCount = 0) {
         (void)memberCount;
-        RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
-        RAPIDJSON_ASSERT(!Base::level_stack_.template Top<typename Base::Level>()->inArray);
+        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
+        CEREAL_RAPIDJSON_ASSERT(!Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
         if (!empty) {
@@ -106,7 +128,7 @@ public:
         }
         bool ret = Base::WriteEndObject();
         (void)ret;
-        RAPIDJSON_ASSERT(ret == true);
+        CEREAL_RAPIDJSON_ASSERT(ret == true);
         if (Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
@@ -120,17 +142,17 @@ public:
 
     bool EndArray(SizeType memberCount = 0) {
         (void)memberCount;
-        RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
-        RAPIDJSON_ASSERT(Base::level_stack_.template Top<typename Base::Level>()->inArray);
+        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
+        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
-        if (!empty) {
+        if (!empty && !(formatOptions_ & kFormatSingleLineArray)) {
             Base::os_->Put('\n');
             WriteIndent();
         }
         bool ret = Base::WriteEndArray();
         (void)ret;
-        RAPIDJSON_ASSERT(ret == true);
+        CEREAL_RAPIDJSON_ASSERT(ret == true);
         if (Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
@@ -167,11 +189,14 @@ protected:
             if (level->inArray) {
                 if (level->valueCount > 0) {
                     Base::os_->Put(','); // add comma if it is not the first element in array
-                    Base::os_->Put('\n');
+                    if (formatOptions_ & kFormatSingleLineArray)
+                        Base::os_->Put(' ');
                 }
-                else
+
+                if (!(formatOptions_ & kFormatSingleLineArray)) {
                     Base::os_->Put('\n');
-                WriteIndent();
+                    WriteIndent();
+                }
             }
             else {  // in object
                 if (level->valueCount > 0) {
@@ -191,11 +216,11 @@ protected:
                     WriteIndent();
             }
             if (!level->inArray && level->valueCount % 2 == 0)
-                RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
+                CEREAL_RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
             level->valueCount++;
         }
         else {
-            RAPIDJSON_ASSERT(!Base::hasRoot_);  // Should only has one and only one root.
+            CEREAL_RAPIDJSON_ASSERT(!Base::hasRoot_);  // Should only has one and only one root.
             Base::hasRoot_ = true;
         }
     }
@@ -207,6 +232,7 @@ protected:
 
     Ch indentChar_;
     unsigned indentCharCount_;
+    PrettyFormatOptions formatOptions_;
 
 private:
     // Prohibit copy constructor & assignment operator.
@@ -214,10 +240,10 @@ private:
     PrettyWriter& operator=(const PrettyWriter&);
 };
 
-RAPIDJSON_NAMESPACE_END
+CEREAL_RAPIDJSON_NAMESPACE_END
 
 #ifdef __GNUC__
-RAPIDJSON_DIAG_POP
+CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
-#endif // RAPIDJSON_RAPIDJSON_H_
+#endif // CEREAL_RAPIDJSON_CEREAL_RAPIDJSON_H_

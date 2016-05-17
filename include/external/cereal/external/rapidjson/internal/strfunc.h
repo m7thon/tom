@@ -12,12 +12,12 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef RAPIDJSON_INTERNAL_STRFUNC_H_
-#define RAPIDJSON_INTERNAL_STRFUNC_H_
+#ifndef CEREAL_RAPIDJSON_INTERNAL_STRFUNC_H_
+#define CEREAL_RAPIDJSON_INTERNAL_STRFUNC_H_
 
 #include "../stream.h"
 
-RAPIDJSON_NAMESPACE_BEGIN
+CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
 
 //! Custom strlen() which works on different character types.
@@ -50,6 +50,6 @@ bool CountStringCodePoint(const typename Encoding::Ch* s, SizeType length, SizeT
 }
 
 } // namespace internal
-RAPIDJSON_NAMESPACE_END
+CEREAL_RAPIDJSON_NAMESPACE_END
 
-#endif // RAPIDJSON_INTERNAL_STRFUNC_H_
+#endif // CEREAL_RAPIDJSON_INTERNAL_STRFUNC_H_

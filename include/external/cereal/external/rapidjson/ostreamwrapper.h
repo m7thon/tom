@@ -16,11 +16,11 @@
 #include <iosfwd>
 
 #ifdef __clang__
-RAPIDJSON_DIAG_PUSH
-RAPIDJSON_DIAG_OFF(padded)
+CEREAL_RAPIDJSON_DIAG_PUSH
+CEREAL_RAPIDJSON_DIAG_OFF(padded)
 #endif
 
-RAPIDJSON_NAMESPACE_BEGIN
+CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 
 //! Wrapper of \c std::basic_ostream into RapidJSON's Stream concept.
 /*!
@@ -53,11 +53,11 @@ public:
     }
 
     // Not implemented
-    char Peek() const { RAPIDJSON_ASSERT(false); return 0; }
-    char Take() { RAPIDJSON_ASSERT(false); return 0; }
-    size_t Tell() const { RAPIDJSON_ASSERT(false); return 0; }
-    char* PutBegin() { RAPIDJSON_ASSERT(false); return 0; }
-    size_t PutEnd(char*) { RAPIDJSON_ASSERT(false); return 0; }
+    char Peek() const { CEREAL_RAPIDJSON_ASSERT(false); return 0; }
+    char Take() { CEREAL_RAPIDJSON_ASSERT(false); return 0; }
+    size_t Tell() const { CEREAL_RAPIDJSON_ASSERT(false); return 0; }
+    char* PutBegin() { CEREAL_RAPIDJSON_ASSERT(false); return 0; }
+    size_t PutEnd(char*) { CEREAL_RAPIDJSON_ASSERT(false); return 0; }
 
 private:
     BasicOStreamWrapper(const BasicOStreamWrapper&);
@@ -70,7 +70,7 @@ typedef BasicOStreamWrapper<std::ostream> OStreamWrapper;
 typedef BasicOStreamWrapper<std::wostream> WOStreamWrapper;
 
 #ifdef __clang__
-RAPIDJSON_DIAG_POP
+CEREAL_RAPIDJSON_DIAG_POP
 #endif
 
-RAPIDJSON_NAMESPACE_END
+CEREAL_RAPIDJSON_NAMESPACE_END

@@ -37,8 +37,8 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#include "../macros.hpp"
-#include "../details/static_object.hpp"
+#include <cereal/macros.hpp>
+#include <cereal/details/static_object.hpp>
 
 namespace cereal
 {
@@ -191,7 +191,7 @@ namespace cereal
   }
 
   //! Convenience for creating a templated NVP
-  /*! For use in inteneral generic typing functions which have an
+  /*! For use in internal generic typing functions which have an
       Archive type declared
       @internal */
   #define CEREAL_NVP_(name, value) ::cereal::make_nvp<Archive>(name, value)

@@ -30,13 +30,13 @@
 #ifndef CEREAL_TYPES_POLYMORPHIC_HPP_
 #define CEREAL_TYPES_POLYMORPHIC_HPP_
 
-#include "../cereal.hpp"
-#include "../types/memory.hpp"
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
 
-#include "../details/util.hpp"
-#include "../details/helpers.hpp"
-#include "../details/traits.hpp"
-#include "../details/polymorphic_impl.hpp"
+#include <cereal/details/util.hpp>
+#include <cereal/details/helpers.hpp>
+#include <cereal/details/traits.hpp>
+#include <cereal/details/polymorphic_impl.hpp>
 
 #ifdef _MSC_VER
 #define STATIC_CONSTEXPR static
@@ -79,16 +79,16 @@
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
-#define CEREAL_REGISTER_TYPE(T)                         \
-  namespace cereal {                                    \
-  namespace detail {                                    \
-  template <>                                           \
-  struct binding_name<T>                                \
-  {                                                     \
-    STATIC_CONSTEXPR char const * name() { return #T; } \
-  };                                                    \
-  } } /* end namespaces */                              \
-  CEREAL_BIND_TO_ARCHIVES(T)
+#define CEREAL_REGISTER_TYPE(...)                                 \
+  namespace cereal {                                              \
+  namespace detail {                                              \
+  template <>                                                     \
+  struct binding_name<__VA_ARGS__>                                \
+  {                                                               \
+    STATIC_CONSTEXPR char const * name() { return #__VA_ARGS__; } \
+  };                                                              \
+  } } /* end namespaces */                                        \
+  CEREAL_BIND_TO_ARCHIVES(__VA_ARGS__)
 
 //! Registers a polymorphic type with cereal, giving it a
 //! user defined name

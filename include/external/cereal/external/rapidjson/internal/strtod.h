@@ -12,15 +12,15 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef RAPIDJSON_STRTOD_
-#define RAPIDJSON_STRTOD_
+#ifndef CEREAL_RAPIDJSON_STRTOD_
+#define CEREAL_RAPIDJSON_STRTOD_
 
 #include "ieee754.h"
 #include "biginteger.h"
 #include "diyfp.h"
 #include "pow10.h"
 
-RAPIDJSON_NAMESPACE_BEGIN
+CEREAL_RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
 
 inline double FastPath(double significand, int exp) {
@@ -130,8 +130,8 @@ inline bool StrtodDiyFp(const char* decimals, size_t length, size_t decimalPosit
     uint64_t significand = 0;
     size_t i = 0;   // 2^64 - 1 = 18446744073709551615, 1844674407370955161 = 0x1999999999999999    
     for (; i < length; i++) {
-        if (significand  >  RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) ||
-            (significand == RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) && decimals[i] > '5'))
+        if (significand  >  CEREAL_RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) ||
+            (significand == CEREAL_RAPIDJSON_UINT64_C2(0x19999999, 0x99999999) && decimals[i] > '5'))
             break;
         significand = significand * 10u + static_cast<unsigned>(decimals[i] - '0');
     }
@@ -154,16 +154,16 @@ inline bool StrtodDiyFp(const char* decimals, size_t length, size_t decimalPosit
     DiyFp cachedPower = GetCachedPower10(dExp, &actualExp);
     if (actualExp != dExp) {
         static const DiyFp kPow10[] = {
-            DiyFp(RAPIDJSON_UINT64_C2(0xa0000000, 00000000), -60),  // 10^1
-            DiyFp(RAPIDJSON_UINT64_C2(0xc8000000, 00000000), -57),  // 10^2
-            DiyFp(RAPIDJSON_UINT64_C2(0xfa000000, 00000000), -54),  // 10^3
-            DiyFp(RAPIDJSON_UINT64_C2(0x9c400000, 00000000), -50),  // 10^4
-            DiyFp(RAPIDJSON_UINT64_C2(0xc3500000, 00000000), -47),  // 10^5
-            DiyFp(RAPIDJSON_UINT64_C2(0xf4240000, 00000000), -44),  // 10^6
-            DiyFp(RAPIDJSON_UINT64_C2(0x98968000, 00000000), -40)   // 10^7
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0xa0000000, 00000000), -60),  // 10^1
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0xc8000000, 00000000), -57),  // 10^2
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0xfa000000, 00000000), -54),  // 10^3
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0x9c400000, 00000000), -50),  // 10^4
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0xc3500000, 00000000), -47),  // 10^5
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0xf4240000, 00000000), -44),  // 10^6
+            DiyFp(CEREAL_RAPIDJSON_UINT64_C2(0x98968000, 00000000), -40)   // 10^7
         };
         int  adjustment = dExp - actualExp - 1;
-        RAPIDJSON_ASSERT(adjustment >= 0 && adjustment < 7);
+        CEREAL_RAPIDJSON_ASSERT(adjustment >= 0 && adjustment < 7);
         v = v * kPow10[adjustment];
         if (length + static_cast<unsigned>(adjustment)> 19u) // has more digits than decimal digits in 64-bit
             error += kUlp / 2;
@@ -222,8 +222,8 @@ inline double StrtodBigInteger(double approx, const char* decimals, size_t lengt
 }
 
 inline double StrtodFullPrecision(double d, int p, const char* decimals, size_t length, size_t decimalPosition, int exp) {
-    RAPIDJSON_ASSERT(d >= 0.0);
-    RAPIDJSON_ASSERT(length >= 1);
+    CEREAL_RAPIDJSON_ASSERT(d >= 0.0);
+    CEREAL_RAPIDJSON_ASSERT(length >= 1);
 
     double result;
     if (StrtodFast(d, p, &result))
@@ -264,6 +264,6 @@ inline double StrtodFullPrecision(double d, int p, const char* decimals, size_t 
 }
 
 } // namespace internal
-RAPIDJSON_NAMESPACE_END
+CEREAL_RAPIDJSON_NAMESPACE_END
 
-#endif // RAPIDJSON_STRTOD_
+#endif // CEREAL_RAPIDJSON_STRTOD_

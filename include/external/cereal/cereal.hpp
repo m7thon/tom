@@ -39,10 +39,10 @@
 #include <cstdint>
 #include <functional>
 
-#include "macros.hpp"
-#include "details/traits.hpp"
-#include "details/helpers.hpp"
-#include "types/base_class.hpp"
+#include <cereal/macros.hpp>
+#include <cereal/details/traits.hpp>
+#include <cereal/details/helpers.hpp>
+#include <cereal/types/base_class.hpp>
 
 namespace cereal
 {
@@ -839,6 +839,9 @@ namespace cereal
         return *self;
       }
 
+      //! Befriend for versioning in load_and_construct
+      template <class A, class B, bool C, bool D, bool E, bool F> friend struct detail::Construct;
+
       //! Registers a class version with the archive and serializes it if necessary
       /*! If this is the first time this class has been serialized, we will record its
           version number and serialize that.
@@ -950,6 +953,6 @@ namespace cereal
 } // namespace cereal
 
 // This include needs to come after things such as binary_data, make_nvp, etc
-#include "types/common.hpp"
+#include <cereal/types/common.hpp>
 
 #endif // CEREAL_CEREAL_HPP_

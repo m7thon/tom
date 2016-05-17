@@ -1,8 +1,8 @@
-/*! \file utility.hpp
-    \brief Support for types found in \<utility\>
+/*! \file functional.hpp
+    \brief Support for types found in \<functional\>
     \ingroup STLSupport */
 /*
-  Copyright (c) 2014, Randolph Voorhies, Shane Grant
+  Copyright (c) 2016, Randolph Voorhies, Shane Grant
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -27,21 +27,17 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef CEREAL_TYPES_UTILITY_HPP_
-#define CEREAL_TYPES_UTILITY_HPP_
+#ifndef CEREAL_TYPES_FUNCTIONAL_HPP_
+#define CEREAL_TYPES_FUNCTIONAL_HPP_
 
-#include <cereal/cereal.hpp>
-#include <utility>
+#include <functional>
 
 namespace cereal
 {
-  //! Serializing for std::pair
-  template <class Archive, class T1, class T2> inline
-  void CEREAL_SERIALIZE_FUNCTION_NAME( Archive & ar, std::pair<T1, T2> & pair )
-  {
-    ar( CEREAL_NVP_("first",  pair.first),
-        CEREAL_NVP_("second", pair.second) );
-  }
+  //! Saving for std::less
+  template <class Archive, class T> inline
+  void serialize( Archive &, std::less<T> & )
+  { }
 } // namespace cereal
 
-#endif // CEREAL_TYPES_UTILITY_HPP_
+#endif // CEREAL_TYPES_FUNCTIONAL_HPP_

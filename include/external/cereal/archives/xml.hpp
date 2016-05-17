@@ -28,12 +28,12 @@
 */
 #ifndef CEREAL_ARCHIVES_XML_HPP_
 #define CEREAL_ARCHIVES_XML_HPP_
-#include "../cereal.hpp"
-#include "../details/util.hpp"
+#include <cereal/cereal.hpp>
+#include <cereal/details/util.hpp>
 
-#include "../external/rapidxml/rapidxml.hpp"
-#include "../external/rapidxml/rapidxml_print.hpp"
-#include "../external/base64.hpp"
+#include <cereal/external/rapidxml/rapidxml.hpp>
+#include <cereal/external/rapidxml/rapidxml_print.hpp>
+#include <cereal/external/base64.hpp>
 
 #include <sstream>
 #include <stack>
@@ -531,6 +531,7 @@ namespace cereal
       //! Loads a type best represented as an unsigned long from the current top node
       template <class T, traits::EnableIf<std::is_unsigned<T>::value,
                                           !std::is_same<T, bool>::value,
+                                          !std::is_same<T, char>::value,
                                           !std::is_same<T, unsigned char>::value,
                                           sizeof(T) < sizeof(long long)> = traits::sfinae> inline
       void loadValue( T & value )

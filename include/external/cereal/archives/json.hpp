@@ -29,8 +29,8 @@
 #ifndef CEREAL_ARCHIVES_JSON_HPP_
 #define CEREAL_ARCHIVES_JSON_HPP_
 
-#include "../cereal.hpp"
-#include "../details/util.hpp"
+#include <cereal/cereal.hpp>
+#include <cereal/details/util.hpp>
 
 namespace cereal
 {
@@ -41,17 +41,16 @@ namespace cereal
 }
 
 // Override rapidjson assertions to throw exceptions by default
-#ifndef RAPIDJSON_ASSERT
-#define RAPIDJSON_ASSERT(x) if(!(x)){ \
+#ifndef CEREAL_RAPIDJSON_ASSERT
+#define CEREAL_RAPIDJSON_ASSERT(x) if(!(x)){ \
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
 
-#include "../external/rapidjson/prettywriter.h"
-#include "../external/rapidjson/istreamwrapper.h"
-#include "../external/rapidjson/ostreamwrapper.h"
-#include "../external/rapidjson/reader.h"
-#include "../external/rapidjson/document.h"
-#include "../external/base64.hpp"
+#include <cereal/external/rapidjson/prettywriter.h>
+#include <cereal/external/rapidjson/ostreamwrapper.h>
+#include <cereal/external/rapidjson/istreamwrapper.h>
+#include <cereal/external/rapidjson/document.h>
+#include <cereal/external/base64.hpp>
 
 #include <limits>
 #include <sstream>
@@ -63,7 +62,7 @@ namespace cereal
 {
   // ######################################################################
   //! An output archive designed to save data to JSON
-  /*! This archive uses RapidJSON to build serialie data to JSON.
+  /*! This archive uses RapidJSON to build serialize data to JSON.
 
       JSON archives provides a human readable output but at decreased
       performance (both in time and space) compared to binary archives.
@@ -93,8 +92,8 @@ namespace cereal
   {
     enum class NodeType { StartObject, InObject, StartArray, InArray };
 
-    typedef rapidjson::OStreamWrapper WriteStream;
-    typedef rapidjson::Writer<WriteStream> JSONWriter;
+    using WriteStream = rapidjson::OStreamWrapper;
+    using JSONWriter = rapidjson::PrettyWriter<WriteStream>;
 
     public:
       /*! @name Common Functionality
@@ -109,7 +108,7 @@ namespace cereal
           static Options Default(){ return Options(); }
 
           //! Default options with no indentation
-          static Options NoIndent(){ return Options( std::numeric_limits<double>::max_digits10, IndentChar::space, 0 ); }
+          static Options NoIndent(){ return Options( JSONWriter::kDefaultMaxDecimalPlaces, IndentChar::space, 0 ); }
 
           //! The character to use for indenting
           enum class IndentChar : char
@@ -121,11 +120,11 @@ namespace cereal
           };
 
           //! Specify specific options for the JSONOutputArchive
-          /*! @param precision The maximum number of decimal places at which to truncate the output for floating point numbers 
+          /*! @param precision The precision used for floating point numbers
               @param indentChar The type of character to indent with
               @param indentLength The number of indentChar to use for indentation
                              (0 corresponds to no indentation) */
-          explicit Options( int precision = 324,
+          explicit Options( int precision = JSONWriter::kDefaultMaxDecimalPlaces,
                             IndentChar indentChar = IndentChar::space,
                             unsigned int indentLength = 4 ) :
             itsPrecision( precision ),
@@ -149,8 +148,8 @@ namespace cereal
         itsWriter(itsWriteStream),
         itsNextName(nullptr)
       {
-        //itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
-	itsWriter.SetMaxDecimalPlaces(options.itsPrecision);
+        itsWriter.SetMaxDecimalPlaces( options.itsPrecision );
+        itsWriter.SetIndent( options.itsIndentChar, options.itsIndentLength );
         itsNameCounter.push(0);
         itsNodeStack.push(NodeType::StartObject);
       }
@@ -403,7 +402,7 @@ namespace cereal
   class JSONInputArchive : public InputArchive<JSONInputArchive>, public traits::TextArchive
   {
     private:
-      typedef rapidjson::IStreamWrapper ReadStream;
+      using ReadStream = rapidjson::IStreamWrapper;
       typedef rapidjson::GenericValue<rapidjson::UTF8<>> JSONValue;
       typedef JSONValue::ConstMemberIterator MemberIterator;
       typedef JSONValue::ConstValueIterator ValueIterator;
@@ -462,7 +461,7 @@ namespace cereal
       class Iterator
       {
         public:
-          Iterator() : itsIndex( 0 ), itsType(Null) {}
+          Iterator() : itsIndex( 0 ), itsType(Null_) {}
 
           Iterator(MemberIterator begin, MemberIterator end) :
             itsMemberItBegin(begin), itsMemberItEnd(end), itsIndex(0), itsType(Member)
@@ -523,7 +522,7 @@ namespace cereal
           MemberIterator itsMemberItBegin, itsMemberItEnd; //!< The member iterator (object)
           ValueIterator itsValueItBegin, itsValueItEnd;    //!< The value iterator (array)
           size_t itsIndex;                                 //!< The current index of this iterator
-          enum Type {Value, Member, Null} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
+          enum Type {Value, Member, Null_} itsType;    //!< Whether this holds values (array) or members (objects) or nothing
       };
 
       //! Searches for the expectedName node if it doesn't match the actualName
@@ -628,7 +627,7 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
-      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
+      void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
@@ -658,14 +657,14 @@ namespace cereal
       //! Serialize a long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, long>::value &&
-                              !std::is_same<T, std::int32_t>::value &&
+                              sizeof(T) >= sizeof(std::int64_t) &&
                               !std::is_same<T, std::int64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
 
       //! Serialize an unsigned long if it would not be caught otherwise
       template <class T> inline
       typename std::enable_if<std::is_same<T, unsigned long>::value &&
-                              !std::is_same<T, std::uint32_t>::value &&
+                              sizeof(T) >= sizeof(std::uint64_t) &&
                               !std::is_same<T, std::uint64_t>::value, void>::type
       loadValue( T & t ){ loadLong(t); }
       #endif // _MSC_VER
