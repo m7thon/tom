@@ -12,17 +12,17 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef CEREAL_RAPIDJSON_PRETTYWRITER_H_
-#define CEREAL_RAPIDJSON_PRETTYWRITER_H_
+#ifndef RAPIDJSON_PRETTYWRITER_H_
+#define RAPIDJSON_PRETTYWRITER_H_
 
 #include "writer.h"
 
 #ifdef __GNUC__
-CEREAL_RAPIDJSON_DIAG_PUSH
-CEREAL_RAPIDJSON_DIAG_OFF(effc++)
+RAPIDJSON_DIAG_PUSH
+RAPIDJSON_DIAG_OFF(effc++)
 #endif
 
-CEREAL_RAPIDJSON_NAMESPACE_BEGIN
+RAPIDJSON_NAMESPACE_BEGIN
 
 //! Combination of PrettyWriter format flags.
 /*! \see PrettyWriter::SetFormatOptions
@@ -63,7 +63,7 @@ public:
         \note The default indentation is 4 spaces.
     */
     PrettyWriter& SetIndent(Ch indentChar, unsigned indentCharCount) {
-        CEREAL_RAPIDJSON_ASSERT(indentChar == ' ' || indentChar == '\t' || indentChar == '\n' || indentChar == '\r');
+        RAPIDJSON_ASSERT(indentChar == ' ' || indentChar == '\t' || indentChar == '\n' || indentChar == '\r');
         indentChar_ = indentChar;
         indentCharCount_ = indentCharCount;
         return *this;
@@ -102,7 +102,7 @@ public:
         return Base::WriteString(str, length);
     }
 
-#if CEREAL_RAPIDJSON_HAS_STDSTRING
+#if RAPIDJSON_HAS_STDSTRING
     bool String(const std::basic_string<Ch>& str) {
         return String(str.data(), SizeType(str.size()));
     }
@@ -118,8 +118,8 @@ public:
 	
     bool EndObject(SizeType memberCount = 0) {
         (void)memberCount;
-        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
-        CEREAL_RAPIDJSON_ASSERT(!Base::level_stack_.template Top<typename Base::Level>()->inArray);
+        RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
+        RAPIDJSON_ASSERT(!Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
         if (!empty) {
@@ -128,7 +128,7 @@ public:
         }
         bool ret = Base::WriteEndObject();
         (void)ret;
-        CEREAL_RAPIDJSON_ASSERT(ret == true);
+        RAPIDJSON_ASSERT(ret == true);
         if (Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
@@ -142,8 +142,8 @@ public:
 
     bool EndArray(SizeType memberCount = 0) {
         (void)memberCount;
-        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
-        CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.template Top<typename Base::Level>()->inArray);
+        RAPIDJSON_ASSERT(Base::level_stack_.GetSize() >= sizeof(typename Base::Level));
+        RAPIDJSON_ASSERT(Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
         if (!empty && !(formatOptions_ & kFormatSingleLineArray)) {
@@ -152,7 +152,7 @@ public:
         }
         bool ret = Base::WriteEndArray();
         (void)ret;
-        CEREAL_RAPIDJSON_ASSERT(ret == true);
+        RAPIDJSON_ASSERT(ret == true);
         if (Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
@@ -216,11 +216,11 @@ protected:
                     WriteIndent();
             }
             if (!level->inArray && level->valueCount % 2 == 0)
-                CEREAL_RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
+                RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
             level->valueCount++;
         }
         else {
-            CEREAL_RAPIDJSON_ASSERT(!Base::hasRoot_);  // Should only has one and only one root.
+            RAPIDJSON_ASSERT(!Base::hasRoot_);  // Should only has one and only one root.
             Base::hasRoot_ = true;
         }
     }
@@ -240,10 +240,10 @@ private:
     PrettyWriter& operator=(const PrettyWriter&);
 };
 
-CEREAL_RAPIDJSON_NAMESPACE_END
+RAPIDJSON_NAMESPACE_END
 
 #ifdef __GNUC__
-CEREAL_RAPIDJSON_DIAG_POP
+RAPIDJSON_DIAG_POP
 #endif
 
-#endif // CEREAL_RAPIDJSON_CEREAL_RAPIDJSON_H_
+#endif // RAPIDJSON_RAPIDJSON_H_

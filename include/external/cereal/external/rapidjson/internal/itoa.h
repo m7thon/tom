@@ -12,12 +12,12 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-#ifndef CEREAL_RAPIDJSON_ITOA_
-#define CEREAL_RAPIDJSON_ITOA_
+#ifndef RAPIDJSON_ITOA_
+#define RAPIDJSON_ITOA_
 
 #include "../rapidjson.h"
 
-CEREAL_RAPIDJSON_NAMESPACE_BEGIN
+RAPIDJSON_NAMESPACE_BEGIN
 namespace internal {
 
 inline const char* GetDigitsLut() {
@@ -299,6 +299,6 @@ inline char* i64toa(int64_t value, char* buffer) {
 }
 
 } // namespace internal
-CEREAL_RAPIDJSON_NAMESPACE_END
+RAPIDJSON_NAMESPACE_END
 
-#endif // CEREAL_RAPIDJSON_ITOA_
+#endif // RAPIDJSON_ITOA_

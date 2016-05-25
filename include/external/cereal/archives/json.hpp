@@ -41,10 +41,13 @@ namespace cereal
 }
 
 // Override rapidjson assertions to throw exceptions by default
-#ifndef CEREAL_RAPIDJSON_ASSERT
-#define CEREAL_RAPIDJSON_ASSERT(x) if(!(x)){ \
+#ifndef RAPIDJSON_ASSERT
+#define RAPIDJSON_ASSERT(x) if(!(x)){ \
   throw ::cereal::RapidJSONException("rapidjson internal assertion failure: " #x); }
 #endif // RAPIDJSON_ASSERT
+
+#define RAPIDJSON_WRITE_DEFAULT_FLAGS kWriteNanAndInfFlag
+#define RAPIDJSON_PARSE_DEFAULT_FLAGS kParseFullPrecisionFlag | kParseNanAndInfFlag
 
 #include <cereal/external/rapidjson/prettywriter.h>
 #include <cereal/external/rapidjson/ostreamwrapper.h>
@@ -627,7 +630,7 @@ namespace cereal
       //! Loads a value from the current node - string overload
       void loadValue(std::string & val) { search(); val = itsIteratorStack.back().value().GetString(); ++itsIteratorStack.back(); }
       //! Loads a nullptr from the current node
-      void loadValue(std::nullptr_t&)   { search(); CEREAL_RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
+      void loadValue(std::nullptr_t&)   { search(); RAPIDJSON_ASSERT(itsIteratorStack.back().value().IsNull()); ++itsIteratorStack.back(); }
 
       // Special cases to handle various flavors of long, which tend to conflict with
       // the int32_t or int64_t on various compiler/OS combinations.  MSVC doesn't need any of this.
