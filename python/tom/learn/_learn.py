@@ -68,6 +68,7 @@ def estimateDimension(estimator, X, Y, p = -0.5, q = 1, weighted=False, frob=Fal
             d += 1
         return d
 
+
 def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=1, vP = (0,0,1,1)):
     if method == 'Standard': method = 'SPEC'
     if method == 'RowColWeighted': method = 'RCW'
@@ -126,6 +127,7 @@ def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=
         return res
     else:
         return res[0]
+
 
 def rcSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
     e = _tomlib.Sequence(0, nO, nU)
@@ -235,6 +237,7 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
 
         U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
         U = U[:,:dimension]; s = np.sqrt(s[:dimension]); VT = VT[:dimension,:]
+        dimension = min(dimension, len(s))
 
         B = 1/sqrt_wI * U * s[None,:]
         A = s[:,None] * VT * 1/sqrt_wJ
@@ -294,7 +297,6 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
     oom.initialize()
     oom.stabilization(preset='default')
     return oom
-
 
 
 def RCWTLS(est, Y, X, d, valueErrorBias = 1):
