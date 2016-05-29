@@ -28,13 +28,10 @@ debug: swig/_tomlib_wrap.cpp
 	CPPFLAGS="-DTOM_DEBUG -g" $(PYTHON) setup.py build_ext
 
 deploy: swig/_tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O3" $(PYTHON) setup.py install --user
-
-deploy_quickly: swig/_tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -O0 -DTOM_DEBUG" $(PYTHON) setup.py install --user
+	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O2" $(PYTHON) setup.py install --user
 
 deploy_optimized: swig/_tomlib_wrap.cpp
-	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="-Wa,-q -Wa,-w -g0 -march=native -O3 -DTOM_NCHECK" $(PYTHON) setup.py install --user
+	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="-g0 -march=native -O2" $(PYTHON) setup.py install --user
 
 doc:
 	doxygen doc/tom.doxyfile

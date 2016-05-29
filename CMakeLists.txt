@@ -9,5 +9,6 @@ include_directories(include/tom)
 include_directories(/opt/local/include/eigen3)
 
 add_custom_target(deploy COMMAND make -C ${tom_SOURCE_DIR} deploy)
+add_custom_target(deploy_optimized COMMAND make -C ${tom_SOURCE_DIR} deploy_optimized)
 
 add_executable(tom ${SOURCE_FILES})
