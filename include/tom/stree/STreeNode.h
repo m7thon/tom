@@ -224,7 +224,6 @@ public:
 }; // class STreeNode
 
 
-
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") EdgeNode::repr;)
 /** This class represents a node together with the edge leading to it in the suffix tree and can be used for extracting information or navigating the suffix tree. Note that an `EdgeNode` can have a parent marked as invalid, and then contains no edge information. Such an `EdgeNode` is called "degenerate". This is normally only the case for the root, but can also happen when providing incorrect parent information when constructing an `EdgeNode`.
  *
@@ -452,7 +451,6 @@ private:
         }
     }
 }; // class STreePath
-
 
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Position::repr;)
@@ -706,6 +704,16 @@ public:
 }; // class STreePos
 
 
+SWIGCODE(%feature("director") PositionRelevance;)
+/**
+ * This class computes a "relevance" value for suffix tree `Positions` in a way that can be customized from Python by inheriting and overwriting the `compute` method.
+ */
+class PositionRelevance {
+public:
+	/** Return the relevance value for the given `position` */
+    virtual double compute(const Position& position) { return position.count() + 1.0 / (position.depth() + 1); }
+    virtual ~PositionRelevance() { };
+};
 
 /* Implementation */
 #ifndef SWIG

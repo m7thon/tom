@@ -66,9 +66,10 @@ SWIGCODE(%feature ("kwargs") wordsFromData;)
  * @param dataSuffixTree a suffix tree representation of the data sequence
  * @param minLength the minimum length for returned words (default 0)
  * @param maxLength the maximum length for returned words, or `0` (default) for no limit
- * @param minCount the minimum number of occurrences in the data sequence for returned words (default 1)
+ * @param minRelevance the minimum "relevance" in the data sequence for returned words (default 1.0)
  * @param maxWords the maximum number of returned words, or `0` (default) for no limit
  * @param uniquePositions if set to `true`, then only retain the shortest word for words occurring at the same set of positions in the data sequence (default `false`)
+ * @param relevance a `PositionRelevance` object to compute the *relevance value* for words, which defaults to their occurrence count in the data (plus a fraction to penalize longer words). This can be customized by passing a `relevance` inherited from `PositionRelevance` with an overwritten `.compute()` method.
  *
  * @return an array of words occurring in the data sequence according to the given constraints, and sorted by occurrence count (descending) and then lexicographically.
  *
@@ -80,21 +81,21 @@ SWIGCODE(%feature ("kwargs") wordsFromData;)
  *
  */
 std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STree>& dataSuffixTree,
-                                                long minLength = 0, long maxLength = 0, long minCount = 1, long maxWords = 0,
-                                                bool uniquePositions = false) {
+                                                long minLength = 0, long maxLength = 0, double minRelevance = 1.0, long maxWords = 0,
+                                                bool uniquePositions = false, const stree::PositionRelevance& relevance = stree::PositionRelevance()) {
+    stree::PositionRelevance& key = const_cast<stree::PositionRelevance&>(relevance);
     auto sequence = dataSuffixTree->sequence();
     int nSymbols = sequence.nInputSymbols() * std::min(sequence.nOutputSymbols(), 1);
     int IO = sequence.isIO() ? 2 : 1;
     if (maxLength == 0) maxLength = sequence.length();
     auto words = std::make_shared<Sequences>();
-    auto comparePositions = [nSymbols, IO] (const stree::Position& a, const stree::Position& b) {
-        //return a.count() * std::pow(1.0/nSymbols, (double)(a.depth()) / IO) < b.count() * std::pow(1.0/nSymbols, (double)(b.depth()) / IO);
-        return a.count() < b.count() or (a.count() == b.count() and a.depth() > b.depth());
+    auto comparePositions = [&key] (const stree::Position& a, const stree::Position& b) {
+        return key.compute(a) < key.compute(b);
     };
     std::priority_queue<stree::Position, std::vector<stree::Position>, decltype(comparePositions) > positionQueue(comparePositions);
 
     auto position = stree::Position(dataSuffixTree);
-    if (maxLength < minLength or not position.isValid() or position.count() < minCount) { return words; }
+    if (maxLength < minLength or not position.isValid() or key.compute(position) < minRelevance) { return words; }
     positionQueue.push(position);
 
     while ((not positionQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
@@ -108,11 +109,11 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
                 if (IO == 2) {
                     auto grandchild = position.child();
                     while (grandchild.isValid()) {
-                        if (grandchild.count() >= minCount) positionQueue.push(grandchild);
+                        if (key.compute(grandchild) >= minRelevance) positionQueue.push(grandchild);
                         grandchild.toSibling();
                     }
                 } else {
-                    if (position.count() >= minCount) positionQueue.push(position);
+                    if (key.compute(position) >= minRelevance) positionQueue.push(position);
                 }
                 position.toSibling();
             }
