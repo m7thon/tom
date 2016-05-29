@@ -1,11 +1,10 @@
 namespace tom {
 
-/** Devide the given `matrix` by its element-sum, i.e., normalize the matrix to have an element-sum of one, and return the element-sum. If the element-sum is zero, the normalization could not be performed.
+/** Devide the given `matrix` by its element-sum, i.e., normalize the matrix to have an element-sum of one, and return the element-sum.
  */
 template<typename T>
 double normalize(const DenseBase<T> &matrix) {
     double mat_sum = matrix.sum();
-    if (mat_sum == 0) { return 0; }
     const_cast< DenseBase<T> & >(matrix) /= mat_sum;
     return mat_sum;
 }
@@ -16,12 +15,13 @@ SWIGCODE(%template(normalize) normalize<MatrixMd>;)
 template<typename T>
 bool normalizeCols(const DenseBase<T> &matrix) {
     double col_sum;
+    bool success = true;
     for (int j = 0; j < matrix.cols(); ++j) {
         col_sum = matrix.col(j).sum();
-        if (col_sum == 0) { return false; }
+        if (col_sum == 0) { success = false; }
         const_cast< DenseBase<T> & >(matrix).col(j) /= col_sum;
     }
-    return true;
+    return success;
 }
 SWIGCODE(%template(normalizeCols) normalizeCols<MatrixMd>;)
 
@@ -30,12 +30,13 @@ SWIGCODE(%template(normalizeCols) normalizeCols<MatrixMd>;)
 template<typename T>
 bool normalizeRows(const DenseBase<T> &matrix) {
     double row_sum;
+    bool success = true;
     for (int i = 0; i < matrix.rows(); ++i) {
         row_sum = matrix.row(i).sum();
-        if (row_sum == 0) { return false; }
+        if (row_sum == 0) { success = false; }
         const_cast< DenseBase<T> & >(matrix).row(i) /= row_sum;
     }
-    return true;
+    return success;
 }
 SWIGCODE(%template(normalizeRows) normalizeRows<MatrixMd>;)
 
