@@ -24,29 +24,38 @@ public:
      * @param nOutputSymbols the size of the output alphabet
      * @param nInputSymbols the size of the input alphabet, or 0 (default) for an output-only \c Oom
      * @param randomExponent exponent of value distribution of tau operator matrix entries. When set to 1, the entries of matrices are sampled from a uniform distribution. Higher values lead to sample distributions that are increasingly skewed to the right, while a value of zero (default) will lead to an \c Oom that produces iid outputs.
+     * @param zero_threshold set all parameters less than `zero_threshold` to zero and renormalize.
      * @param randomSource the `Random` object to use as the source of randomness
      */
-    Oom(int dimension, int nOutputSymbols, int nInputSymbols = 0, double randomExponent = 0, const Random &randomSource = Random()) :
+    Oom(int dimension, int nOutputSymbols, int nInputSymbols = 0, double randomExponent = 0, double zero_threshold = 0, const Random &randomSource = Random()) :
             dim_(dimension), nO_(nOutputSymbols), nU_(nInputSymbols) {
         setSize(dimension, nOutputSymbols, nInputSymbols);
         if (randomExponent == 0) return;
         for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); u++) {
-            for (Symbol o = 0; o < nO_; o++) {
-                for (int i = 0; i < dim_; i++) {
-                    for (int j = 0; j < dim_; j++) {
+            for (Symbol o = 0; o < nO_; o++)
+                for (int i = 0; i < dim_; i++)
+                    for (int j = 0; j < dim_; j++)
                         tau_(o, u)(i, j) = std::pow(randomSource.random(), randomExponent);
-                    }
-                }
-            }
             MatrixXd tau = MatrixXd::Zero(dim_, dim_);
-            for (Symbol o = 0; o < nO_; o++) {
+            for (Symbol o = 0; o < nO_; o++)
                 tau += tau_(o, u);
-            }
             RowVectorXd sig_tau = tau.colwise().sum();
-            for (Symbol o = 0; o < nO_; o++) {
-                for (int j = 0; j < dim_; j++) {
+            for (Symbol o = 0; o < nO_; o++)
+                for (int j = 0; j < dim_; j++)
                     tau_(o, u).col(j) /= sig_tau(j);
-                }
+            if (zero_threshold > 0) {
+                for (Symbol o = 0; o < nO_; o++)
+                    for (int i = 0; i < dim_; i++)
+                        for (int j = 0; j < dim_; j++) {
+                            if (tau_(o, u)(i, j) < zero_threshold) tau_(o, u)(i, j) = 0;
+                        }
+                tau = MatrixXd::Zero(dim_, dim_);
+                for (Symbol o = 0; o < nO_; o++)
+                    tau += tau_(o, u);
+                sig_tau = tau.colwise().sum();
+                for (Symbol o = 0; o < nO_; o++)
+                    for (int j = 0; j < dim_; j++)
+                        tau_(o, u).col(j) /= sig_tau(j);
             }
         }
         w0_ = stationaryState();
