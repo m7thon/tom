@@ -502,6 +502,34 @@ public:
      * Return the log2-likelihood of the `Oom` for the given `sequence`. That is, return -`log2_f(sequence, true)` / `sequence.length()`. */
     double l2l(const Sequence &sequence) { return -log2_f(sequence, true) / sequence.length(); }
 
+    /**
+     * Return entropy of this `Oom` estimated on a sample sequence of the given `sample_length`.
+    */
+    double entropy(unsigned long sample_length, const Random &randomSource = Random(), const Policy &policy = Policy()) {
+        if (policy.nU_ > nU_) { throw std::invalid_argument("incompatible policy"); }
+        Symbol u = 0, o = 0;
+        double entropy_estimate = 0;
+        for (unsigned long l = 0; l < sample_length; l++) {
+            LOOP_PROGRESS("Estimating entropy", l, sample_length)
+            if (nU_ != 0) {
+                u = policy.nU_ == 0 ? randomSource.integer(nInputSymbols()) : policy.u(wt(), randomSource);
+                condition(u);
+            }
+
+            entropy_estimate -= (Eigen::log((P_.array() > 0).select(P_.array(), 1.0)) * P_.array()).sum();
+            o = randomSource.sample(P_);
+            update(o, u);
+        }
+        LOOP_DONE("Estimating entropy")
+        return entropy_estimate / log(2.0) / sample_length;
+    }
+
+    /**
+     * Return the cross-entropy of the best `k`-order Markov model approximation estimated on the given sample `sequence`.
+    */
+    double crossEntropyOfKOrderMarkovApproximation(int k, const Sequence& sequence);
+
+
     SWIGCODE(%feature ("kwargs") averageOneStepPredictionError;)
     /**
      * Return the average one-step squared prediction error computed along the given sample `sequence` according to a correct `Oom` `trueModel`, after first performing a state `reset()` operation on both this `Oom` and the `trueModel`. Their states are updated accordingly. */

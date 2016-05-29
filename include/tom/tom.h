@@ -110,5 +110,6 @@ namespace tom {
 #include "CoreSequences.h"
 #include "Estimator.h"
 #include "EfficiencySharpening.h"
+#include "Implementations.h"
 
 #endif // TOM_H

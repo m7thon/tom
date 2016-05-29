@@ -308,6 +308,22 @@ public:
         return seq;
     }
 
+    unsigned long lexicographicIndex(bool withinSequencesOfSameLength = false) const {
+        Symbol nI = isIO() ? nInputSymbols() : 1;
+        Symbol nO = nOutputSymbols();
+        unsigned long lexIdx = 0;
+        unsigned long posIdx = 1;
+        for (long i = 0; i < length(); ++i ) {
+            lexIdx += u(-i-1) * posIdx;
+            posIdx *= nI;
+            lexIdx += o(-i-1) * posIdx;
+            posIdx *= nO;
+        }
+        if (not withinSequencesOfSameLength)
+            lexIdx += ( posIdx - 1 ) / ( nO * nI - 1);
+        return lexIdx;
+    }
+
     /** Return the reverse view of this `Sequence`.
      */
     Sequence reverse() { Sequence result(*this); result.size_ = -result.size_; return result; }
