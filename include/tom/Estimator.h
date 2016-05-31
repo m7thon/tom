@@ -359,18 +359,17 @@ private:
 
             if (not estimateVariance_) { return *this; }
 
-            if (estimator_.vPC_ > 0) {
-                c += 0.5 * estimator_.vPC_;
-                n += estimator_.vPC_;
-            }
+            c += 0.5 * estimator_.vPC_;
+            n += estimator_.vPC_;
+            p = ( n == 0 ? 0.5 : c / n );
 
             /* Use a Wilson confidence interval for p to compute the variance estimate: */
             double z2 = estimator_.vZ_ * estimator_.vZ_;
-            p = ( n + z2 > 0 ? (c + 0.5 * z2) / (n + z2) : 0.5 ) ;
+            double p_mid = ( n + z2 > 0 ? (c + 0.5 * z2) / (n + z2) : 0.5 ) ;
             double ci_size = ( z2 > 0 ? std::sqrt(z2 * (n * p * (1 - p) + z2 / 4)) / (n + z2) : 0 );
-            double p_lower = std::max(p - ci_size, 0.0);
-            double p_upper = std::min(p + ci_size, 1.0);
-            double p_centered = (p < 0.5 ? std::min(p_upper, 0.5) : std::max(p_lower, 0.5));
+            double p_lower = std::max(p_mid - ci_size, 0.0);
+            double p_upper = std::min(p_mid + ci_size, 1.0);
+            double p_centered = (p_mid < 0.5 ? std::min(p_upper, 0.5) : std::max(p_lower, 0.5));
             double p_extreme = std::min(p_lower, 1 - p_upper);
 
             double E_p2_overestimate = p_upper * p_upper;
