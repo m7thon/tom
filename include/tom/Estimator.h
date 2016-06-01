@@ -397,9 +397,9 @@ private:
             double var = v_;
             if (k_ == 0) { var = 0; }
             if (estimator_.vMin_ >= 0.25)
-                return std::min(std::max(var, estimator_.vMin_ / (estimator_.N_ * estimator_.N_ * pi_ * pi_)), 1.0);
+                return std::min(std::max(var, estimator_.vMin_ / (estimator_.N_ * estimator_.N_ * pi_ * pi_)), 0.5);
             else
-                return std::min(std::max(var, estimator_.vMin_), 1.0);
+                return std::min(std::max(var, estimator_.vMin_), 0.5);
         }
 
         const Estimator& estimator_; ///< the `Estimator` that this `State` belongs to
