@@ -1,5 +1,5 @@
 /* -*- text -*-  (not really, but good for syntax highlighting) */
-%module(directors="1") _tomlib
+%module(package="tom", directors="1") _tomlib
 %naturalvar;
 //%feature("autodoc","0");
 
