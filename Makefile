@@ -28,10 +28,10 @@ debug: swig/_tomlib_wrap.cpp
 	CPPFLAGS="-DTOM_DEBUG -g" $(PYTHON) setup.py build_ext
 
 deploy: swig/_tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O2" $(PYTHON) setup.py install --user
+	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
 
 deploy_optimized: swig/_tomlib_wrap.cpp
-	CC=g++-mp-5 CXX=g++-mp-5 CPPFLAGS="-g0 -march=native -O2" $(PYTHON) setup.py install --user
+	CC=g++-mp-6 CXX=g++-mp-6 CPPFLAGS="-g0 -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
 
 doc:
 	doxygen doc/tom.doxyfile
@@ -57,7 +57,7 @@ doc/xml/index.xml: $(CXX_SRC) doc/tom_xml.doxyfile
 	doxygen doc/tom_xml.doxyfile
 
 swig/tomdoc.i: doc/doxy2swig.py doc/xml/index.xml
-	$(PYTHON) doc/doxy2swig.py -focaq doc/xml/index.xml swig/tomdoc.i
+	$(PYTHON) doc/doxy2swig.py -focaqr doc/xml/index.xml swig/tomdoc.i
 
 swig/_tomlib_wrap.cpp: Makefile $(CXX_SRC) $(SWIG_SRC) swig/tomdoc.i
 	swig $(SWIG_FLAGS) -Iswig -outdir python/tom -o swig/_tomlib_wrap.cpp swig/_tomlib.i
