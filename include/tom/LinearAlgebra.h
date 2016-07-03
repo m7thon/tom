@@ -56,7 +56,7 @@ SWIGCODE(%template(kron) kron<MatrixMd, MatrixMd>;)
 
 SWIGCODE(%kwargs;)
 
-/** Return the column-wise generalized mean with exponent `p` (default 1) of the given `matrix`. For `p` = 1, 0, 1 this is the arithmetic, geometric and harmonic mean, respectively.
+/** Return the column-wise generalized mean with exponent `p` (default 1) of the given `matrix`. For `p` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean, respectively.
  *
  * Note that for values of `p` other than {1, 2k} this requires all matrix entries to be positive.
  */
@@ -78,7 +78,7 @@ RowVectorXd colwiseMean(const MatrixBase <T> &matrix, double p = 1.0) {
 }
 SWIGCODE(%template(colwiseMean) colwiseMean<MatrixMd>;)
 
-/** Return the row-wise generalized mean with exponent `p` (default 1) of the given `matrix`. For `p` = 1, 0, 1 this is the arithmetic, geometric and harmonic mean, respectively.
+/** Return the row-wise generalized mean with exponent `p` (default 1) of the given `matrix`. For `p` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean, respectively.
  *
  * Note that for values of `p` other than {1, 2k} this requires all matrix entries to be positive.
  */
