@@ -6,20 +6,28 @@ import numpy as np
 import itertools
 
 
-def rowColWeights(estimator, Y, z, X, p=-0.5, q=1):
+def rowColWeights(estimator, Y, z, X, p=0.5, q=1):
+    """Return a tuple (wI, wJ) of row and column weights for the matrix F_z(Y,X), which are given
+    as 2-dimensional arrays representing a row or column vector.
+
+    If *p* is ``None``, then the weights are computed as the inverse variance of f(Y) or f(X). Otherwise,
+    an element-wise variance estimate of F_z(Y,X) is computed first, and the weights are computed as the
+    inverse of the rowwise or columnwise *p*-mean of this variance estimate.
+
+    Finally, the exponent *q* is applied to the weights, e.g., their root is returned if *q* = 0.5.
+
+    Setting *q* to be zero will return (1,1).
+    """
+    if q == 0:
+        return (1,1)
     if p is None:
-        e = _tomlib.Sequences(1)
-        return (estimator.v(Y,e)**-q, estimator.v(e,z,X)**-q)
-    else:
-        V = estimator.v(Y,z,X)
-    if p > 0:
-        W = 1/V
-        return (_tomlib.rowwiseMean(W, p)**q, _tomlib.colwiseMean(W, p)**q)
-    else:
-        return (_tomlib.rowwiseMean(V, -p)**-q, _tomlib.colwiseMean(V, -p)**-q)
+        E = _tomlib.Sequences(1)
+        return (estimator.v(Y,z,E)**-q, estimator.v(E,z,X)**-q)
+    V = estimator.v(Y,z,X)
+    return (_tomlib.rowwiseMean(V, p)**-q, _tomlib.colwiseMean(V, p)**-q)
 
 
-def estimateDimension(estimator, X, Y, p = -0.5, q = 1, weighted=False, frob=False):
+def estimateDimension(estimator, X, Y, p = 0.5, q = 1, weighted=False, frob=False):
     """Estimate the model dimension for the underlying matrix F.
 
     Parameters
@@ -69,67 +77,61 @@ def estimateDimension(estimator, X, Y, p = -0.5, q = 1, weighted=False, frob=Fal
         return d
 
 
-def simpleSpectral(estimator, X, Y, dimensions = [0], method ='SPEC', p=-0.5, q=1, vP = (0,0,1,1)):
-    if method == 'Standard': method = 'SPEC'
-    if method == 'RowColWeighted': method = 'RCW'
-    if method not in ['SPEC', 'RCW']:
-        raise ValueError('unsupported method: ' + method)
+def applyLearningEquation(dim, nO, nU, estimator, X, Y, C, Q, F_cache = None):
+    """F_cache = [f(E,X), [f(Y,o,u,X)]_{o,u}, f(Y,E)]"""
+    E = _tomlib.Sequences(1)
+    oom = _tomlib.Oom(dim, nO, nU)
+    if F_cache is None:
+        for o, u in itertools.product(range(nO), range(max(1,nU))):
+            oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
+        oom.sig( estimator.f(E, X).dot(Q) )
+        oom.w0( C.dot(estimator.f(Y, E)) )
+    else:
+        for o, u in itertools.product(range(nO), range(max(1,nU))):
+            oom.tau(o,u, C.dot(F_cache['Fz'][o,u]).dot(Q))
+        oom.sig( F_cache['Fsig'].dot(Q) )
+        oom.w0( C.dot(F_cache['F0']) )
+    oom.initialize()
+    oom.stabilization(preset='default')
+    return oom
 
+
+def simpleSpectral(estimator, X, Y, dimensions = 0, p=0.5, q=0):
     nU = estimator.sequence().nInputSymbols()
     nO = estimator.sequence().nOutputSymbols()
-    e = _tomlib.Sequence(0, nO, nU)
-    E = _tomlib.Sequences()
-    E.append(e)
+    e = _tomlib.Sequence()
     threshold = 1e-15
 
-    if type(dimensions) in [list, tuple]:
-        dims = dimensions
-    else:
-        dims = [dimensions]
-
     F = estimator.f(Y,X)
-    if method == 'SPEC':
-        sqrt_wI = np.ones((len(Y), 1))
-        sqrt_wJ = np.ones((1, len(X)))
-    else: # compute row / col weights and their square roots
-        wI, wJ = rowColWeights(estimator, Y,e,X, p, q)
-        sqrt_wI = np.sqrt(wI)
-        sqrt_wJ = np.sqrt(wJ)
-
+    sqrt_wI, sqrt_wJ = rowColWeights(estimator, Y,e,X, p, 0.5*q)
     U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
 
     res = []
-    for dim in dims:
+    if type(dimensions) not in [list, tuple]:
+        dimensions = [dimensions]
+    for dim in dimensions:
         if dim == 0:
             raise ValueError('dimension estimation not yet implemented')
             dim = estimateDimension(estimator, X, Y)
-
-        Ud = U[:, :dim]; sd = np.sqrt(s[:dim]); VdT = VT[:dim, :]
+        Ud = U[:, :dim]; sqrt_sdi = np.sqrt(s[:dim]); VdT = VT[:dim, :]
         try:
             for i in range(dim):
-                sd[i] = 1 / sd[i] if sd[i] > threshold else 0
+                sqrt_sdi[i] = 1 / sqrt_sdi[i] if sqrt_sdi[i] > threshold else 0
         except: # target dimension much too large
             oom = _tomlib.Oom(0, nO, nU)
             oom.stabilization(preset='default')
             res.append(oom)
         else:
-            C = sd[:,None] * Ud.transpose() * sqrt_wI.transpose()
-            Q = sqrt_wJ.transpose() * VdT.transpose() * sd[None,:]
-            oom = _tomlib.Oom(dim, nO, nU)
-            for u, o in itertools.product(range(max(1,nU)), range(nO)):
-                oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
-            oom.sig( estimator.f(E, X).dot(Q) )
-            oom.w0( C.dot(estimator.f(Y, E)) )
-            oom.initialize()
-            oom.stabilization(preset='default')
-            res.append(oom)
+            C = sqrt_sdi[:,None] * (sqrt_wI * Ud).transpose()
+            Q = (VdT * sqrt_wJ).transpose() * sqrt_sdi[None,:]
+            res.append(applyLearningEquation(dim, nO, nU, estimator, X, Y, C, Q))
     if type(dimensions) in [list, tuple]:
         return res
     else:
         return res[0]
 
 
-def rcSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
+def simpleSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
     e = _tomlib.Sequence(0, nO, nU)
     E = _tomlib.Sequences()
     E.append(e)
@@ -147,10 +149,10 @@ def rcSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
         oom = _tomlib.Oom(0, nO, nU)
         oom.stabilization(preset='default')
         return oom
-    C = s[:,None] * U.transpose() * sqrt_wI.transpose()
-    Q = sqrt_wJ.transpose() * VT.transpose() * s[None,:]
+    C = s[:,None] * (sqrt_wI * U).transpose()
+    Q = (VT * sqrt_wJ).transpose() * s[None,:]
     oom = _tomlib.Oom(dim, nO, nU)
-    for z, zid in zip(_tomlib.wordsOverAlphabet(nO, nU), range(10000)):
+    for zid, z in enumerate(_tomlib.wordsOverAlphabet(nO, nU)):
         oom.tau(z, C.dot(Fz[zid]).dot(Q))
     oom.sig(Fsig.dot(Q))
     oom.w0( C.dot(Fw0) )
@@ -159,7 +161,7 @@ def rcSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
     return oom
 
 
-def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p=-0.5, q=1, stopConditionWLRA = None):
+def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p=0.5, q=1, stopConditionWLRA = None):
     """Spectral learning algorithm for (IO)-OOMs.
 
     This function returns an (IO)-OOM that is estimated using the (weighted) spectral
