@@ -317,7 +317,6 @@ private:
             pos_.setRoot();
             f_ = pi_ = f2_ = 1;
             v_ = 0;
-            k_ = 0;
             estimateVariance_ = estimateVariance;
             return *this;
         }
@@ -328,7 +327,6 @@ private:
             pi_ = state.pi_;
             f2_ = state.f2_;
             v_ = state.v_;
-            k_ = state.k_;
             estimateVariance_ = state.estimateVariance_;
             return *this;
         }
@@ -336,7 +334,6 @@ private:
         State& operator <<(Symbol o) { return operator<< (std::make_pair(o, 0)); }
 
         State& operator <<(std::pair<Symbol, Symbol> ou) {
-            k_++;
             /* `n` is the number of possible occurrences for `x_k`, and `c` is the number of occurrences of `x_k`. */
             double n;
             if (estimator_.nU_ != 0) {
@@ -372,7 +369,6 @@ private:
         double v() const {
             assert(estimateVariance_);
             double var = v_;
-            if (k_ == 0) { var = 0; }
             if (estimator_.vMin_ >= 0.25) {
                 if (pi_ == 0) return var + estimator_.vMin_;
                 return var + std::min(std::max(1.0 / (pi_ * pi_), estimator_.vMin_) / (estimator_.N_ * estimator_.N_), estimator_.vMin_);
@@ -386,7 +382,6 @@ private:
         double pi_;
         double f2_;
         double v_;
-        long k_;                 ///< the length of the currently parsed sequence
         bool estimateVariance_;
     };
 
