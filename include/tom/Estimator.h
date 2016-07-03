@@ -227,7 +227,7 @@ public:
 
     //<editor-fold desc="Regularization parameters">
     SWIGCODE(%feature ("kwargs") regularization;)
-    SWIGCODE(%apply double *OUTPUT { double *vPCOut, double *vZOut, double *vMinOut };)
+    SWIGCODE(%apply double *OUTPUT { double *vPCOut, double *vMinOut };)
     /**
      Set (optional) and then return the regularization parameters for the `Estimator`. This is done as follows:
      - First, if a `preset` ("none" / "default") is specified, all regularization parameters are set accordingly.
@@ -244,50 +244,45 @@ public:
      in the corresponding output arguments `...Out` (if not NULL).
      \endif
 
-     @param vPC number of pseudo-counts to add before computing the variance
-     @param vZ the size of the confidence interval used in the variance computation, measured by z-score
+     @param vPC number of pseudo-counts to add for the variance computation
      @param vMin determines a lower bound for the returned variance, which will simply be `vMin` if this is < 0.25, or computed as \f$vMin / (\pi N)^2\f$, where `N` is the length of the sequence data.
      @param preset a preset that may be specified as explained above { "default", "none" }
      */
     C1(void) PY1(tuple)
-    regularization(C4(double *vPCOut, double *vZOut, double *vMinOut,)
-                   double vPC = -1, double vZ = -1, double vMin = -1,
+    regularization(C3(double *vPCOut, double *vMinOut,)
+                   double vPC = -1, double vMin = -1,
                    std::string preset = "") throw(std::invalid_argument) {
         // Set to preset
         if (preset == "default") {
-            vPC_ = 0;
-            vZ_ = 1;
-            vMin_ = 5;
+            vPC_ = 2;
+            vMin_ = 3;
         } else if (preset == "none") {
-            vPC_ = 1;
-            vZ_ = 0;
+            vPC_ = 0;
             vMin_ = 0;
         } else if (preset != "") {
             throw std::invalid_argument("unrecognized preset");
         }
         // Set individual parameters
         if (vPC != -1) this->vPC_ = vPC;
-        if (vZ != -1) this->vZ_ = vZ;
         if (vMin != -1) this->vMin_ = vMin;
         // Return current parameters
         if (vPCOut) *vPCOut = this->vPC_;
-        if (vZOut) *vZOut = this->vZ_;
         if (vMinOut) *vMinOut = this->vMin_;
     }
-    SWIGCODE(%clear double *vPCOut, double *vZOut, double *vMinOut;)
+    SWIGCODE(%clear double *vPCOut, double *vMinOut;)
 
 #ifndef SWIG
 #ifndef PY
     /**
-     * Set the regularization parameters for the `Estimator`. This is a convenience function that simply calls `regularization(NULL, NULL, NULL, zPC, vZ, vMin, preset);` */
-    void regularization(double vPC = -1, double vZ = -1, double vMin = -1,
+     * Set the regularization parameters for the `Estimator`. This is a convenience function that simply calls `regularization(NULL, NULL, zPC, vMin, preset);` */
+    void regularization(double vPC = -1, double vMin = -1,
                         std::string preset = "") throw(std::invalid_argument) {
-        regularization(NULL, NULL, NULL, vPC, vZ, vMin, preset);
+        regularization(NULL, NULL, vPC, vMin, preset);
     }
     /**
-    * Set the regularization parameters for the `Estimator` to the given `preset`. This is a convenience function that simply calls `regularization(NULL, NULL, NULL, -1, -1, -1, preset);` */
+    * Set the regularization parameters for the `Estimator` to the given `preset`. This is a convenience function that simply calls `regularization(NULL, NULL, -1, -1, preset);` */
     void regularization(std::string preset) throw(std::invalid_argument) {
-        regularization(NULL, NULL, NULL, -1, -1, -1, preset);
+        regularization(NULL, NULL, -1, -1, preset);
     }
 #endif
 #endif
@@ -299,7 +294,6 @@ private:
     int nU_;              ///< the size of the input alphabet
     long N_;            ///< the length of the sample sequence from which the estimates are calculated
 
-    double vZ_;
     double vPC_;
     double vMin_;
 
@@ -348,7 +342,7 @@ private:
             if (estimator_.nU_ != 0) {
                 n = pos_.count();
                 pos_.toSymbol(ou.second);
-                pi_ *= (pos_.count() + 0.5) / (n + 1.0);
+                pi_ *= ( n == 0 ? 1.0 / estimator_.nU_ : pos_.count() / n );
             }
             n = pos_.count();
             if (pos_.isSuffix()) { --n; }
@@ -362,26 +356,9 @@ private:
             c += 0.5 * estimator_.vPC_;
             n += estimator_.vPC_;
             p = ( n == 0 ? 0.5 : c / n );
-
-            /* Use a Wilson confidence interval for p to compute the variance estimate: */
-            double z2 = estimator_.vZ_ * estimator_.vZ_;
-            double p_mid = ( n + z2 > 0 ? (c + 0.5 * z2) / (n + z2) : 0.5 ) ;
-            double ci_size = ( z2 > 0 ? std::sqrt(z2 * (n * p * (1 - p) + z2 / 4)) / (n + z2) : 0 );
-            double p_lower = std::max(p_mid - ci_size, 0.0);
-            double p_upper = std::min(p_mid + ci_size, 1.0);
-            double p_centered = (p_mid < 0.5 ? std::min(p_upper, 0.5) : std::max(p_lower, 0.5));
-            double p_extreme = std::min(p_lower, 1 - p_upper);
-
-            double E_p2_overestimate = p_upper * p_upper;
-            double var_p_overestimate = 0.5;
-            double var_p_underestimate = 0.0;
-            if (n + z2 - 1 >= 1) {
-                var_p_overestimate = p_centered * (1 - p_centered) / (n + z2 - 1);
-                var_p_underestimate = p_extreme * (1 - p_extreme) / (n + z2 - 1);
-            }
-
-            v_ = v_ * std::max(E_p2_overestimate - var_p_underestimate, 0.0) + f2_ * var_p_overestimate;
-            f2_ *= E_p2_overestimate;
+            double var_p = ( n >= 2 ? p * (1 - p) / (n - 1) : 0.25 );
+            v_ = v_ * std::max(p*p - var_p, 0.0) + f2_ * var_p;
+            f2_ *= p*p;
             return *this;
         }
 
@@ -396,10 +373,11 @@ private:
             assert(estimateVariance_);
             double var = v_;
             if (k_ == 0) { var = 0; }
-            if (estimator_.vMin_ >= 0.25)
-                return std::min(std::max(var, estimator_.vMin_ / (estimator_.N_ * estimator_.N_ * pi_ * pi_)), 0.5);
-            else
-                return std::min(std::max(var, estimator_.vMin_), 0.5);
+            if (estimator_.vMin_ >= 0.25) {
+                if (pi_ == 0) return var + estimator_.vMin_;
+                return var + std::min(std::max(1.0 / (pi_ * pi_), estimator_.vMin_) / (estimator_.N_ * estimator_.N_), estimator_.vMin_);
+            } else
+                return var + estimator_.vMin_;
         }
 
         const Estimator& estimator_; ///< the `Estimator` that this `State` belongs to
