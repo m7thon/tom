@@ -25,9 +25,9 @@ setup(
     url = "https://gitlab.com/m7.thon/tom",
     package_dir = {'': 'python'},
     packages = ['tom', 'tom.hmm', 'tom.learn', 'tom.linalg', 'tom.util'],
-    ext_modules = [Extension('tom.__tomlib', sources = ['swig/_tomlib_wrap.cpp'], language='c++',
+    ext_modules = [Extension('tom.__tomlib', sources = [os.path.join('swig', '_tomlib_wrap.cpp')], language='c++',
                              extra_compile_args = ['-std=c++11', '-Wno-unused-variable', '-Wno-sign-compare'],
-                             include_dirs = [np.get_include(), 'include/tom', 'include/external'],
+                             include_dirs = [np.get_include(), os.path.join('include', 'tom'), os.path.join('include', 'external')],
                              depends = make_depends() )],
     test_suite = 'tests',
 )
