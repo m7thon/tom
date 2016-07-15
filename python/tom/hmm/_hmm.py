@@ -3,11 +3,11 @@ from .. import _tomlib
 
 import numpy as np
 
-try:
-    import ghmm
-    ghmm.log.setLevel(ghmm.logging.ERROR)
-except:
-    pass
+#try:
+#    import ghmm
+#    ghmm.log.setLevel(ghmm.logging.ERROR)
+#except:
+#    pass
 
 def random_HMM(alphabet_size, dim, exponent = 1):
     """Return randomly initialized HMM parameters (T, E, pi).
