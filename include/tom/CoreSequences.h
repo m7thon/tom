@@ -12,10 +12,15 @@
 
 namespace tom {
 
-/** Reverse all words in the \c words vector in-place. */
+/** Reverse the given `words` in-place. */
 void reverseWords(std::shared_ptr<Sequences> words) {
     for (unsigned long i = 0; i < words->size(); ++i)
         (*words)[i] = (*words)[i].reverse();
+}
+
+/** Sort the given `words` in-place by length and then lexicographically.*/
+void sortWords(std::shared_ptr<Sequences> words) {
+    std::sort(words->begin(), words->end());
 }
 
 SWIGCODE(%feature ("kwargs") wordsOverAlphabet;)
@@ -68,7 +73,8 @@ SWIGCODE(%feature ("kwargs") wordsFromData;)
  * @param maxLength the maximum length for returned words, or `0` (default) for no limit
  * @param minRelevance the minimum "relevance" in the data sequence for returned words (default 1.0)
  * @param maxWords the maximum number of returned words, or `0` (default) for no limit
- * @param uniquePositions if set to `true`, then only retain the shortest word for words occurring at the same set of positions in the data sequence (default `false`)
+ * @param prefixUnique if set to `true`, then only retain the shortest prefix among words occurring at the same set of positions in the data sequence (default `false`)
+ * @param suffixUnique if set to `true`, then only retain the shortest suffix among words ending at the same set of positions in the data sequence (default `false`)
  * @param relevance a `PositionRelevance` object to compute the *relevance value* for words, which defaults to their occurrence count in the data (plus a fraction to penalize longer words). This can be customized by passing a `relevance` inherited from `PositionRelevance` with an overwritten `.compute()` method.
  *
  * @return an array of words occurring in the data sequence according to the given constraints, and sorted by occurrence count (descending) and then lexicographically.
@@ -82,7 +88,8 @@ SWIGCODE(%feature ("kwargs") wordsFromData;)
  */
 std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STree>& dataSuffixTree,
                                                 long minLength = 0, long maxLength = 0, double minRelevance = 1.0, long maxWords = 0,
-                                                bool uniquePositions = false, const stree::PositionRelevance& relevance = stree::PositionRelevance()) {
+                                                bool prefixUnique = false, bool suffixUnique = false, const stree::PositionRelevance& relevance = stree::PositionRelevance()) throw(std::invalid_argument) {
+    if (prefixUnique and suffixUnique) throw std::invalid_argument("`prefixUnique` and `suffixUnique` cannot both be set");
     stree::PositionRelevance& key = const_cast<stree::PositionRelevance&>(relevance);
     auto sequence = dataSuffixTree->sequence();
     int nSymbols = sequence.nInputSymbols() * std::min(sequence.nOutputSymbols(), 1);
@@ -94,28 +101,34 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
     };
     std::priority_queue<stree::Position, std::vector<stree::Position>, decltype(comparePositions) > positionQueue(comparePositions);
 
-    auto position = stree::Position(dataSuffixTree);
-    if (maxLength < minLength or not position.isValid() or key.compute(position) < minRelevance) { return words; }
-    positionQueue.push(position);
+    auto p = stree::Position(dataSuffixTree);
+    if (maxLength < minLength or not p.isValid() or key.compute(p) < minRelevance) { return words; }
+    positionQueue.push(p);
 
     while ((not positionQueue.empty()) and (maxWords == 0 or words->size() < maxWords)) {
-        position.set(positionQueue.top());
+        p.set(positionQueue.top());
         positionQueue.pop();
-        if (position.depth() >= IO * minLength) { words->push_back(position.sequence()); }
-        if (position.depth() < IO * maxLength) {
-            if (uniquePositions) { position.toExplicit(); }
-            if (position.depth() % IO == 0) { position.toChild(); }
-            while (position.isValid()) {
+        if (p.depth() >= IO * minLength) {
+            if (!suffixUnique or (p.depth() == IO * minLength) or (p.suffix().count() > p.count())) {
+                words->push_back(p.sequence());
+                if (prefixUnique) { p.toExplicit(); }
+            }
+        } else {
+            p.toDepth(std::min((long)p.edge().depth(), IO * (minLength - 1)));
+        }
+        if (p.depth() < IO * maxLength) {
+            if (p.depth() % IO == 0) { p.toChild(); }
+            while (p.isValid()) {
                 if (IO == 2) {
-                    auto grandchild = position.child();
+                    auto grandchild = p.child();
                     while (grandchild.isValid()) {
                         if (key.compute(grandchild) >= minRelevance) positionQueue.push(grandchild);
                         grandchild.toSibling();
                     }
                 } else {
-                    if (key.compute(position) >= minRelevance) positionQueue.push(position);
+                    if (key.compute(p) >= minRelevance) positionQueue.push(p);
                 }
-                position.toSibling();
+                p.toSibling();
             }
         }
     }

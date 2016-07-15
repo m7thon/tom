@@ -22,7 +22,6 @@ def canonicalizeSuffixTree(stree):
         cForm += [nodeData]
     return cForm, nodeIndex(tom.stree.Node(stree, stree.deepestInternalSuffixNidx()))
 
-
 def verifySuffixTreeCounts(seq, stree):
     for node in tom.stree.PrefixIterator(stree):
         if seq.count(node.sequence()) != node.count():
@@ -40,9 +39,8 @@ def verifySuffixTreeForm(seq, cform1, cform2):
 class TestSuffixTree(unittest.TestCase):
     def test_STree(self):
         testSeqs = ['10', 'mississippi', '10_10000', '4_3_10000', '4x3_10000', 'pc_10000']
-        print()
         for s in testSeqs:
-            print('   testing with ' + s + '.seq.bz2')
+            print('.', end='', flush=True)
             seq = tom.load(current_dir + s + '.seq.bz2')
             f = bz2.BZ2File(current_dir + s + '.stree.bz2')
             streeForm = pickle.load(f)
@@ -57,3 +55,4 @@ class TestSuffixTree(unittest.TestCase):
                                 "!!! SuffixTree test NOT passed !!! Substring count discrepancy.")
             streeFormNew = canonicalizeSuffixTree(stree)
             self.assertTrue(verifySuffixTreeForm(seq, streeFormNew, streeForm), "!!! SuffixTree test NOT passed !!! Something has changed.")
+        print(' ', end='', flush=True)

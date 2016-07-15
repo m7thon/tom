@@ -647,6 +647,13 @@ public:
 		depth_ = edge_.depth();
 	}
 
+	void toDepth(long depth) CHECK(throw(std::invalid_argument)) {
+		if (!isValid()) return;
+		if (depth_ == depth) return;
+		CHECK(if (depth <= edge_.parent().depth() or depth > edge_.depth()) throw std::invalid_argument("Given `depth` does not lie on current edge.");)
+		depth_ = depth;
+	}
+
 	/** Return the first child `Position` in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no child exists, a `Position` marked as invalid is returned. Note that the children are ordered lexicographically according to their edge symbols.
 	 */
 	Position child() const { Position ret = Position(*this); ret.toChild(); return ret; }

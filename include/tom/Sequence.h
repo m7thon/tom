@@ -343,6 +343,29 @@ public:
     /** Return `true` if the given `sequence` is not equal to this `Sequence` */
     bool operator!=(const Sequence &sequence) const { return  not operator==(sequence); }
 
+    bool operator<(const Sequence &sequence) const {
+        if (rawSize() < sequence.rawSize()) return true;
+        else if (rawSize() > sequence.rawSize()) return false;
+        for (long t = 0; t < rawSize(); ++t) {
+            if (rawAt(t) < sequence.rawAt(t)) return true;
+            else if (rawAt(t) > sequence.rawAt(t)) return false;
+        }
+        return false;
+    }
+
+    bool operator<=(const Sequence &sequence) const {
+        if (rawSize() < sequence.rawSize()) return true;
+        else if (rawSize() > sequence.rawSize()) return false;
+        for (long t = 0; t < rawSize(); ++t) {
+            if (rawAt(t) < sequence.rawAt(t)) return true;
+            else if (rawAt(t) > sequence.rawAt(t)) return false;
+        }
+        return true;
+    }
+
+    bool operator>(const Sequence &sequence) const { return not operator<=(sequence); }
+    bool operator>=(const Sequence &sequence) const { return not operator<(sequence); }
+
     SWIGCODE(%ignore incr_as_python_iterator_only;)
 
     /** Increment the first position, which allows using a \c Sequence as an iterator */
