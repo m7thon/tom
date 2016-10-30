@@ -25,22 +25,32 @@ class CachedWSVD:
         self._sqrt_w_Y = None
         self._sqrt_w_X = None
         self._wsvd = None
+        self._svd = None
 
-    def __call__(self, F, sqrt_w_Y=1, sqrt_w_X=1):
-        redo = False
+    def __call__(self, sqrt_w_Y, F, sqrt_w_X):
         if F is not self._F:
             self._F = F
             self._F.setflags(write=False)
-            redo = True
+            self._svd = self._wsvd = None
+        if np.array_equal(sqrt_w_Y, 1) and np.array_equal(sqrt_w_X, 1):
+            if self._svd is None:
+                U, s, VT = wsvd(1, F, 1)
+                U.setflags(write=False)
+                s.setflags(write=False)
+                VT.setflags(write=False)
+                self._svd = U, s, VT
+            return self._svd
         if not (sqrt_w_Y is self._sqrt_w_Y or np.array_equal(sqrt_w_Y, self._sqrt_w_Y)):
             self._sqrt_w_Y = sqrt_w_Y
-            self._sqrt_w_Y.setflags(write=False)
-            redo = True
+            try: self._sqrt_w_Y.setflags(write=False)
+            except: pass
+            self._wsvd = None
         if not (sqrt_w_X is self._sqrt_w_X or np.array_equal(sqrt_w_X, self._sqrt_w_X)):
             self._sqrt_w_X = sqrt_w_X
-            self._sqrt_w_X.setflags(write=False)
-            redo = True
-        if redo is True or self._wsvd is None:
+            try: self._sqrt_w_X.setflags(write=False)
+            except: pass
+            self._wsvd = None
+        if self._wsvd is None:
             U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
             U.setflags(write=False)
             s.setflags(write=False)
@@ -49,7 +59,7 @@ class CachedWSVD:
         return self._wsvd
 
 
-_cached_wsvd = CachedWSVD()
+cached_wsvd = CachedWSVD()
 
 
 class Data:
@@ -64,13 +74,18 @@ class Data:
         self._E = _tomlib.Sequences(1)
         self._cache = {}
         if cache_level == 1:
-            self.cache(['F_YX', 'V_YX'])
+            self.cache = ['F_YX', 'V_YX', 'V_YXr']
         elif cache_level == 2:
-            self.cache(['F_YX', 'F_zYX', 'f_YE', 'f_EX', 'V_YX', 'V_zYX', 'v_YE', 'v_EX'])
+            self.cache = ['F_YX', 'F_zYX', 'f_YE', 'f_EX', 'V_YX', 'V_YXr', 'V_zYX', 'v_YE', 'v_EX']
         if sequence is not None:
             self.sequence(setTo=sequence)
 
-    def cache(self, keys=None):
+    @property
+    def cache(self):
+        return self._cache.keys()
+
+    @cache.setter
+    def cache(self, keys):
         self._cache = {}
         for key in keys:
             if key in ['F_zYX', 'V_zYX']:
@@ -87,84 +102,107 @@ class Data:
             else:
                 self._cache[key] = None
 
-    def sequence(self, setTo=None):
-        if setTo is None:
-            if self._sequence is None: raise ValueError('No sequence has been set.')
-            return self._sequence
+    @property
+    def sequence(self):
+        if self._sequence is None: raise ValueError('No sequence has been set.')
+        return self._sequence
+    
+    @sequence.setter
+    def sequence(self, setTo):
+        if self._sequence is None or not setTo.hasPrefix(self._sequence, withSameAlphabet=True):
+            self._nInputSymbols = setTo.nInputSymbols()
+            self._nOutputSymbols = setTo.nOutputSymbols()
+            self._stree = _tomlib.STree(setTo)
         else:
-            if self._sequence is None or not setTo.hasPrefix(self._sequence, withSameAlphabet=True):
-                self._nInputSymbols = setTo.nInputSymbols()
-                self._nOutputSymbols = setTo.nOutputSymbols()
-                self._stree = _tomlib.STree(setTo)
-            else:
-                self._stree.extendTo(setTo, False)
-            self._sequence = setTo
-            self._estimator = _tomlib.Estimator(self._stree)
-            self._estimator.regularization(**self._regularization)
+            self._stree.extendTo(setTo, False)
+        self._sequence = setTo
+        self._estimator = _tomlib.Estimator(self._stree)
+        self._estimator.regularization(**self._regularization)
 
-            self._X = self._Y = None
-            self._reset_cache()
+        self._X = self._Y = None
+        self._reset_cache()
 
-    def nInputSymbols(self, setTo=None):
-        if setTo is not None: self._nInputSymbols = setTo
-        else:
-            if self._nInputSymbols is None: raise ValueError('No sequence has been set.')
-            return self._nInputSymbols
+    @property
+    def nInputSymbols(self):
+        if self._nInputSymbols is None: raise ValueError('No sequence has been set.')
+        return self._nInputSymbols
 
-    def nOutputSymbols(self, setTo=None):
-        if setTo is not None: self._nOutputSymbols = setTo
+    @nInputSymbols.setter
+    def nInputSymbols(self, setTo):
+        self._nInputSymbols = setTo
+
+    @property
+    def nOutputSymbols(self):
         if self._nOutputSymbols is None: raise ValueError('No sequence has been set.')
         return self._nOutputSymbols
+    
+    @nOutputSymbols.setter
+    def nOutputSymbols(self, setTo):
+        self._nOutputSymbols = setTo
 
+    @property
     def stree(self):
         if self._sequence is None: raise ValueError('No sequence has been set.')
         return self._stree
 
+    @property
     def estimator(self):
         if self._sequence is None: raise ValueError('No sequence has been set.')
         return self._estimator
 
-    def regularization(self, setTo=None):
-        if setTo is None:
-            return self._regularization
+    @property
+    def regularization(self):
+        return self._regularization
+        
+    @regularization.setter
+    def regularization(self, setTo):
         if self._estimator is not None:
             self._estimator.regularization(**setTo)
         self._regularization = setTo
         self._reset_cache(['V_YX', 'V_zYX', 'v_YE', 'v_EX'])
+        
+    @property
+    def X(self):
+        if self._X is None: raise ValueError('Indicative words have not been set.')
+        return self._X
 
-    def X(self, setTo=None):
-        if setTo is None:
-            if self._X is None: raise ValueError('Indicative words have not been set.')
-            return self._X
+    @X.setter
+    def X(self, setTo):
         self._reset_cache()
         if type(setTo) in [list, tuple]:
-            if self._sequence is None: raise ValueError('No sequence has been set.')
-            self._X = _tomlib.wordsFromData(self.stree(), *setTo)
+            self._X = _tomlib.wordsFromData(self.stree, *setTo)
         elif type(setTo) is dict:
-            if self._sequence is None: raise ValueError('No sequence has been set.')
-            self._X = _tomlib.wordsFromData(self.stree(), **setTo)
+            self._X = _tomlib.wordsFromData(self.stree, **setTo)
         else: self._X = setTo
 
-    def Y(self, setTo=None):
-        if setTo is None:
-            if self._Y is None: raise ValueError('Characteristic words have not been set.')
-            return self._Y
+    @property
+    def Y(self):
+        if self._Y is None: raise ValueError('Characteristic words have not been set.')
+        return self._Y
+
+    @Y.setter
+    def Y(self, setTo):
         self._reset_cache()
         if type(setTo) in [list, tuple]:
-            if self._sequence is None: raise ValueError('No sequence has been set.')
-            self._Y = _tomlib.wordsFromData(self.stree(), *setTo)
+            self._Y = _tomlib.wordsFromData(self.stree, *setTo)
         elif type(setTo) is dict:
-            if self._sequence is None: raise ValueError('No sequence has been set.')
-            self._Y = _tomlib.wordsFromData(self.stree(), **setTo)
+            self._Y = _tomlib.wordsFromData(self.stree, **setTo)
         else: self._Y = setTo
+
+    def pre_compute(self):
+        self._cache['F_YX'], self._cache['V_YX'] = self.estimator.fv(self.Y, self.X)
+        for o, u in itertools.product(range(self.nOutputSymbols), range(max(1, self.nInputSymbols))):
+            self._cache['F_zYX'][(o, u)], self._cache['V_zYX'][(o, u)] = self.estimator.fv(self.Y, o, u, self.X)
+        self._cache['f_YE'], self._cache['v_YE'] = self.estimator.fv(self.Y, self._E)
+        self._cache['f_EX'], self._cache['v_EX'] = self.estimator.fv(self._E, self.X)
 
     def F_YX(self, setTo=None):
         if setTo is not None: self._cache['F_YX'] = setTo
         else:
             try: F = self._cache['F_YX']
-            except: return self.estimator().f(self.Y(), self.X())
+            except: return self.estimator.f(self.Y, self.X)
             if F is None:
-                F = self.estimator().f(self.Y(), self.X())
+                F = self.estimator.f(self.Y, self.X)
                 self._cache['F_YX'] = F
             return F
 
@@ -174,19 +212,18 @@ class Data:
             self._cache['F_zYX'][tuple(z)] = setTo
         else:
             try: F = self._cache['F_zYX'][tuple(z)]
-            except: return self._estimator.f(self.Y(), z[0], z[1], self.X())
-            if F is None:
-                F = self.estimator().f(self.Y(), z[0], z[1], self.X())
-                self._cache['F_zYX'][tuple(z)] = F
+            except:
+                F = self.estimator.f(self.Y, z[0], z[1], self.X)
+                if 'F_zYX' in self._cache: self._cache['F_zYX'][tuple(z)] = F
             return F
 
     def f_EX(self, setTo=None):
         if setTo is not None: self._cache['f_EX'] = setTo
         else:
             try: f = self._cache['f_EX']
-            except: return self.estimator().f(self._E, self.X())
+            except: return self.estimator.f(self._E, self.X)
             if f is None:
-                f = self.estimator().f(self._E, self.X())
+                f = self.estimator.f(self._E, self.X)
                 self._cache['f_EX'] = f
             return f
 
@@ -194,67 +231,72 @@ class Data:
         if setTo is not None: self._cache['f_YE'] = setTo
         else:
             try: f = self._cache['f_YE']
-            except: return self.estimator().f(self.Y(), self._E)
+            except: return self.estimator.f(self.Y, self._E)
             if f is None:
-                f = self.estimator().f(self.Y(), self._E)
+                f = self.estimator.f(self.Y, self._E)
                 self._cache['f_YE'] = f
             return f
 
-    def V_YX(self, regularization=None, setTo=None):
+    def V_YX(self, setTo=None, regularization=None):
         if setTo is not None: self._cache['V_YX'] = setTo
         else:
             if regularization is not None and regularization != self._regularization:
-                estimator = _tomlib.Estimator(self.stree())
-                estimator.regularization(regularization)
-                return estimator.v(self.Y(), self.X())
+                try:
+                    r, V = self._cache['V_YXr']
+                    if r != regularization: raise ValueError()
+                except:
+                    estimator = _tomlib.Estimator(self.stree)
+                    estimator.regularization(**regularization)
+                    V = estimator.v(self.Y, self.X)
+                    if 'V_YXr' in self._cache: self._cache['V_YXr'] = (regularization, V)
+                return V
             try: V = self._cache['V_YX']
-            except: return self.estimator().v(self.Y(), self.X())
+            except: return self.estimator.v(self.Y, self.X)
             if V is None:
-                V = self.estimator().v(self.Y(), self.X())
+                V = self.estimator.v(self.Y, self.X)
                 self._cache['V_YX'] = V
             return V
 
-    def V_zYX(self, z, regularization=None, setTo=None):
+    def V_zYX(self, z, setTo=None, regularization=None):
         if setTo is not None:
             if 'V_zYX' not in self._cache: self._cache['V_zYX'] = {}
             self._cache['V_zYX'][tuple(z)] = setTo
         else:
             if regularization is not None and regularization != self._regularization:
-                estimator = _tomlib.Estimator(self.stree())
-                estimator.regularization(regularization)
-                return estimator.v(self.Y(), z[0], z[1], self.X())
+                estimator = _tomlib.Estimator(self.stree)
+                estimator.regularization(**regularization)
+                return estimator.v(self.Y, z[0], z[1], self.X)
             try: V = self._cache['V_zYX'][tuple(z)]
-            except: return self.estimator().v(self.Y(), z[0], z[1], self.X())
-            if V is None:
-                V = self.estimator().v(self.Y(), z[0], z[1], self.X())
-                self._cache['V_zYX'][tuple(z)] = V
+            except:
+                V = self.estimator.v(self.Y, z[0], z[1], self.X)
+                if 'V_zYX' in self._cache: self._cache['V_zYX'][tuple(z)] = V
             return V
 
-    def v_EX(self, regularization=None, setTo=None):
+    def v_EX(self, setTo=None, regularization=None):
         if setTo is not None: self._cache['v_EX'] = setTo
         else:
             if regularization is not None and regularization != self._regularization:
-                estimator = _tomlib.Estimator(self.stree())
-                estimator.regularization(regularization)
-                return estimator.v(self._E, self.X())
+                estimator = _tomlib.Estimator(self.stree)
+                estimator.regularization(**regularization)
+                return estimator.v(self._E, self.X)
             try: v = self._cache['v_EX']
-            except: return self.estimator().v(self._E, self.X())
+            except: return self.estimator.v(self._E, self.X)
             if v is None:
-                v = self.estimator().v(self._E, self.X())
+                v = self.estimator.v(self._E, self.X)
                 self._cache['v_EX'] = v
             return v
 
-    def v_YE(self, regularization=None, setTo=None):
+    def v_YE(self, setTo=None, regularization=None):
         if setTo is not None: self._cache['v_YE'] = setTo
         else:
             if regularization is not None and regularization != self._regularization:
-                estimator = _tomlib.Estimator(self.stree())
-                estimator.regularization(regularization)
-                return estimator.v(self.Y(), self._E)
+                estimator = _tomlib.Estimator(self.stree)
+                estimator.regularization(**regularization)
+                return estimator.v(self.Y, self._E)
             try: v = self._cache['v_YE']
-            except: return self.estimator().v(self.Y(), self._E)
+            except: return self.estimator.v(self.Y, self._E)
             if v is None:
-                v = self.estimator().v(self.Y(), self._E)
+                v = self.estimator.v(self.Y, self._E)
                 self._cache['v_YE'] = v
             return v
 
@@ -273,7 +315,7 @@ def v_Y_from_data(data, p=1, q=1, regularization='auto'):
     if q == 0: return 1
     if p is None:
         if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
-        return data.v_YE(regularization=regularization)**q
+        return data.v_YE(regularization=regularization) ** q
     if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p)**q
@@ -293,7 +335,7 @@ def v_X_from_data(data, p=1, q=1, regularization='auto'):
     if q == 0: return 1
     if p is None:
         if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
-        return data.v_EX(regularization=regularization)**q
+        return data.v_EX(regularization=regularization) ** q
     if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
     V = data.V_YX(regularization=regularization)
     return _tomlib.colwiseMean(V, p)**q
@@ -315,13 +357,13 @@ def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
     if q == 0: return 1, 1
     if p is None:
         if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
-        return data.v_EX(regularization=regularization)**q
+        return data.v_EX(regularization=regularization) ** q
     if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
 
 
-def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='spec', wsvd=_cached_wsvd):
+def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='spec', wsvd=cached_wsvd):
     """Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
     to determine a cutoff for the error on `F` that is measured by the given `errorNorm`, which may
     be 'spec' (default) or 'frob'. """
@@ -352,7 +394,7 @@ def subspace_from_model(model, Y, v_Y=1, stabilization=None):
     if stabilization is None: stabilization = {'preset': 'none'}
     room = model.reverse(False)
     room.stabilization(**stabilization)
-    Pi = np.zeros(len(Y), model.dimension())
+    Pi = np.zeros((len(Y), model.dimension()))
     for i, y in enumerate(Y):
         log2_f_y = room.log2_f(y.reverse())
         Pi[i, :] = room.wt().transpose()
@@ -360,7 +402,7 @@ def subspace_from_model(model, Y, v_Y=1, stabilization=None):
     return Pi
 
 
-def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=_cached_wsvd):
+def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=cached_wsvd):
     threshold = 1e-12
     sqrt_v_Y, sqrt_v_X = np.sqrt(v_Y), np.sqrt(v_X)
     U, s, VT = wsvd(1/sqrt_v_Y, F, 1/sqrt_v_X)
@@ -373,14 +415,15 @@ def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=_cached_wsvd):
 def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=_tomlib.StopCondition(100, 1e-5, 1e-7), method='Cholesky'):
     if type(dim_subspace) is int:
         dim_subspace = subspace_by_svd(F, dim_subspace)
-    return _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, method)
+    B, A = _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, method)
+    return B
 
 
 def subspace_corresponding_to_C_and_v_Y(C, v_Y):
     return v_Y * C.transpose()
 
 
-def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=_cached_wsvd):
+def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=cached_wsvd):
     sqrt_w_X = 1/np.sqrt(v_X)
     if type(dim_subspace) is int:
         dim = dim_subspace
@@ -404,8 +447,8 @@ def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=_cached_wsvd):
 
 def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     dim = C.shape[0]
-    nU = data.nInputSymbols()
-    nO = data.nOutputSymbols()
+    nU = data.nInputSymbols
+    nO = data.nOutputSymbols
     CFQ_inv = 1 if CFQ_is_identity is True else pinv(C.dot(data.F_YX()).dot(Q))
     oom = _tomlib.Oom(dim, nO, nU)
     for o, u in itertools.product(range(nO), range(max(1, nU))):
@@ -419,17 +462,32 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
 def model_by_weighted_equations(data, subspace, use_covariances=True):
     B = subspace
     dim = B.shape[1]
-    A = _tomlib.solveLS(B, data.F_YX, 1/data.V_YX, transposed=False)
-    oom = _tomlib.Oom(dim, data.nOutputSymbols(), data.nInputSymbols())
-    for u, o in itertools.product(range(max(1, data.nInputSymbols())), range(data.nOutputSymbols())):
-        Wz = 1/data.V_zYX([o, u])
+    A = _tomlib.solveLS(B, data.F_YX(), 1/data.V_YX(), transposed=False)
+    oom = _tomlib.Oom(dim, data.nOutputSymbols, data.nInputSymbols)
+    for u, o in itertools.product(range(max(1, data.nInputSymbols)), range(data.nOutputSymbols)):
+        Wz = 1 / data.V_zYX([o, u])
         Az = _tomlib.solveLS(B, data.F_zYX([o, u]), Wz, transposed=False)
         WAz = _tomlib.transformWeights(Wz, B, covariances=use_covariances)
         oom.tau(o, u, _tomlib.solveLS(A, Az, WAz, transposed=True))
-    oom.sig(_tomlib.solveLS(A, data.f_EX(), 1/data.v_EX(), transposed=True))
-    oom.w0(_tomlib.solveLS(B, data.f_YE(), 1/data.v_YE(), transposed=False))
+    oom.sig(_tomlib.solveLS(A, data.f_EX(), 1 / data.v_EX(), transposed=True))
+    oom.w0(_tomlib.solveLS(B, data.f_YE(), 1 / data.v_YE(), transposed=False))
     oom.initialize()
     return oom
+
+
+def parse_v(data, v):
+    if v == 1: return 1, 1
+    if type(v) in [list, tuple]:  # row and column weights
+        if len(v) == 1:  # same settings for v_Y and v_X
+            return v_Y_v_X_from_data(data, *v[0]) if type(v[0]) in [list, tuple] else (v[0], v[0])
+        elif len(v) == 2:  # separate settings for v_Y and v_X
+            v_Y, v_X = v
+            if type(v_Y) in [list, tuple]:
+                v_Y = v_Y_from_data(data, *v_Y)
+            if type(v_X) in [list, tuple]:
+                v_X = v_X_from_data(data, *v_X)
+            return v_Y, v_X
+        raise ValueError('Unrecognized v.')
 
 
 def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
@@ -440,14 +498,16 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
     ----------
     data : tom.Data (or equivalent object)
         An representation of the training data that provides at least:
-            - nOutputSymbols(), nInputSymbols()
+            - nOutputSymbols, nInputSymbols
             - F_YX(), F_zYX(z), f_YE(), f_EX()
         Additionally, depending on the requested algorithm, also:
             - V_YX(), V_zYX(z), v_YE(), v_EX()
-            - Y()
-    dim_subspace : int (or np.array), optional
+            - Y
+    dim_subspace : int (or np.array | tom.Oom), optional
         The model target dimension (determined numerically by default), or
         the basis of the principal subspace to use.
+        In the special case of the 'ES' method, a model can be provided
+        from which the principle subspace is then derived.
     method : { 'SPEC', 'RCW', 'ES', 'WLS', 'GLS' }
         The learning method to use:
             - 'SPEC': Standard spectral learning
@@ -503,24 +563,10 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
 
     if method in ['Standard', 'Spectral']: method = 'SPEC'
     elif method in ['RowColWeighted', 'RCCQ']: method = 'RCW'
-    elif method == 'EfficienySharpening': method = 'ES'
+    elif method == 'EfficiencySharpening': method = 'ES'
 
     if dim_subspace is None:
         raise ValueError('Please provide a target dimension.')
-
-    def _parse_v(data, v):
-        if v == 1: return 1, 1
-        if type(v) in [list, tuple]:  # row and column weights
-            if len(v) == 1:  # same settings for v_Y and v_X
-                return v_Y_v_X_from_data(data, *v[0]) if type(v[0]) is list else (v[0], v[0])
-            elif len(v) == 2:  # separate settings for v_Y and v_X
-                v_Y, v_X = v
-                if type(v_Y) in [list, tuple]:
-                    v_Y = v_Y_from_data(data, *v_Y)
-                if type(v_X) in [list, tuple]:
-                    v_X = v_X_from_data(data, *v_X)
-                return v_Y, v_X
-        raise ValueError('Unrecognized v.')
 
     if method == 'SPEC':
         v = (1, 1)
@@ -528,16 +574,17 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
 
     if method == 'RCW':
         if v is None: v = ((1, 1),)
-        v_Y, v_X = _parse_v(data, v)
+        v_Y, v_X = parse_v(data, v)
         C, Q = CQ(data.F_YX(), dim_subspace, v_Y, v_X)
         model = model_by_learning_equations(data, C, Q)
         subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y) if return_subspace and type(dim_subspace) is int else dim_subspace
 
     elif method == 'ES':
         if v is None: v = [[1, 1]]
-        v_Y, v_X = _parse_v(data, v)
+        v_Y, v_X = parse_v(data, v)
         if type(dim_subspace) is int: dim_subspace = model_estimate(data, dim_subspace, method='SPEC')
-        subspace = subspace_from_model(dim_subspace, data.Y(), v_Y=v_Y, stabilization=ES_stabilization)
+        if type(dim_subspace) is not np.ndarray:
+            subspace = subspace_from_model(dim_subspace, data.Y, v_Y=v_Y, stabilization=ES_stabilization)
         if v_Y is None: v_Y = 1
         model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X))
 

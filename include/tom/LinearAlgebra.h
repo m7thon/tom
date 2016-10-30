@@ -498,7 +498,7 @@ SWIGCODE(%template(improveWLRA) improveWLRA<MatrixMd, MatrixMd, MatrixXd, Matrix
 SWIGCODE(%apply const MatrixBase<MatrixXd>& OUTPUT { const MatrixBase<MatrixXd> &B, const MatrixBase<MatrixXd> &A };)
 template<typename D1, typename D2, typename D3, typename D4, typename D5>
 C1(void) PY2(tuple<MatrixXd, MatrixXd>)
-computeWLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W, const MatrixBase<D5> B_init, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "Cholesky") throw(std::invalid_argument) {
+computeWLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W, const MatrixBase<D5> &B_init, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "Cholesky") throw(std::invalid_argument) {
     if (W.rows() != M.rows() or W.cols() != M.cols() or B_init.rows() != M.rows() or B_init.cols() > M.cols()) {
         throw std::invalid_argument("size mismatch");
     }
