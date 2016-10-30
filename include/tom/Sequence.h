@@ -108,6 +108,14 @@ public:
     /** Return \c true if this is an input-output sequence, i.e., if the input alphabet size `nInputSymbols()` is non-zero.
      */
     bool isIO() const { return (nInputSymbols() != 0); }
+
+    SWIGCODE(%feature ("kwargs") hasPrefix;)
+    /** Return `true` if the given `sequence` is a prefix of this sequence\. If `withSameAlphabet` is set to `true` (default `false`), then a prefix must have the same alphabet. */
+    bool hasPrefix(const Sequence& sequence, bool withSameAlphabet = false) const {
+        if (withSameAlphabet and (nInputSymbols() != sequence.nInputSymbols() or nOutputSymbols() != sequence.nOutputSymbols())) return false;
+        else if (sequence.rawSize() > rawSize() or not (rawSub(0,sequence.rawSize()) == sequence)) return false;
+        return true;
+    }
 //@}
 
 /** @name Interface as raw symbol sequence */

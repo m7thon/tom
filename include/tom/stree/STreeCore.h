@@ -96,7 +96,7 @@ public:
     
     /** Extend the current suffix tree representation to a representation for a given `sequence`, which requires that the current suffix tree represents a prefix of the given `sequence`.
      */
-    void extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argument));
+    void extendTo(const Sequence& sequence, bool checkExtendability = true) CHECK(throw (std::invalid_argument));
 
     /** Return the represented sequence.
      */

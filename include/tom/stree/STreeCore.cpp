@@ -150,11 +150,9 @@ void STree::removeTemporaryInternalNodes() {
     }
 }
 
-void STree::extendTo(const Sequence& sequence) CHECK(throw (std::invalid_argument)) {
+void STree::extendTo(const Sequence& sequence, bool checkExtendability) CHECK(throw (std::invalid_argument)) {
 #ifdef TOM_CHECK
-    if (sequence_.rawSize() > sequence.rawSize() or not (sequence.rawSub(0,sequence_.rawSize()) == sequence_)) {
-        throw std::invalid_argument("Current sequence is not a prefix of the given sequence!");
-    }
+    if (checkExtendability and not sequence.hasPrefix(sequence_)) throw std::invalid_argument("Current sequence is not a prefix of the given sequence!");
 #endif
     if (sequence.rawSize() == 0) { return; }
     if (sequence_.rawSize() == 0) {
