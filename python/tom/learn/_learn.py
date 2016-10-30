@@ -1,210 +1,476 @@
 from __future__ import (division, absolute_import, print_function, unicode_literals)
 from .. import _tomlib
-#from .. import linalg
+# from .. import linalg
 
 import numpy as np
+try:
+    import scipy.linalg as py_linalg
+    pinv = py_linalg.pinv2
+except ImportError:
+    import numpy.linalg as py_linalg
+    pinv = py_linalg.pinv
 import itertools
 
 
-def rowColWeights(estimator, Y, z, X, p=0.5, q=1):
-    """Return a tuple (wI, wJ) of row and column weights for the matrix F_z(Y,X), which are given
-    as 2-dimensional arrays representing a row or column vector.
+def wsvd(sqrt_w_Y, F, sqrt_w_X):
+    """Return the singular value decomposition `(U, s, VT)` of the row and column
+    weighted matrix `sqrt_w_Y * F * sqrt_w_Y."""
+    return py_linalg.svd(sqrt_w_Y * F * sqrt_w_X)
 
-    If *p* is ``None``, then the weights are computed as the inverse variance of f(Y) or f(X). Otherwise,
-    an element-wise variance estimate of F_z(Y,X) is computed first, and the weights are computed as the
-    inverse of the rowwise or columnwise *p*-mean of this variance estimate.
 
-    Finally, the exponent *q* is applied to the weights, e.g., their root is returned if *q* = 0.5.
+class CachedWSVD:
+    """A cached version of `wsvd`."""
+    def __init__(self):
+        self._F = None
+        self._sqrt_w_Y = None
+        self._sqrt_w_X = None
+        self._wsvd = None
 
-    Setting *q* to be zero will return (1,1).
+    def __call__(self, F, sqrt_w_Y=1, sqrt_w_X=1):
+        redo = False
+        if F is not self._F:
+            self._F = F
+            self._F.setflags(write=False)
+            redo = True
+        if not (sqrt_w_Y is self._sqrt_w_Y or np.array_equal(sqrt_w_Y, self._sqrt_w_Y)):
+            self._sqrt_w_Y = sqrt_w_Y
+            self._sqrt_w_Y.setflags(write=False)
+            redo = True
+        if not (sqrt_w_X is self._sqrt_w_X or np.array_equal(sqrt_w_X, self._sqrt_w_X)):
+            self._sqrt_w_X = sqrt_w_X
+            self._sqrt_w_X.setflags(write=False)
+            redo = True
+        if redo is True or self._wsvd is None:
+            U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
+            U.setflags(write=False)
+            s.setflags(write=False)
+            VT.setflags(write=False)
+            self._wsvd = U, s, VT
+        return self._wsvd
+
+
+_cached_wsvd = CachedWSVD()
+
+
+class Data:
+    def __init__(self, sequence=None, cache_level=1):
+        self._sequence = None
+        self._nInputSymbols = self._nOutputSymbols = None
+        self._stree = None
+        self._regularization = {'vPC': 2, 'vMin': 3}
+        self._estimator = None
+        self._X = self._Y = None
+        self._e = _tomlib.Sequence()
+        self._E = _tomlib.Sequences(1)
+        self._cache = {}
+        if cache_level == 1:
+            self.cache(['F_YX', 'V_YX'])
+        elif cache_level == 2:
+            self.cache(['F_YX', 'F_zYX', 'f_YE', 'f_EX', 'V_YX', 'V_zYX', 'v_YE', 'v_EX'])
+        if sequence is not None:
+            self.sequence(setTo=sequence)
+
+    def cache(self, keys=None):
+        self._cache = {}
+        for key in keys:
+            if key in ['F_zYX', 'V_zYX']:
+                self._cache[key] = {}
+            else:
+                self._cache[key] = None
+
+    def _reset_cache(self, keys=None):
+        if keys is None: keys = self._cache
+        else: keys = [k for k in keys if k in self._cache]
+        for key in keys:
+            if key in ['F_zYX', 'V_zYX']:
+                self._cache[key] = {}
+            else:
+                self._cache[key] = None
+
+    def sequence(self, setTo=None):
+        if setTo is None:
+            if self._sequence is None: raise ValueError('No sequence has been set.')
+            return self._sequence
+        else:
+            if self._sequence is None or not setTo.hasPrefix(self._sequence, withSameAlphabet=True):
+                self._nInputSymbols = setTo.nInputSymbols()
+                self._nOutputSymbols = setTo.nOutputSymbols()
+                self._stree = _tomlib.STree(setTo)
+            else:
+                self._stree.extendTo(setTo, False)
+            self._sequence = setTo
+            self._estimator = _tomlib.Estimator(self._stree)
+            self._estimator.regularization(**self._regularization)
+
+            self._X = self._Y = None
+            self._reset_cache()
+
+    def nInputSymbols(self):
+        if self._nInputSymbols is None: raise ValueError('No sequence has been set.')
+        return self._nInputSymbols
+
+    def nOutputSymbols(self):
+        if self._nOutputSymbols is None: raise ValueError('No sequence has been set.')
+        return self._nOutputSymbols
+
+    def stree(self):
+        if self._sequence is None: raise ValueError('No sequence has been set.')
+        return self._stree
+
+    def estimator(self):
+        if self._sequence is None: raise ValueError('No sequence has been set.')
+        return self._estimator
+
+    def regularization(self, setTo=None):
+        if setTo is None:
+            return self._regularization
+        if self._estimator is not None:
+            self._estimator.regularization(**setTo)
+        self._regularization = setTo
+        self._reset_cache(['V_YX', 'V_zYX', 'v_YE', 'v_EX'])
+
+    def X(self, setTo=None):
+        if setTo is None:
+            if self._X is None: raise ValueError('Indicative words have not been set.')
+            return self._X
+        self._reset_cache()
+        if type(setTo) in [list, tuple]:
+            if self._sequence is None: raise ValueError('No sequence has been set.')
+            self._X = _tomlib.wordsFromData(self.stree(), *setTo)
+        elif type(setTo) is dict:
+            if self._sequence is None: raise ValueError('No sequence has been set.')
+            self._X = _tomlib.wordsFromData(self.stree(), **setTo)
+        else: self._X = setTo
+
+    def Y(self, setTo=None):
+        if setTo is None:
+            if self._Y is None: raise ValueError('Characteristic words have not been set.')
+            return self._Y
+        self._reset_cache()
+        if type(setTo) in [list, tuple]:
+            if self._sequence is None: raise ValueError('No sequence has been set.')
+            self._Y = _tomlib.wordsFromData(self.stree(), *setTo)
+        elif type(setTo) is dict:
+            if self._sequence is None: raise ValueError('No sequence has been set.')
+            self._Y = _tomlib.wordsFromData(self.stree(), **setTo)
+        else: self._Y = setTo
+
+    def F_YX(self):
+        try: F = self._cache['F_YX']
+        except: return self.estimator().f(self.Y(), self.X())
+        if F is None:
+            F = self.estimator().f(self.Y(), self.X())
+            self._cache['F_YX'] = F
+        return F
+
+    def F_zYX(self, z):
+        try: F = self._cache['F_zYX'][tuple(z)]
+        except: return self._estimator.f(self.Y(), z[0], z[1], self.X())
+        if F is None:
+            F = self.estimator().f(self.Y(), z[0], z[1], self.X())
+            self._cache['F_zYX'][tuple(z)] = F
+        return F
+
+    def f_EX(self):
+        try: f = self._cache['f_EX']
+        except: return self.estimator().f(self._E, self.X())
+        if f is None:
+            f = self.estimator().f(self._E, self.X())
+            self._cache['f_EX'] = f
+        return f
+
+    def f_YE(self):
+        try: f = self._cache['f_YE']
+        except: return self.estimator().f(self.Y(), self._E)
+        if f is None:
+            f = self.estimator().f(self.Y(), self._E)
+            self._cache['f_YE'] = f
+        return f
+
+    def V_YX(self, regularization=None):
+        if regularization is not None and regularization != self._regularization:
+            estimator = _tomlib.Estimator(self.stree())
+            estimator.regularization(regularization)
+            return estimator.v(self.Y(), self.X())
+        try: V = self._cache['V_YX']
+        except: return self.estimator().v(self.Y(), self.X())
+        if V is None:
+            V = self.estimator().v(self.Y(), self.X())
+            self._cache['V_YX'] = V
+        return V
+
+    def V_zYX(self, z, regularization=None):
+        if regularization is not None and regularization != self._regularization:
+            estimator = _tomlib.Estimator(self.stree())
+            estimator.regularization(regularization)
+            return estimator.v(self.Y(), z[0], z[1], self.X())
+        try: V = self._cache['V_zYX'][tuple(z)]
+        except: return self.estimator().v(self.Y(), z[0], z[1], self.X())
+        if V is None:
+            V = self.estimator().v(self.Y(), z[0], z[1], self.X())
+            self._cache['V_zYX'][tuple(z)] = V
+        return V
+
+    def v_EX(self, regularization=None):
+        if regularization is not None and regularization != self._regularization:
+            estimator = _tomlib.Estimator(self.stree())
+            estimator.regularization(regularization)
+            return estimator.v(self._E, self.X())
+        try: v = self._cache['v_EX']
+        except: return self.estimator().v(self._E, self.X())
+        if v is None:
+            v = self.estimator().v(self._E, self.X())
+            self._cache['v_EX'] = v
+        return v
+
+    def v_YE(self, regularization=None):
+        if regularization is not None and regularization != self._regularization:
+            estimator = _tomlib.Estimator(self.stree())
+            estimator.regularization(regularization)
+            return estimator.v(self.Y(), self._E)
+        try: v = self._cache['v_YE']
+        except: return self.estimator().v(self.Y(), self._E)
+        if v is None:
+            v = self.estimator().v(self.Y(), self._E)
+            self._cache['v_YE'] = v
+        return v
+
+
+def v_Y_from_data(data, p=1, q=1, regularization='auto'):
+    """Return a column vector (or scalar) v_Y measuring the row precision of the matrix `data.F_YX()`.
+
+    If `p` is `None`, then `data.V_EY()**q` is returned. Otherwise, the precision is computed as the
+    rowwise `p`-mean of `data.V_YX()` raised to the power `q`. Setting `q` to be zero will return 1.
+
+    Finally, if `regularization` is `'auto'`, a suitable regularization setting is used for the variance
+    estimation ({'vPC': 2, 'vMin': 3} if `p` is `None` and {'vPC': 0, 'vMin': 1e-15} otherwise).
+    Otherwise, the provided setting of `regularization` is used (if `None`, this used the regularization
+    setting from `data`).
     """
-    if q == 0:
-        return (1,1)
+    if q == 0: return 1
     if p is None:
-        E = _tomlib.Sequences(1)
-        return (estimator.v(Y,z,E)**-q, estimator.v(E,z,X)**-q)
-    V = estimator.v(Y,z,X)
-    return (_tomlib.rowwiseMean(V, p)**-q, _tomlib.colwiseMean(V, p)**-q)
+        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        return data.v_YE(regularization=regularization)**q
+    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    V = data.V_YX(regularization=regularization)
+    return _tomlib.rowwiseMean(V, p)**q
 
 
-def estimateDimension(estimator, X, Y, p = 0.5, q = 1, weighted=False, frob=False):
-    """Estimate the model dimension for the underlying matrix F.
+def v_X_from_data(data, p=1, q=1, regularization='auto'):
+    """Return a row vector (or scalar) v_Y measuring the column precision of the matrix `data.F_YX()`.
 
-    Parameters
-    ----------
-    estimator : tom.Estimator (or equivalent object)
-        An object that provides estimates for the function values f(x).
-    X : tom.Sequences (or list of tom.Sequence ?)
-        The set of indicative sequences, each of type tom.Sequence.
-    Y : tom.Sequences (or list of tom.Sequence ?)
-        The set of characteristic sequences, each of type tom.Sequence.
+    If `p` is `None`, then `data.V_XE()**q` is returned. Otherwise, the precision is computed as the
+    colwise `p`-mean of `data.V_YX()` raised to the power `q`. Setting `q` to be zero will return 1.
 
-    Returns
-    -------
-    dim : int
-    The estimated model dimension.
+    Finally, if `regularization` is `'auto'`, a suitable regularization setting is used for the variance
+    estimation ({'vPC': 2, 'vMin': 3} if `p` is `None` and {'vPC': 0, 'vMin': 1e-15} otherwise).
+    Otherwise, the provided setting of `regularization` is used (if `None`, this used the regularization
+    setting from `data`).
     """
+    if q == 0: return 1
+    if p is None:
+        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        return data.v_EX(regularization=regularization)**q
+    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    V = data.V_YX(regularization=regularization)
+    return _tomlib.colwiseMean(V, p)**q
 
-    e = _tomlib.Sequence(0,0,0)
-    vP = estimator.regularization()
-    estimator.regularization(preset='none')
-    F, Vexact = estimator.fv(Y,X)
-    estimator.regularization(*vP)
 
-    if weighted:
-        wI, wJ = rowColWeights(estimator, Y,e,X, p, q)
-    else:
-        wI = np.ones((len(Y),1))
-        wJ = np.ones((1,len(X)))
-    sqrt_wI = np.sqrt(wI)
-    sqrt_wJ = np.sqrt(wJ)
+def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
+    """Return a tuple `(v_Y, v_X)` measuring the row and column precision of the matrix `data.F_YX()`,
+    respectively, which are 2-dimensional arrays representing a row or column vector, or scalars.
 
-    wU, ws, wVT = np.linalg.svd(sqrt_wI * F * sqrt_wJ)
-    if frob:
-        wef = np.sum(wI * Vexact * wJ)
+    If `p` is `None`, then `data.V_XE()**q` and `data.V_EY()**q` are returned. Otherwise, the precision
+    vectors are computed as the rowwise and columnwise `p`-mean of `data.V_YX()` raised to the power `q`.
+    Setting `q` to be zero will return (1,1).
+
+    Finally, if `regularization` is `'auto'`, a suitable regularization setting is used for the variance
+    estimation ({'vPC': 2, 'vMin': 3} if `p` is `None` and {'vPC': 0, 'vMin': 1e-15} otherwise).
+    Otherwise, the provided setting of `regularization` is used (if `None`, this used the regularization
+    setting from `data`).
+    """
+    if q == 0: return 1, 1
+    if p is None:
+        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        return data.v_EX(regularization=regularization)**q
+    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    V = data.V_YX(regularization=regularization)
+    return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
+
+
+def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='spec', wsvd=_cached_wsvd):
+    """Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
+    to determine a cutoff for the error on `F` that is measured by the given `errorNorm`, which may
+    be 'spec' (default) or 'frob'. """
+
+    w_Y, w_X = 1/v_Y, 1/v_X
+    wU, ws, wVT = wsvd(np.sqrt(w_Y), F, np.sqrt(w_X))
+
+    if errorNorm == 'spec':
+        e = np.sum(np.sqrt(w_Y * V * w_X)) / np.sqrt(V.size)
+        d = 0
+        while d < ws.size and ws[d] > e:
+            d += 1
+        return d
+    elif errorNorm == 'frob':
+        e = np.sum(w_Y * V * w_X)
         s2_tailsum = 0
         d = ws.size
         if d == 0: return d
-        while d > 0 and s2_tailsum <= wef:
+        while d > 0 and s2_tailsum <= e:
             s2_tailsum += ws[d-1]**2
             d -= 1
         return d+1
     else:
-        we = np.sum(sqrt_wI * np.sqrt(Vexact) * sqrt_wJ) / np.sqrt(F.size)
-        d = 0
-        while d < ws.size and ws[d] > we:
-            d += 1
-        return d
+        raise ValueError('Unknown errorNorm.')
 
 
-def applyLearningEquation(dim, nO, nU, estimator, X, Y, C, Q, F_cache = None):
-    """F_cache = [f(E,X), [f(Y,o,u,X)]_{o,u}, f(Y,E)]"""
-    E = _tomlib.Sequences(1)
-    oom = _tomlib.Oom(dim, nO, nU)
-    if F_cache is None:
-        for o, u in itertools.product(range(nO), range(max(1,nU))):
-            oom.tau(o,u, C.dot(estimator.f(Y, o, u, X)).dot(Q))
-        oom.sig( estimator.f(E, X).dot(Q) )
-        oom.w0( C.dot(estimator.f(Y, E)) )
-    else:
-        for o, u in itertools.product(range(nO), range(max(1,nU))):
-            oom.tau(o,u, C.dot(F_cache['Fz'][o,u]).dot(Q))
-        oom.sig( F_cache['Fsig'].dot(Q) )
-        oom.w0( C.dot(F_cache['F0']) )
-    oom.initialize()
-    oom.stabilization(preset='default')
-    return oom
+def subspace_from_model(model, Y, v_Y=1, stabilization=None):
+    if stabilization is None: stabilization = {'preset': 'none'}
+    room = model.reverse(False)
+    room.stabilization(**stabilization)
+    Pi = np.zeros(len(Y), model.dimension())
+    for i, y in enumerate(Y):
+        log2_f_y = room.log2_f(y.reverse())
+        Pi[i, :] = room.wt().transpose()
+        if v_Y is not None: Pi[i, :] *= 2**log2_f_y
+    return Pi
 
 
-def simpleSpectral(estimator, X, Y, dimensions = 0, p=0.5, q=0):
-    nU = estimator.sequence().nInputSymbols()
-    nO = estimator.sequence().nOutputSymbols()
-    e = _tomlib.Sequence()
-    threshold = 1e-15
-
-    F = estimator.f(Y,X)
-    sqrt_wI, sqrt_wJ = rowColWeights(estimator, Y,e,X, p, 0.5*q)
-    U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
-
-    res = []
-    if type(dimensions) not in [list, tuple]:
-        dimensions = [dimensions]
-    for dim in dimensions:
-        if dim == 0:
-            raise ValueError('dimension estimation not yet implemented')
-            dim = estimateDimension(estimator, X, Y)
-        Ud = U[:, :dim]; sqrt_sdi = np.sqrt(s[:dim]); VdT = VT[:dim, :]
-        try:
-            for i in range(dim):
-                sqrt_sdi[i] = 1 / sqrt_sdi[i] if sqrt_sdi[i] > threshold else 0
-        except: # target dimension much too large
-            oom = _tomlib.Oom(0, nO, nU)
-            oom.stabilization(preset='default')
-            res.append(oom)
-        else:
-            C = sqrt_sdi[:,None] * (sqrt_wI * Ud).transpose()
-            Q = (VdT * sqrt_wJ).transpose() * sqrt_sdi[None,:]
-            res.append(applyLearningEquation(dim, nO, nU, estimator, X, Y, C, Q))
-    if type(dimensions) in [list, tuple]:
-        return res
-    else:
-        return res[0]
+def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=_cached_wsvd):
+    threshold = 1e-12
+    sqrt_v_Y, sqrt_v_X = np.sqrt(v_Y), np.sqrt(v_X)
+    U, s, VT = wsvd(1/sqrt_v_Y, F, 1/sqrt_v_X)
+    dim = min(dim, len(s))
+    ssd = np.sqrt(s[:dim])
+    while dim > 1 and ssd[dim-1] < threshold: dim -= 1
+    return sqrt_v_Y * U[:, :dim] * ssd[None, :dim]
 
 
-def simpleSpectralFromData(nO, nU, F, Fz, Fsig, Fw0, wI, wJ, dim):
-    e = _tomlib.Sequence(0, nO, nU)
-    E = _tomlib.Sequences()
-    E.append(e)
-    threshold = 1e-15
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=_tomlib.StopCondition(100, 1e-5, 1e-7), method='Cholesky'):
+    if type(dim_subspace) is int:
+        dim_subspace = subspace_by_svd(F, dim_subspace)
+    return _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, method)
 
-    sqrt_wI, sqrt_wJ = np.sqrt(wI), np.sqrt(wJ)
 
-    U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
-    U = U[:, :dim]; s = np.sqrt(s[:dim]); VT = VT[:dim, :]
+def subspace_corresponding_to_C_and_v_Y(C, v_Y):
+    return v_Y * C.transpose()
 
-    try:
+
+def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=_cached_wsvd):
+    sqrt_w_X = 1/np.sqrt(v_X)
+    if type(dim_subspace) is int:
+        dim = dim_subspace
+        sqrt_w_Y = 1/np.sqrt(v_Y)
+        threshold = 1e-12
+        U, s, VT = wsvd(sqrt_w_Y, F_YX, sqrt_w_X)
+        dim = min(dim, len(s))
+        ssdi = np.sqrt(s[:dim])  # ssdi: square-root of Sd inverse
         for i in range(dim):
-            s[i] = 1 / s[i] if s[i] > threshold else 0
-    except: # target dimension much too large
-        oom = _tomlib.Oom(0, nO, nU)
-        oom.stabilization(preset='default')
-        return oom
-    C = s[:,None] * (sqrt_wI * U).transpose()
-    Q = (VT * sqrt_wJ).transpose() * s[None,:]
+            if ssdi[i] > threshold: ssdi[i] = 1/ssdi[i]
+            else: dim = i; break
+        Ud = U[:, :dim]; ssdi = ssdi[:dim]; VdT = VT[:dim, :]
+        C = ssdi[:, None] * (sqrt_w_Y * Ud).transpose()
+        Q = (VdT * sqrt_w_X).transpose() * ssdi[None, :]
+    else:
+        subspace = dim_subspace
+        C = (1 / v_Y * subspace).transpose()
+        Q = np.transpose(sqrt_w_X) * pinv(C.dot(F_YX) * sqrt_w_X)
+    return C, Q
+
+
+def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
+    dim = C.shape[0]
+    nU = data.nInputSymbols()
+    nO = data.nOutputSymbols()
+    CFQ_inv = 1 if CFQ_is_identity is True else pinv(C.dot(data.F_YX()).dot(Q))
     oom = _tomlib.Oom(dim, nO, nU)
-    for zid, z in enumerate(_tomlib.wordsOverAlphabet(nO, nU)):
-        oom.tau(z, C.dot(Fz[zid]).dot(Q))
-    oom.sig(Fsig.dot(Q))
-    oom.w0( C.dot(Fw0) )
+    for o, u in itertools.product(range(nO), range(max(1, nU))):
+        oom.tau(o, u, C.dot(data.F_zYX([o, u])).dot(Q).dot(CFQ_inv))
+    oom.sig(data.f_EX().dot(Q).dot(CFQ_inv))
+    oom.w0(C.dot(data.f_YE()))
     oom.initialize()
-    oom.stabilization(preset='default')
     return oom
 
 
-def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p=0.5, q=1, stopConditionWLRA = None):
-    """Spectral learning algorithm for (IO)-OOMs.
+def model_by_weighted_equations(data, subspace, use_covariances=True):
+    B = subspace
+    dim = B.shape[1]
+    A = _tomlib.solveLS(B, data.F_YX, 1/data.V_YX, transposed=False)
+    oom = _tomlib.Oom(dim, data.nOutputSymbols(), data.nInputSymbols())
+    for u, o in itertools.product(range(max(1, data.nInputSymbols())), range(data.nOutputSymbols())):
+        Wz = 1/data.V_zYX([o, u])
+        Az = _tomlib.solveLS(B, data.F_zYX([o, u]), Wz, transposed=False)
+        WAz = _tomlib.transformWeights(Wz, B, covariances=use_covariances)
+        oom.tau(o, u, _tomlib.solveLS(A, Az, WAz, transposed=True))
+    oom.sig(_tomlib.solveLS(A, data.f_EX(), 1/data.v_EX(), transposed=True))
+    oom.w0(_tomlib.solveLS(B, data.f_YE(), 1/data.v_YE(), transposed=False))
+    oom.initialize()
+    return oom
 
-    This function returns an (IO)-OOM that is estimated using the (weighted) spectral
-    learning algorithm. The training data is provided in the form of an
-    ``estimator`` together with sets of indicative and characteristic
-    sequences given by ``X`` and ``Y``, respectively. The target
-    dimension may be specified by ``dimemsion``, otherwise it will be
-    selected numerically. Row and column weights will be taken into account
-    if the "weightExp" parameter is set to e.g. 1.
+
+def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
+                   WLRAstopCondition=_tomlib.StopCondition(100, 1e-5, 1e-7), ES_stabilization=None, return_subspace=False):
+    """Estimate a model from the given `data` using a spectral `method`.
 
     Parameters
     ----------
-    estimator : tom.Estimator (or equivalent object)
-        An object that provides estimates for the function values f(x).
-    X : tom.Sequences (or list of tom.Sequence ?)
-        The set of indicative sequences, each of type tom.Sequence.
-    Y : tom.Sequences (or list of tom.Sequence ?)
-        The set of characteristic sequences, each of type tom.Sequence.
-    dimension : int, optional
-        The model target dimension. Determined numerically by default.
-    method : { 'SPEC', 'RCCQ', 'RCW', 'WLS', 'GLS' }
-        The (weighted) spectral learning method to use. The default 'SPEC'
-        is the standard spectral learning with no weights.
-    subspace : [ B, A ], optional
-        Provides a method to cache the decomposition F = BA. Safe to ignore.
-    p, q : double, optional
-        Control the averaging used to obtain row / column weights.
-    stopConditionWLRA : tom.util.StopCondition, optional
+    data : tom.Data (or equivalent object)
+        An representation of the training data that provides at least:
+            - nOutputSymbols(), nInputSymbols()
+            - F_YX(), F_zYX(z), f_YE(), f_EX()
+        Additionally, depending on the requested algorithm, also:
+            - V_YX(), V_zYX(z), v_YE(), v_EX()
+            - Y()
+    dim_subspace : int (or np.array), optional
+        The model target dimension (determined numerically by default), or
+        the basis of the principal subspace to use.
+    method : { 'SPEC', 'RCW', 'ES', 'WLS', 'GLS' }
+        The learning method to use:
+            - 'SPEC': Standard spectral learning
+            - 'RCW' : Row and column weighted spectral learning
+            - 'ES'  : (Generalized) efficiency sharpening
+            - 'WLS' : Weighted spectral learning using WLS
+            - 'GLS' : Weighted spectral learning using GLS
+    v : { (v_Y, v_X) }, optional
+        The row / column precision to use in the case of 'RCW' or 'ES',
+        which defaults to row and column averages of the elementwise
+        variances for `data.F_YX()` computed *without* regularization.
+
+        `v_[Y|X]` may each be given as:
+            - a scalar or 2D column / row vector
+            - a tuple of parameters. In this case `v_[Y|X]` will be
+              computed by a call to `v_[Y|X]_from_data(data, *v_[Y|X])`.
+
+        In the case of `ES`, `v_Y` may be given as `None` to mean that the
+        row precisions `v_Y` are derived from the previous model estimate,
+        which corresponds to using the "reversed characterizer".
+
+        Furthermore, `v_X` may be omitted to indicate that the same settings
+        should be used as for `v_Y`. For instance, one may pass
+            `v = [[p,q]]`  or  `v = ((p,q), )`  (but *not* `v = ((p,q))`!).
+    WLRAstopCondition : tom.util.StopCondition (or None), optional
         Determines the stopping condition for the iterative computation of
         the weighted low-rank approximation of F in the case of methods
-        'WLS' or 'GLS'. Safe to leave at the default.
+        'WLS' or 'GLS'. By default at most 100 iterations are performed.
+        This can be set to `None` to perform no iterations (which then uses
+        the provided subspace or computes the principal subspace by SVD).
+    ES_stabilization : dict of tom.Oom.stabilization() parameters
+        Stabilization parameters to use for the computation of Π (defaults
+        to no stabilization) in the case of method `ES`.
+    return_subspace : bool, optional
+        If `True` (default: `False`), return the principal subspace estimate.
 
-        
     Returns
     -------
     oom : tom.Oom
-    The estimated (IO)-OOM.
- 
+        The estimated (IO)-OOM.
+
     Notes
     -----
-    If the target dimension is not specified (``dimension = 0``), an
+    If the dimension or subspace is not specified (`dim_subspace = None`), an
     appropriate target dimension is selected based on the numerical rank
-    of the matrix F = f(Y,X).
+    of the matrix `data.F_YX()`.
 
     References
     ----------
@@ -212,136 +478,52 @@ def spectral(estimator, X, Y, dimension = 0, subspace = None, method = 'SPEC', p
     Observable Operator Models and Predictive State Representations -- a
     Unified Learning Framework*, JMLR, 2014, pg. 15"""
 
-    if method == 'Standard': method = 'SPEC'
-    if method == 'RowColWeighted': method = 'RCW'
-    if method not in ['SPEC', 'RCCQ', 'RCW', 'WLS', 'GLS']:
-        raise ValueError('unknown method: ' + method)
+    if method in ['Standard', 'Spectral']: method = 'SPEC'
+    elif method in ['RowColWeighted', 'RCCQ']: method = 'RCW'
+    elif method == 'EfficienySharpening': method = 'ES'
 
-    nU = estimator.sequence().nInputSymbols()
-    nO = estimator.sequence().nOutputSymbols()
-    e = _tomlib.Sequence(0, nO, nU)
-    E = _tomlib.Sequences()
-    E.append(e)
-    threshold = 1e-12
+    if dim_subspace is None:
+        raise ValueError('Please provide a target dimension.')
 
-    if method in ['SPEC', 'RCW', 'RCCQ'] or subspace in [None, []]:
-        if dimension == 0:
-            # raise ValueError('dimension estimation not yet implemented')
-            dimension = estimateDimension(estimator, X, Y)
+    def _parse_v(data, v):
+        if v == 1: return 1, 1
+        if type(v) in [list, tuple]:  # row and column weights
+            if len(v) == 1:  # same settings for v_Y and v_X
+                return v_Y_v_X_from_data(data, *v[0]) if type(v[0]) is list else (v[0], v[0])
+            elif len(v) == 2:  # separate settings for v_Y and v_X
+                v_Y, v_X = v
+                if type(v_Y) in [list, tuple]:
+                    v_Y = v_Y_from_data(data, *v_Y)
+                if type(v_X) in [list, tuple]:
+                    v_X = v_X_from_data(data, *v_X)
+                return v_Y, v_X
+        raise ValueError('Unrecognized v.')
 
-        F = estimator.f(Y,X)
+    if method == 'SPEC':
+        v = (1, 1)
+        method = 'RCW'
 
-        if method == 'SPEC':
-            sqrt_wI = np.ones((len(Y), 1))
-            sqrt_wJ = np.ones((1, len(X)))
-        else: # compute row / col weights and their square roots
-            sqrt_wI, sqrt_wJ = rowColWeights(estimator, Y,e,X, p, 0.5*q)
+    if method == 'RCW':
+        if v is None: v = ((1, 1),)
+        v_Y, v_X = _parse_v(data, v)
+        C, Q = CQ(data.F_YX(), dim_subspace, v_Y, v_X)
+        model = model_by_learning_equations(data, C, Q)
+        subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y) if return_subspace and type(dim_subspace) is int else dim_subspace
 
-        U,s,VT = np.linalg.svd(sqrt_wI * F * sqrt_wJ, full_matrices=0)
-        U = U[:,:dimension]; s = np.sqrt(s[:dimension]); VT = VT[:dimension,:]
-        dimension = min(dimension, len(s))
+    elif method == 'ES':
+        if v is None: v = [[1, 1]]
+        v_Y, v_X = _parse_v(data, v)
+        if type(dim_subspace) is int: dim_subspace = model_estimate(data, dim_subspace, method='SPEC')
+        subspace = subspace_from_model(dim_subspace, data.Y(), v_Y=v_Y, stabilization=ES_stabilization)
+        if v_Y is None: v_Y = 1
+        model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X))
 
-        B = 1/sqrt_wI * U * s[None,:]
-        A = s[:,None] * VT * 1/sqrt_wJ
-        if type(subspace) is list:
-            subspace.clear()
-            subspace.append(B)
-            subspace.append(A)
+    elif method in ['GLS', 'WLS']:
+        if WLRAstopCondition is None: WLRAstopCondition = _tomlib.StopCondition(0)
+        subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=WLRAstopCondition)
+        model = model_by_weighted_equations(data, subspace, method == 'GLS')
 
-        if method in ['SPEC', 'RCCQ']:
-            for i in range(dimension):
-                s[i] = 1 / s[i] if s[i] > threshold else 0
-            C = s[:,None] * U.transpose() * sqrt_wI.transpose()
-            Q = sqrt_wJ.transpose() * VT.transpose() * s[None,:]
-            oom = _tomlib.Oom(dimension, nO, nU)
-            for z in _tomlib.wordsOverAlphabet(nO, nU):
-                oom.tau(z, C.dot(estimator.f(Y, z, X)).dot(Q))
-            oom.sig( estimator.f(E, X).dot(Q) )
-            oom.w0( C.dot(estimator.f(Y, E)) )
-            oom.initialize()
-            oom.stabilization(preset='default')
-            return oom
-        elif method in ['RCW']:
-            oom = _tomlib.Oom(dimension, nO, nU)
-            for z in _tomlib.wordsOverAlphabet(nO, nU):
-                wIz, wJz = rowColWeights(estimator, Y, z, X, p, q)
-                Az = _tomlib.solveLS(B, estimator.f(Y,z,X), wIz, transposed=False)
-                oom.tau(z, _tomlib.solveLS(A, Az, wJz, transposed=True))
-            oom.sig( _tomlib.solveLS(A, estimator.f(E,X), estimator.v(E,X)**-q, transposed=True) )
-            oom.w0( _tomlib.solveLS(B, estimator.f(Y,E), estimator.v(Y,E)**-q, transposed=False) )
-            oom.initialize()
-            oom.stabilization(preset='default')
-            return oom
-        del U, s, VT
     else:
-        B, A = subspace
-        if dimension == 0:
-            dimension = B.shape[1]
-        if dimension != B.shape[1]:
-            raise ValueError('given dimension does not match given subspace')
+        raise ValueError('Unknown method: ' + method)
 
-    F, V = estimator.fv(Y,X)
-    W = 1/V
-    if stopConditionWLRA is None:
-        stopConditionWLRA = _tomlib.StopCondition(100, 1e-5, 1e-7)
-    _tomlib.improveWLRA(B, A, F, W, stopCondition = stopConditionWLRA)
-
-    oom = _tomlib.Oom(dimension, nO, nU)
-    for u, o in itertools.product(range(max(1,nU)), range(nO)):
-        Wz = 1/estimator.v(Y, o, u, X)
-        Az = _tomlib.solveLS(B, estimator.f(Y, o, u, X), Wz, transposed=False)
-        WAz = _tomlib.transformWeights(Wz, B, covariances = (method == 'GLS'))
-        oom.tau(o,u, _tomlib.solveLS(A, Az, WAz, transposed=True))
-    oom.sig( _tomlib.solveLS(A, estimator.f(E,X), 1/estimator.v(E,X), transposed=True) )
-    oom.w0( _tomlib.solveLS(B, estimator.f(Y,E), 1/estimator.v(Y,E), transposed=False) )
-
-    #oom.w0( oom.stationaryState() )
-    oom.initialize()
-    oom.stabilization(preset='default')
-    return oom
-
-
-def RCWTLS(est, Y, X, d, valueErrorBias = 1):
-    nO = est.nO_
-    e = _tomlib.Sequences(1)
-    
-    # Weights:
-    wY = est.v(Y, e)**-0.5
-    wX = est.v(e, X)**-0.5
-    wz = [(est.f(e, e, z)[0,0]+0.00001)/1.00001 for z in range(nO)]
-    wz = [(wz[z] * (1-wz[z]))**-0.5 for z in range(nO)]
-    # Use same column weights for Fz
-    # wz = [1 for z in range(nO)]
-
-    # Best weighted rank-d approx. to F
-    U,S,V_T = np.linalg.svd(wY * est.f(Y, X) * wX)
-    Ud = U[:,:d]; Sd = np.diag(S[:d]); Vd_T = V_T[:d,:]
-    del U, S, V_T
-    
-    A = np.zeros(( (nO+1)*d+1, X.size() ))
-    # A[:d,:] = Ud.transpose().dot(wY * est.f(Y,X) * wX)
-    A[:d,:] = Sd.dot(Vd_T) * valueErrorBias
-    for z in range(nO):
-        A[(z+1)*d:(z+2)*d,:] = Ud.transpose().dot(wY * est.f(Y, X, z) * wX * wz[z] )
-    A[-1:,:] = 1 * est.f(e, X) * wX # Note that the weight of f(e) should be 1
-
-    U,S,V_T = np.linalg.svd(A)
-    del A
-    Ud = U[:,:d]; Sd = np.diag(S[:d]); Vd_T = V_T[:d,:]
-    del U, S, V_T
-    Uinv = np.linalg.inv(Ud[:d,:] / valueErrorBias)
-
-    # Apinv = pinv(A[:d,:])
-    
-    # Get OOM:
-    oom = _tomlib.Oom()
-    oom.setSize(d, nO, 0)
-    for z in range(nO):
-        # oom.tau(z, 0, A[(z+1)*d:(z+2)*d,:].dot(Apinv) / wz[z] )
-        oom.tau(z, 0, Ud[(z+1)*d:(z+2)*d,:].dot(Uinv) / wz[z] )
-    # oom.sig(A[-1:, :].dot(Apinv))
-    oom.sig(Ud[-1:, :].dot(Uinv))
-    # ??? oom.w0(Ud.transpose().dot(wY * est.f(Y,e)))
-    oom.w0(oom.stationaryState())
-    oom.reset()
-    return oom
+    return (model, subspace) if return_subspace else model
