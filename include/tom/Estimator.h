@@ -21,6 +21,14 @@ public:
         return stree_->sequence();
     }
 
+    /**
+     * Return the size of the input alphabet. */
+    int nInputSymbols() const { return nU_; }
+
+    /**
+     * Return the size of the output alphabet. */
+    int nOutputSymbols() const { return nO_; }
+
     //<editor-fold desc="Estimates by f, v and fv">
     /**
      * Return an estimate of f( `z` ) for the given output symbol `z`. */
@@ -368,12 +376,11 @@ private:
 
         double v() const {
             assert(estimateVariance_);
-            double var = v_;
             if (estimator_.vMin_ >= 0.25) {
-                if (pi_ == 0) return var + estimator_.vMin_;
-                return var + std::min(std::max(1.0 / (pi_ * pi_), estimator_.vMin_) / (estimator_.N_ * estimator_.N_), estimator_.vMin_);
+                if (pi_ == 0) return v_ + estimator_.vMin_;
+                return v_ + std::min(std::max(1.0 / (pi_ * pi_), estimator_.vMin_) / (estimator_.N_ * estimator_.N_), estimator_.vMin_);
             } else
-                return var + estimator_.vMin_;
+                return v_ + estimator_.vMin_;
         }
 
         const Estimator& estimator_; ///< the `Estimator` that this `State` belongs to

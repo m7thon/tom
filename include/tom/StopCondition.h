@@ -28,9 +28,9 @@ public:
      * - the absolute improvement |(`currentValue` - `lastValue_`)| is less than the `absoluteImprovementThreshold_`
      */
     virtual bool stop(double currentValue) {
-        return (std::fabs((currentValue - lastValue_) / lastValue_) < relativeImprovementThreshold_ or
-                std::fabs(currentValue - lastValue_) < absoluteImprovementThreshold_ or
-                iteration_ >= maxIterations_);
+        return (iteration_ >= maxIterations_ or
+                std::fabs((currentValue - lastValue_) / lastValue_) < relativeImprovementThreshold_ or
+                std::fabs(currentValue - lastValue_) < absoluteImprovementThreshold_);
     }
 
     /** This method gets called before every iteration and also right before termination. It is a no-op by default, but can be used as a callback between iterations by inheriting from `StopCondition` and overwriting this method (even from Python).
