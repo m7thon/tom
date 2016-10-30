@@ -105,11 +105,14 @@ class Data:
             self._X = self._Y = None
             self._reset_cache()
 
-    def nInputSymbols(self):
-        if self._nInputSymbols is None: raise ValueError('No sequence has been set.')
-        return self._nInputSymbols
+    def nInputSymbols(self, setTo=None):
+        if setTo is not None: self._nInputSymbols = setTo
+        else:
+            if self._nInputSymbols is None: raise ValueError('No sequence has been set.')
+            return self._nInputSymbols
 
-    def nOutputSymbols(self):
+    def nOutputSymbols(self, setTo=None):
+        if setTo is not None: self._nOutputSymbols = setTo
         if self._nOutputSymbols is None: raise ValueError('No sequence has been set.')
         return self._nOutputSymbols
 
@@ -155,85 +158,105 @@ class Data:
             self._Y = _tomlib.wordsFromData(self.stree(), **setTo)
         else: self._Y = setTo
 
-    def F_YX(self):
-        try: F = self._cache['F_YX']
-        except: return self.estimator().f(self.Y(), self.X())
-        if F is None:
-            F = self.estimator().f(self.Y(), self.X())
-            self._cache['F_YX'] = F
-        return F
+    def F_YX(self, setTo=None):
+        if setTo is not None: self._cache['F_YX'] = setTo
+        else:
+            try: F = self._cache['F_YX']
+            except: return self.estimator().f(self.Y(), self.X())
+            if F is None:
+                F = self.estimator().f(self.Y(), self.X())
+                self._cache['F_YX'] = F
+            return F
 
-    def F_zYX(self, z):
-        try: F = self._cache['F_zYX'][tuple(z)]
-        except: return self._estimator.f(self.Y(), z[0], z[1], self.X())
-        if F is None:
-            F = self.estimator().f(self.Y(), z[0], z[1], self.X())
-            self._cache['F_zYX'][tuple(z)] = F
-        return F
+    def F_zYX(self, z, setTo=None):
+        if setTo is not None:
+            if 'F_zYX' not in self._cache: self._cache['F_zYX'] = {}
+            self._cache['F_zYX'][tuple(z)] = setTo
+        else:
+            try: F = self._cache['F_zYX'][tuple(z)]
+            except: return self._estimator.f(self.Y(), z[0], z[1], self.X())
+            if F is None:
+                F = self.estimator().f(self.Y(), z[0], z[1], self.X())
+                self._cache['F_zYX'][tuple(z)] = F
+            return F
 
-    def f_EX(self):
-        try: f = self._cache['f_EX']
-        except: return self.estimator().f(self._E, self.X())
-        if f is None:
-            f = self.estimator().f(self._E, self.X())
-            self._cache['f_EX'] = f
-        return f
+    def f_EX(self, setTo=None):
+        if setTo is not None: self._cache['f_EX'] = setTo
+        else:
+            try: f = self._cache['f_EX']
+            except: return self.estimator().f(self._E, self.X())
+            if f is None:
+                f = self.estimator().f(self._E, self.X())
+                self._cache['f_EX'] = f
+            return f
 
-    def f_YE(self):
-        try: f = self._cache['f_YE']
-        except: return self.estimator().f(self.Y(), self._E)
-        if f is None:
-            f = self.estimator().f(self.Y(), self._E)
-            self._cache['f_YE'] = f
-        return f
+    def f_YE(self, setTo=None):
+        if setTo is not None: self._cache['f_YE'] = setTo
+        else:
+            try: f = self._cache['f_YE']
+            except: return self.estimator().f(self.Y(), self._E)
+            if f is None:
+                f = self.estimator().f(self.Y(), self._E)
+                self._cache['f_YE'] = f
+            return f
 
-    def V_YX(self, regularization=None):
-        if regularization is not None and regularization != self._regularization:
-            estimator = _tomlib.Estimator(self.stree())
-            estimator.regularization(regularization)
-            return estimator.v(self.Y(), self.X())
-        try: V = self._cache['V_YX']
-        except: return self.estimator().v(self.Y(), self.X())
-        if V is None:
-            V = self.estimator().v(self.Y(), self.X())
-            self._cache['V_YX'] = V
-        return V
+    def V_YX(self, regularization=None, setTo=None):
+        if setTo is not None: self._cache['V_YX'] = setTo
+        else:
+            if regularization is not None and regularization != self._regularization:
+                estimator = _tomlib.Estimator(self.stree())
+                estimator.regularization(regularization)
+                return estimator.v(self.Y(), self.X())
+            try: V = self._cache['V_YX']
+            except: return self.estimator().v(self.Y(), self.X())
+            if V is None:
+                V = self.estimator().v(self.Y(), self.X())
+                self._cache['V_YX'] = V
+            return V
 
-    def V_zYX(self, z, regularization=None):
-        if regularization is not None and regularization != self._regularization:
-            estimator = _tomlib.Estimator(self.stree())
-            estimator.regularization(regularization)
-            return estimator.v(self.Y(), z[0], z[1], self.X())
-        try: V = self._cache['V_zYX'][tuple(z)]
-        except: return self.estimator().v(self.Y(), z[0], z[1], self.X())
-        if V is None:
-            V = self.estimator().v(self.Y(), z[0], z[1], self.X())
-            self._cache['V_zYX'][tuple(z)] = V
-        return V
+    def V_zYX(self, z, regularization=None, setTo=None):
+        if setTo is not None:
+            if 'V_zYX' not in self._cache: self._cache['V_zYX'] = {}
+            self._cache['V_zYX'][tuple(z)] = setTo
+        else:
+            if regularization is not None and regularization != self._regularization:
+                estimator = _tomlib.Estimator(self.stree())
+                estimator.regularization(regularization)
+                return estimator.v(self.Y(), z[0], z[1], self.X())
+            try: V = self._cache['V_zYX'][tuple(z)]
+            except: return self.estimator().v(self.Y(), z[0], z[1], self.X())
+            if V is None:
+                V = self.estimator().v(self.Y(), z[0], z[1], self.X())
+                self._cache['V_zYX'][tuple(z)] = V
+            return V
 
-    def v_EX(self, regularization=None):
-        if regularization is not None and regularization != self._regularization:
-            estimator = _tomlib.Estimator(self.stree())
-            estimator.regularization(regularization)
-            return estimator.v(self._E, self.X())
-        try: v = self._cache['v_EX']
-        except: return self.estimator().v(self._E, self.X())
-        if v is None:
-            v = self.estimator().v(self._E, self.X())
-            self._cache['v_EX'] = v
-        return v
+    def v_EX(self, regularization=None, setTo=None):
+        if setTo is not None: self._cache['v_EX'] = setTo
+        else:
+            if regularization is not None and regularization != self._regularization:
+                estimator = _tomlib.Estimator(self.stree())
+                estimator.regularization(regularization)
+                return estimator.v(self._E, self.X())
+            try: v = self._cache['v_EX']
+            except: return self.estimator().v(self._E, self.X())
+            if v is None:
+                v = self.estimator().v(self._E, self.X())
+                self._cache['v_EX'] = v
+            return v
 
-    def v_YE(self, regularization=None):
-        if regularization is not None and regularization != self._regularization:
-            estimator = _tomlib.Estimator(self.stree())
-            estimator.regularization(regularization)
-            return estimator.v(self.Y(), self._E)
-        try: v = self._cache['v_YE']
-        except: return self.estimator().v(self.Y(), self._E)
-        if v is None:
-            v = self.estimator().v(self.Y(), self._E)
-            self._cache['v_YE'] = v
-        return v
+    def v_YE(self, regularization=None, setTo=None):
+        if setTo is not None: self._cache['v_YE'] = setTo
+        else:
+            if regularization is not None and regularization != self._regularization:
+                estimator = _tomlib.Estimator(self.stree())
+                estimator.regularization(regularization)
+                return estimator.v(self.Y(), self._E)
+            try: v = self._cache['v_YE']
+            except: return self.estimator().v(self.Y(), self._E)
+            if v is None:
+                v = self.estimator().v(self.Y(), self._E)
+                self._cache['v_YE'] = v
+            return v
 
 
 def v_Y_from_data(data, p=1, q=1, regularization='auto'):
