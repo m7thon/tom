@@ -90,7 +90,7 @@ SWIGCODE(%template(rowwiseMean) rowwiseMean<MatrixMd>;)
  * Depending on the size of `W`, the given weights are interpreted in different ways, assuming `M` is of size m x n:
  *
  * - if `W` is of size zero, then no weights are used and the Frobenius norm |M|_F is computed
- * - if `W` is of size m+n x 1, then row and column weights [w_r; w_c] = M are assumed and |M|_D(w_r w_c^T) is computed
+ * - if `W` is of size m+n x 1, then row and column weights [w_r; w_c] = W are assumed and |M|_D(w_r w_c^T) is computed
  * - if `W` is of size m x n, then element-wise weights are assumed and |M|_D(W) is computed
  * - if `W` is of size m x mn, then a block-diagonal weight matrix is assumed and |M|_D(W1,...,Wn) is computed
  * - if `W` is of size mn x mn, then a full weight matrix is assumed and |M|_W is computed
@@ -473,7 +473,7 @@ SWIGCODE(%template(pinv) pinv<MatrixMd>;)
  */
 template<typename D1, typename D2, typename D3, typename D4>
 void improveWLRA(const MatrixBase<D1> &B, const MatrixBase<D2> &A, const MatrixBase<D3> &M, const MatrixBase<D4> &W,
-            const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "LDLT") {
+            const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "Cholesky") {
     const_cast<StopCondition&>(stopCondition).reset();
     while (not const_cast<StopCondition&>(stopCondition)(weightedNorm(M - B * A, W))) {
         solveWLS(B, A, M, W, true, method);
@@ -482,31 +482,31 @@ void improveWLRA(const MatrixBase<D1> &B, const MatrixBase<D2> &A, const MatrixB
 }
 SWIGCODE(%template(improveWLRA) improveWLRA<MatrixMd, MatrixMd, MatrixXd, MatrixXd >;)
 
+/**
+ * \ifnot PY
+ * Compute in the arguments `B` and `A`
+ * \else
+ * Return in a tuple [B,A]
+ * \endif
+ * (an approximation to) the best weighted rank-d approximation to `M` with element-wise weights `W` such that |`B` * `A` - `M`|_D(vect(W)) is minimized. This is computed iteratively starting from an initial approximation given by `B_init` using "alternating projections", which are in turn solved via the given `method`. The termination of the iteration is controlled by the given `stopCondition`.
+ * \ifnot PY
+ * See `StopCondition`.
+ * \else
+ * See `tom.util.StopCondition`.
+ * \endif
+ */
 SWIGCODE(%apply const MatrixBase<MatrixXd>& OUTPUT { const MatrixBase<MatrixXd> &B, const MatrixBase<MatrixXd> &A };)
-template<typename D1, typename D2, typename D3, typename D4>
+template<typename D1, typename D2, typename D3, typename D4, typename D5>
 C1(void) PY2(tuple<MatrixXd, MatrixXd>)
-computeLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W,
-           int dimension = 0, double p = 1, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "LDLT") throw(std::invalid_argument) {
-    VectorXd sqrt_rowW; RowVectorXd sqrt_colW;
-    if (W.size() == 0) {
-        sqrt_rowW = VectorXd::Ones(M.rows());
-        sqrt_colW = VectorXd::Ones(M.cols());
-    } else if (W.rows() == M.rows() and W.cols() == M.cols()) {
-        sqrt_rowW = rowwiseMean(W, p).array().pow(0.25);
-        sqrt_colW = colwiseMean(W, p).array().pow(0.25);
-        // Var[sqrt_rowW_i * m_ij * sqrt_colW_j] approx 1.
-    } else if (W.cols() == 1 and W.size() == M.rows() + M.cols()) { // row + column weights
-        sqrt_rowW = W.col(0).head(M.rows()).cwiseSqrt();
-        sqrt_colW = W.col(0).tail(M.cols()).cwiseSqrt();
-    } else { throw std::invalid_argument("size mismatch for M and W"); }
-    BDCSVD<MatrixXd> svd(sqrt_rowW.asDiagonal() * M * sqrt_colW.asDiagonal(), ComputeThinU | ComputeThinV);
-    if (dimension == 0) throw std::invalid_argument("rank estimation not implemented yet");
-    VectorXd s = svd.singularValues().head(dimension).cwiseSqrt();
-    const_cast<MatrixBase<D1>&>(B).derived() = sqrt_rowW.cwiseInverse().asDiagonal() * svd.matrixU().leftCols(dimension) * s.asDiagonal();
-    const_cast<MatrixBase<D2>&>(A).derived() = s.asDiagonal() * svd.matrixV().leftCols(dimension).transpose() * sqrt_colW.cwiseInverse().asDiagonal();
-    if (W.cols() == 1 and W.size() == M.rows() + M.cols()) { improveWLRA(B, A, M, W, stopCondition, method); }
+computeWLRA(C3(const MatrixBase<D1> &B, const MatrixBase<D2> &A,) const MatrixBase<D3> &M, const MatrixBase<D4> &W, const MatrixBase<D5> B_init, const StopCondition& stopCondition = StopCondition(50, 1e-5, 1e-12), const std::string &method = "Cholesky") throw(std::invalid_argument) {
+    if (W.rows() != M.rows() or W.cols() != M.cols() or B_init.rows() != M.rows() or B_init.cols() > M.cols()) {
+        throw std::invalid_argument("size mismatch");
+    }
+    const_cast<MatrixBase<D1>&>(B).derived() = B_init;
+    solveWLS(A, B, M, W, false, method);
+    improveWLRA(B, A, M, W, stopCondition, method);
 }
-SWIGCODE(%template(computeLRA) computeLRA<MatrixXd, MatrixXd, MatrixXd, MatrixXd >;)
+SWIGCODE(%template(computeWLRA) computeWLRA<MatrixXd, MatrixXd, MatrixXd, MatrixXd, MatrixXd >;)
 
 SWIGCODE(%clear const MatrixBase<MatrixXd> &X, const MatrixBase<MatrixXd> &B, const MatrixBase<MatrixXd> &A;)
 SWIGCODE(%clearkwargs;)
