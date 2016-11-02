@@ -55,4 +55,7 @@ class TestSuffixTree(unittest.TestCase):
                                 "!!! SuffixTree test NOT passed !!! Substring count discrepancy.")
             streeFormNew = canonicalizeSuffixTree(stree)
             self.assertTrue(verifySuffixTreeForm(seq, streeFormNew, streeForm), "!!! SuffixTree test NOT passed !!! Something has changed.")
+            for l in range(1, min(seq.length(), 12)):
+                self.assertTrue(tom.stree.Position(stree, seq.slice(-l)).isSuffix(), ".isSuffix() test failed!")
+
         print(' ', end='', flush=True)
