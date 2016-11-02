@@ -7,6 +7,7 @@ from . import stree
 from . import hmm
 from . import linalg
 from . import learn
+from .learn import Data
 from . import util
 
 from .util import load, save

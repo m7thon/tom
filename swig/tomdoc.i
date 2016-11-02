@@ -34,73 +34,30 @@ Constructors
 C++ includes: STreeIterators.h
 ";
 
-%feature("docstring") stree::DFSIterator::sequence "
-``sequence() -> Sequence``  
+%feature("docstring") stree::DFSIterator::repr "
+``repr() -> std::string``  
 
-Return the (sub-)sequence represented by this node.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
+Return a string representation to display in python.  
 ";
 
-%feature("docstring") stree::DFSIterator::label "
-``label() -> Sequence``  
+%feature("docstring") stree::DFSIterator::index "
+``index() -> nidx_t``  
 
-Return the edge label for the edge leading to the current node.  
-
-If no edge exists, this will be an empty ``Sequence``.  
-";
-
-%feature("docstring") stree::DFSIterator::toSuffix "
-``toSuffix()``  
-
-Set this to the ``PathNode`` corresponding to the first suffix of the
-represented sequence.  
-
-If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
-instead. This uses the \"suffix link\" of the suffix tree, but needs to
-recompute the path.  
-";
-
-%feature("docstring") stree::DFSIterator::toNext "
-``toNext()``  
-
-Set this ``DFSIterator`` to the next node in the depth first traversal.  
-
-If the current node has been visited for the first time and ``setUpPass()`` was
-not called, the next node will be the next in prefix order (or the same leaf
-node, if the current node is a leaf node), otherwise the next in postfix order.
-Note that every node (including leaf nodes) is visited exactly twice, i.e., once
-on the downwards pass and once on the upwards pass. If no next node exists, this
-``DFSIterator`` will be marked as invalid. Calling ``toNext()`` on an invalid
-``DFSIterator`` has no effect.  
-";
-
-%feature("docstring") stree::DFSIterator::isSuffix "
-``isSuffix() -> bool``  
-
-Return ``true`` if the subsequence represented by this node is a suffix of the
-underlying sequence.  
-
-Note that this does not imply that this is a leaf.  
-";
-
-%feature("docstring") stree::DFSIterator::setValid "
-``setValid(valid=true)``  
-
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
-";
-
-%feature("docstring") stree::DFSIterator::setRoot "
-``setRoot()``  
-
-Reset this ``PathNode`` to the root of the suffix tree.  
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
 ";
 
 %feature("docstring") stree::DFSIterator::isLeaf "
 ``isLeaf() -> bool``  
 
 Return ``true`` if this is a leaf node.  
+";
+
+%feature("docstring") stree::DFSIterator::isValid "
+``isValid() -> bool``  
+
+Return ``true`` if valid, otherwise return ``false``.  
 ";
 
 %feature("docstring") stree::DFSIterator::toParent "
@@ -112,30 +69,10 @@ exists.
 Otherwise, just mark this ``PathNode`` as invalid.  
 ";
 
-%feature("docstring") stree::DFSIterator::isValid "
-``isValid() -> bool``  
+%feature("docstring") stree::DFSIterator::setRoot "
+``setRoot()``  
 
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::DFSIterator::index "
-``index() -> nidx_t``  
-
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
-";
-
-%feature("docstring") stree::DFSIterator::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::DFSIterator::nidxStr "
-``nidxStr(width=3) -> std::string``  
-
-Return a string representation of the underlying ``nidx_t``.  
+Reset this ``PathNode`` to the root of the suffix tree.  
 ";
 
 %feature("docstring") stree::DFSIterator::setUpPass "
@@ -148,17 +85,6 @@ has been visited for the second time (on the upward pass).
 Calling this on the second visit has no effect.  
 ";
 
-%feature("docstring") stree::DFSIterator::headIndex "
-``headIndex() -> nidx_t``  
-
-Return the \"headindex\" of this node, which is an index in the sequence
-represented by the suffix tree where the (sub-)sequence represented by this node
-occurs.  
-
-I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
-depth())``, where ``seq`` is the sequence represented by the suffix tree.  
-";
-
 %feature("docstring") stree::DFSIterator::isFirstVisit "
 ``isFirstVisit() -> bool``  
 
@@ -166,23 +92,91 @@ Return ``true`` if the current node is being visited for the first time (i.e.,
 on the downward pass).  
 ";
 
-%feature("docstring") stree::DFSIterator::toSibling "
-``toSibling()``  
+%feature("docstring") stree::DFSIterator::setValid "
+``setValid(valid=true)``  
 
-Set this node to its next sibling if a next sibling exists, otherwise mark this
-node as invalid.  
-
-Note that the siblings are ordered lexicographically according to their edge
-labels.  
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
 ";
 
-%feature("docstring") stree::DFSIterator::sibling "
-``sibling() -> Node``  
+%feature("docstring") stree::DFSIterator::isSuffix "
+``isSuffix() -> bool``  
 
-Return the next sibling of this node.  
+Return ``true`` if the subsequence represented by this node is a suffix of the
+underlying sequence.  
 
-If no such node exists, a ``Node`` marked as invalid is returned. Note that the
-siblings are ordered lexicographically according to their edge labels.  
+Note that this does not imply that this is a leaf.  
+";
+
+%feature("docstring") stree::DFSIterator::isRoot "
+``isRoot() -> bool``  
+
+Return ``true`` if this is the root node.  
+";
+
+%feature("docstring") stree::DFSIterator::toChild "
+``toChild()``  
+``toChild(chr)``  
+
+Overloaded function
+-------------------
+* ``toChild()``  
+    
+    Extend this ``PathNode`` to its first child if such a node exists, otherwise
+    mark this ``PathNode`` as invalid instead.  
+
+    Note that the children are ordered lexicographically according to their edge
+    labels.  
+
+* ``toChild(chr)``  
+    
+    Extend this ``PathNode`` to the child node along the edge leading away whose
+    label begins with the given ``symbol``.  
+
+    If no such node exists, mark this ``PathNode`` as invalid instead.  
+";
+
+%feature("docstring") stree::DFSIterator::label "
+``label() -> Sequence``  
+
+Return the edge label for the edge leading to the current node.  
+
+If no edge exists, this will be an empty ``Sequence``.  
+";
+
+%feature("docstring") stree::DFSIterator::parent "
+``parent() -> Node``  
+
+Return the parent ``Node``.  
+
+If none exists, return a ``Node`` marked as invalid.  
+";
+
+%feature("docstring") stree::DFSIterator::set "
+``set(pathNode)``  
+``set(node)``  
+
+Overloaded function
+-------------------
+* ``set(pathNode)``  
+    
+    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
+    same suffix tree.  
+
+* ``set(node)``  
+    
+    Set this ``Node`` to the given ``node``, which must belong to the same
+    suffix tree.  
+
+    This is a faster version of ``(*this) = node)``.  
+";
+
+%feature("docstring") stree::DFSIterator::count "
+``count() -> nidx_t``  
+
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
+
+For an invalid node, zero is returned.  
 ";
 
 %feature("docstring") stree::DFSIterator::child "
@@ -206,59 +200,52 @@ Overloaded function
     If no such node exists, a ``Node`` marked as invalid is returned.  
 ";
 
-%feature("docstring") stree::DFSIterator::count "
-``count() -> nidx_t``  
+%feature("docstring") stree::DFSIterator::sequence "
+``sequence() -> Sequence``  
 
-Return the number of occurrences of the sequence represented by this node in the
+Return the (sub-)sequence represented by this node.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
 sequence represented by the suffix tree.  
-
-For an invalid node, zero is returned.  
 ";
 
-%feature("docstring") stree::DFSIterator::DFSIterator "
-``DFSIterator(stree)``  
+%feature("docstring") stree::DFSIterator::toNext "
+``toNext()``  
 
-Create a ``DFSIterator`` for the given ``stree``.  
+Set this ``DFSIterator`` to the next node in the depth first traversal.  
+
+If the current node has been visited for the first time and ``setUpPass()`` was
+not called, the next node will be the next in prefix order (or the same leaf
+node, if the current node is a leaf node), otherwise the next in postfix order.
+Note that every node (including leaf nodes) is visited exactly twice, i.e., once
+on the downwards pass and once on the upwards pass. If no next node exists, this
+``DFSIterator`` will be marked as invalid. Calling ``toNext()`` on an invalid
+``DFSIterator`` has no effect.  
 ";
 
-%feature("docstring") stree::DFSIterator::depth "
-``depth() -> nidx_t``  
+%feature("docstring") stree::DFSIterator::toSibling "
+``toSibling()``  
 
-Return the \"depth\" of the node in the suffix tree, which is the size of the
-represented (sub-)sequence.  
+Set this node to its next sibling if a next sibling exists, otherwise mark this
+node as invalid.  
+
+Note that the siblings are ordered lexicographically according to their edge
+labels.  
 ";
 
-%feature("docstring") stree::DFSIterator::set "
-``set(pathNode)``  
-``set(node)``  
+%feature("docstring") stree::DFSIterator::nidxStr "
+``nidxStr(width=3) -> std::string``  
 
-Overloaded function
--------------------
-* ``set(pathNode)``  
-    
-    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
-    same suffix tree.  
-
-* ``set(node)``  
-    
-    Set this ``Node`` to the given ``node``, which must belong to the same
-    suffix tree.  
-
-    This is a faster version of ``(*this) = node)``.  
+Return a string representation of the underlying ``nidx_t``.  
 ";
 
-%feature("docstring") stree::DFSIterator::repr "
-``repr() -> std::string``  
+%feature("docstring") stree::DFSIterator::sibling "
+``sibling() -> Node``  
 
-Return a string representation to display in python.  
-";
+Return the next sibling of this node.  
 
-%feature("docstring") stree::DFSIterator::dataStr "
-``dataStr(width=5) -> std::string``  
-
-Return a string representation of the data of this node.  
-
-This is useful for debugging or understanding the suffix tree structure.  
+If no such node exists, a ``Node`` marked as invalid is returned. Note that the
+siblings are ordered lexicographically according to their edge labels.  
 ";
 
 %feature("docstring") stree::DFSIterator::suffix "
@@ -270,46 +257,59 @@ This follows the \"suffix link\" of the suffix tree. If no such node exists, a
 ``Node`` marked as invalid is returned.  
 ";
 
-%feature("docstring") stree::DFSIterator::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::DFSIterator::parent "
-``parent() -> Node``  
-
-Return the parent ``Node``.  
-
-If none exists, return a ``Node`` marked as invalid.  
-";
-
 %feature("docstring") stree::DFSIterator::isInternal "
 ``isInternal() -> bool``  
 
 Return ``true`` if this is an internal node.  
 ";
 
-%feature("docstring") stree::DFSIterator::toChild "
-``toChild()``  
-``toChild(chr)``  
+%feature("docstring") stree::DFSIterator::dataStr "
+``dataStr(width=5) -> std::string``  
 
-Overloaded function
--------------------
-* ``toChild()``  
-    
-    Extend this ``PathNode`` to its first child if such a node exists, otherwise
-    mark this ``PathNode`` as invalid instead.  
+Return a string representation of the data of this node.  
 
-    Note that the children are ordered lexicographically according to their edge
-    labels.  
+This is useful for debugging or understanding the suffix tree structure.  
+";
 
-* ``toChild(chr)``  
-    
-    Extend this ``PathNode`` to the child node along the edge leading away whose
-    label begins with the given ``symbol``.  
+%feature("docstring") stree::DFSIterator::nidx "
+``nidx() -> nidx_t``  
 
-    If no such node exists, mark this ``PathNode`` as invalid instead.  
+Return the ``nidx_t`` corresponding to this ``Node``.  
+";
+
+%feature("docstring") stree::DFSIterator::headIndex "
+``headIndex() -> nidx_t``  
+
+Return the \"headindex\" of this node, which is an index in the sequence
+represented by the suffix tree where the (sub-)sequence represented by this node
+occurs.  
+
+I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
+depth())``, where ``seq`` is the sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::DFSIterator::toSuffix "
+``toSuffix()``  
+
+Set this to the ``PathNode`` corresponding to the first suffix of the
+represented sequence.  
+
+If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
+instead. This uses the \"suffix link\" of the suffix tree, but needs to
+recompute the path.  
+";
+
+%feature("docstring") stree::DFSIterator::depth "
+``depth() -> nidx_t``  
+
+Return the \"depth\" of the node in the suffix tree, which is the size of the
+represented (sub-)sequence.  
+";
+
+%feature("docstring") stree::DFSIterator::DFSIterator "
+``DFSIterator(stree)``  
+
+Create a ``DFSIterator`` for the given ``stree``.  
 ";
 
 // File: classstree_1_1_edge_node.xml
@@ -369,6 +369,30 @@ Constructors
 C++ includes: STreeNode.h
 ";
 
+%feature("docstring") stree::EdgeNode::repr "
+``repr() -> std::string``  
+
+Return a string representation to display in python.  
+";
+
+%feature("docstring") stree::EdgeNode::sequence "
+``sequence() -> Sequence``  
+
+Return the (sub-)sequence represented by this node.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
+sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::EdgeNode::isSuffix "
+``isSuffix() -> bool``  
+
+Return ``true`` if the subsequence represented by this node is a suffix of the
+underlying sequence.  
+
+Note that this does not imply that this is a leaf.  
+";
+
 %feature("docstring") stree::EdgeNode::toSibling "
 ``toSibling()``  
 
@@ -377,6 +401,28 @@ node as invalid.
 
 Note that the siblings are ordered lexicographically according to their edge
 labels.  
+";
+
+%feature("docstring") stree::EdgeNode::child "
+``child() -> EdgeNode``  
+``child(symbol) -> EdgeNode``  
+
+Overloaded function
+-------------------
+* ``child() -> EdgeNode``  
+    
+    Return the first child ``EdgeNode`` of this ``EdgeNode``.  
+
+    If no child exists, an ``EdgeNode`` marked as invalid is returned. Note that
+    the children are ordered lexicographically according to their edge labels.  
+
+* ``child(symbol) -> EdgeNode``  
+    
+    Return the child ``EdgeNode`` leading away whose label begins with the given
+    ``symbol``.  
+
+    If no such ``EdgeNode`` exists, an ``EdgeNode`` marked as invalid is
+    returned.  
 ";
 
 %feature("docstring") stree::EdgeNode::toChild "
@@ -408,23 +454,47 @@ Return the \"depth\" of the node in the suffix tree, which is the size of the
 represented (sub-)sequence.  
 ";
 
-%feature("docstring") stree::EdgeNode::sequence "
-``sequence() -> Sequence``  
+%feature("docstring") stree::EdgeNode::isValid "
+``isValid() -> bool``  
 
-Return the (sub-)sequence represented by this node.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
+Return ``true`` if valid, otherwise return ``false``.  
 ";
 
-%feature("docstring") stree::EdgeNode::suffix "
-``suffix() -> EdgeNode``  
+%feature("docstring") stree::EdgeNode::nidx "
+``nidx() -> nidx_t``  
 
-Return the ``EdgeNode`` corresponding to the first suffix of the represented
-sequence.  
+Return the ``nidx_t`` corresponding to this ``Node``.  
+";
 
-This follows the \"suffix link\" of the suffix tree (and finds the new parent
-accordingly). If no such node exists, a ``Node`` marked as invalid is returned.  
+%feature("docstring") stree::EdgeNode::setValid "
+``setValid(valid=true)``  
+
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+";
+
+%feature("docstring") stree::EdgeNode::toSuffix "
+``toSuffix()``  
+
+Set this to the ``EdgeNode`` corresponding to the first suffix of the
+represented sequence.  
+
+If no such node exists, mark this node as invalid instead. This follows the
+\"suffix link\" of the suffix tree (and finds the new parent accordingly).  
+";
+
+%feature("docstring") stree::EdgeNode::isRoot "
+``isRoot() -> bool``  
+
+Return ``true`` if this is the root node.  
+";
+
+%feature("docstring") stree::EdgeNode::count "
+``count() -> nidx_t``  
+
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
+
+For an invalid node, zero is returned.  
 ";
 
 %feature("docstring") stree::EdgeNode::headIndex "
@@ -438,78 +508,35 @@ I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
 depth())``, where ``seq`` is the sequence represented by the suffix tree.  
 ";
 
+%feature("docstring") stree::EdgeNode::setRoot "
+``setRoot()``  
+
+Reset this ``EdgeNode`` to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::EdgeNode::suffix "
+``suffix() -> EdgeNode``  
+
+Return the ``EdgeNode`` corresponding to the first suffix of the represented
+sequence.  
+
+This follows the \"suffix link\" of the suffix tree (and finds the new parent
+accordingly). If no such node exists, a ``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::EdgeNode::parent "
+``parent() -> Node``  
+
+Return the parent ``Node`` of this ``EdgeNode``.  
+
+If this ``EdgeNode`` is invalid or degenerate, i.e., no parent node exists or is
+known, a ``Node`` marked as invalid is returned.  
+";
+
 %feature("docstring") stree::EdgeNode::isInternal "
 ``isInternal() -> bool``  
 
 Return ``true`` if this is an internal node.  
-";
-
-%feature("docstring") stree::EdgeNode::setValid "
-``setValid(valid=true)``  
-
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
-";
-
-%feature("docstring") stree::EdgeNode::index "
-``index() -> nidx_t``  
-
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
-";
-
-%feature("docstring") stree::EdgeNode::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::EdgeNode::nidxStr "
-``nidxStr(width=3) -> std::string``  
-
-Return a string representation of the underlying ``nidx_t``.  
-";
-
-%feature("docstring") stree::EdgeNode::child "
-``child() -> EdgeNode``  
-``child(symbol) -> EdgeNode``  
-
-Overloaded function
--------------------
-* ``child() -> EdgeNode``  
-    
-    Return the first child ``EdgeNode`` of this ``EdgeNode``.  
-
-    If no child exists, an ``EdgeNode`` marked as invalid is returned. Note that
-    the children are ordered lexicographically according to their edge labels.  
-
-* ``child(symbol) -> EdgeNode``  
-    
-    Return the child ``EdgeNode`` leading away whose label begins with the given
-    ``symbol``.  
-
-    If no such ``EdgeNode`` exists, an ``EdgeNode`` marked as invalid is
-    returned.  
-";
-
-%feature("docstring") stree::EdgeNode::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::EdgeNode::dataStr "
-``dataStr(width=5) -> std::string``  
-
-Return a string representation of the data of this ``EdgeNode``.  
-
-This is useful for debugging or understanding the suffix tree structure.  
-";
-
-%feature("docstring") stree::EdgeNode::repr "
-``repr() -> std::string``  
-
-Return a string representation to display in python.  
 ";
 
 %feature("docstring") stree::EdgeNode::set "
@@ -533,13 +560,18 @@ Overloaded function
     This is a faster version of ``(*this) = node)``.  
 ";
 
-%feature("docstring") stree::EdgeNode::count "
-``count() -> nidx_t``  
+%feature("docstring") stree::EdgeNode::dataStr "
+``dataStr(width=5) -> std::string``  
 
-Return the number of occurrences of the sequence represented by this node in the
-sequence represented by the suffix tree.  
+Return a string representation of the data of this ``EdgeNode``.  
 
-For an invalid node, zero is returned.  
+This is useful for debugging or understanding the suffix tree structure.  
+";
+
+%feature("docstring") stree::EdgeNode::label "
+``label() -> Sequence``  
+
+Return the edge label.  
 ";
 
 %feature("docstring") stree::EdgeNode::EdgeNode "
@@ -576,29 +608,24 @@ Overloaded function
     \"degenerate\" (have an invalid parent).  
 ";
 
-%feature("docstring") stree::EdgeNode::setRoot "
-``setRoot()``  
+%feature("docstring") stree::EdgeNode::nidxStr "
+``nidxStr(width=3) -> std::string``  
 
-Reset this ``EdgeNode`` to the root of the suffix tree.  
+Return a string representation of the underlying ``nidx_t``.  
 ";
 
-%feature("docstring") stree::EdgeNode::toSuffix "
-``toSuffix()``  
+%feature("docstring") stree::EdgeNode::isLeaf "
+``isLeaf() -> bool``  
 
-Set this to the ``EdgeNode`` corresponding to the first suffix of the
-represented sequence.  
-
-If no such node exists, mark this node as invalid instead. This follows the
-\"suffix link\" of the suffix tree (and finds the new parent accordingly).  
+Return ``true`` if this is a leaf node.  
 ";
 
-%feature("docstring") stree::EdgeNode::isSuffix "
-``isSuffix() -> bool``  
+%feature("docstring") stree::EdgeNode::index "
+``index() -> nidx_t``  
 
-Return ``true`` if the subsequence represented by this node is a suffix of the
-underlying sequence.  
-
-Note that this does not imply that this is a leaf.  
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
 ";
 
 %feature("docstring") stree::EdgeNode::sibling "
@@ -610,42 +637,14 @@ If none exists, an ``EdgeNode`` marked as invalid is returned. Note that the
 siblings are ordered lexicographically according to their edge labels.  
 ";
 
-%feature("docstring") stree::EdgeNode::isValid "
-``isValid() -> bool``  
-
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::EdgeNode::label "
-``label() -> Sequence``  
-
-Return the edge label.  
-";
-
-%feature("docstring") stree::EdgeNode::parent "
-``parent() -> Node``  
-
-Return the parent ``Node`` of this ``EdgeNode``.  
-
-If this ``EdgeNode`` is invalid or degenerate, i.e., no parent node exists or is
-known, a ``Node`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::EdgeNode::isLeaf "
-``isLeaf() -> bool``  
-
-Return ``true`` if this is a leaf node.  
-";
-
 // File: classtom_1_1_estimator.xml
 
 
 %feature("docstring") tom::Estimator "
 ``Estimator(stree)``  
 
-This class computes estimates for :math:`f( x )` and corresponding variance
-estimates for sequences :math:`x` based on a suffix tree representation of a
-sample sequence.  
+This class computes estimates for $f( x )$ and corresponding variance estimates
+for sequences $x$ based on a suffix tree representation of a sample sequence.  
 
 Constructors
 ------------
@@ -655,80 +654,6 @@ Constructors
     representation ``stree``.  
 
 C++ includes: Estimator.h
-";
-
-%feature("docstring") tom::Estimator::fv "
-``fv(z) -> tuple< double, double >``  
-``fv(o, u) -> tuple< double, double >``  
-``fv(sequence) -> tuple< double, double >``  
-``fv(Y, X) -> tuple< MatrixXd, MatrixXd >``  
-``fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >``  
-``fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >``  
-``fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >``  
-
-Overloaded function
--------------------
-* ``fv(z) -> tuple< double, double >``  
-    
-    Return in a tuple (``f``, ``v``) an estimate ``f`` of f( ``z`` ) for the
-    given output symbol ``z`` together with the corresponding variance estimate
-    ``v``.  
-
-* ``fv(o, u) -> tuple< double, double >``  
-    
-    Return in a tuple (``f``, ``v``) an estimate ``f`` of f( z ) for the given
-    input-output symbol pair z = (``u``, ``o``) together with the corresponding
-    variance estimate ``v``.  
-
-    In the case of an output-only system, the input ``u`` is simply ignored.  
-
-* ``fv(sequence) -> tuple< double, double >``  
-    
-    Return in a tuple (``f``, ``v``) an estimate of f( ``sequence`` ) together
-    with the corresponding variance estimate ``v``.  
-
-* ``fv(Y, X) -> tuple< MatrixXd, MatrixXd >``  
-    
-    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for :math:`[
-    f( x y ) ]_{y \\in X, x \\in X}` with rows indexed by the given set ``Y`` of
-    characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences, together with the corresponding matrix ``V`` of
-    element-wise variance estimates for the estimates returned in ``F``.  
-
-* ``fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >``  
-    
-    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for :math:`[
-    f( x z y ) ]_{y \\in X, x \\in X}` with rows indexed by the given set ``Y``
-    of characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given output symbol ``z``, together with the
-    corresponding matrix ``V`` of element-wise variance estimates for the
-    estimates returned in ``F``.  
-
-* ``fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >``  
-    
-    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for :math:`[
-    f( x z y ) ]_{y \\in X, x \\in X}` with rows indexed by the given set ``Y``
-    of characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given input-output symbol pair z = (``u``,
-    ``o``), together with the corresponding matrix ``V`` of element-wise
-    variance estimates for the estimates returned in ``F``.  
-
-    In the case of an output-only system, the input ``u`` is simply ignored.  
-
-* ``fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >``  
-    
-    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for :math:`[
-    f( x s y ) ]_{y \\in X, x \\in X}` with rows indexed by the given set ``Y``
-    of characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given ``Sequence`` ``s``, together with the
-    corresponding matrix ``V`` of element-wise variance estimates for the
-    estimates returned in ``F``.  
-";
-
-%feature("docstring") tom::Estimator::sequence "
-``sequence() -> Sequence``  
-
-Return the data sequence.  
 ";
 
 %feature("docstring") tom::Estimator::regularization "
@@ -758,8 +683,8 @@ Parameters
     number of pseudo-counts to add for the variance computation  
 * ``vMin`` :  
     determines a lower bound for the returned variance, which will simply be
-    ``vMin`` if this is < 0.25, or computed as :math:`vMin / (\\pi N)^2`, where
-    ``N`` is the length of the sequence data.  
+    ``vMin`` if this is < 0.25, or computed as $vMin / (\\pi N)^2$, where ``N``
+    is the length of the sequence data.  
 * ``preset`` :  
     a preset that may be specified as explained above { \"default\", \"none\" }  
 ";
@@ -794,52 +719,33 @@ Overloaded function
 * ``v(Y, X) -> MatrixXd``  
     
     Return the matrix of element-wise variance estimates corresponding to the
-    estimates for :math:`[ f( x y ) ]_{y \\in X, x \\in X}` with rows indexed by
-    the given set ``Y`` of characteristic sequences and columns indexed by the
-    given set ``X`` of indicative sequences.  
+    estimates for $[ f( x y ) ]_{y \\in X, x \\in X}$ with rows indexed by the
+    given set ``Y`` of characteristic sequences and columns indexed by the given
+    set ``X`` of indicative sequences.  
 
 * ``v(Y, z, X) -> MatrixXd``  
     
     Return the matrix of element-wise variance estimates corresponding to the
-    estimates for :math:`[ f( x z y ) ]_{y \\in X, x \\in X}` with rows indexed
-    by the given set ``Y`` of characteristic sequences and columns indexed by
-    the given set ``X`` of indicative sequences for a given output symbol ``z``.  
+    estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$ with rows indexed by the
+    given set ``Y`` of characteristic sequences and columns indexed by the given
+    set ``X`` of indicative sequences for a given output symbol ``z``.  
 
 * ``v(Y, o, u, X) -> MatrixXd``  
     
     Return the matrix of element-wise variance estimates corresponding to the
-    estimates for :math:`[ f( x z y ) ]_{y \\in X, x \\in X}` with rows indexed
-    by the given set ``Y`` of characteristic sequences and columns indexed by
-    the given set ``X`` of indicative sequences for a given input-output symbol
-    pair z = (``u``, ``o``).  
+    estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$ with rows indexed by the
+    given set ``Y`` of characteristic sequences and columns indexed by the given
+    set ``X`` of indicative sequences for a given input-output symbol pair z =
+    (``u``, ``o``).  
 
     In the case of an output-only system, the input ``u`` is simply ignored.  
 
 * ``v(Y, s, X) -> MatrixXd``  
     
     Return the matrix of element-wise variance estimates corresponding to the
-    estimates for :math:`[ f( x s y ) ]_{y \\in X, x \\in X}` with rows indexed
-    by the given set ``Y`` of characteristic sequences and columns indexed by
-    the given set ``X`` of indicative sequences for a given ``Sequence`` ``s``.  
-";
-
-%feature("docstring") tom::Estimator::nInputSymbols "
-``nInputSymbols() -> int``  
-
-Return the size of the input alphabet.  
-";
-
-%feature("docstring") tom::Estimator::nOutputSymbols "
-``nOutputSymbols() -> int``  
-
-Return the size of the output alphabet.  
-";
-
-%feature("docstring") tom::Estimator::Estimator "
-``Estimator(stree)``  
-
-Create an ``Estimator`` for a sample sequence data given by a suffix tree
-representation ``stree``.  
+    estimates for $[ f( x s y ) ]_{y \\in X, x \\in X}$ with rows indexed by the
+    given set ``Y`` of characteristic sequences and columns indexed by the given
+    set ``X`` of indicative sequences for a given ``Sequence`` ``s``.  
 ";
 
 %feature("docstring") tom::Estimator::f "
@@ -870,21 +776,21 @@ Overloaded function
 
 * ``f(Y, X) -> MatrixXd``  
     
-    Return the matrix of estimates for :math:`[ f( x y ) ]_{y \\in X, x \\in X}`
-    with rows indexed by the given set ``Y`` of characteristic sequences and
-    columns indexed by the given set ``X`` of indicative sequences.  
+    Return the matrix of estimates for $[ f( x y ) ]_{y \\in X, x \\in X}$ with
+    rows indexed by the given set ``Y`` of characteristic sequences and columns
+    indexed by the given set ``X`` of indicative sequences.  
 
 * ``f(Y, z, X) -> MatrixXd``  
     
-    Return the matrix of estimates for :math:`[ f( x z y ) ]_{y \\in X, x \\in
-    X}` with rows indexed by the given set ``Y`` of characteristic sequences and
+    Return the matrix of estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$
+    with rows indexed by the given set ``Y`` of characteristic sequences and
     columns indexed by the given set ``X`` of indicative sequences for a given
     output symbol ``z``.  
 
 * ``f(Y, o, u, X) -> MatrixXd``  
     
-    Return the matrix of estimates for :math:`[ f( x z y ) ]_{y \\in X, x \\in
-    X}` with rows indexed by the given set ``Y`` of characteristic sequences and
+    Return the matrix of estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$
+    with rows indexed by the given set ``Y`` of characteristic sequences and
     columns indexed by the given set ``X`` of indicative sequences for a given
     input-output symbol pair z = (``u``, ``o``).  
 
@@ -892,10 +798,103 @@ Overloaded function
 
 * ``f(Y, s, X) -> MatrixXd``  
     
-    Return the matrix of estimates for :math:`[ f( x s y ) ]_{y \\in X, x \\in
-    X}` with rows indexed by the given set ``Y`` of characteristic sequences and
+    Return the matrix of estimates for $[ f( x s y ) ]_{y \\in X, x \\in X}$
+    with rows indexed by the given set ``Y`` of characteristic sequences and
     columns indexed by the given set ``X`` of indicative sequences for a given
     ``Sequence`` ``s``.  
+";
+
+%feature("docstring") tom::Estimator::sequence "
+``sequence() -> Sequence``  
+
+Return the data sequence.  
+";
+
+%feature("docstring") tom::Estimator::fv "
+``fv(z) -> tuple< double, double >``  
+``fv(o, u) -> tuple< double, double >``  
+``fv(sequence) -> tuple< double, double >``  
+``fv(Y, X) -> tuple< MatrixXd, MatrixXd >``  
+``fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >``  
+``fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >``  
+``fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >``  
+
+Overloaded function
+-------------------
+* ``fv(z) -> tuple< double, double >``  
+    
+    Return in a tuple (``f``, ``v``) an estimate ``f`` of f( ``z`` ) for the
+    given output symbol ``z`` together with the corresponding variance estimate
+    ``v``.  
+
+* ``fv(o, u) -> tuple< double, double >``  
+    
+    Return in a tuple (``f``, ``v``) an estimate ``f`` of f( z ) for the given
+    input-output symbol pair z = (``u``, ``o``) together with the corresponding
+    variance estimate ``v``.  
+
+    In the case of an output-only system, the input ``u`` is simply ignored.  
+
+* ``fv(sequence) -> tuple< double, double >``  
+    
+    Return in a tuple (``f``, ``v``) an estimate of f( ``sequence`` ) together
+    with the corresponding variance estimate ``v``.  
+
+* ``fv(Y, X) -> tuple< MatrixXd, MatrixXd >``  
+    
+    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for $[ f( x y
+    ) ]_{y \\in X, x \\in X}$ with rows indexed by the given set ``Y`` of
+    characteristic sequences and columns indexed by the given set ``X`` of
+    indicative sequences, together with the corresponding matrix ``V`` of
+    element-wise variance estimates for the estimates returned in ``F``.  
+
+* ``fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >``  
+    
+    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for $[ f( x z
+    y ) ]_{y \\in X, x \\in X}$ with rows indexed by the given set ``Y`` of
+    characteristic sequences and columns indexed by the given set ``X`` of
+    indicative sequences for a given output symbol ``z``, together with the
+    corresponding matrix ``V`` of element-wise variance estimates for the
+    estimates returned in ``F``.  
+
+* ``fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >``  
+    
+    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for $[ f( x z
+    y ) ]_{y \\in X, x \\in X}$ with rows indexed by the given set ``Y`` of
+    characteristic sequences and columns indexed by the given set ``X`` of
+    indicative sequences for a given input-output symbol pair z = (``u``,
+    ``o``), together with the corresponding matrix ``V`` of element-wise
+    variance estimates for the estimates returned in ``F``.  
+
+    In the case of an output-only system, the input ``u`` is simply ignored.  
+
+* ``fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >``  
+    
+    Return in a tuple (``F``, ``V``) the matrix ``F`` of estimates for $[ f( x s
+    y ) ]_{y \\in X, x \\in X}$ with rows indexed by the given set ``Y`` of
+    characteristic sequences and columns indexed by the given set ``X`` of
+    indicative sequences for a given ``Sequence`` ``s``, together with the
+    corresponding matrix ``V`` of element-wise variance estimates for the
+    estimates returned in ``F``.  
+";
+
+%feature("docstring") tom::Estimator::nInputSymbols "
+``nInputSymbols() -> int``  
+
+Return the size of the input alphabet.  
+";
+
+%feature("docstring") tom::Estimator::nOutputSymbols "
+``nOutputSymbols() -> int``  
+
+Return the size of the output alphabet.  
+";
+
+%feature("docstring") tom::Estimator::Estimator "
+``Estimator(stree)``  
+
+Create an ``Estimator`` for a sample sequence data given by a suffix tree
+representation ``stree``.  
 ";
 
 // File: classtom_1_1_hmm.xml
@@ -923,41 +922,36 @@ C++ includes: Hmm.h
  Accessors 
 */
 
-%feature("docstring") tom::Hmm::toJSON "
-``toJSON() -> std::string``  
-";
-
-%feature("docstring") tom::Hmm::fromJSON "
-``fromJSON(string)``  
-";
-
-%feature("docstring") tom::Hmm::pi "
-``pi() -> const VectorXd &``  
-``pi(_pi)``  
-
-Overloaded function
--------------------
-* ``pi() -> const VectorXd &``  
-
-* ``pi(_pi)``  
-";
-
 %feature("docstring") tom::Hmm::normalize "
 ``normalize() -> bool``  
 ";
 
-%feature("docstring") tom::Hmm::T "
-``T(a=0) -> const MatrixXd &``  
-``T(_T)``  
-``T(a, _Ta)``  
+%feature("docstring") tom::Hmm::nInputs "
+``nInputs() -> int``  
+";
 
-Overloaded function
--------------------
-* ``T(a=0) -> const MatrixXd &``  
+%feature("docstring") tom::Hmm::nStates "
+``nStates() -> int``  
+";
 
-* ``T(_T)``  
+%feature("docstring") tom::Hmm::init "
+``init()``  
+";
 
-* ``T(a, _Ta)``  
+%feature("docstring") tom::Hmm::toJSON "
+``toJSON() -> std::string``  
+";
+
+%feature("docstring") tom::Hmm::nObservations "
+``nObservations() -> int``  
+";
+
+%feature("docstring") tom::Hmm::setSize "
+``setSize(nStates, nObservations, nInputs, zeroParameters=false)``  
+";
+
+%feature("docstring") tom::Hmm::trainEM "
+``trainEM(trainSequence, stopCondition=StopCondition(100, 1e-7, 0)) -> double``  
 ";
 
 %feature("docstring") tom::Hmm::E "
@@ -974,28 +968,26 @@ Overloaded function
 * ``E(o, _Eo)``  
 ";
 
-%feature("docstring") tom::Hmm::nInputs "
-``nInputs() -> int``  
-";
+%feature("docstring") tom::Hmm::T "
+``T(a=0) -> const MatrixXd &``  
+``T(_T)``  
+``T(a, _Ta)``  
 
-%feature("docstring") tom::Hmm::init "
-``init()``  
-";
+Overloaded function
+-------------------
+* ``T(a=0) -> const MatrixXd &``  
 
-%feature("docstring") tom::Hmm::Hmm "
-``Hmm(nStates, nObservations, nInputs=0, exponent=1, rnd=Random())``  
-";
+* ``T(_T)``  
 
-%feature("docstring") tom::Hmm::setSize "
-``setSize(nStates, nObservations, nInputs, zeroParameters=false)``  
+* ``T(a, _Ta)``  
 ";
 
 %feature("docstring") tom::Hmm::cereal::access "
 ``cereal::access() -> friend class``  
 ";
 
-%feature("docstring") tom::Hmm::trainEM "
-``trainEM(trainSequence, stopCondition=StopCondition(100, 1e-7, 0)) -> double``  
+%feature("docstring") tom::Hmm::Hmm "
+``Hmm(nStates, nObservations, nInputs=0, exponent=1, rnd=Random())``  
 ";
 
 %feature("docstring") tom::Hmm::repr "
@@ -1004,16 +996,23 @@ Overloaded function
 return a representation to display in interactive python.  
 ";
 
-%feature("docstring") tom::Hmm::nStates "
-``nStates() -> int``  
-";
-
 %feature("docstring") tom::Hmm::randomize "
 ``randomize(exponent=1, rnd=Random())``  
 ";
 
-%feature("docstring") tom::Hmm::nObservations "
-``nObservations() -> int``  
+%feature("docstring") tom::Hmm::pi "
+``pi() -> const VectorXd &``  
+``pi(_pi)``  
+
+Overloaded function
+-------------------
+* ``pi() -> const VectorXd &``  
+
+* ``pi(_pi)``  
+";
+
+%feature("docstring") tom::Hmm::fromJSON "
+``fromJSON(string)``  
 ";
 
 // File: structstree_1_1internal_1_1_internal_node.xml
@@ -1123,52 +1122,19 @@ C++ includes: Learner.h
  Basic OOM functionality 
 */
 
-%feature("docstring") tom::Learner::weightedSpectral "
-``weightedSpectral() -> Oom *``  
+%feature("docstring") tom::Learner::~Learner "
+``~Learner()``  
 ";
 
-%feature("docstring") tom::Learner::indicativeSequences "
-``indicativeSequences() -> SHARED_PTR< Sequences >``  
-``indicativeSequences(indicativeSequences_new)``  
+%feature("docstring") tom::Learner::Q "
+``Q() -> Eigen::MatrixXd &``  
+``Q(Q_new)``  
 
 Overloaded function
 -------------------
-* ``indicativeSequences() -> SHARED_PTR< Sequences >``  
+* ``Q() -> Eigen::MatrixXd &``  
 
-* ``indicativeSequences(indicativeSequences_new)``  
-";
-
-%feature("docstring") tom::Learner::F "
-``F() -> Eigen::MatrixXd &``  
-``F(F_new)``  
-
-Overloaded function
--------------------
-* ``F() -> Eigen::MatrixXd &``  
-
-* ``F(F_new)``  
-";
-
-%feature("docstring") tom::Learner::W "
-``W() -> Eigen::MatrixXd &``  
-``W(W_new)``  
-
-Overloaded function
--------------------
-* ``W() -> Eigen::MatrixXd &``  
-
-* ``W(W_new)``  
-";
-
-%feature("docstring") tom::Learner::WI "
-``WI() -> Eigen::MatrixXd &``  
-``WI(WI_new)``  
-
-Overloaded function
--------------------
-* ``WI() -> Eigen::MatrixXd &``  
-
-* ``WI(WI_new)``  
+* ``Q(Q_new)``  
 ";
 
 %feature("docstring") tom::Learner::C "
@@ -1182,60 +1148,12 @@ Overloaded function
 * ``C(C_new)``  
 ";
 
-%feature("docstring") tom::Learner::init "
-``init()``  
-";
-
-%feature("docstring") tom::Learner::characteristicSequences "
-``characteristicSequences() -> SHARED_PTR< Sequences >``  
-``characteristicSequences(characteristicSequences_new)``  
-
-Overloaded function
--------------------
-* ``characteristicSequences() -> SHARED_PTR< Sequences >``  
-
-* ``characteristicSequences(characteristicSequences_new)``  
-";
-
-%feature("docstring") tom::Learner::Wz "
-``Wz(o, u=0) -> Eigen::MatrixXd &``  
-``Wz(o, Wz_new)``  
-``Wz(o, u, Wz_new)``  
-
-Overloaded function
--------------------
-* ``Wz(o, u=0) -> Eigen::MatrixXd &``  
-
-* ``Wz(o, Wz_new)``  
-
-* ``Wz(o, u, Wz_new)``  
-";
-
 %feature("docstring") tom::Learner::computeCQ "
 ``computeCQ()``  
 ";
 
 %feature("docstring") tom::Learner::oom "
 ``oom() -> Oom *``  
-";
-
-%feature("docstring") tom::Learner::Learner "
-``Learner()``  
-";
-
-%feature("docstring") tom::Learner::~Learner "
-``~Learner()``  
-";
-
-%feature("docstring") tom::Learner::FJ "
-``FJ() -> Eigen::MatrixXd &``  
-``FJ(FJ_new)``  
-
-Overloaded function
--------------------
-* ``FJ() -> Eigen::MatrixXd &``  
-
-* ``FJ(FJ_new)``  
 ";
 
 %feature("docstring") tom::Learner::FI "
@@ -1274,19 +1192,100 @@ Overloaded function
 * ``WJ(WJ_new)``  
 ";
 
-%feature("docstring") tom::Learner::Q "
-``Q() -> Eigen::MatrixXd &``  
-``Q(Q_new)``  
+%feature("docstring") tom::Learner::characteristicSequences "
+``characteristicSequences() -> SHARED_PTR< Sequences >``  
+``characteristicSequences(characteristicSequences_new)``  
 
 Overloaded function
 -------------------
-* ``Q() -> Eigen::MatrixXd &``  
+* ``characteristicSequences() -> SHARED_PTR< Sequences >``  
 
-* ``Q(Q_new)``  
+* ``characteristicSequences(characteristicSequences_new)``  
+";
+
+%feature("docstring") tom::Learner::init "
+``init()``  
+";
+
+%feature("docstring") tom::Learner::WI "
+``WI() -> Eigen::MatrixXd &``  
+``WI(WI_new)``  
+
+Overloaded function
+-------------------
+* ``WI() -> Eigen::MatrixXd &``  
+
+* ``WI(WI_new)``  
+";
+
+%feature("docstring") tom::Learner::F "
+``F() -> Eigen::MatrixXd &``  
+``F(F_new)``  
+
+Overloaded function
+-------------------
+* ``F() -> Eigen::MatrixXd &``  
+
+* ``F(F_new)``  
 ";
 
 %feature("docstring") tom::Learner::clearCQ "
 ``clearCQ()``  
+";
+
+%feature("docstring") tom::Learner::W "
+``W() -> Eigen::MatrixXd &``  
+``W(W_new)``  
+
+Overloaded function
+-------------------
+* ``W() -> Eigen::MatrixXd &``  
+
+* ``W(W_new)``  
+";
+
+%feature("docstring") tom::Learner::weightedSpectral "
+``weightedSpectral() -> Oom *``  
+";
+
+%feature("docstring") tom::Learner::Learner "
+``Learner()``  
+";
+
+%feature("docstring") tom::Learner::indicativeSequences "
+``indicativeSequences() -> SHARED_PTR< Sequences >``  
+``indicativeSequences(indicativeSequences_new)``  
+
+Overloaded function
+-------------------
+* ``indicativeSequences() -> SHARED_PTR< Sequences >``  
+
+* ``indicativeSequences(indicativeSequences_new)``  
+";
+
+%feature("docstring") tom::Learner::FJ "
+``FJ() -> Eigen::MatrixXd &``  
+``FJ(FJ_new)``  
+
+Overloaded function
+-------------------
+* ``FJ() -> Eigen::MatrixXd &``  
+
+* ``FJ(FJ_new)``  
+";
+
+%feature("docstring") tom::Learner::Wz "
+``Wz(o, u=0) -> Eigen::MatrixXd &``  
+``Wz(o, Wz_new)``  
+``Wz(o, u, Wz_new)``  
+
+Overloaded function
+-------------------
+* ``Wz(o, u=0) -> Eigen::MatrixXd &``  
+
+* ``Wz(o, Wz_new)``  
+
+* ``Wz(o, u, Wz_new)``  
 ";
 
 // File: classstree_1_1_node.xml
@@ -1321,37 +1320,6 @@ Constructors
 C++ includes: STreeNode.h
 ";
 
-%feature("docstring") stree::Node::depth "
-``depth() -> nidx_t``  
-
-Return the \"depth\" of the node in the suffix tree, which is the size of the
-represented (sub-)sequence.  
-";
-
-%feature("docstring") stree::Node::count "
-``count() -> nidx_t``  
-
-Return the number of occurrences of the sequence represented by this node in the
-sequence represented by the suffix tree.  
-
-For an invalid node, zero is returned.  
-";
-
-%feature("docstring") stree::Node::isInternal "
-``isInternal() -> bool``  
-
-Return ``true`` if this is an internal node.  
-";
-
-%feature("docstring") stree::Node::sequence "
-``sequence() -> Sequence``  
-
-Return the (sub-)sequence represented by this node.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
-";
-
 %feature("docstring") stree::Node::headIndex "
 ``headIndex() -> nidx_t``  
 
@@ -1363,26 +1331,108 @@ I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
 depth())``, where ``seq`` is the sequence represented by the suffix tree.  
 ";
 
-%feature("docstring") stree::Node::setRoot "
-``setRoot()``  
+%feature("docstring") stree::Node::isInternal "
+``isInternal() -> bool``  
 
-Reset this ``Node`` to the root of the suffix tree.  
+Return ``true`` if this is an internal node.  
 ";
 
-%feature("docstring") stree::Node::toSuffix "
-``toSuffix()``  
+%feature("docstring") stree::Node::dataStr "
+``dataStr(width=5) -> std::string``  
 
-Set this node to the node corresponding to the first suffix of the represented
-sequence.  
+Return a string representation of the data of this node.  
 
-If no such node exists, mark this node as invalid instead. This follows the
-\"suffix link\" of the suffix tree.  
+This is useful for debugging or understanding the suffix tree structure.  
 ";
 
-%feature("docstring") stree::Node::isLeaf "
-``isLeaf() -> bool``  
+%feature("docstring") stree::Node::depth "
+``depth() -> nidx_t``  
 
-Return ``true`` if this is a leaf node.  
+Return the \"depth\" of the node in the suffix tree, which is the size of the
+represented (sub-)sequence.  
+";
+
+%feature("docstring") stree::Node::nidxStr "
+``nidxStr(width=3) -> std::string``  
+
+Return a string representation of the underlying ``nidx_t``.  
+";
+
+%feature("docstring") stree::Node::sibling "
+``sibling() -> Node``  
+
+Return the next sibling of this node.  
+
+If no such node exists, a ``Node`` marked as invalid is returned. Note that the
+siblings are ordered lexicographically according to their edge labels.  
+";
+
+%feature("docstring") stree::Node::Node "
+``Node(stree, nidx=ROOT)``  
+
+Construct a ``Node`` for the given ``stree`` corresponding to the given
+``nidx``.  
+
+If no ``nidx`` is given, it defaults to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::Node::setValid "
+``setValid(valid=true)``  
+
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+";
+
+%feature("docstring") stree::Node::set "
+``set(node)``  
+
+Set this ``Node`` to the given ``node``, which must belong to the same suffix
+tree.  
+
+This is a faster version of ``(*this) = node)``.  
+";
+
+%feature("docstring") stree::Node::isSuffix "
+``isSuffix() -> bool``  
+
+Return ``true`` if the subsequence represented by this node is a suffix of the
+underlying sequence.  
+
+Note that this does not imply that this is a leaf.  
+";
+
+%feature("docstring") stree::Node::nidx "
+``nidx() -> nidx_t``  
+
+Return the ``nidx_t`` corresponding to this ``Node``.  
+";
+
+%feature("docstring") stree::Node::index "
+``index() -> nidx_t``  
+
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
+";
+
+%feature("docstring") stree::Node::isValid "
+``isValid() -> bool``  
+
+Return ``true`` if valid, otherwise return ``false``.  
+";
+
+%feature("docstring") stree::Node::isRoot "
+``isRoot() -> bool``  
+
+Return ``true`` if this is the root node.  
+";
+
+%feature("docstring") stree::Node::suffix "
+``suffix() -> Node``  
+
+Return the node corresponding to the first suffix of the represented sequence.  
+
+This follows the \"suffix link\" of the suffix tree. If no such node exists, a
+``Node`` marked as invalid is returned.  
 ";
 
 %feature("docstring") stree::Node::toSibling "
@@ -1395,42 +1445,50 @@ Note that the siblings are ordered lexicographically according to their edge
 labels.  
 ";
 
+%feature("docstring") stree::Node::setRoot "
+``setRoot()``  
+
+Reset this ``Node`` to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::Node::sequence "
+``sequence() -> Sequence``  
+
+Return the (sub-)sequence represented by this node.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
+sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::Node::toSuffix "
+``toSuffix()``  
+
+Set this node to the node corresponding to the first suffix of the represented
+sequence.  
+
+If no such node exists, mark this node as invalid instead. This follows the
+\"suffix link\" of the suffix tree.  
+";
+
 %feature("docstring") stree::Node::repr "
 ``repr() -> std::string``  
 
 Return a string representation to display in python.  
 ";
 
-%feature("docstring") stree::Node::suffix "
-``suffix() -> Node``  
+%feature("docstring") stree::Node::count "
+``count() -> nidx_t``  
 
-Return the node corresponding to the first suffix of the represented sequence.  
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
 
-This follows the \"suffix link\" of the suffix tree. If no such node exists, a
-``Node`` marked as invalid is returned.  
+For an invalid node, zero is returned.  
 ";
 
-%feature("docstring") stree::Node::dataStr "
-``dataStr(width=5) -> std::string``  
+%feature("docstring") stree::Node::isLeaf "
+``isLeaf() -> bool``  
 
-Return a string representation of the data of this node.  
-
-This is useful for debugging or understanding the suffix tree structure.  
-";
-
-%feature("docstring") stree::Node::isValid "
-``isValid() -> bool``  
-
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::Node::isSuffix "
-``isSuffix() -> bool``  
-
-Return ``true`` if the subsequence represented by this node is a suffix of the
-underlying sequence.  
-
-Note that this does not imply that this is a leaf.  
+Return ``true`` if this is a leaf node.  
 ";
 
 %feature("docstring") stree::Node::toChild "
@@ -1453,65 +1511,6 @@ Overloaded function
     begins with the given ``symbol``.  
 
     If no such node exists, mark this node as invalid instead.  
-";
-
-%feature("docstring") stree::Node::setValid "
-``setValid(valid=true)``  
-
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
-";
-
-%feature("docstring") stree::Node::index "
-``index() -> nidx_t``  
-
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
-";
-
-%feature("docstring") stree::Node::nidxStr "
-``nidxStr(width=3) -> std::string``  
-
-Return a string representation of the underlying ``nidx_t``.  
-";
-
-%feature("docstring") stree::Node::set "
-``set(node)``  
-
-Set this ``Node`` to the given ``node``, which must belong to the same suffix
-tree.  
-
-This is a faster version of ``(*this) = node)``.  
-";
-
-%feature("docstring") stree::Node::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::Node::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::Node::Node "
-``Node(stree, nidx=ROOT)``  
-
-Construct a ``Node`` for the given ``stree`` corresponding to the given
-``nidx``.  
-
-If no ``nidx`` is given, it defaults to the root of the suffix tree.  
-";
-
-%feature("docstring") stree::Node::sibling "
-``sibling() -> Node``  
-
-Return the next sibling of this node.  
-
-If no such node exists, a ``Node`` marked as invalid is returned. Note that the
-siblings are ordered lexicographically according to their edge labels.  
 ";
 
 %feature("docstring") stree::Node::child "
@@ -1659,12 +1658,185 @@ C++ includes: Oom.h
  Internalals\\. Use only if you know what you are doing! 
 */
 
-%feature("docstring") tom::Oom::setBack "
-``setBack() -> bool``  
+%feature("docstring") tom::Oom::reverse "
+``reverse(normalize=true) -> std::shared_ptr< Oom >``  
 
-Attempt to perform a state setback operation for at most ``maxSetback_`` time-
-steps. Note that calling this method repeatedly will attempt a setback for a
-shorter history each time. Return ``true`` if a setback could be performed.  
+Return the \"reverse\" of this ``Oom``.  
+";
+
+%feature("docstring") tom::Oom::log2_f "
+``log2_f(sequence, reset=true) -> double``  
+
+If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+Then return the log_2 of the prediction function for the given ``sequence``
+given the state ``wt()``, i.e., log_2 f( ``sequence`` | ``wt()`` ), and update
+the state.  
+
+To deal gracefully with observations that have a prediction value below
+``impossibilityThreshold()`` at some time step but occur nevertheless in the
+``sequence``, the prediction for this occurrence is treated as having a
+probability of ``impossibilityThreshold()``. Every time this happens, the
+counter ``nImpossible_`` is incremented. Note that this problem can be avoided
+by increasing ``minPrediction()`` above ``impossibilityThreshold()``.  
+";
+
+%feature("docstring") tom::Oom::averageOneStepPredictionError "
+``averageOneStepPredictionError(sequence, trueModel) -> double``  
+
+Return the average one-step squared prediction error computed along the given
+sample ``sequence`` according to a correct ``Oom`` ``trueModel``, after first
+performing a state ``reset()`` operation on both this ``Oom`` and the
+``trueModel``.  
+
+Their states are updated accordingly.  
+";
+
+%feature("docstring") tom::Oom::f "
+``f(z, reset=true) -> double``  
+``f(o, u, reset=true) -> double``  
+``f(sequence, reset=true) -> double``  
+``f(Y, X, reset=true) -> MatrixXd``  
+``f(Y, z, X, reset=true) -> MatrixXd``  
+``f(Y, o, u, X, reset=true) -> MatrixXd``  
+``f(Y, s, X, reset=true) -> MatrixXd``  
+
+Overloaded function
+-------------------
+* ``f(z, reset=true) -> double``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the value for the given output symbol ``z`` of the prediction
+    function for the state ``wt()``, i.e., the \"probability\" P( ``z`` |
+    ``wt()`` ), and update the state.  
+
+* ``f(o, u, reset=true) -> double``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the value for the given input-output pair (``u``,``o``) of the
+    prediction function for the state ``wt()``, i.e., the \"probability\" P(
+    ``o`` | ``u``, ``wt()`` ), and update the state. In the case of an output-
+    only ``Oom``, the input ``u`` is simply ignored.  
+
+* ``f(sequence, reset=true) -> double``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the value for the given ``sequence`` of the prediction function
+    for the state ``wt()``, i.e., the \"probability\" P( ``sequence`` | ``wt()``
+    ), and update the state.  
+
+* ``f(Y, X, reset=true) -> MatrixXd``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the matrix of prediction function values $[ f(x y) ]_{y \\in Y,
+    x \\in X}$ with rows indexed by the given set ``Y`` of characteristic
+    sequences and columns indexed by the given set ``X`` of indicative
+    sequences.  
+
+* ``f(Y, z, X, reset=true) -> MatrixXd``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the matrix of prediction function values $[ f(x z y) ]_{y \\in
+    Y, x \\in X}$ with rows indexed by the given set ``Y`` of characteristic
+    sequences and columns indexed by the given set ``X`` of indicative sequences
+    for a given output symbol ``z``.  
+
+* ``f(Y, o, u, X, reset=true) -> MatrixXd``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the matrix of prediction function values $[ f(x z y) ]_{y \\in
+    Y, x \\in X}$ with rows indexed by the given set ``Y`` of characteristic
+    sequences and columns indexed by the given set ``X`` of indicative sequences
+    for a given input-output symbol pair z = (``u``, ``o``). In the case of an
+    output-only ``Oom``, the input ``u`` is simply ignored.  
+
+* ``f(Y, s, X, reset=true) -> MatrixXd``  
+    
+    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+
+    Then return the matrix of prediction function values $[ f(x s y) ]_{y \\in
+    Y, x \\in X}$ with rows indexed by the given set ``Y`` of characteristic
+    sequences and columns indexed by the given set ``X`` of indicative sequences
+    for a given ``Sequence`` ``s``.  
+";
+
+%feature("docstring") tom::Oom::sig "
+``sig() -> const RowVectorXd &``  
+``sig(new_value)``  
+
+Overloaded function
+-------------------
+* ``sig() -> const RowVectorXd &``  
+    
+    Return the evaluation functional row vector $\\sigma$.  
+
+* ``sig(new_value)``  
+    
+    Set the evaluation functional vector $\\sigma$ to the given row vector
+    ``new_value``.  
+
+    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
+    parameters ``sig`` or ``tau(o,u)``.  
+";
+
+%feature("docstring") tom::Oom::maxSetback "
+``maxSetback() -> int``  
+``maxSetback(new_value)``  
+
+Overloaded function
+-------------------
+* ``maxSetback() -> int``  
+    
+    Return the maximum number of steps to \"replay\" during a ``setBack()``
+    operation.  
+
+* ``maxSetback(new_value)``  
+    
+    Set the maximum number of steps to \"replay\" during a ``setBack()``
+    operation to ``new_value``.  
+";
+
+%feature("docstring") tom::Oom::normalizePrediction "
+``normalizePrediction() -> double``  
+
+Attempt to fix the prediction vector of the next output symbol probabilities
+$P(\\cdot|u_t, \\omega_t)$ such that all probabilities are at least
+``minPrediction_`` and the probabilities sum to one. Return a measure of the
+required change to the prediction vector: 1.5 * nO() * squared norm of the
+difference.  
+";
+
+%feature("docstring") tom::Oom::update "
+``update(o, u=0)``  
+
+Update the ``Oom`` state according to the input-output pair (``u``,``o``),
+normalize, and in the case of an output-only ``Oom``, additionally call
+``condition()``.  
+
+That is, first set ``wt`` to ``tau(o,u)`` * ``wt()``, and then attempt to
+normalize to ``wt()`` / ( ``sig()`` * ``wt()`` ) if ``sig()`` * ``wt()`` is
+greater than the ``impossibilityThreshold()``, else perform ``setback()``
+operations.  
+";
+
+%feature("docstring") tom::Oom::repr "
+``repr() -> std::string``  
+
+return a representation to display in interactive python.  
+";
+
+%feature("docstring") tom::Oom::nInputSymbols "
+``nInputSymbols() -> int``  
+
+Return the size of the input alphabet.  
+
+Use ``setSize()`` to modify.  
 ";
 
 %feature("docstring") tom::Oom::minPrediction "
@@ -1687,6 +1859,137 @@ Overloaded function
 
     The ``prediction()`` is normalized at each time-step such that every output
     symbol has at least this probability.  
+";
+
+%feature("docstring") tom::Oom::wt "
+``wt() -> const VectorXd &``  
+``wt(new_value, history=Sequence())``  
+
+Overloaded function
+-------------------
+* ``wt() -> const VectorXd &``  
+    
+    Return the (normalized) current state vector $\\omega_t$.  
+
+* ``wt(new_value, history=Sequence())``  
+    
+    Set the current state to the (normalized) given vector ``new_value``, and
+    (optionally) specify a given input-output ``history`` (relevant for
+    stabilization).  
+
+    In the case of an output-only ``Oom`` this automatically calls
+    ``condition()``.  
+";
+
+%feature("docstring") tom::Oom::initialize "
+``initialize()``  
+
+Initialize the OOM. This assumes that all essential parameters (i.e.,
+``dimension``, ``nOutputSymbols``, ``nInputSymbols``, ``sig``, ``tau(o,u)`` and
+``w0``) have been set.  
+";
+
+%feature("docstring") tom::Oom::dimension "
+``dimension() -> int``  
+
+Return the model dimension.  
+";
+
+%feature("docstring") tom::Oom::cereal::access "
+``cereal::access() -> friend class``  
+";
+
+%feature("docstring") tom::Oom::w0 "
+``w0() -> const VectorXd &``  
+``w0(new_value)``  
+
+Overloaded function
+-------------------
+* ``w0() -> const VectorXd &``  
+    
+    Return the initial state vector $\\omega_0$.  
+
+* ``w0(new_value)``  
+    
+    Set the initial state vector $\\omega_0$ to the given vector ``new_value``
+    and perform a ``reset()``.  
+";
+
+%feature("docstring") tom::Oom::sample "
+``sample(length, randomSource=Random(), policy=Policy(), exponent=1) -> Sequence``  
+
+Sample, using the given ``randomSource``, a sequence of given ``length`` from
+the ``Oom``, in the case of inputs together with the given input ``policy`` (by
+default iud inputs), starting from the **current** state ``wt()``.  
+
+For each time-step an observation is sampled from the ``prediction()`` vector
+raised element-wise to the power ``exponent`` (default 1). Higher ``exponent``
+values add a bias towards the most likely sequences, while lower values bias
+towards uniformly distributed sequences.  
+";
+
+%feature("docstring") tom::Oom::setBack "
+``setBack() -> bool``  
+
+Attempt to perform a state setback operation for at most ``maxSetback_`` time-
+steps. Note that calling this method repeatedly will attempt a setback for a
+shorter history each time. Return ``true`` if a setback could be performed.  
+";
+
+%feature("docstring") tom::Oom::setSize "
+``setSize(dimension, nOutputSymbols, nInputSymbols=0)``  
+
+Set the internal structure for an OOM of the desired size without performing any
+initialization. Typically, the parameters ``sig``, ``tau(o,u)`` and ``w0`` will
+be assigned next, and then ``initialize()`` must be called.  
+
+Parameters
+----------
+* ``dimension`` :  
+    the dimension of the OOM  
+* ``nOutputSymbols`` :  
+    the size of the output alphabet  
+* ``nInputSymbols`` :  
+    the size of the input alphabet, or 0 (default) for an output-only ``Oom``  
+";
+
+%feature("docstring") tom::Oom::entropy "
+``entropy(sample_length, randomSource=Random(), policy=Policy()) -> double``  
+
+Return entropy of this ``Oom`` estimated on a sample sequence of the given
+``sample_length``.  
+";
+
+%feature("docstring") tom::Oom::transform "
+``transform(sig, w0=VectorXd::Zero(0))``  
+
+Transform this ``Oom`` to an equivalent ``Oom`` that has given ``sig`` and
+``w0`` as parameters for ``sig()`` and ``w0()``.  
+
+This will only yield an (equivalent) ``Oom`` if ``sig`` * ``w0`` = 1.  
+";
+
+%feature("docstring") tom::Oom::prediction "
+``prediction() -> const VectorXd &``  
+
+Return the current prediction vector of the next output symbol probabilities.  
+
+In the case of an input-output ``Oom`` these probabilities depend on the current
+input symbol u_t, so ``condition(u_t)`` *must* have been called first.  
+";
+
+%feature("docstring") tom::Oom::crossEntropyOfKOrderMarkovApproximation "
+``crossEntropyOfKOrderMarkovApproximation(k, sequence) -> double``  
+
+Return the cross-entropy of the best ``k``-order Markov model approximation
+estimated on the given sample ``sequence``.  
+";
+
+%feature("docstring") tom::Oom::isIO "
+``isIO() -> bool``  
+
+Return ``true`` if this is an input-output sequence, i.e., if the input alphabet
+size ``nInputSymbols()`` is non-zero.  
 ";
 
 %feature("docstring") tom::Oom::stabilization "
@@ -1734,257 +2037,23 @@ Parameters
     \"default\" to use the default stabilization settings.  
 ";
 
-%feature("docstring") tom::Oom::f "
-``f(z, reset=true) -> double``  
-``f(o, u, reset=true) -> double``  
-``f(sequence, reset=true) -> double``  
-``f(Y, X, reset=true) -> MatrixXd``  
-``f(Y, z, X, reset=true) -> MatrixXd``  
-``f(Y, o, u, X, reset=true) -> MatrixXd``  
-``f(Y, s, X, reset=true) -> MatrixXd``  
+%feature("docstring") tom::Oom::conjugate "
+``conjugate(rho, rhoInv)``  
 
-Overloaded function
--------------------
-* ``f(z, reset=true) -> double``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+Conjugate this ``Oom`` by the given matrices ``rho`` and ``rhoInv``.  
 
-    Then return the value for the given output symbol ``z`` of the prediction
-    function for the state ``wt()``, i.e., the \"probability\" P( ``z`` |
-    ``wt()`` ), and update the state.  
+That is, set:  
 
-* ``f(o, u, reset=true) -> double``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the value for the given input-output pair (``u``,``o``) of the
-    prediction function for the state ``wt()``, i.e., the \"probability\" P(
-    ``o`` | ``u``, ``wt()`` ), and update the state. In the case of an output-
-    only ``Oom``, the input ``u`` is simply ignored.  
-
-* ``f(sequence, reset=true) -> double``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the value for the given ``sequence`` of the prediction function
-    for the state ``wt()``, i.e., the \"probability\" P( ``sequence`` | ``wt()``
-    ), and update the state.  
-
-* ``f(Y, X, reset=true) -> MatrixXd``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the matrix of prediction function values :math:`[ f(x y) ]_{y
-    \\in Y, x \\in X}` with rows indexed by the given set ``Y`` of
-    characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences.  
-
-* ``f(Y, z, X, reset=true) -> MatrixXd``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the matrix of prediction function values :math:`[ f(x z y) ]_{y
-    \\in Y, x \\in X}` with rows indexed by the given set ``Y`` of
-    characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given output symbol ``z``.  
-
-* ``f(Y, o, u, X, reset=true) -> MatrixXd``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the matrix of prediction function values :math:`[ f(x z y) ]_{y
-    \\in Y, x \\in X}` with rows indexed by the given set ``Y`` of
-    characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given input-output symbol pair z = (``u``,
-    ``o``). In the case of an output-only ``Oom``, the input ``u`` is simply
-    ignored.  
-
-* ``f(Y, s, X, reset=true) -> MatrixXd``  
-    
-    If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
-
-    Then return the matrix of prediction function values :math:`[ f(x s y) ]_{y
-    \\in Y, x \\in X}` with rows indexed by the given set ``Y`` of
-    characteristic sequences and columns indexed by the given set ``X`` of
-    indicative sequences for a given ``Sequence`` ``s``.  
+*   ``w0()`` = ``rho`` * ``w0()``  
+*   ``tau(o,u)`` = ``rho`` * ``tau(o,u)`` * ``rhoInv``  
+*   ``sig()`` = ``sig()`` * ``rhoInv``.  
 ";
 
-%feature("docstring") tom::Oom::averageOneStepPredictionError "
-``averageOneStepPredictionError(sequence, trueModel) -> double``  
+%feature("docstring") tom::Oom::harvestStates "
+``harvestStates(sequence, reset=true) -> MatrixXf``  
 
-Return the average one-step squared prediction error computed along the given
-sample ``sequence`` according to a correct ``Oom`` ``trueModel``, after first
-performing a state ``reset()`` operation on both this ``Oom`` and the
-``trueModel``.  
-
-Their states are updated accordingly.  
-";
-
-%feature("docstring") tom::Oom::sig "
-``sig() -> const RowVectorXd &``  
-``sig(new_value)``  
-
-Overloaded function
--------------------
-* ``sig() -> const RowVectorXd &``  
-    
-    Return the evaluation functional row vector :math:`\\sigma`.  
-
-* ``sig(new_value)``  
-    
-    Set the evaluation functional vector :math:`\\sigma` to the given row vector
-    ``new_value``.  
-
-    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
-    parameters ``sig`` or ``tau(o,u)``.  
-";
-
-%feature("docstring") tom::Oom::nInputSymbols "
-``nInputSymbols() -> int``  
-
-Return the size of the input alphabet.  
-
-Use ``setSize()`` to modify.  
-";
-
-%feature("docstring") tom::Oom::tau "
-``tau(o, u=0) -> const MatrixXd &``  
-``tau(z) -> const MatrixXd &``  
-``tau(z, new_value)``  
-``tau(o, u, new_value)``  
-``tau(o, new_value)``  
-
-Overloaded function
--------------------
-* ``tau(o, u=0) -> const MatrixXd &``  
-    
-    Return the observable operator corresponding to observation ``o`` and input
-    ``u``.  
-
-    The parameter ``u`` defaults to 0 for the case of no inputs.  
-
-* ``tau(z) -> const MatrixXd &``  
-    
-    Return the observable operator corresponding to the symbol ``z`` given as a
-    ``Sequence`` of length one.  
-
-* ``tau(z, new_value)``  
-    
-    Set the observable operator corresponding to the symbol ``z`` given as a
-    ``Sequence`` of length one to the given matrix ``new_value``.  
-
-    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
-    parameters ``sig`` or ``tau(o,u)``.  
-
-* ``tau(o, u, new_value)``  
-    
-    Set the observable operator corresponding to observation ``o`` and input
-    ``u`` to the given matrix ``new_value``.  
-
-    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
-    parameters ``sig`` or ``tau(o,u)``.  
-
-* ``tau(o, new_value)``  
-    
-    Set the observable operator corresponding to the observation ``o`` to the
-    given matrix ``new_value``  
-";
-
-%feature("docstring") tom::Oom::repr "
-``repr() -> std::string``  
-
-return a representation to display in interactive python.  
-";
-
-%feature("docstring") tom::Oom::reset "
-``reset()``  
-
-Reset the ``Oom`` to its initial state and ``resetStabilizationStatistics()``.  
-";
-
-%feature("docstring") tom::Oom::w0 "
-``w0() -> const VectorXd &``  
-``w0(new_value)``  
-
-Overloaded function
--------------------
-* ``w0() -> const VectorXd &``  
-    
-    Return the initial state vector :math:`\\omega_0`.  
-
-* ``w0(new_value)``  
-    
-    Set the initial state vector :math:`\\omega_0` to the given vector
-    ``new_value`` and perform a ``reset()``.  
-";
-
-%feature("docstring") tom::Oom::entropy "
-``entropy(sample_length, randomSource=Random(), policy=Policy()) -> double``  
-
-Return entropy of this ``Oom`` estimated on a sample sequence of the given
-``sample_length``.  
-";
-
-%feature("docstring") tom::Oom::cereal::access "
-``cereal::access() -> friend class``  
-";
-
-%feature("docstring") tom::Oom::maxSetback "
-``maxSetback() -> int``  
-``maxSetback(new_value)``  
-
-Overloaded function
--------------------
-* ``maxSetback() -> int``  
-    
-    Return the maximum number of steps to \"replay\" during a ``setBack()``
-    operation.  
-
-* ``maxSetback(new_value)``  
-    
-    Set the maximum number of steps to \"replay\" during a ``setBack()``
-    operation to ``new_value``.  
-";
-
-%feature("docstring") tom::Oom::normalizationTolerance "
-``normalizationTolerance() -> double``  
-``normalizationTolerance(new_value)``  
-
-Overloaded function
--------------------
-* ``normalizationTolerance() -> double``  
-    
-    Return the maximum allowed tolerance between the unnormalized and normalized
-    prediction vector before invoking a ``setBack()``.  
-
-    The tolerance is computed as 1.5 * ``nOutputSymbols()`` * squared norm of
-    the difference. See also ``normalizePrediction()``.  
-
-* ``normalizationTolerance(new_value)``  
-    
-    Set the maximum allowed tolerance between the unnormalized and normalized
-    prediction vector before invoking a ``setBack()`` to the given
-    ``new_value``.  
-
-    The tolerance is computed as 1.5 * ``nOutputSymbols()`` * squared norm of
-    the difference. See also ``normalizePrediction()``.  
-";
-
-%feature("docstring") tom::Oom::setSize "
-``setSize(dimension, nOutputSymbols, nInputSymbols=0)``  
-
-Set the internal structure for an OOM of the desired size without performing any
-initialization. Typically, the parameters ``sig``, ``tau(o,u)`` and ``w0`` will
-be assigned next, and then ``initialize()`` must be called.  
-
-Parameters
-----------
-* ``dimension`` :  
-    the dimension of the OOM  
-* ``nOutputSymbols`` :  
-    the size of the output alphabet  
-* ``nInputSymbols`` :  
-    the size of the input alphabet, or 0 (default) for an output-only ``Oom``  
+Return the ``float`` matrix of the ``sequence.length()`` states (in its columns)
+occurring during the computation of ``f(sequence, reset)``.  
 ";
 
 %feature("docstring") tom::Oom::nOutputSymbols "
@@ -1995,80 +2064,17 @@ Return the size of the output alphabet.
 Use ``setSize()`` to modify  
 ";
 
-%feature("docstring") tom::Oom::normalizePrediction "
-``normalizePrediction() -> double``  
+%feature("docstring") tom::Oom::history "
+``history() -> Sequence``  
 
-Attempt to fix the prediction vector of the next output symbol probabilities
-:math:`P(\\cdot|u_t, \\omega_t)` such that all probabilities are at least
-``minPrediction_`` and the probabilities sum to one. Return a measure of the
-required change to the prediction vector: 1.5 * nO() * squared norm of the
-difference.  
+Return the most recent input-output history that is relevant for stabilization
+purposes.  
 ";
 
-%feature("docstring") tom::Oom::harvestStates "
-``harvestStates(sequence, reset=true) -> MatrixXf``  
+%feature("docstring") tom::Oom::reset "
+``reset()``  
 
-Return the ``float`` matrix of the ``sequence.length()`` states (in its columns)
-occurring during the computation of ``f(sequence, reset)``.  
-";
-
-%feature("docstring") tom::Oom::l2l "
-``l2l(sequence) -> double``  
-
-Return the log2-likelihood of the ``Oom`` for the given ``sequence``.  
-
-That is, return -``log2_f(sequence, true)`` / ``sequence.length()``.  
-";
-
-%feature("docstring") tom::Oom::crossEntropyOfKOrderMarkovApproximation "
-``crossEntropyOfKOrderMarkovApproximation(k, sequence) -> double``  
-
-Return the cross-entropy of the best ``k``-order Markov model approximation
-estimated on the given sample ``sequence``.  
-";
-
-%feature("docstring") tom::Oom::initialize "
-``initialize()``  
-
-Initialize the OOM. This assumes that all essential parameters (i.e.,
-``dimension``, ``nOutputSymbols``, ``nInputSymbols``, ``sig``, ``tau(o,u)`` and
-``w0``) have been set.  
-";
-
-%feature("docstring") tom::Oom::sample "
-``sample(length, randomSource=Random(), policy=Policy(), exponent=1) -> Sequence``  
-
-Sample, using the given ``randomSource``, a sequence of given ``length`` from
-the ``Oom``, in the case of inputs together with the given input ``policy`` (by
-default iud inputs), starting from the **current** state ``wt()``.  
-
-For each time-step an observation is sampled from the ``prediction()`` vector
-raised element-wise to the power ``exponent`` (default 1). Higher ``exponent``
-values add a bias towards the most likely sequences, while lower values bias
-towards uniformly distributed sequences.  
-";
-
-%feature("docstring") tom::Oom::reverse "
-``reverse(normalize=true) -> std::shared_ptr< Oom >``  
-
-Return the \"reverse\" of this ``Oom``.  
-";
-
-%feature("docstring") tom::Oom::stationaryState "
-``stationaryState(policy=Policy(), maxIterations=10000) -> Eigen::VectorXd``  
-
-Return the stationary state (in the case of an input-output ``Oom`` according to
-the given ``policy``), computed by the power method with at most
-``maxIterations`` number of iterations.  
-";
-
-%feature("docstring") tom::Oom::transform "
-``transform(sig, w0=VectorXd::Zero(0))``  
-
-Transform this ``Oom`` to an equivalent ``Oom`` that has given ``sig`` and
-``w0`` as parameters for ``sig()`` and ``w0()``.  
-
-This will only yield an (equivalent) ``Oom`` if ``sig`` * ``w0`` = 1.  
+Reset the ``Oom`` to its initial state and ``resetStabilizationStatistics()``.  
 ";
 
 %feature("docstring") tom::Oom::Oom "
@@ -2124,30 +2130,32 @@ Overloaded function
     Construct an ``Oom`` equivalent to the ``Hmm`` given by ``hmm``.  
 ";
 
-%feature("docstring") tom::Oom::prediction "
-``prediction() -> const VectorXd &``  
+%feature("docstring") tom::Oom::stationaryState "
+``stationaryState(policy=Policy(), maxIterations=10000) -> Eigen::VectorXd``  
 
-Return the current prediction vector of the next output symbol probabilities.  
-
-In the case of an input-output ``Oom`` these probabilities depend on the current
-input symbol u_t, so ``condition(u_t)`` *must* have been called first.  
+Return the stationary state (in the case of an input-output ``Oom`` according to
+the given ``policy``), computed by the power method with at most
+``maxIterations`` number of iterations.  
 ";
 
-%feature("docstring") tom::Oom::log2_f "
-``log2_f(sequence, reset=true) -> double``  
+%feature("docstring") tom::Oom::condition "
+``condition(u=0)``  
 
-If ``reset`` is ``true`` (default), perform a state ``reset()`` first.  
+Compute and normalize the prediction vector of the next output symbol
+probabilities according to the current state ``wt()`` and input ``u``, i.e.,
+compute P( · | ``u``, ``wt()`` ).  
 
-Then return the log_2 of the prediction function for the given ``sequence``
-given the state ``wt()``, i.e., log_2 f( ``sequence`` | ``wt()`` ), and update
-the state.  
+Note that this function calls ``setback()`` if the ``normalizationTolerance()``
+is exceeded. Therefore, calling e.g., ``condition(0)`` after ``condition(1)``
+may not give the same result as calling just ``condition(0)``.  
+";
 
-To deal gracefully with observations that have a prediction value below
-``impossibilityThreshold()`` at some time step but occur nevertheless in the
-``sequence``, the prediction for this occurrence is treated as having a
-probability of ``impossibilityThreshold()``. Every time this happens, the
-counter ``nImpossible_`` is incremented. Note that this problem can be avoided
-by increasing ``minPrediction()`` above ``impossibilityThreshold()``.  
+%feature("docstring") tom::Oom::l2l "
+``l2l(sequence) -> double``  
+
+Return the log2-likelihood of the ``Oom`` for the given ``sequence``.  
+
+That is, return -``log2_f(sequence, true)`` / ``sequence.length()``.  
 ";
 
 %feature("docstring") tom::Oom::impossibilityThreshold "
@@ -2176,81 +2184,71 @@ Overloaded function
     ``wt()`` can no longer be normalized.  
 ";
 
-%feature("docstring") tom::Oom::isIO "
-``isIO() -> bool``  
-
-Return ``true`` if this is an input-output sequence, i.e., if the input alphabet
-size ``nInputSymbols()`` is non-zero.  
-";
-
-%feature("docstring") tom::Oom::update "
-``update(o, u=0)``  
-
-Update the ``Oom`` state according to the input-output pair (``u``,``o``),
-normalize, and in the case of an output-only ``Oom``, additionally call
-``condition()``.  
-
-That is, first set ``wt`` to ``tau(o,u)`` * ``wt()``, and then attempt to
-normalize to ``wt()`` / ( ``sig()`` * ``wt()`` ) if ``sig()`` * ``wt()`` is
-greater than the ``impossibilityThreshold()``, else perform ``setback()``
-operations.  
-";
-
-%feature("docstring") tom::Oom::wt "
-``wt() -> const VectorXd &``  
-``wt(new_value, history=Sequence())``  
+%feature("docstring") tom::Oom::normalizationTolerance "
+``normalizationTolerance() -> double``  
+``normalizationTolerance(new_value)``  
 
 Overloaded function
 -------------------
-* ``wt() -> const VectorXd &``  
+* ``normalizationTolerance() -> double``  
     
-    Return the (normalized) current state vector :math:`\\omega_t`.  
+    Return the maximum allowed tolerance between the unnormalized and normalized
+    prediction vector before invoking a ``setBack()``.  
 
-* ``wt(new_value, history=Sequence())``  
+    The tolerance is computed as 1.5 * ``nOutputSymbols()`` * squared norm of
+    the difference. See also ``normalizePrediction()``.  
+
+* ``normalizationTolerance(new_value)``  
     
-    Set the current state to the (normalized) given vector ``new_value``, and
-    (optionally) specify a given input-output ``history`` (relevant for
-    stabilization).  
+    Set the maximum allowed tolerance between the unnormalized and normalized
+    prediction vector before invoking a ``setBack()`` to the given
+    ``new_value``.  
 
-    In the case of an output-only ``Oom`` this automatically calls
-    ``condition()``.  
+    The tolerance is computed as 1.5 * ``nOutputSymbols()`` * squared norm of
+    the difference. See also ``normalizePrediction()``.  
 ";
 
-%feature("docstring") tom::Oom::conjugate "
-``conjugate(rho, rhoInv)``  
+%feature("docstring") tom::Oom::tau "
+``tau(o, u=0) -> const MatrixXd &``  
+``tau(z) -> const MatrixXd &``  
+``tau(z, new_value)``  
+``tau(o, u, new_value)``  
+``tau(o, new_value)``  
 
-Conjugate this ``Oom`` by the given matrices ``rho`` and ``rhoInv``.  
+Overloaded function
+-------------------
+* ``tau(o, u=0) -> const MatrixXd &``  
+    
+    Return the observable operator corresponding to observation ``o`` and input
+    ``u``.  
 
-That is, set:  
+    The parameter ``u`` defaults to 0 for the case of no inputs.  
 
-*   ``w0()`` = ``rho`` * ``w0()``  
-*   ``tau(o,u)`` = ``rho`` * ``tau(o,u)`` * ``rhoInv``  
-*   ``sig()`` = ``sig()`` * ``rhoInv``.  
-";
+* ``tau(z) -> const MatrixXd &``  
+    
+    Return the observable operator corresponding to the symbol ``z`` given as a
+    ``Sequence`` of length one.  
 
-%feature("docstring") tom::Oom::history "
-``history() -> Sequence``  
+* ``tau(z, new_value)``  
+    
+    Set the observable operator corresponding to the symbol ``z`` given as a
+    ``Sequence`` of length one to the given matrix ``new_value``.  
 
-Return the most recent input-output history that is relevant for stabilization
-purposes.  
-";
+    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
+    parameters ``sig`` or ``tau(o,u)``.  
 
-%feature("docstring") tom::Oom::condition "
-``condition(u=0)``  
+* ``tau(o, u, new_value)``  
+    
+    Set the observable operator corresponding to observation ``o`` and input
+    ``u`` to the given matrix ``new_value``.  
 
-Compute and normalize the prediction vector of the next output symbol
-probabilities according to the current state ``wt()`` and input ``u``, i.e.,
-compute P( · | ``u``, ``wt()`` ).  
+    Note that you *must* call ``initialize()`` after re-setting the ``Oom``
+    parameters ``sig`` or ``tau(o,u)``.  
 
-Note that this function calls ``setback()`` if the ``normalizationTolerance()``
-is exceeded. Therefore, calling e.g., ``condition(0)`` after ``condition(1)``
-may not give the same result as calling just ``condition(0)``.  
-";
-
-%feature("docstring") tom::Oom::dimension "
-``dimension() -> int``  
-
-Return the model dimension.  
+* ``tau(o, new_value)``  
+    
+    Set the observable operator corresponding to the observation ``o`` to the
+    given matrix ``new_value``  
 ";
 
 // File: classstree_1_1_path_node.xml
@@ -2302,58 +2300,6 @@ C++ includes: STreeNode.h
 Return ``true`` if this is the root node.  
 ";
 
-%feature("docstring") stree::PathNode::set "
-``set(pathNode)``  
-``set(node)``  
-
-Overloaded function
--------------------
-* ``set(pathNode)``  
-    
-    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
-    same suffix tree.  
-
-* ``set(node)``  
-    
-    Set this ``Node`` to the given ``node``, which must belong to the same
-    suffix tree.  
-
-    This is a faster version of ``(*this) = node)``.  
-";
-
-%feature("docstring") stree::PathNode::setValid "
-``setValid(valid=true)``  
-
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
-";
-
-%feature("docstring") stree::PathNode::sibling "
-``sibling() -> Node``  
-
-Return the next sibling of this node.  
-
-If no such node exists, a ``Node`` marked as invalid is returned. Note that the
-siblings are ordered lexicographically according to their edge labels.  
-";
-
-%feature("docstring") stree::PathNode::toSibling "
-``toSibling()``  
-
-Set this node to its next sibling if a next sibling exists, otherwise mark this
-node as invalid.  
-
-Note that the siblings are ordered lexicographically according to their edge
-labels.  
-";
-
-%feature("docstring") stree::PathNode::dataStr "
-``dataStr(width=5) -> std::string``  
-
-Return a string representation of the data of this node.  
-
-This is useful for debugging or understanding the suffix tree structure.  
-";
-
 %feature("docstring") stree::PathNode::isSuffix "
 ``isSuffix() -> bool``  
 
@@ -2363,10 +2309,12 @@ underlying sequence.
 Note that this does not imply that this is a leaf.  
 ";
 
-%feature("docstring") stree::PathNode::nidxStr "
-``nidxStr(width=3) -> std::string``  
+%feature("docstring") stree::PathNode::dataStr "
+``dataStr(width=5) -> std::string``  
 
-Return a string representation of the underlying ``nidx_t``.  
+Return a string representation of the data of this node.  
+
+This is useful for debugging or understanding the suffix tree structure.  
 ";
 
 %feature("docstring") stree::PathNode::PathNode "
@@ -2387,91 +2335,10 @@ Overloaded function
     Construct a ``PathNode`` corresponding to the given ``node``.  
 ";
 
-%feature("docstring") stree::PathNode::child "
-``child() -> Node``  
-``child(symbol) -> Node``  
+%feature("docstring") stree::PathNode::nidxStr "
+``nidxStr(width=3) -> std::string``  
 
-Overloaded function
--------------------
-* ``child() -> Node``  
-    
-    Return the first child node of this node.  
-
-    If no such node exists, a ``Node`` marked as invalid is returned. Note that
-    the children are ordered lexicographically according to their edge labels.  
-
-* ``child(symbol) -> Node``  
-    
-    Return the child node along the edge leading away whose label begins with
-    the given ``symbol``.  
-
-    If no such node exists, a ``Node`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::PathNode::suffix "
-``suffix() -> Node``  
-
-Return the node corresponding to the first suffix of the represented sequence.  
-
-This follows the \"suffix link\" of the suffix tree. If no such node exists, a
-``Node`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::PathNode::headIndex "
-``headIndex() -> nidx_t``  
-
-Return the \"headindex\" of this node, which is an index in the sequence
-represented by the suffix tree where the (sub-)sequence represented by this node
-occurs.  
-
-I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
-depth())``, where ``seq`` is the sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::PathNode::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::PathNode::setRoot "
-``setRoot()``  
-
-Reset this ``PathNode`` to the root of the suffix tree.  
-";
-
-%feature("docstring") stree::PathNode::toSuffix "
-``toSuffix()``  
-
-Set this to the ``PathNode`` corresponding to the first suffix of the
-represented sequence.  
-
-If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
-instead. This uses the \"suffix link\" of the suffix tree, but needs to
-recompute the path.  
-";
-
-%feature("docstring") stree::PathNode::label "
-``label() -> Sequence``  
-
-Return the edge label for the edge leading to the current node.  
-
-If no edge exists, this will be an empty ``Sequence``.  
-";
-
-%feature("docstring") stree::PathNode::repr "
-``repr() -> std::string``  
-
-Return a string representation to display in python.  
-";
-
-%feature("docstring") stree::PathNode::count "
-``count() -> nidx_t``  
-
-Return the number of occurrences of the sequence represented by this node in the
-sequence represented by the suffix tree.  
-
-For an invalid node, zero is returned.  
+Return a string representation of the underlying ``nidx_t``.  
 ";
 
 %feature("docstring") stree::PathNode::sequence "
@@ -2483,45 +2350,17 @@ Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
 sequence represented by the suffix tree.  
 ";
 
-%feature("docstring") stree::PathNode::parent "
-``parent() -> Node``  
-
-Return the parent ``Node``.  
-
-If none exists, return a ``Node`` marked as invalid.  
-";
-
-%feature("docstring") stree::PathNode::isLeaf "
-``isLeaf() -> bool``  
-
-Return ``true`` if this is a leaf node.  
-";
-
-%feature("docstring") stree::PathNode::isInternal "
-``isInternal() -> bool``  
-
-Return ``true`` if this is an internal node.  
-";
-
-%feature("docstring") stree::PathNode::isValid "
-``isValid() -> bool``  
-
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::PathNode::index "
-``index() -> nidx_t``  
-
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
-";
-
 %feature("docstring") stree::PathNode::depth "
 ``depth() -> nidx_t``  
 
 Return the \"depth\" of the node in the suffix tree, which is the size of the
 represented (sub-)sequence.  
+";
+
+%feature("docstring") stree::PathNode::setValid "
+``setValid(valid=true)``  
+
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
 ";
 
 %feature("docstring") stree::PathNode::toChild "
@@ -2546,6 +2385,128 @@ Overloaded function
     If no such node exists, mark this ``PathNode`` as invalid instead.  
 ";
 
+%feature("docstring") stree::PathNode::setRoot "
+``setRoot()``  
+
+Reset this ``PathNode`` to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::PathNode::isInternal "
+``isInternal() -> bool``  
+
+Return ``true`` if this is an internal node.  
+";
+
+%feature("docstring") stree::PathNode::isValid "
+``isValid() -> bool``  
+
+Return ``true`` if valid, otherwise return ``false``.  
+";
+
+%feature("docstring") stree::PathNode::nidx "
+``nidx() -> nidx_t``  
+
+Return the ``nidx_t`` corresponding to this ``Node``.  
+";
+
+%feature("docstring") stree::PathNode::repr "
+``repr() -> std::string``  
+
+Return a string representation to display in python.  
+";
+
+%feature("docstring") stree::PathNode::parent "
+``parent() -> Node``  
+
+Return the parent ``Node``.  
+
+If none exists, return a ``Node`` marked as invalid.  
+";
+
+%feature("docstring") stree::PathNode::toSibling "
+``toSibling()``  
+
+Set this node to its next sibling if a next sibling exists, otherwise mark this
+node as invalid.  
+
+Note that the siblings are ordered lexicographically according to their edge
+labels.  
+";
+
+%feature("docstring") stree::PathNode::toSuffix "
+``toSuffix()``  
+
+Set this to the ``PathNode`` corresponding to the first suffix of the
+represented sequence.  
+
+If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
+instead. This uses the \"suffix link\" of the suffix tree, but needs to
+recompute the path.  
+";
+
+%feature("docstring") stree::PathNode::isLeaf "
+``isLeaf() -> bool``  
+
+Return ``true`` if this is a leaf node.  
+";
+
+%feature("docstring") stree::PathNode::suffix "
+``suffix() -> Node``  
+
+Return the node corresponding to the first suffix of the represented sequence.  
+
+This follows the \"suffix link\" of the suffix tree. If no such node exists, a
+``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::PathNode::child "
+``child() -> Node``  
+``child(symbol) -> Node``  
+
+Overloaded function
+-------------------
+* ``child() -> Node``  
+    
+    Return the first child node of this node.  
+
+    If no such node exists, a ``Node`` marked as invalid is returned. Note that
+    the children are ordered lexicographically according to their edge labels.  
+
+* ``child(symbol) -> Node``  
+    
+    Return the child node along the edge leading away whose label begins with
+    the given ``symbol``.  
+
+    If no such node exists, a ``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::PathNode::set "
+``set(pathNode)``  
+``set(node)``  
+
+Overloaded function
+-------------------
+* ``set(pathNode)``  
+    
+    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
+    same suffix tree.  
+
+* ``set(node)``  
+    
+    Set this ``Node`` to the given ``node``, which must belong to the same
+    suffix tree.  
+
+    This is a faster version of ``(*this) = node)``.  
+";
+
+%feature("docstring") stree::PathNode::index "
+``index() -> nidx_t``  
+
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
+";
+
 %feature("docstring") stree::PathNode::toParent "
 ``toParent()``  
 
@@ -2553,6 +2514,43 @@ Set this ``PathNode`` to the path to the parent of the current node, if such
 exists.  
 
 Otherwise, just mark this ``PathNode`` as invalid.  
+";
+
+%feature("docstring") stree::PathNode::label "
+``label() -> Sequence``  
+
+Return the edge label for the edge leading to the current node.  
+
+If no edge exists, this will be an empty ``Sequence``.  
+";
+
+%feature("docstring") stree::PathNode::count "
+``count() -> nidx_t``  
+
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
+
+For an invalid node, zero is returned.  
+";
+
+%feature("docstring") stree::PathNode::sibling "
+``sibling() -> Node``  
+
+Return the next sibling of this node.  
+
+If no such node exists, a ``Node`` marked as invalid is returned. Note that the
+siblings are ordered lexicographically according to their edge labels.  
+";
+
+%feature("docstring") stree::PathNode::headIndex "
+``headIndex() -> nidx_t``  
+
+Return the \"headindex\" of this node, which is an index in the sequence
+represented by the suffix tree where the (sub-)sequence represented by this node
+occurs.  
+
+I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
+depth())``, where ``seq`` is the sequence represented by the suffix tree.  
 ";
 
 // File: classtom_1_1_policy_1_1_plane.xml
@@ -2576,20 +2574,20 @@ Attributes
 C++ includes: Policy.h
 ";
 
-%feature("docstring") tom::Policy::p "
-``p(w) -> Eigen::VectorXd``  
-";
-
-%feature("docstring") tom::Policy::cereal::access "
-``cereal::access() -> friend class``  
+%feature("docstring") tom::Policy::addPlane "
+``addPlane(u, indices, vals)``  
 ";
 
 %feature("docstring") tom::Policy::Policy "
 ``Policy(nU=0, exploration=1)``  
 ";
 
-%feature("docstring") tom::Policy::addPlane "
-``addPlane(u, indices, vals)``  
+%feature("docstring") tom::Policy::p "
+``p(w) -> Eigen::VectorXd``  
+";
+
+%feature("docstring") tom::Policy::cereal::access "
+``cereal::access() -> friend class``  
 ";
 
 %feature("docstring") tom::Policy::u "
@@ -2628,18 +2626,20 @@ Attributes
 C++ includes: STreeCore.h
 ";
 
-%feature("docstring") stree::internal::Pos::canonize "
-``canonize(stree)``  
-";
-
-%feature("docstring") stree::internal::Pos::followSuffixLink "
-``followSuffixLink(stree)``  
-";
-
 %feature("docstring") stree::internal::Pos::isExplicit "
 ``isExplicit() -> bool``  
 
 Return ``true`` if the ``Pos`` corresponds to an explicit node.  
+";
+
+%feature("docstring") stree::internal::Pos::canonize "
+``canonize(stree)``  
+";
+
+%feature("docstring") stree::internal::Pos::Pos "
+``Pos()``  
+
+Create a ``Pos`` corresponding to the root of the suffix tree.  
 ";
 
 %feature("docstring") stree::internal::Pos::preCanonize "
@@ -2656,10 +2656,8 @@ Return true if this is successful, i.e., if ``seq`` + ``chr`` is also a
 substring of the represented ``sequence``.  
 ";
 
-%feature("docstring") stree::internal::Pos::Pos "
-``Pos()``  
-
-Create a ``Pos`` corresponding to the root of the suffix tree.  
+%feature("docstring") stree::internal::Pos::followSuffixLink "
+``followSuffixLink(stree)``  
 ";
 
 // File: classstree_1_1_position.xml
@@ -2703,13 +2701,32 @@ Constructors
 C++ includes: STreeNode.h
 ";
 
-%feature("docstring") stree::Position::isSuffix "
-``isSuffix() -> bool``  
+%feature("docstring") stree::Position::isRoot "
+``isRoot() -> bool``  
 
-Return ``true`` if the represented subsequence is a suffix of the underlying
-sequence.  
+Return ``true`` if this is the root node.  
+";
 
-Note that this does not imply that this is a leaf.  
+%feature("docstring") stree::Position::depth "
+``depth() -> nidx_t``  
+
+Return the \"depth\" of this position, which is the size of the represented
+(sub-)sequence.  
+";
+
+%feature("docstring") stree::Position::repr "
+``repr() -> std::string``  
+
+Return a string representation to display in python.  
+";
+
+%feature("docstring") stree::Position::count "
+``count() -> nidx_t``  
+
+Return the number of occurrences of the sequence represented by this
+``Position`` in the sequence represented by the suffix tree.  
+
+For an invalid ``Position``, zero is returned.  
 ";
 
 %feature("docstring") stree::Position::sibling "
@@ -2723,52 +2740,20 @@ If no sibling exists, a ``Position`` marked as invalid is returned. Note that
 the siblings are ordered lexicographically according to their edge symbols.  
 ";
 
-%feature("docstring") stree::Position::repr "
-``repr() -> std::string``  
+%feature("docstring") stree::Position::label "
+``label() -> Sequence``  
 
-Return a string representation to display in python.  
+Return the sub-sequence of the edge label up to this position.  
+
+For an explicit position this is just the edge label (see ``edge.label()``).  
 ";
 
-%feature("docstring") stree::Position::suffix "
-``suffix() -> Position``  
+%feature("docstring") stree::Position::toExplicit "
+``toExplicit()``  
 
-Return the ``Position`` corresponding to the first suffix of the represented
-sequence.  
-
-This uses the \"suffix link\" of the suffix tree. If no suffix exists (i.e.,
-this is the root), a ``Position`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::Position::child "
-``child() -> Position``  
-
-Return the first child ``Position`` in the suffix tree structure viewed as a
-*suffix trie*, i.e., where all positions are seen as nodes and all edges have
-length one.  
-
-If no child exists, a ``Position`` marked as invalid is returned. Note that the
-children are ordered lexicographically according to their edge symbols.  
-";
-
-%feature("docstring") stree::Position::set "
-``set(position)``  
-
-Set this ``Position`` to the given ``position``, which must belong to the same
-suffix tree.  
-
-This is a faster version of ``(*this) = position)``.  
-";
-
-%feature("docstring") stree::Position::isInternal "
-``isInternal() -> bool``  
-
-Return ``true`` if this is an internal node or an implicit position.  
-";
-
-%feature("docstring") stree::Position::isLeaf "
-``isLeaf() -> bool``  
-
-Return ``true`` if this is a leaf node.  
+If this ``Position`` is not explicit, i.e., it lies on an edge of the suffix
+tree structure, then set this ``Position`` to the deeper node end-point of that
+edge, making this position explicit.  
 ";
 
 %feature("docstring") stree::Position::edge "
@@ -2780,12 +2765,81 @@ If this ``Position`` is explicit, then the ``EdgeNode`` will be the node (with
 edge leading to it) of the position.  
 ";
 
-%feature("docstring") stree::Position::label "
-``label() -> Sequence``  
+%feature("docstring") stree::Position::toSequence "
+``toSequence(sequence)``  
 
-Return the sub-sequence of the edge label up to this position.  
+Update this ``Position`` such that it represents a subsequence extended by the
+given ``sequence``.  
 
-For an explicit position this is just the edge label (see ``edge.label()``).  
+If no such position exists, this ``Position`` is updated symbol-wise according
+to the given ``sequence`` as far as possible and then marked as invalid. For an
+invalid ``Position`` this function has no effect.  
+";
+
+%feature("docstring") stree::Position::sequence "
+``sequence() -> Sequence``  
+
+Return the (sub-)sequence represented by this ``Position``.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
+sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::Position::toChild "
+``toChild()``  
+
+Set this ``Position`` to its first child position in the suffix tree structure
+viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all
+edges have length one.  
+
+If no child exists, mark this ``Position`` as invalid instead. Note that the
+children are ordered lexicographically according to their edge symbols.  
+";
+
+%feature("docstring") stree::Position::isLeaf "
+``isLeaf() -> bool``  
+
+Return ``true`` if this is a leaf node.  
+";
+
+%feature("docstring") stree::Position::isValid "
+``isValid() -> bool``  
+
+Return ``true`` if valid, otherwise return ``false``.  
+";
+
+%feature("docstring") stree::Position::isInternal "
+``isInternal() -> bool``  
+
+Return ``true`` if this is an internal node or an implicit position.  
+";
+
+%feature("docstring") stree::Position::isExplicit "
+``isExplicit() -> bool``  
+
+Return ``true`` if this is a node (internal or leaf).  
+
+Otherwise, this ``Position`` is \"implicit\", i.e., it lies on some edge.  
+";
+
+%feature("docstring") stree::Position::isSuffix "
+``isSuffix() -> bool``  
+
+Return ``true`` if the represented subsequence is a suffix of the underlying
+sequence.  
+
+Note that this does not imply that this is a leaf.  
+";
+
+%feature("docstring") stree::Position::toSibling "
+``toSibling()``  
+
+Set this ``Position`` to its next sibling position in the suffix tree structure
+viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all
+edges have length one.  
+
+If no sibling exists, mark this ``Position`` as invalid instead. Note that the
+siblings are ordered lexicographically according to their edge symbols.  
 ";
 
 %feature("docstring") stree::Position::toSuffix "
@@ -2796,6 +2850,16 @@ represented sequence.
 
 If no suffix exists (i.e., this is the root) mark this ``Position`` as invalid
 instead. This uses the \"suffix link\" of the suffix tree.  
+";
+
+%feature("docstring") stree::Position::toSymbol "
+``toSymbol(symbol)``  
+
+Update this ``Position`` such that it represents a subsequence extended by the
+given ``symbol``.  
+
+If no such position exists, this ``Position`` is unchanged but marked as
+invalid. For an invalid ``Position`` this function has no effect.  
 ";
 
 %feature("docstring") stree::Position::headIndex "
@@ -2810,21 +2874,40 @@ I.e., the (sub-)sequence represented by this position is
 by the suffix tree.  
 ";
 
-%feature("docstring") stree::Position::toChild "
-``toChild()``  
+%feature("docstring") stree::Position::toDepth "
+``toDepth(depth)``  
+";
 
-Set this ``Position`` to its first child position in the suffix tree structure
-viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all
-edges have length one.  
+%feature("docstring") stree::Position::child "
+``child() -> Position``  
 
-If no child exists, mark this ``Position`` as invalid instead. Note that the
+Return the first child ``Position`` in the suffix tree structure viewed as a
+*suffix trie*, i.e., where all positions are seen as nodes and all edges have
+length one.  
+
+If no child exists, a ``Position`` marked as invalid is returned. Note that the
 children are ordered lexicographically according to their edge symbols.  
 ";
 
-%feature("docstring") stree::Position::isValid "
-``isValid() -> bool``  
+%feature("docstring") stree::Position::setValid "
+``setValid(valid=true)``  
 
-Return ``true`` if valid, otherwise return ``false``.  
+Mark this ``Position`` as ``valid`` (default: ``true``).  
+";
+
+%feature("docstring") stree::Position::set "
+``set(position)``  
+
+Set this ``Position`` to the given ``position``, which must belong to the same
+suffix tree.  
+
+This is a faster version of ``(*this) = position)``.  
+";
+
+%feature("docstring") stree::Position::setRoot "
+``setRoot()``  
+
+Reset this ``Position`` to the root of the suffix tree.  
 ";
 
 %feature("docstring") stree::Position::Position "
@@ -2847,99 +2930,14 @@ Overloaded function
     Construct a ``Position`` from the given ``node`` of type ``EdgeNode``.  
 ";
 
-%feature("docstring") stree::Position::setValid "
-``setValid(valid=true)``  
+%feature("docstring") stree::Position::suffix "
+``suffix() -> Position``  
 
-Mark this ``Position`` as ``valid`` (default: ``true``).  
-";
+Return the ``Position`` corresponding to the first suffix of the represented
+sequence.  
 
-%feature("docstring") stree::Position::isExplicit "
-``isExplicit() -> bool``  
-
-Return ``true`` if this is a node (internal or leaf).  
-
-Otherwise, this ``Position`` is \"implicit\", i.e., it lies on some edge.  
-";
-
-%feature("docstring") stree::Position::toSymbol "
-``toSymbol(symbol)``  
-
-Update this ``Position`` such that it represents a subsequence extended by the
-given ``symbol``.  
-
-If no such position exists, this ``Position`` is unchanged but marked as
-invalid. For an invalid ``Position`` this function has no effect.  
-";
-
-%feature("docstring") stree::Position::toSibling "
-``toSibling()``  
-
-Set this ``Position`` to its next sibling position in the suffix tree structure
-viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all
-edges have length one.  
-
-If no sibling exists, mark this ``Position`` as invalid instead. Note that the
-siblings are ordered lexicographically according to their edge symbols.  
-";
-
-%feature("docstring") stree::Position::toSequence "
-``toSequence(sequence)``  
-
-Update this ``Position`` such that it represents a subsequence extended by the
-given ``sequence``.  
-
-If no such position exists, this ``Position`` is updated symbol-wise according
-to the given ``sequence`` as far as possible and then marked as invalid. For an
-invalid ``Position`` this function has no effect.  
-";
-
-%feature("docstring") stree::Position::setRoot "
-``setRoot()``  
-
-Reset this ``Position`` to the root of the suffix tree.  
-";
-
-%feature("docstring") stree::Position::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::Position::depth "
-``depth() -> nidx_t``  
-
-Return the \"depth\" of this position, which is the size of the represented
-(sub-)sequence.  
-";
-
-%feature("docstring") stree::Position::sequence "
-``sequence() -> Sequence``  
-
-Return the (sub-)sequence represented by this ``Position``.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::Position::toDepth "
-``toDepth(depth)``  
-";
-
-%feature("docstring") stree::Position::toExplicit "
-``toExplicit()``  
-
-If this ``Position`` is not explicit, i.e., it lies on an edge of the suffix
-tree structure, then set this ``Position`` to the deeper node end-point of that
-edge, making this position explicit.  
-";
-
-%feature("docstring") stree::Position::count "
-``count() -> nidx_t``  
-
-Return the number of occurrences of the sequence represented by this
-``Position`` in the sequence represented by the suffix tree.  
-
-For an invalid ``Position``, zero is returned.  
+This uses the \"suffix link\" of the suffix tree. If no suffix exists (i.e.,
+this is the root), a ``Position`` marked as invalid is returned.  
 ";
 
 // File: classstree_1_1_position_relevance.xml
@@ -2993,58 +2991,27 @@ Constructors
 C++ includes: STreeIterators.h
 ";
 
-%feature("docstring") stree::PostfixIterator::isInternal "
-``isInternal() -> bool``  
+%feature("docstring") stree::PostfixIterator::isLeaf "
+``isLeaf() -> bool``  
 
-Return ``true`` if this is an internal node.  
+Return ``true`` if this is a leaf node.  
 ";
 
-%feature("docstring") stree::PostfixIterator::setRoot "
-``setRoot()``  
+%feature("docstring") stree::PostfixIterator::count "
+``count() -> nidx_t``  
 
-Reset this ``PathNode`` to the root of the suffix tree.  
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
+
+For an invalid node, zero is returned.  
 ";
 
-%feature("docstring") stree::PostfixIterator::label "
-``label() -> Sequence``  
+%feature("docstring") stree::PostfixIterator::parent "
+``parent() -> Node``  
 
-Return the edge label for the edge leading to the current node.  
+Return the parent ``Node``.  
 
-If no edge exists, this will be an empty ``Sequence``.  
-";
-
-%feature("docstring") stree::PostfixIterator::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::PostfixIterator::suffix "
-``suffix() -> Node``  
-
-Return the node corresponding to the first suffix of the represented sequence.  
-
-This follows the \"suffix link\" of the suffix tree. If no such node exists, a
-``Node`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::PostfixIterator::headIndex "
-``headIndex() -> nidx_t``  
-
-Return the \"headindex\" of this node, which is an index in the sequence
-represented by the suffix tree where the (sub-)sequence represented by this node
-occurs.  
-
-I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
-depth())``, where ``seq`` is the sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::PostfixIterator::dataStr "
-``dataStr(width=5) -> std::string``  
-
-Return a string representation of the data of this node.  
-
-This is useful for debugging or understanding the suffix tree structure.  
+If none exists, return a ``Node`` marked as invalid.  
 ";
 
 %feature("docstring") stree::PostfixIterator::isSuffix "
@@ -3054,6 +3021,63 @@ Return ``true`` if the subsequence represented by this node is a suffix of the
 underlying sequence.  
 
 Note that this does not imply that this is a leaf.  
+";
+
+%feature("docstring") stree::PostfixIterator::toSuffix "
+``toSuffix()``  
+
+Set this to the ``PathNode`` corresponding to the first suffix of the
+represented sequence.  
+
+If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
+instead. This uses the \"suffix link\" of the suffix tree, but needs to
+recompute the path.  
+";
+
+%feature("docstring") stree::PostfixIterator::setValid "
+``setValid(valid=true)``  
+
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+";
+
+%feature("docstring") stree::PostfixIterator::set "
+``set(pathNode)``  
+``set(node)``  
+
+Overloaded function
+-------------------
+* ``set(pathNode)``  
+    
+    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
+    same suffix tree.  
+
+* ``set(node)``  
+    
+    Set this ``Node`` to the given ``node``, which must belong to the same
+    suffix tree.  
+
+    This is a faster version of ``(*this) = node)``.  
+";
+
+%feature("docstring") stree::PostfixIterator::isRoot "
+``isRoot() -> bool``  
+
+Return ``true`` if this is the root node.  
+";
+
+%feature("docstring") stree::PostfixIterator::sequence "
+``sequence() -> Sequence``  
+
+Return the (sub-)sequence represented by this node.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
+sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::PostfixIterator::isValid "
+``isValid() -> bool``  
+
+Return ``true`` if valid, otherwise return ``false``.  
 ";
 
 %feature("docstring") stree::PostfixIterator::child "
@@ -3077,10 +3101,49 @@ Overloaded function
     If no such node exists, a ``Node`` marked as invalid is returned.  
 ";
 
+%feature("docstring") stree::PostfixIterator::suffix "
+``suffix() -> Node``  
+
+Return the node corresponding to the first suffix of the represented sequence.  
+
+This follows the \"suffix link\" of the suffix tree. If no such node exists, a
+``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::PostfixIterator::repr "
+``repr() -> std::string``  
+
+Return a string representation to display in python.  
+";
+
+%feature("docstring") stree::PostfixIterator::sibling "
+``sibling() -> Node``  
+
+Return the next sibling of this node.  
+
+If no such node exists, a ``Node`` marked as invalid is returned. Note that the
+siblings are ordered lexicographically according to their edge labels.  
+";
+
+%feature("docstring") stree::PostfixIterator::toParent "
+``toParent()``  
+
+Set this ``PathNode`` to the path to the parent of the current node, if such
+exists.  
+
+Otherwise, just mark this ``PathNode`` as invalid.  
+";
+
 %feature("docstring") stree::PostfixIterator::nidxStr "
 ``nidxStr(width=3) -> std::string``  
 
 Return a string representation of the underlying ``nidx_t``.  
+";
+
+%feature("docstring") stree::PostfixIterator::nidx "
+``nidx() -> nidx_t``  
+
+Return the ``nidx_t`` corresponding to this ``Node``.  
 ";
 
 %feature("docstring") stree::PostfixIterator::toNext "
@@ -3092,13 +3155,55 @@ If none exists, this ``PostfixIterator`` will be marked as invalid. Calling
 ``toNext()`` on an invalid ``PostfixIterator`` has no effect.  
 ";
 
-%feature("docstring") stree::PostfixIterator::count "
-``count() -> nidx_t``  
+%feature("docstring") stree::PostfixIterator::headIndex "
+``headIndex() -> nidx_t``  
 
-Return the number of occurrences of the sequence represented by this node in the
-sequence represented by the suffix tree.  
+Return the \"headindex\" of this node, which is an index in the sequence
+represented by the suffix tree where the (sub-)sequence represented by this node
+occurs.  
 
-For an invalid node, zero is returned.  
+I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
+depth())``, where ``seq`` is the sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::PostfixIterator::setRoot "
+``setRoot()``  
+
+Reset this ``PathNode`` to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::PostfixIterator::index "
+``index() -> nidx_t``  
+
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
+";
+
+%feature("docstring") stree::PostfixIterator::toSibling "
+``toSibling()``  
+
+Set this node to its next sibling if a next sibling exists, otherwise mark this
+node as invalid.  
+
+Note that the siblings are ordered lexicographically according to their edge
+labels.  
+";
+
+%feature("docstring") stree::PostfixIterator::label "
+``label() -> Sequence``  
+
+Return the edge label for the edge leading to the current node.  
+
+If no edge exists, this will be an empty ``Sequence``.  
+";
+
+%feature("docstring") stree::PostfixIterator::dataStr "
+``dataStr(width=5) -> std::string``  
+
+Return a string representation of the data of this node.  
+
+This is useful for debugging or understanding the suffix tree structure.  
 ";
 
 %feature("docstring") stree::PostfixIterator::depth "
@@ -3108,35 +3213,16 @@ Return the \"depth\" of the node in the suffix tree, which is the size of the
 represented (sub-)sequence.  
 ";
 
-%feature("docstring") stree::PostfixIterator::setValid "
-``setValid(valid=true)``  
+%feature("docstring") stree::PostfixIterator::isInternal "
+``isInternal() -> bool``  
 
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+Return ``true`` if this is an internal node.  
 ";
 
-%feature("docstring") stree::PostfixIterator::isValid "
-``isValid() -> bool``  
+%feature("docstring") stree::PostfixIterator::PostfixIterator "
+``PostfixIterator(stree)``  
 
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::PostfixIterator::set "
-``set(pathNode)``  
-``set(node)``  
-
-Overloaded function
--------------------
-* ``set(pathNode)``  
-    
-    Set this ``PathNode`` to the given ``pathNode``, which must belong to the
-    same suffix tree.  
-
-* ``set(node)``  
-    
-    Set this ``Node`` to the given ``node``, which must belong to the same
-    suffix tree.  
-
-    This is a faster version of ``(*this) = node)``.  
+Create a ``PostfixIterator`` for the given ``stree``.  
 ";
 
 %feature("docstring") stree::PostfixIterator::toChild "
@@ -3159,94 +3245,6 @@ Overloaded function
     label begins with the given ``symbol``.  
 
     If no such node exists, mark this ``PathNode`` as invalid instead.  
-";
-
-%feature("docstring") stree::PostfixIterator::PostfixIterator "
-``PostfixIterator(stree)``  
-
-Create a ``PostfixIterator`` for the given ``stree``.  
-";
-
-%feature("docstring") stree::PostfixIterator::isLeaf "
-``isLeaf() -> bool``  
-
-Return ``true`` if this is a leaf node.  
-";
-
-%feature("docstring") stree::PostfixIterator::repr "
-``repr() -> std::string``  
-
-Return a string representation to display in python.  
-";
-
-%feature("docstring") stree::PostfixIterator::sequence "
-``sequence() -> Sequence``  
-
-Return the (sub-)sequence represented by this node.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::PostfixIterator::toParent "
-``toParent()``  
-
-Set this ``PathNode`` to the path to the parent of the current node, if such
-exists.  
-
-Otherwise, just mark this ``PathNode`` as invalid.  
-";
-
-%feature("docstring") stree::PostfixIterator::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::PostfixIterator::sibling "
-``sibling() -> Node``  
-
-Return the next sibling of this node.  
-
-If no such node exists, a ``Node`` marked as invalid is returned. Note that the
-siblings are ordered lexicographically according to their edge labels.  
-";
-
-%feature("docstring") stree::PostfixIterator::toSuffix "
-``toSuffix()``  
-
-Set this to the ``PathNode`` corresponding to the first suffix of the
-represented sequence.  
-
-If no suffix exists (i.e., this is the root) mark this ``PathNode`` as invalid
-instead. This uses the \"suffix link\" of the suffix tree, but needs to
-recompute the path.  
-";
-
-%feature("docstring") stree::PostfixIterator::parent "
-``parent() -> Node``  
-
-Return the parent ``Node``.  
-
-If none exists, return a ``Node`` marked as invalid.  
-";
-
-%feature("docstring") stree::PostfixIterator::toSibling "
-``toSibling()``  
-
-Set this node to its next sibling if a next sibling exists, otherwise mark this
-node as invalid.  
-
-Note that the siblings are ordered lexicographically according to their edge
-labels.  
-";
-
-%feature("docstring") stree::PostfixIterator::index "
-``index() -> nidx_t``  
-
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
 ";
 
 // File: classstree_1_1_prefix_iterator.xml
@@ -3278,23 +3276,12 @@ Constructors
 C++ includes: STreeIterators.h
 ";
 
-%feature("docstring") stree::PrefixIterator::headIndex "
-``headIndex() -> nidx_t``  
+%feature("docstring") stree::PrefixIterator::dataStr "
+``dataStr(width=5) -> std::string``  
 
-Return the \"headindex\" of this node, which is an index in the sequence
-represented by the suffix tree where the (sub-)sequence represented by this node
-occurs.  
+Return a string representation of the data of this node.  
 
-I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
-depth())``, where ``seq`` is the sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::PrefixIterator::label "
-``label() -> Sequence``  
-
-Return the edge label for the edge leading to the current node.  
-
-If no edge exists, this will be an empty ``Sequence``.  
+This is useful for debugging or understanding the suffix tree structure.  
 ";
 
 %feature("docstring") stree::PrefixIterator::parent "
@@ -3303,15 +3290,6 @@ If no edge exists, this will be an empty ``Sequence``.
 Return the parent ``Node``.  
 
 If none exists, return a ``Node`` marked as invalid.  
-";
-
-%feature("docstring") stree::PrefixIterator::isSuffix "
-``isSuffix() -> bool``  
-
-Return ``true`` if the subsequence represented by this node is a suffix of the
-underlying sequence.  
-
-Note that this does not imply that this is a leaf.  
 ";
 
 %feature("docstring") stree::PrefixIterator::toSibling "
@@ -3324,11 +3302,48 @@ Note that the siblings are ordered lexicographically according to their edge
 labels.  
 ";
 
-%feature("docstring") stree::PrefixIterator::depth "
-``depth() -> nidx_t``  
+%feature("docstring") stree::PrefixIterator::PrefixIterator "
+``PrefixIterator(stree)``  
 
-Return the \"depth\" of the node in the suffix tree, which is the size of the
-represented (sub-)sequence.  
+Create a ``PrefixIterator`` for the given ``stree``.  
+";
+
+%feature("docstring") stree::PrefixIterator::index "
+``index() -> nidx_t``  
+
+The ``index`` of a valid leaf or a valid internal node is a unique number
+between 0 and ``STree.nLeafNodes()`` or between 0 and
+``STree.nInternalNodes()``, respectively.  
+";
+
+%feature("docstring") stree::PrefixIterator::setValid "
+``setValid(valid=true)``  
+
+Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+";
+
+%feature("docstring") stree::PrefixIterator::sequence "
+``sequence() -> Sequence``  
+
+Return the (sub-)sequence represented by this node.  
+
+Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
+sequence represented by the suffix tree.  
+";
+
+%feature("docstring") stree::PrefixIterator::isSuffix "
+``isSuffix() -> bool``  
+
+Return ``true`` if the subsequence represented by this node is a suffix of the
+underlying sequence.  
+
+Note that this does not imply that this is a leaf.  
+";
+
+%feature("docstring") stree::PrefixIterator::isLeaf "
+``isLeaf() -> bool``  
+
+Return ``true`` if this is a leaf node.  
 ";
 
 %feature("docstring") stree::PrefixIterator::isInternal "
@@ -3337,19 +3352,22 @@ represented (sub-)sequence.
 Return ``true`` if this is an internal node.  
 ";
 
-%feature("docstring") stree::PrefixIterator::setRoot "
-``setRoot()``  
+%feature("docstring") stree::PrefixIterator::headIndex "
+``headIndex() -> nidx_t``  
 
-Reset this ``PathNode`` to the root of the suffix tree.  
+Return the \"headindex\" of this node, which is an index in the sequence
+represented by the suffix tree where the (sub-)sequence represented by this node
+occurs.  
+
+I.e., the (sub-)sequence represented by this node is ``seq.rawSub(headindex(),
+depth())``, where ``seq`` is the sequence represented by the suffix tree.  
 ";
 
-%feature("docstring") stree::PrefixIterator::toParent "
-``toParent()``  
+%feature("docstring") stree::PrefixIterator::depth "
+``depth() -> nidx_t``  
 
-Set this ``PathNode`` to the path to the parent of the current node, if such
-exists.  
-
-Otherwise, just mark this ``PathNode`` as invalid.  
+Return the \"depth\" of the node in the suffix tree, which is the size of the
+represented (sub-)sequence.  
 ";
 
 %feature("docstring") stree::PrefixIterator::set "
@@ -3371,12 +3389,48 @@ Overloaded function
     This is a faster version of ``(*this) = node)``.  
 ";
 
-%feature("docstring") stree::PrefixIterator::index "
-``index() -> nidx_t``  
+%feature("docstring") stree::PrefixIterator::isValid "
+``isValid() -> bool``  
 
-The ``index`` of a valid leaf or a valid internal node is a unique number
-between 0 and ``STree.nLeafNodes()`` or between 0 and
-``STree.nInternalNodes()``, respectively.  
+Return ``true`` if valid, otherwise return ``false``.  
+";
+
+%feature("docstring") stree::PrefixIterator::isRoot "
+``isRoot() -> bool``  
+
+Return ``true`` if this is the root node.  
+";
+
+%feature("docstring") stree::PrefixIterator::setRoot "
+``setRoot()``  
+
+Reset this ``PathNode`` to the root of the suffix tree.  
+";
+
+%feature("docstring") stree::PrefixIterator::label "
+``label() -> Sequence``  
+
+Return the edge label for the edge leading to the current node.  
+
+If no edge exists, this will be an empty ``Sequence``.  
+";
+
+%feature("docstring") stree::PrefixIterator::suffix "
+``suffix() -> Node``  
+
+Return the node corresponding to the first suffix of the represented sequence.  
+
+This follows the \"suffix link\" of the suffix tree. If no such node exists, a
+``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::PrefixIterator::toNext "
+``toNext()``  
+
+Set this ``PrefixIterator`` to the next node in prefix order.  
+
+If none exists, this ``PrefixIterator`` will be marked as invalid. Calling
+``toNext()`` on an invalid ``PrefixIterator`` has no effect.  
 ";
 
 %feature("docstring") stree::PrefixIterator::toSuffix "
@@ -3390,105 +3444,10 @@ instead. This uses the \"suffix link\" of the suffix tree, but needs to
 recompute the path.  
 ";
 
-%feature("docstring") stree::PrefixIterator::nidxStr "
-``nidxStr(width=3) -> std::string``  
+%feature("docstring") stree::PrefixIterator::repr "
+``repr() -> std::string``  
 
-Return a string representation of the underlying ``nidx_t``.  
-";
-
-%feature("docstring") stree::PrefixIterator::sibling "
-``sibling() -> Node``  
-
-Return the next sibling of this node.  
-
-If no such node exists, a ``Node`` marked as invalid is returned. Note that the
-siblings are ordered lexicographically according to their edge labels.  
-";
-
-%feature("docstring") stree::PrefixIterator::toNext "
-``toNext()``  
-
-Set this ``PrefixIterator`` to the next node in prefix order.  
-
-If none exists, this ``PrefixIterator`` will be marked as invalid. Calling
-``toNext()`` on an invalid ``PrefixIterator`` has no effect.  
-";
-
-%feature("docstring") stree::PrefixIterator::nidx "
-``nidx() -> nidx_t``  
-
-Return the ``nidx_t`` corresponding to this ``Node``.  
-";
-
-%feature("docstring") stree::PrefixIterator::count "
-``count() -> nidx_t``  
-
-Return the number of occurrences of the sequence represented by this node in the
-sequence represented by the suffix tree.  
-
-For an invalid node, zero is returned.  
-";
-
-%feature("docstring") stree::PrefixIterator::isLeaf "
-``isLeaf() -> bool``  
-
-Return ``true`` if this is a leaf node.  
-";
-
-%feature("docstring") stree::PrefixIterator::sequence "
-``sequence() -> Sequence``  
-
-Return the (sub-)sequence represented by this node.  
-
-Note that this is ``seq.rawSub(headIndex(), depth())``, where ``seq`` is the
-sequence represented by the suffix tree.  
-";
-
-%feature("docstring") stree::PrefixIterator::child "
-``child() -> Node``  
-``child(symbol) -> Node``  
-
-Overloaded function
--------------------
-* ``child() -> Node``  
-    
-    Return the first child node of this node.  
-
-    If no such node exists, a ``Node`` marked as invalid is returned. Note that
-    the children are ordered lexicographically according to their edge labels.  
-
-* ``child(symbol) -> Node``  
-    
-    Return the child node along the edge leading away whose label begins with
-    the given ``symbol``.  
-
-    If no such node exists, a ``Node`` marked as invalid is returned.  
-";
-
-%feature("docstring") stree::PrefixIterator::dataStr "
-``dataStr(width=5) -> std::string``  
-
-Return a string representation of the data of this node.  
-
-This is useful for debugging or understanding the suffix tree structure.  
-";
-
-%feature("docstring") stree::PrefixIterator::isValid "
-``isValid() -> bool``  
-
-Return ``true`` if valid, otherwise return ``false``.  
-";
-
-%feature("docstring") stree::PrefixIterator::isRoot "
-``isRoot() -> bool``  
-
-Return ``true`` if this is the root node.  
-";
-
-%feature("docstring") stree::PrefixIterator::PrefixIterator "
-``PrefixIterator(stree)``  
-
-Create a ``PrefixIterator`` for the given ``stree``.  
+Return a string representation to display in python.  
 ";
 
 %feature("docstring") stree::PrefixIterator::toChild "
@@ -3513,25 +3472,64 @@ Overloaded function
     If no such node exists, mark this ``PathNode`` as invalid instead.  
 ";
 
-%feature("docstring") stree::PrefixIterator::setValid "
-``setValid(valid=true)``  
+%feature("docstring") stree::PrefixIterator::nidxStr "
+``nidxStr(width=3) -> std::string``  
 
-Mark this ``Node`` as ``valid`` (or ``invalid``, if ``valid`` is ``false``).  
+Return a string representation of the underlying ``nidx_t``.  
 ";
 
-%feature("docstring") stree::PrefixIterator::repr "
-``repr() -> std::string``  
+%feature("docstring") stree::PrefixIterator::nidx "
+``nidx() -> nidx_t``  
 
-Return a string representation to display in python.  
+Return the ``nidx_t`` corresponding to this ``Node``.  
 ";
 
-%feature("docstring") stree::PrefixIterator::suffix "
-``suffix() -> Node``  
+%feature("docstring") stree::PrefixIterator::toParent "
+``toParent()``  
 
-Return the node corresponding to the first suffix of the represented sequence.  
+Set this ``PathNode`` to the path to the parent of the current node, if such
+exists.  
 
-This follows the \"suffix link\" of the suffix tree. If no such node exists, a
-``Node`` marked as invalid is returned.  
+Otherwise, just mark this ``PathNode`` as invalid.  
+";
+
+%feature("docstring") stree::PrefixIterator::child "
+``child() -> Node``  
+``child(symbol) -> Node``  
+
+Overloaded function
+-------------------
+* ``child() -> Node``  
+    
+    Return the first child node of this node.  
+
+    If no such node exists, a ``Node`` marked as invalid is returned. Note that
+    the children are ordered lexicographically according to their edge labels.  
+
+* ``child(symbol) -> Node``  
+    
+    Return the child node along the edge leading away whose label begins with
+    the given ``symbol``.  
+
+    If no such node exists, a ``Node`` marked as invalid is returned.  
+";
+
+%feature("docstring") stree::PrefixIterator::count "
+``count() -> nidx_t``  
+
+Return the number of occurrences of the sequence represented by this node in the
+sequence represented by the suffix tree.  
+
+For an invalid node, zero is returned.  
+";
+
+%feature("docstring") stree::PrefixIterator::sibling "
+``sibling() -> Node``  
+
+Return the next sibling of this node.  
+
+If no such node exists, a ``Node`` marked as invalid is returned. Note that the
+siblings are ordered lexicographically according to their edge labels.  
 ";
 
 // File: classtom_1_1_random.xml
@@ -3556,22 +3554,6 @@ Constructors
 C++ includes: Random.h
 ";
 
-%feature("docstring") tom::Random::integer "
-``integer(n) -> unsigned int``  
-
-Return a non-negative integer sampled uniformly from the set {0, ..., ``n``-1}.  
-";
-
-%feature("docstring") tom::Random::sample "
-``sample(probArray) -> unsigned int``  
-
-Return a non-negative integer from the set {0, ..., n-1}, where n is the size of
-the given array ``probArray``, distributed according to the discrete
-distribution described by the ``probArray``.  
-
-Note that the probabilities in ``probArray`` are assumed to sum to 1.  
-";
-
 %feature("docstring") tom::Random::random "
 ``random() -> double``  
 ``random(m, n) -> Eigen::MatrixXd``  
@@ -3588,19 +3570,14 @@ Overloaded function
     1).  
 ";
 
-%feature("docstring") tom::Random::seed "
-``seed() -> unsigned int``  
-``seed(seedValue)``  
+%feature("docstring") tom::Random::sample "
+``sample(probArray) -> unsigned int``  
 
-Overloaded function
--------------------
-* ``seed() -> unsigned int``  
-    
-    Randomly seed the random number generator and return the seed.  
+Return a non-negative integer from the set {0, ..., n-1}, where n is the size of
+the given array ``probArray``, distributed according to the discrete
+distribution described by the ``probArray``.  
 
-* ``seed(seedValue)``  
-    
-    Seed the random number generator with the given ``seedValue``.  
+Note that the probabilities in ``probArray`` are assumed to sum to 1.  
 ";
 
 %feature("docstring") tom::Random::Random "
@@ -3616,6 +3593,27 @@ Overloaded function
 * ``Random(seed)``  
     
     Create a ``Random`` object initialized with the given ``seed``.  
+";
+
+%feature("docstring") tom::Random::integer "
+``integer(n) -> unsigned int``  
+
+Return a non-negative integer sampled uniformly from the set {0, ..., ``n``-1}.  
+";
+
+%feature("docstring") tom::Random::seed "
+``seed() -> unsigned int``  
+``seed(seedValue)``  
+
+Overloaded function
+-------------------
+* ``seed() -> unsigned int``  
+    
+    Randomly seed the random number generator and return the seed.  
+
+* ``seed(seedValue)``  
+    
+    Seed the random number generator with the given ``seedValue``.  
 ";
 
 // File: classstree_1_1_r_b_tree.xml
@@ -3644,26 +3642,6 @@ then a threaded ``RBNodePtr`` may be ``NULL`` and colored red, while the
 left-/rightmost ``RBNodePtr`` may be ``NULL`` and black).  
 
 C++ includes: RBTree.h
-";
-
-%feature("docstring") stree::RBTree::insert "
-``insert(h, n, key, rbnt)``  
-
-insert a node into the red-black tree according to a given key.  
-
-Please see the general remarks about threading.  
-
-Parameters
-----------
-* ``h`` :  
-    the ``RBNodePtr`` to the root of the red-black tree (this will point to the
-    new root after the insertion operation)  
-* ``n`` :  
-    the node to be inserted  
-* ``key`` :  
-    the key value of the new node  
-* ``rbnt`` :  
-    an ``RBTreeNodeTraits`` object  
 ";
 
 %feature("docstring") stree::RBTree::fixThreading "
@@ -3701,6 +3679,26 @@ the ``RBNodePtr&`` of the parent node to the node found, or some ``NULL``
 ``RBNodePtr``, if no matching node found.  
 ";
 
+%feature("docstring") stree::RBTree::insert "
+``insert(h, n, key, rbnt)``  
+
+insert a node into the red-black tree according to a given key.  
+
+Please see the general remarks about threading.  
+
+Parameters
+----------
+* ``h`` :  
+    the ``RBNodePtr`` to the root of the red-black tree (this will point to the
+    new root after the insertion operation)  
+* ``n`` :  
+    the node to be inserted  
+* ``key`` :  
+    the key value of the new node  
+* ``rbnt`` :  
+    an ``RBTreeNodeTraits`` object  
+";
+
 // File: classstree_1_1internal_1_1_r_b_tree_node_traits.xml
 
 
@@ -3721,24 +3719,8 @@ C++ includes: STreeCore.h
 ``left(n) -> RBNodePtr &``  
 ";
 
-%feature("docstring") stree::internal::RBTreeNodeTraits::less "
-``less(k, n) -> bool``  
-";
-
 %feature("docstring") stree::internal::RBTreeNodeTraits::getColor "
 ``getColor(n) -> bool``  
-";
-
-%feature("docstring") stree::internal::RBTreeNodeTraits::isNull "
-``isNull(n) -> bool``  
-";
-
-%feature("docstring") stree::internal::RBTreeNodeTraits::setThread "
-``setThread(n)``  
-";
-
-%feature("docstring") stree::internal::RBTreeNodeTraits::setColor "
-``setColor(n, c)``  
 ";
 
 %feature("docstring") stree::internal::RBTreeNodeTraits::right "
@@ -3749,12 +3731,28 @@ C++ includes: STreeCore.h
 ``RBTreeNodeTraits(bst, parentDepth=0)``  
 ";
 
+%feature("docstring") stree::internal::RBTreeNodeTraits::less "
+``less(k, n) -> bool``  
+";
+
+%feature("docstring") stree::internal::RBTreeNodeTraits::setThread "
+``setThread(n)``  
+";
+
 %feature("docstring") stree::internal::RBTreeNodeTraits::set "
 ``set(n, nNew)``  
 ";
 
 %feature("docstring") stree::internal::RBTreeNodeTraits::equals "
 ``equals(k, n) -> bool``  
+";
+
+%feature("docstring") stree::internal::RBTreeNodeTraits::setColor "
+``setColor(n, c)``  
+";
+
+%feature("docstring") stree::internal::RBTreeNodeTraits::isNull "
+``isNull(n) -> bool``  
 ";
 
 // File: classstree_1_1_r_b_tree_node_traits_template.xml
@@ -3786,27 +3784,27 @@ This object represents a sequence, subsequence view or io-sequence and stores
 the size ``nO()`` of the output and ``nU()`` of the input alphabet.  
 
 If the size of the input alphabet is zero, this is just an ordinary sequence
-:math:`o_0...o_{N-1}` of symbols :math:`o_t` with zero-based indexing. An io-
-sequence is represented as a simple sequence :math:`u_0o_0...u_{N-1}o_{N-1}` of
-input symbols :math:`u_t` and output symbols :math:`o_t`. For io-sequences, we
-distinguish *size* and *length*: *size* is always the number of symbols, while
-the *length* is the number of io symbol pairs, which is just the *size* for
-ordinary sequences, and 2 * *size* for (aligned) io-sequences.  
+$o_0...o_{N-1}$ of symbols $o_t$ with zero-based indexing. An io-sequence is
+represented as a simple sequence $u_0o_0...u_{N-1}o_{N-1}$ of input symbols
+$u_t$ and output symbols $o_t$. For io-sequences, we distinguish *size* and
+*length*: *size* is always the number of symbols, while the *length* is the
+number of io symbol pairs, which is just the *size* for ordinary sequences, and
+2 * *size* for (aligned) io-sequences.  
 
 There are three ways to interact with this sequence:  
 
 1.  The ``raw...()`` methods. These just access the sequence as a raw symbol
     sequence, treating each input or output symbol as a separate symbol. I.e.,
-    for the io sequence :math:`u_0o_0...u_{N-1}o_{N-1}`, the ``rawSize()`` is
-    :math:`2N`, and ``rawAt(i)`` is :math:`u_{i/2}` if :math:`i` is even or
-    :math:`o_{i/2}` if :math:`i` is odd. Etc.  
+    for the io sequence $u_0o_0...u_{N-1}o_{N-1}$, the ``rawSize()`` is $2N$,
+    and ``rawAt(i)`` is $u_{i/2}$ if $i$ is even or $o_{i/2}$ if $i$ is odd.
+    Etc.  
 2.  The methods not prefixed by \"raw\" treat each io-symbol *pair* as one
-    symbol: ``at(i)`` is the symbol-pair :math:`(u_i, o_i)` (actually, the
-    subsequence at index :math:`i` of length 1: ``sub(i,1)``), the methods
-    ``u(i)`` and ``o(i)`` return the input symbol :math:`u_i` or respectively
-    output symbol :math:`o_i`, and the ``length()`` is the *length* of the
-    sequence -- the number N of io symbol pairs. For ordinary sequences these
-    methods are equivalent to the ``raw...()`` ones.  
+    symbol: ``at(i)`` is the symbol-pair $(u_i, o_i)$ (actually, the subsequence
+    at index $i$ of length 1: ``sub(i,1)``), the methods ``u(i)`` and ``o(i)``
+    return the input symbol $u_i$ or respectively output symbol $o_i$, and the
+    ``length()`` is the *length* of the sequence -- the number N of io symbol
+    pairs. For ordinary sequences these methods are equivalent to the
+    ``raw...()`` ones.  
 3.  Access using python ``[]``-syntax (including slicing) and python iteration
     just treats all sequences as raw symbol sequences (as in 1.).  
 
@@ -3867,6 +3865,22 @@ C++ includes: Sequence.h
  IO-functions 
 */
 
+%feature("docstring") tom::Sequence::nInputSymbols "
+``nInputSymbols() -> Symbol``  
+
+Return the size of the input alphabet.  
+
+If this is zero, then this is an ordinary sequence, else an io-sequence.  
+";
+
+%feature("docstring") tom::Sequence::lexicographicIndex "
+``lexicographicIndex(withinSequencesOfSameLength=false) -> unsigned long``  
+";
+
+%feature("docstring") tom::Sequence::fromJSON "
+``fromJSON(string)``  
+";
+
 %feature("docstring") tom::Sequence::isAligned "
 ``isAligned() -> bool``  
 
@@ -3880,210 +3894,27 @@ supposed to be: an input symbol if it is not reversed, or an output symbol
 otherwise.  
 ";
 
-%feature("docstring") tom::Sequence::nOutputSymbols "
-``nOutputSymbols() -> Symbol``  
+%feature("docstring") tom::Sequence::isBackAligned "
+``isBackAligned() -> bool``  
 
-Return the size of the output alphabet.  
+Return ``true`` if this sequence is io-aligned with respect to its end in the
+underlying data, i.e., if either:  
+
+*   this is a plain (non-io) sequence  
+*   this io-sequence is not reversed and ends with an output symbol  
+*   this io-sequence is reversed and begins with an output symbol  
 ";
 
-%feature("docstring") tom::Sequence::slice "
-``slice(begin, end=NoIndex, forwards=true) -> Sequence``  
+%feature("docstring") tom::Sequence::copy "
+``copy() -> Sequence``  
 
-Return a subsequence from the ``begin`` index up to (and not including) the
-``end`` index, or if ``forwards`` is set to ``false``, a reverse sequence from
-the ``begin`` position up to (and not including) the ``end`` position, where
-each index covers one io-pair.  
-
-Negative indexing is supported, and ``begin`` and ``end`` may be set to
-``NoIndex``, and then extend to the beginning or end of the sequence, depending
-on ``reverse``.  
-
-Note that the requested slice must define a sub-sequence of this sequence or a
-sequence of size zero.  
+Return a deep copy of this ``Sequence``, i.e., the copy will use its own memory.  
 ";
 
-%feature("docstring") tom::Sequence::rawSlice "
-``rawSlice(begin=NoIndex, end=NoIndex, forwards=true) -> Sequence``  
+%feature("docstring") tom::Sequence::repr "
+``repr() -> std::string``  
 
-Return a subsequence from the ``begin`` index up to (and not including) the
-``end`` index, or if ``forwards`` is set to ``false``, a reverse sequence from
-the ``begin`` position up to (and not including) the ``end`` position.  
-
-Negative indexing is supported, and ``begin`` and ``end`` may be set to
-``NoIndex``, and then extend to the beginning or end of the sequence, depending
-on ``reverse``.  
-
-Note that the requested slice must define a sub-sequence of this sequence or a
-sequence of size zero.  
-";
-
-%feature("docstring") tom::Sequence::u "
-``u(idx) -> Symbol``  
-``u(idx, u)``  
-
-Overloaded function
--------------------
-* ``u(idx) -> Symbol``  
-    
-    Return the input symbol at index ``idx``, where each index covers one io-
-    pair, or return zero if this is a plain (non-io) sequence.  
-
-    Negative indexing is supported.  
-
-* ``u(idx, u)``  
-    
-    Set the input symbol at index ``idx`` to ``u``, where each index covers one
-    io-pair, or do nothing if this is a plain (non-io) sequence.  
-
-    Negative indexing is supported.  
-";
-
-%feature("docstring") tom::Sequence::isIO "
-``isIO() -> bool``  
-
-Return ``true`` if this is an input-output sequence, i.e., if the input alphabet
-size ``nInputSymbols()`` is non-zero.  
-";
-
-%feature("docstring") tom::Sequence::rawAt "
-``rawAt(idx) -> Symbol``  
-``rawAt(idx, x)``  
-
-Overloaded function
--------------------
-* ``rawAt(idx) -> Symbol``  
-    
-    Return the symbol at index ``idx``, treating io-sequences as raw sequences.  
-
-* ``rawAt(idx, x)``  
-    
-    Set the symbol at index ``idx`` to ``x``, treating io-sequences as raw
-    sequences.  
-
-    Negative indexing is supported.  
-";
-
-%feature("docstring") tom::Sequence::lexicographicIndex "
-``lexicographicIndex(withinSequencesOfSameLength=false) -> unsigned long``  
-";
-
-%feature("docstring") tom::Sequence::rawSize "
-``rawSize() -> long``  
-
-Return the *size* of the represented sequence, i.e., the raw symbol count,
-counting each input and output as one symbol.  
-
-Generally, use ``length()`` instead.  
-";
-
-%feature("docstring") tom::Sequence::at "
-``at(idx) -> Sequence``  
-
-Return the io symbol pair at index ``idx``, where each index covers one io-pair.  
-
-This returns ``sub(idx, 1)``, so even for plain sequences, the return value is
-not a symbol. For plain sequences, generally use ``rawAt(idx)`` or ``o(idx)``
-instead.  
-
-Negative indexing is supported.  
-";
-
-%feature("docstring") tom::Sequence::count "
-``count(seq) -> unsigned int``  
-
-Count the number of occurrences of the given ``Sequence`` ``seq`` as a sub-
-sequence of this ``Sequence``.  
-";
-
-%feature("docstring") tom::Sequence::toJSON "
-``toJSON() -> std::string``  
-";
-
-%feature("docstring") tom::Sequence::length "
-``length() -> long``  
-
-Return the *length* of this sequence.  
-
-For plain sequences this is the same as ``rawSize()``. For (aligned) io-
-sequences this is the number of io-symbol pairs, which is half the *size*.  
-
-For unaligned io-sequences, the *length* means the number of covered io-
-sequence-pair indices. Example:  
-For the io-sequence :math:`o_0 u_1o_1 ... u_{N-2}o_{N-2} u_{N-1}`, which is
-neither front nor back aligned, the *length* is :math:`N`, since :math:`N` io-
-pair indices are covered, but the *size* -- the number of raw symbols -- is only
-:math:`2N - 2`.  
-";
-
-%feature("docstring") tom::Sequence::rawSub "
-``rawSub(idx, size) -> Sequence``  
-
-Return a subsequence starting at the given position index ``idx`` and of the
-given ``size``, treating io-sequences as raw sequences.  
-
-Negative indexing is supported, and if ``size`` is negative, a reverse sequence
-starting at the ``idx`` is returned.  
-
-The given ``idx`` must be a valid position index (i.e., not out of bounds),
-unless the requested ``size`` is zero, in which case always a ``Sequence`` of
-size zero is returned.  
-";
-
-%feature("docstring") tom::Sequence::nInputSymbols "
-``nInputSymbols() -> Symbol``  
-
-Return the size of the input alphabet.  
-
-If this is zero, then this is an ordinary sequence, else an io-sequence.  
-";
-
-%feature("docstring") tom::Sequence::isReversed "
-``isReversed() -> bool``  
-
-Return ``true`` if this is a reversed sequence.  
-
-This is relevant for io-sequences, since the order of input and outputs is then
-also reversed.  
-";
-
-%feature("docstring") tom::Sequence::hasPrefix "
-``hasPrefix(sequence, withSameAlphabet=false) -> bool``  
-
-Return ``true`` if the given ``sequence`` is a prefix of this sequence.  
-
-If ``withSameAlphabet`` is set to ``true`` (default ``false``), then a prefix
-must have the same alphabet.  
-";
-
-%feature("docstring") tom::Sequence::fromJSON "
-``fromJSON(string)``  
-";
-
-%feature("docstring") tom::Sequence::o "
-``o(idx) -> Symbol``  
-``o(idx, o)``  
-
-Overloaded function
--------------------
-* ``o(idx) -> Symbol``  
-    
-    Return the output symbol at indx ``idx``, where each index covers one io-
-    pair.  
-
-    Negative indexing is supported.  
-
-* ``o(idx, o)``  
-    
-    Set the output symbol at index ``idx`` to ``o``, where each index covers one
-    io-pair.  
-
-    Negative indexing is supported.  
-";
-
-%feature("docstring") tom::Sequence::incr_as_python_iterator_only "
-``incr_as_python_iterator_only()``  
-
-Increment the first position, which allows using a ``Sequence`` as an iterator.  
+Return a string representation to display in python.  
 ";
 
 %feature("docstring") tom::Sequence::isFrontAligned "
@@ -4097,21 +3928,44 @@ the underlying data, i.e., if either:
 *   this io-sequence is reversed and ends with an input symbol  
 ";
 
-%feature("docstring") tom::Sequence::reverse "
-``reverse() -> Sequence``  
+%feature("docstring") tom::Sequence::incr_as_python_iterator_only "
+``incr_as_python_iterator_only()``  
 
-Return the reverse view of this ``Sequence``.  
+Increment the first position, which allows using a ``Sequence`` as an iterator.  
 ";
 
-%feature("docstring") tom::Sequence::isBackAligned "
-``isBackAligned() -> bool``  
+%feature("docstring") tom::Sequence::count "
+``count(seq) -> unsigned int``  
 
-Return ``true`` if this sequence is io-aligned with respect to its end in the
-underlying data, i.e., if either:  
+Count the number of occurrences of the given ``Sequence`` ``seq`` as a sub-
+sequence of this ``Sequence``.  
+";
 
-*   this is a plain (non-io) sequence  
-*   this io-sequence is not reversed and ends with an output symbol  
-*   this io-sequence is reversed and begins with an output symbol  
+%feature("docstring") tom::Sequence::hasPrefix "
+``hasPrefix(sequence, withSameAlphabet=false) -> bool``  
+
+Return ``true`` if the given ``sequence`` is a prefix of this sequence.  
+
+If ``withSameAlphabet`` is set to ``true`` (default ``false``), then a prefix
+must have the same alphabet.  
+";
+
+%feature("docstring") tom::Sequence::rawSize "
+``rawSize() -> long``  
+
+Return the *size* of the represented sequence, i.e., the raw symbol count,
+counting each input and output as one symbol.  
+
+Generally, use ``length()`` instead.  
+";
+
+%feature("docstring") tom::Sequence::isReversed "
+``isReversed() -> bool``  
+
+Return ``true`` if this is a reversed sequence.  
+
+This is relevant for io-sequences, since the order of input and outputs is then
+also reversed.  
 ";
 
 %feature("docstring") tom::Sequence::Sequence "
@@ -4146,16 +4000,123 @@ Overloaded function
     The format must correspond to what ``toJSON()`` produces.  
 ";
 
-%feature("docstring") tom::Sequence::repr "
-``repr() -> std::string``  
+%feature("docstring") tom::Sequence::slice "
+``slice(begin, end=NoIndex, forwards=true) -> Sequence``  
 
-Return a string representation to display in python.  
+Return a subsequence from the ``begin`` index up to (and not including) the
+``end`` index, or if ``forwards`` is set to ``false``, a reverse sequence from
+the ``begin`` position up to (and not including) the ``end`` position, where
+each index covers one io-pair.  
+
+Negative indexing is supported, and ``begin`` and ``end`` may be set to
+``NoIndex``, and then extend to the beginning or end of the sequence, depending
+on ``reverse``.  
+
+Note that the requested slice must define a sub-sequence of this sequence or a
+sequence of size zero.  
 ";
 
-%feature("docstring") tom::Sequence::copy "
-``copy() -> Sequence``  
+%feature("docstring") tom::Sequence::toJSON "
+``toJSON() -> std::string``  
+";
 
-Return a deep copy of this ``Sequence``, i.e., the copy will use its own memory.  
+%feature("docstring") tom::Sequence::length "
+``length() -> long``  
+
+Return the *length* of this sequence.  
+
+For plain sequences this is the same as ``rawSize()``. For (aligned) io-
+sequences this is the number of io-symbol pairs, which is half the *size*.  
+
+For unaligned io-sequences, the *length* means the number of covered io-
+sequence-pair indices. Example:  
+For the io-sequence $o_0 u_1o_1 ... u_{N-2}o_{N-2} u_{N-1}$, which is neither
+front nor back aligned, the *length* is $N$, since $N$ io-pair indices are
+covered, but the *size* -- the number of raw symbols -- is only $2N - 2$.  
+";
+
+%feature("docstring") tom::Sequence::rawAt "
+``rawAt(idx) -> Symbol``  
+``rawAt(idx, x)``  
+
+Overloaded function
+-------------------
+* ``rawAt(idx) -> Symbol``  
+    
+    Return the symbol at index ``idx``, treating io-sequences as raw sequences.  
+
+* ``rawAt(idx, x)``  
+    
+    Set the symbol at index ``idx`` to ``x``, treating io-sequences as raw
+    sequences.  
+
+    Negative indexing is supported.  
+";
+
+%feature("docstring") tom::Sequence::at "
+``at(idx) -> Sequence``  
+
+Return the io symbol pair at index ``idx``, where each index covers one io-pair.  
+
+This returns ``sub(idx, 1)``, so even for plain sequences, the return value is
+not a symbol. For plain sequences, generally use ``rawAt(idx)`` or ``o(idx)``
+instead.  
+
+Negative indexing is supported.  
+";
+
+%feature("docstring") tom::Sequence::nOutputSymbols "
+``nOutputSymbols() -> Symbol``  
+
+Return the size of the output alphabet.  
+";
+
+%feature("docstring") tom::Sequence::o "
+``o(idx) -> Symbol``  
+``o(idx, o)``  
+
+Overloaded function
+-------------------
+* ``o(idx) -> Symbol``  
+    
+    Return the output symbol at indx ``idx``, where each index covers one io-
+    pair.  
+
+    Negative indexing is supported.  
+
+* ``o(idx, o)``  
+    
+    Set the output symbol at index ``idx`` to ``o``, where each index covers one
+    io-pair.  
+
+    Negative indexing is supported.  
+";
+
+%feature("docstring") tom::Sequence::u "
+``u(idx) -> Symbol``  
+``u(idx, u)``  
+
+Overloaded function
+-------------------
+* ``u(idx) -> Symbol``  
+    
+    Return the input symbol at index ``idx``, where each index covers one io-
+    pair, or return zero if this is a plain (non-io) sequence.  
+
+    Negative indexing is supported.  
+
+* ``u(idx, u)``  
+    
+    Set the input symbol at index ``idx`` to ``u``, where each index covers one
+    io-pair, or do nothing if this is a plain (non-io) sequence.  
+
+    Negative indexing is supported.  
+";
+
+%feature("docstring") tom::Sequence::reverse "
+``reverse() -> Sequence``  
+
+Return the reverse view of this ``Sequence``.  
 ";
 
 %feature("docstring") tom::Sequence::sub "
@@ -4181,6 +4142,42 @@ Overloaded function
     Return a subsequence of the given ``length``, starting at the beginning of
     this sequence if the given ``length`` is positive, else a reverse substring
     starting at the end of this sequence.  
+";
+
+%feature("docstring") tom::Sequence::rawSub "
+``rawSub(idx, size) -> Sequence``  
+
+Return a subsequence starting at the given position index ``idx`` and of the
+given ``size``, treating io-sequences as raw sequences.  
+
+Negative indexing is supported, and if ``size`` is negative, a reverse sequence
+starting at the ``idx`` is returned.  
+
+The given ``idx`` must be a valid position index (i.e., not out of bounds),
+unless the requested ``size`` is zero, in which case always a ``Sequence`` of
+size zero is returned.  
+";
+
+%feature("docstring") tom::Sequence::isIO "
+``isIO() -> bool``  
+
+Return ``true`` if this is an input-output sequence, i.e., if the input alphabet
+size ``nInputSymbols()`` is non-zero.  
+";
+
+%feature("docstring") tom::Sequence::rawSlice "
+``rawSlice(begin=NoIndex, end=NoIndex, forwards=true) -> Sequence``  
+
+Return a subsequence from the ``begin`` index up to (and not including) the
+``end`` index, or if ``forwards`` is set to ``false``, a reverse sequence from
+the ``begin`` position up to (and not including) the ``end`` position.  
+
+Negative indexing is supported, and ``begin`` and ``end`` may be set to
+``NoIndex``, and then extend to the beginning or end of the sequence, depending
+on ``reverse``.  
+
+Note that the requested slice must define a sub-sequence of this sequence or a
+sequence of size zero.  
 ";
 
 // File: classtom_1_1_sequence_data.xml
@@ -4268,6 +4265,22 @@ Attributes
 C++ includes: StopCondition.h
 ";
 
+%feature("docstring") tom::StopCondition::reset "
+``reset()``  
+
+Reset the ``iteration_`` count and the ``lastValue_``.  
+";
+
+%feature("docstring") tom::StopCondition::StopCondition "
+``StopCondition(maxIterations=100, relativeImprovementThreshold=1e-7, absoluteImprovementThreshold=1e-12)``  
+
+Construct a ``StopCondition`` while setting the key parameters.  
+";
+
+%feature("docstring") tom::StopCondition::~StopCondition "
+``~StopCondition()``  
+";
+
 %feature("docstring") tom::StopCondition::stop "
 ``stop(currentValue) -> bool``  
 
@@ -4285,22 +4298,6 @@ met:
     ``lastValue_``| is less than the ``relativeImprovementThreshold_``  
 *   the absolute improvement |(``currentValue`` - ``lastValue_``)| is less than
     the ``absoluteImprovementThreshold_``  
-";
-
-%feature("docstring") tom::StopCondition::reset "
-``reset()``  
-
-Reset the ``iteration_`` count and the ``lastValue_``.  
-";
-
-%feature("docstring") tom::StopCondition::StopCondition "
-``StopCondition(maxIterations=100, relativeImprovementThreshold=1e-7, absoluteImprovementThreshold=1e-12)``  
-
-Construct a ``StopCondition`` while setting the key parameters.  
-";
-
-%feature("docstring") tom::StopCondition::~StopCondition "
-``~StopCondition()``  
 ";
 
 %feature("docstring") tom::StopCondition::callback "
@@ -4408,52 +4405,10 @@ C++ includes: STreeCore.h
  Node data manipulation 
 */
 
-%feature("docstring") stree::STree::nLeafNodes "
-``nLeafNodes() -> nidx_t``  
-
-Return the number of leaf nodes in the suffix tree.  
-";
-
-%feature("docstring") stree::STree::extendTo "
-``extendTo(sequence, checkExtendability=true)``  
-
-Extend the current suffix tree representation to a representation for a given
-``sequence``, which requires that the current suffix tree represents a prefix of
-the given ``sequence``.  
-";
-
-%feature("docstring") stree::STree::nNodes "
-``nNodes() -> nidx_t``  
-
-Return the number of nodes (internal and leaves) in the suffix tree.  
-";
-
-%feature("docstring") stree::STree::nInternalNodes "
-``nInternalNodes() -> nidx_t``  
-
-Return the number of internal nodes in the suffix tree.  
-";
-
-%feature("docstring") stree::STree::internal::Pos "
-``internal::Pos() -> friend class``  
-";
-
 %feature("docstring") stree::STree::sequence "
 ``sequence() -> const Sequence``  
 
 Return the represented sequence.  
-";
-
-%feature("docstring") stree::STree::internal::RBTreeNodeTraits "
-``internal::RBTreeNodeTraits() -> friend class``  
-";
-
-%feature("docstring") stree::STree::STree "
-``STree(sequence)``  
-
-Create a suffix tree for the given ``sequence``.  
-
-Note that the sequence must have size at least one.  
 ";
 
 %feature("docstring") stree::STree::deepestInternalSuffixNidx "
@@ -4475,6 +4430,48 @@ the suffix link (calling ``toSuffix()`` on the converted returned ``Node``)
 until reaching the root node (to exclude the empty suffix) or until
 ``toSuffix()`` results in an invalid ``Node`` (to include the empty suffix). The
 remaining (longer) suffixes correspond to the leaf nodes.  
+";
+
+%feature("docstring") stree::STree::nNodes "
+``nNodes() -> nidx_t``  
+
+Return the number of nodes (internal and leaves) in the suffix tree.  
+";
+
+%feature("docstring") stree::STree::extendTo "
+``extendTo(sequence, checkExtendability=true)``  
+
+Extend the current suffix tree representation to a representation for a given
+``sequence``, which requires that the current suffix tree represents a prefix of
+the given ``sequence``.  
+";
+
+%feature("docstring") stree::STree::nInternalNodes "
+``nInternalNodes() -> nidx_t``  
+
+Return the number of internal nodes in the suffix tree.  
+";
+
+%feature("docstring") stree::STree::internal::RBTreeNodeTraits "
+``internal::RBTreeNodeTraits() -> friend class``  
+";
+
+%feature("docstring") stree::STree::internal::Pos "
+``internal::Pos() -> friend class``  
+";
+
+%feature("docstring") stree::STree::nLeafNodes "
+``nLeafNodes() -> nidx_t``  
+
+Return the number of leaf nodes in the suffix tree.  
+";
+
+%feature("docstring") stree::STree::STree "
+``STree(sequence)``  
+
+Create a suffix tree for the given ``sequence``.  
+
+Note that the sequence must have size at least one.  
 ";
 
 // File: namespacecereal.xml
@@ -4518,11 +4515,54 @@ Devide the given ``matrix`` by its element-sum, i.e., normalize the matrix to
 have an element-sum of one, and return the element-sum.  
 ";
 
-%feature("docstring") tom::kron "
-``kron(A, B) -> MatrixXd``  
+%feature("docstring") tom::reverseWords "
+``reverseWords(words)``  
 
-Return the Kronecker-product :math:`A\\otimes B` of the matrices ``A`` and
-``B``.  
+Reverse the given ``words`` in-place.  
+";
+
+%feature("docstring") tom::solveOLS "
+``solveOLS(A, M, transposed=false, method=\"QR\") -> MatrixXd``  
+
+Return the ordinary least-squares (OLS) solution to the problem ``A`` * ``X`` =
+``M`` (or if ``transposed`` to ``X`` * ``A`` = ``M``) using a ``method`` from
+{\"Cholesky\", \"LDLT\", \"QR\" (default), \"SVD\", \"JacobiSVD\"}.  
+
+The \"Cholesky\" method solves the normal equations using a Cholesky
+decomposition. This is the fastest method, but loses most precision and requires
+the problem to be overdetermined and ``A`` to have full rank.  
+
+The \"LDLT\" method is essentially the same as \"Cholesky\", but uses a more
+robust Cholesky decomposition with pivoting that also avoids taking a square
+root. This method is recommended over \"Cholesky\" by Eigen3.  
+
+The \"QR\" method uses a QR decomposition. This is slower than \"Cholesky\", but
+gives more precision. The marix ``A`` should have full rank.  
+
+The \"SVD\" uses an SVD decomposition. This is the slowest, but gives best
+precision. Also, the matrix ``A`` does not need to have full rank, and in the
+case of an underdetermined problem, the least-squares solution with the smallest
+norm is returned.  
+
+The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
+(slower, but potentially more accurate) svd algorithm.  
+";
+
+%feature("docstring") tom::pinv "
+``pinv(M, method=\"SVD\") -> MatrixXd``  
+
+Return the pseudo-inverse of the given matrix ``M`` computed according to the
+given ``method`` from {\"Cholesky\", \"QR\", \"SVD\" (default), \"JacobiSVD\"}.  
+
+If ``method`` is \"SVD\" or \"JacobiSVD\", the classical pseudo-inverse is
+computed from the svd of ``M``.  
+
+If ``method`` is \"QR\", the pseudo-inverse is computed from the QR-
+factorization of ``M``, which requires ``M`` to have full rank.  
+
+If ``method`` is \"Cholesky\" or \"LDLT\", the pseudo-inverse is computed as
+$(M^\\top M)^{-1} M^\\top$ or $M^\\top (M M^\\top)^{-1}$ depending on the size
+of ``M``, which requires ``M`` to have full rank.  
 ";
 
 %feature("docstring") tom::solveLS "
@@ -4583,6 +4623,110 @@ The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
 (slower, but potentially more accurate) svd algorithm.  
 ";
 
+%feature("docstring") tom::colwiseMean "
+``colwiseMean(matrix, p=1.0) -> RowVectorXd``  
+
+Return the column-wise generalized mean with exponent ``p`` (default 1) of the
+given ``matrix``.  
+
+For ``p`` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean,
+respectively.  
+
+Note that for values of ``p`` other than {1, 2k} this requires all matrix
+entries to be positive.  
+";
+
+%feature("docstring") tom::sortWords "
+``sortWords(words)``  
+
+Sort the given ``words`` in-place by length and then lexicographically.  
+";
+
+%feature("docstring") tom::getIndicativeSequenceNodes "
+``getIndicativeSequenceNodes(reverseDataSuffixTree, minIndCount, maxIndLen) -> std::shared_ptr< std::vector< stree::nidx_t > >``  
+";
+
+%feature("docstring") tom::weightedNorm "
+``weightedNorm(M, W, squared=false) -> double``  
+
+Return the weighted norm of ``M`` with weights given in ``W``, or the squared
+weighted norm if ``squared`` is set to ``true``.  
+
+Depending on the size of ``W``, the given weights are interpreted in different
+ways, assuming ``M`` is of size m x n:  
+
+*   if ``W`` is of size zero, then no weights are used and the Frobenius norm
+    |M|_F is computed  
+*   if ``W`` is of size m+n x 1, then row and column weights [w_r; w_c] = W are
+    assumed and |M|_D(w_r w_c^T) is computed  
+*   if ``W`` is of size m x n, then element-wise weights are assumed and
+    |M|_D(W) is computed  
+*   if ``W`` is of size m x mn, then a block-diagonal weight matrix is assumed
+    and |M|_D(W1,...,Wn) is computed  
+*   if ``W`` is of size mn x mn, then a full weight matrix is assumed and |M|_W
+    is computed  
+";
+
+%feature("docstring") tom::solveGLS "
+``solveGLS(A, M, W, transposed=false, method=\"LDLT\") -> MatrixXd``  
+
+Return the D(W1,..., Wm)-weighted least-squares (GLS) solution to the
+overdetermined problem ``A`` * ``X`` = ``M`` (or to ``X`` * ``A`` = ``M`` if
+``transposed``) using a ``method`` from {\"Cholesky\", \"LDLT\" (default)},
+where the block-diagonal symmetric and positive definite weight matrix is given
+by ``W`` = [W1,..., Wn], where each ``Wj`` is the full weight matrix for the
+column j of ``M``.  
+
+This computes ``X`` that minimizes |``A`` * ``X`` - ``M``|_D(W1,...,Wn) (or
+|``X`` * ``A`` - ``M``|_D(W1,...,Wn) if ``transposed``).  
+
+Note that the \"LDLT\" method is essentially the same as \"Cholesky\", but uses
+a more robust Cholesky decomposition with pivoting that also avoids taking a
+square root. This method is recommended over \"Cholesky\" by Eigen3.  
+";
+
+%feature("docstring") tom::hmmToOom "
+``hmmToOom(T, E, w, transition_first=false) -> SHARED_PTR< Oom >``  
+";
+
+%feature("docstring") tom::wordsOverAlphabet "
+``wordsOverAlphabet(nOutputSymbols, nInputSymbols=0, minLength=1, maxLength=1) -> std::shared_ptr< Sequences >``  
+
+Return in lexicographic order all words of length between ``minLength`` and
+``maxLength`` over the alphabet with ``nOutputSymbols`` output symbols if
+``nInputSymbols`` is zero, or otherwise over the alphabet of input-output symbol
+pairs with ``nOutputSymbols`` output symbols and ``nInputSymbols`` input
+symbols.  
+
+Parameters
+----------
+* ``nOutputSymbols`` :  
+    the number of output symbols  
+* ``nInputSymbols`` :  
+    the number of input symbols (default 0)  
+* ``minLength`` :  
+    the minimum length for returned words (default 1)  
+* ``maxLength`` :  
+    the maximum length for returned words (default 1)  
+
+Returns
+-------
+an array of words  
+";
+
+%feature("docstring") tom::rowwiseMean "
+``rowwiseMean(matrix, p=1.0) -> VectorXd``  
+
+Return the row-wise generalized mean with exponent ``p`` (default 1) of the
+given ``matrix``.  
+
+For ``p`` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean,
+respectively.  
+
+Note that for values of ``p`` other than {1, 2k} this requires all matrix
+entries to be positive.  
+";
+
 %feature("docstring") tom::normalizeCols "
 ``normalizeCols(matrix) -> bool``  
 
@@ -4591,69 +4735,6 @@ columns to have column-sum one.
 
 Return ``true`` if successful, or ``false`` if a column could not be normalized
 due to a zero column-sum.  
-";
-
-%feature("docstring") tom::solveRowColWLS "
-``solveRowColWLS(A, M, W, transposed=false, method=\"LDLT\") -> MatrixXd``  
-
-Return the row or column weighted least-squares solution to the problem ``A`` *
-``X`` = ``M`` with row-weights given in the column vector ``W`` (or if
-``transposed`` to ``X`` * ``A`` = ``M`` with column-weights given in the row
-vector ``W``) using a ``method`` from {\"Cholesky\", \"LDLT\" (default), \"QR\",
-\"SVD\", \"JacobiSVD\"}.  
-
-This computes ``X`` that minimizes |D(sqrt_W) * (``A`` * ``X`` - ``M``)|_F (or
-|(``X`` * ``A`` - ``M``) * D(sqrt_W)|_F if ``transposed``), where ``sqrt_W`` is
-the element-wise square-root of ``W``, i.e., ``W`` = ``sqrt_W`` .* ``sqrt_W``,
-and ``.*`` denotes the element-wise product. The computation is done by reducing
-the problem to an OLS problem that is then solved according to the given
-``method`` as detailed below (see also ``solveOLS()``). Note that the weights in
-``W`` must be strictly greater than zero.  
-
-Note that column weights have no effect in the default case, and row weight have
-no effect if ``transposed``, and are therefore ommitted.  
-
-The \"Cholesky\" method solves the normal equations using a Cholesky
-decomposition. This is the fastest method, but loses most precision and requires
-the problem to be overdetermined and ``A`` to have full rank.  
-
-The \"LDLT\" method is essentially the same as \"Cholesky\", but uses a more
-robust Cholesky decomposition with pivoting that also avoids taking a square
-root. This method is recommended over \"Cholesky\" by Eigen3.  
-
-The \"QR\" method uses a QR decomposition. This is slower than \"Cholesky\", but
-gives more precision. The marix ``A`` should have full rank.  
-
-The \"SVD\" uses an SVD decomposition. This is the slowest, but gives best
-precision. Also, the matrix ``A`` does not need to have full rank, and in the
-case of an underdetermined problem, the least-squares solution with the smallest
-norm is returned.  
-
-The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
-(slower, but potentially more accurate) svd algorithm.  
-";
-
-%feature("docstring") tom::pinv "
-``pinv(M, method=\"SVD\") -> MatrixXd``  
-
-Return the pseudo-inverse of the given matrix ``M`` computed according to the
-given ``method`` from {\"Cholesky\", \"QR\", \"SVD\" (default), \"JacobiSVD\"}.  
-
-If ``method`` is \"SVD\" or \"JacobiSVD\", the classical pseudo-inverse is
-computed from the svd of ``M``.  
-
-If ``method`` is \"QR\", the pseudo-inverse is computed from the QR-
-factorization of ``M``, which requires ``M`` to have full rank.  
-
-If ``method`` is \"Cholesky\" or \"LDLT\", the pseudo-inverse is computed as
-:math:`(M^\\top M)^{-1} M^\\top` or :math:`M^\\top (M M^\\top)^{-1}` depending
-on the size of ``M``, which requires ``M`` to have full rank.  
-";
-
-%feature("docstring") tom::reverseWords "
-``reverseWords(words)``  
-
-Reverse the given ``words`` in-place.  
 ";
 
 %feature("docstring") tom::solveWLS "
@@ -4690,82 +4771,26 @@ The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
 (slower, but potentially more accurate) svd algorithm.  
 ";
 
-%feature("docstring") tom::hmmToOom "
-``hmmToOom(T, E, w, transition_first=false) -> SHARED_PTR< Oom >``  
-";
+%feature("docstring") tom::transformWeights "
+``transformWeights(W, B, covariances=true) -> MatrixXd``  
 
-%feature("docstring") tom::colwiseMean "
-``colwiseMean(matrix, p=1.0) -> RowVectorXd``  
+Return a new weight matrix for ``X``, assuming ``X`` is a solution to the
+D(``W``)-weighted WLS problem ``B`` * ``X`` = ``M``.  
 
-Return the column-wise generalized mean with exponent ``p`` (default 1) of the
-given ``matrix``.  
+Note that the columns of ``X`` can be regarded as coordinate representations for
+the columns of ``M`` with respect to a basis given by the columns of ``B``. This
+function transforms the given weights for the columns of ``M`` to appropriate
+weights for the coordinates in the columns of ``X``. The resulting weight matrix
+for ``X`` will therefore be block-diagonal in general, but if ``covariances`` is
+set to ``false``, the off-diagonal weights are ignored, resulting in element-
+wise weights for ``X``.  
 
-For ``p`` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean,
-respectively.  
+The returned matrix will therefore be  
 
-Note that for values of ``p`` other than {1, 2k} this requires all matrix
-entries to be positive.  
-";
-
-%feature("docstring") tom::computeWLRA "
-``computeWLRA(M, W, B_init, stopCondition=StopCondition(50, 1e-5, 1e-12), method=\"Cholesky\") -> tuple< MatrixXd, MatrixXd >``  
-
-Return in a tuple [B,A] (an approximation to) the best weighted rank-d
-approximation to ``M`` with element-wise weights ``W`` such that |``B`` * ``A``
-- ``M``|_D(vect(W)) is minimized.  
-
-This is computed iteratively starting from an initial approximation given by
-``B_init`` using \"alternating projections\", which are in turn solved via the
-given ``method``. The termination of the iteration is controlled by the given
-``stopCondition``. See ``tom.util.StopCondition``.  
-";
-
-%feature("docstring") tom::sortWords "
-``sortWords(words)``  
-
-Sort the given ``words`` in-place by length and then lexicographically.  
-";
-
-%feature("docstring") tom::sharpenEfficiency "
-``sharpenEfficiency(oom, rStree, indNodes) -> std::shared_ptr< Oom >``  
-";
-
-%feature("docstring") tom::improveWLRA "
-``improveWLRA(B, A, M, W, stopCondition=StopCondition(50, 1e-5, 1e-12), method=\"Cholesky\")``  
-
-Compute in the arguments ``B`` and ``A`` (an approximation to) the best weighted
-rank-d approximation to ``M`` with element-wise weights ``W`` such that |``B`` *
-``A`` - ``M``|_D(W) is minimized.  
-
-This is computed iteratively starting from an initial approximation given by
-``B`` * ``A`` using \"alternating projections\" solved via the given ``method``.
-The termination of the iteration is controlled by the given ``stopCondition``.
-See ``tom.util.StopCondition``.  
-";
-
-%feature("docstring") tom::wordsOverAlphabet "
-``wordsOverAlphabet(nOutputSymbols, nInputSymbols=0, minLength=1, maxLength=1) -> std::shared_ptr< Sequences >``  
-
-Return in lexicographic order all words of length between ``minLength`` and
-``maxLength`` over the alphabet with ``nOutputSymbols`` output symbols if
-``nInputSymbols`` is zero, or otherwise over the alphabet of input-output symbol
-pairs with ``nOutputSymbols`` output symbols and ``nInputSymbols`` input
-symbols.  
-
-Parameters
-----------
-* ``nOutputSymbols`` :  
-    the number of output symbols  
-* ``nInputSymbols`` :  
-    the number of input symbols (default 0)  
-* ``minLength`` :  
-    the minimum length for returned words (default 1)  
-* ``maxLength`` :  
-    the maximum length for returned words (default 1)  
-
-Returns
--------
-an array of words  
+*   [B^T * D([W]_1) * B, ..., B^T * D([W]_m) * B] of size B.cols() x B.cols *
+    M.cols() if ``covariances``  
+*   [diag(B^T * D([W]_1) * B), ..., diag(B^T * D([W]_m) * B)] of size B.cols() x
+    M.cols() otherwise.  
 ";
 
 %feature("docstring") tom::wordsFromData "
@@ -4837,106 +4862,10 @@ for a **reversed** training sequence, and then reverse each word in the
 resulting set.  
 ";
 
-%feature("docstring") tom::transformWeights "
-``transformWeights(W, B, covariances=true) -> MatrixXd``  
+%feature("docstring") tom::kron "
+``kron(A, B) -> MatrixXd``  
 
-Return a new weight matrix for ``X``, assuming ``X`` is a solution to the
-D(``W``)-weighted WLS problem ``B`` * ``X`` = ``M``.  
-
-Note that the columns of ``X`` can be regarded as coordinate representations for
-the columns of ``M`` with respect to a basis given by the columns of ``B``. This
-function transforms the given weights for the columns of ``M`` to appropriate
-weights for the coordinates in the columns of ``X``. The resulting weight matrix
-for ``X`` will therefore be block-diagonal in general, but if ``covariances`` is
-set to ``false``, the off-diagonal weights are ignored, resulting in element-
-wise weights for ``X``.  
-
-The returned matrix will therefore be  
-
-*   [B^T * D([W]_1) * B, ..., B^T * D([W]_m) * B] of size B.cols() x B.cols *
-    M.cols() if ``covariances``  
-*   [diag(B^T * D([W]_1) * B), ..., diag(B^T * D([W]_m) * B)] of size B.cols() x
-    M.cols() otherwise.  
-";
-
-%feature("docstring") tom::getIndicativeSequenceNodes "
-``getIndicativeSequenceNodes(reverseDataSuffixTree, minIndCount, maxIndLen) -> std::shared_ptr< std::vector< stree::nidx_t > >``  
-";
-
-%feature("docstring") tom::solveGLS "
-``solveGLS(A, M, W, transposed=false, method=\"LDLT\") -> MatrixXd``  
-
-Return the D(W1,..., Wm)-weighted least-squares (GLS) solution to the
-overdetermined problem ``A`` * ``X`` = ``M`` (or to ``X`` * ``A`` = ``M`` if
-``transposed``) using a ``method`` from {\"Cholesky\", \"LDLT\" (default)},
-where the block-diagonal symmetric and positive definite weight matrix is given
-by ``W`` = [W1,..., Wn], where each ``Wj`` is the full weight matrix for the
-column j of ``M``.  
-
-This computes ``X`` that minimizes |``A`` * ``X`` - ``M``|_D(W1,...,Wn) (or
-|``X`` * ``A`` - ``M``|_D(W1,...,Wn) if ``transposed``).  
-
-Note that the \"LDLT\" method is essentially the same as \"Cholesky\", but uses
-a more robust Cholesky decomposition with pivoting that also avoids taking a
-square root. This method is recommended over \"Cholesky\" by Eigen3.  
-";
-
-%feature("docstring") tom::solveOLS "
-``solveOLS(A, M, transposed=false, method=\"QR\") -> MatrixXd``  
-
-Return the ordinary least-squares (OLS) solution to the problem ``A`` * ``X`` =
-``M`` (or if ``transposed`` to ``X`` * ``A`` = ``M``) using a ``method`` from
-{\"Cholesky\", \"LDLT\", \"QR\" (default), \"SVD\", \"JacobiSVD\"}.  
-
-The \"Cholesky\" method solves the normal equations using a Cholesky
-decomposition. This is the fastest method, but loses most precision and requires
-the problem to be overdetermined and ``A`` to have full rank.  
-
-The \"LDLT\" method is essentially the same as \"Cholesky\", but uses a more
-robust Cholesky decomposition with pivoting that also avoids taking a square
-root. This method is recommended over \"Cholesky\" by Eigen3.  
-
-The \"QR\" method uses a QR decomposition. This is slower than \"Cholesky\", but
-gives more precision. The marix ``A`` should have full rank.  
-
-The \"SVD\" uses an SVD decomposition. This is the slowest, but gives best
-precision. Also, the matrix ``A`` does not need to have full rank, and in the
-case of an underdetermined problem, the least-squares solution with the smallest
-norm is returned.  
-
-The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
-(slower, but potentially more accurate) svd algorithm.  
-";
-
-%feature("docstring") tom::normalizeRows "
-``normalizeRows(matrix) -> bool``  
-
-Devide each row of the given ``matrix`` by its sum, i.e., normalize the rows to
-have row-sum one.  
-
-Return ``true`` if successful, or ``false`` if a row could not be normalized due
-to a zero row-sum.  
-";
-
-%feature("docstring") tom::weightedNorm "
-``weightedNorm(M, W, squared=false) -> double``  
-
-Return the weighted norm of ``M`` with weights given in ``W``, or the squared
-weighted norm if ``squared`` is set to ``true``.  
-
-Depending on the size of ``W``, the given weights are interpreted in different
-ways, assuming ``M`` is of size m x n:  
-
-*   if ``W`` is of size zero, then no weights are used and the Frobenius norm
-    |M|_F is computed  
-*   if ``W`` is of size m+n x 1, then row and column weights [w_r; w_c] = W are
-    assumed and |M|_D(w_r w_c^T) is computed  
-*   if ``W`` is of size m x n, then element-wise weights are assumed and
-    |M|_D(W) is computed  
-*   if ``W`` is of size m x mn, then a block-diagonal weight matrix is assumed
-    and |M|_D(W1,...,Wn) is computed  
-*   if ``W`` is of size mn x mn, then a full weight matrix is assumed and |M|_W
-    is computed  
+Return the Kronecker-product $A\\otimes B$ of the matrices ``A`` and ``B``.  
 ";
 
 %feature("docstring") tom::wordsFromModel "
@@ -4959,17 +4888,84 @@ Parameters
     the maximum number of returned words, or ``0`` (default) for no limit  
 ";
 
-%feature("docstring") tom::rowwiseMean "
-``rowwiseMean(matrix, p=1.0) -> VectorXd``  
+%feature("docstring") tom::improveWLRA "
+``improveWLRA(B, A, M, W, stopCondition=StopCondition(50, 1e-5, 1e-12), method=\"Cholesky\")``  
 
-Return the row-wise generalized mean with exponent ``p`` (default 1) of the
-given ``matrix``.  
+Compute in the arguments ``B`` and ``A`` (an approximation to) the best weighted
+rank-d approximation to ``M`` with element-wise weights ``W`` such that |``B`` *
+``A`` - ``M``|_D(W) is minimized.  
 
-For ``p`` = 1, 0, -1 this is the arithmetic, geometric and harmonic mean,
-respectively.  
+This is computed iteratively starting from an initial approximation given by
+``B`` * ``A`` using \"alternating projections\" solved via the given ``method``.
+The termination of the iteration is controlled by the given ``stopCondition``.
+See ``tom.util.StopCondition``.  
+";
 
-Note that for values of ``p`` other than {1, 2k} this requires all matrix
-entries to be positive.  
+%feature("docstring") tom::computeWLRA "
+``computeWLRA(M, W, B_init, stopCondition=StopCondition(50, 1e-5, 1e-12), method=\"Cholesky\") -> tuple< MatrixXd, MatrixXd >``  
+
+Return in a tuple [B,A] (an approximation to) the best weighted rank-d
+approximation to ``M`` with element-wise weights ``W`` such that |``B`` * ``A``
+- ``M``|_D(vect(W)) is minimized.  
+
+This is computed iteratively starting from an initial approximation given by
+``B_init`` using \"alternating projections\", which are in turn solved via the
+given ``method``. The termination of the iteration is controlled by the given
+``stopCondition``. See ``tom.util.StopCondition``.  
+";
+
+%feature("docstring") tom::sharpenEfficiency "
+``sharpenEfficiency(oom, rStree, indNodes) -> std::shared_ptr< Oom >``  
+";
+
+%feature("docstring") tom::normalizeRows "
+``normalizeRows(matrix) -> bool``  
+
+Devide each row of the given ``matrix`` by its sum, i.e., normalize the rows to
+have row-sum one.  
+
+Return ``true`` if successful, or ``false`` if a row could not be normalized due
+to a zero row-sum.  
+";
+
+%feature("docstring") tom::solveRowColWLS "
+``solveRowColWLS(A, M, W, transposed=false, method=\"LDLT\") -> MatrixXd``  
+
+Return the row or column weighted least-squares solution to the problem ``A`` *
+``X`` = ``M`` with row-weights given in the column vector ``W`` (or if
+``transposed`` to ``X`` * ``A`` = ``M`` with column-weights given in the row
+vector ``W``) using a ``method`` from {\"Cholesky\", \"LDLT\" (default), \"QR\",
+\"SVD\", \"JacobiSVD\"}.  
+
+This computes ``X`` that minimizes |D(sqrt_W) * (``A`` * ``X`` - ``M``)|_F (or
+|(``X`` * ``A`` - ``M``) * D(sqrt_W)|_F if ``transposed``), where ``sqrt_W`` is
+the element-wise square-root of ``W``, i.e., ``W`` = ``sqrt_W`` .* ``sqrt_W``,
+and ``.*`` denotes the element-wise product. The computation is done by reducing
+the problem to an OLS problem that is then solved according to the given
+``method`` as detailed below (see also ``solveOLS()``). Note that the weights in
+``W`` must be strictly greater than zero.  
+
+Note that column weights have no effect in the default case, and row weight have
+no effect if ``transposed``, and are therefore ommitted.  
+
+The \"Cholesky\" method solves the normal equations using a Cholesky
+decomposition. This is the fastest method, but loses most precision and requires
+the problem to be overdetermined and ``A`` to have full rank.  
+
+The \"LDLT\" method is essentially the same as \"Cholesky\", but uses a more
+robust Cholesky decomposition with pivoting that also avoids taking a square
+root. This method is recommended over \"Cholesky\" by Eigen3.  
+
+The \"QR\" method uses a QR decomposition. This is slower than \"Cholesky\", but
+gives more precision. The marix ``A`` should have full rank.  
+
+The \"SVD\" uses an SVD decomposition. This is the slowest, but gives best
+precision. Also, the matrix ``A`` does not need to have full rank, and in the
+case of an underdetermined problem, the least-squares solution with the smallest
+norm is returned.  
+
+The \"JacobiSVD\" method is similar to the \"SVD\" method, but uses a different
+(slower, but potentially more accurate) svd algorithm.  
 ";
 
 // File: _cereal_tom_8h.xml
