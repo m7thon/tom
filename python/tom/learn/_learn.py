@@ -412,7 +412,8 @@ def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=cached_wsvd):
     return sqrt_v_Y * U[:, :dim] * ssd[None, :dim]
 
 
-def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=_tomlib.StopCondition(100, 1e-5, 1e-7), method='Cholesky'):
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, method='Cholesky'):
+    if stopCondition is None: stopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
     if type(dim_subspace) is int:
         dim_subspace = subspace_by_svd(F, dim_subspace)
     B, A = _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, method)
@@ -491,7 +492,7 @@ def parse_v(data, v):
 
 
 def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
-                   WLRAstopCondition=_tomlib.StopCondition(100, 1e-5, 1e-7), ES_stabilization=None, return_subspace=False):
+                   WLRAstopCondition=None, ES_stabilization=None, return_subspace=False):
     """Estimate a model from the given `data` using a spectral `method`.
 
     Parameters
@@ -532,11 +533,11 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
         Furthermore, `v_X` may be omitted to indicate that the same settings
         should be used as for `v_Y`. For instance, one may pass
             `v = [[p,q]]`  or  `v = ((p,q), )`  (but *not* `v = ((p,q))`!).
-    WLRAstopCondition : tom.util.StopCondition (or None), optional
+    WLRAstopCondition : tom.util.StopCondition (or int or None), optional
         Determines the stopping condition for the iterative computation of
         the weighted low-rank approximation of F in the case of methods
         'WLS' or 'GLS'. By default at most 100 iterations are performed.
-        This can be set to `None` to perform no iterations (which then uses
+        This can be set to `0` to perform no iterations (which then uses
         the provided subspace or computes the principal subspace by SVD).
     ES_stabilization : dict of tom.Oom.stabilization() parameters
         Stabilization parameters to use for the computation of Π (defaults
@@ -589,7 +590,8 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
         model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X))
 
     elif method in ['GLS', 'WLS']:
-        if WLRAstopCondition is None: WLRAstopCondition = _tomlib.StopCondition(0)
+        if WLRAstopCondition is None: WLRAstopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
+        elif WLRAstopCondition is int: WLRAstopCondition = _tomlib.StopCondition(WLRAstopCondition)
         subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=WLRAstopCondition)
         model = model_by_weighted_equations(data, subspace, method == 'GLS')
 
