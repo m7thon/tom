@@ -67,7 +67,7 @@ class Data:
         self._sequence = None
         self._nInputSymbols = self._nOutputSymbols = None
         self._stree = None
-        self._regularization = {'vPC': 2, 'vMin': 3}
+        self._regularization = (2,3)
         self._estimator = None
         self._X = self._Y = None
         self._e = _tomlib.Sequence()
@@ -117,7 +117,7 @@ class Data:
             self._stree.extendTo(setTo, False)
         self._sequence = setTo
         self._estimator = _tomlib.Estimator(self._stree)
-        self._estimator.regularization(**self._regularization)
+        self._estimator.regularization(*self._regularization)
 
         self._X = self._Y = None
         self._reset_cache()
@@ -157,7 +157,7 @@ class Data:
     @regularization.setter
     def regularization(self, setTo):
         if self._estimator is not None:
-            self._estimator.regularization(**setTo)
+            self._estimator.regularization(*setTo)
         self._regularization = setTo
         self._reset_cache(['V_YX', 'V_zYX', 'v_YE', 'v_EX'])
         
@@ -246,7 +246,7 @@ class Data:
                     if r != regularization: raise ValueError()
                 except:
                     estimator = _tomlib.Estimator(self.stree)
-                    estimator.regularization(**regularization)
+                    estimator.regularization(*regularization)
                     V = estimator.v(self.Y, self.X)
                     if 'V_YXr' in self._cache: self._cache['V_YXr'] = (regularization, V)
                 return V
@@ -264,7 +264,7 @@ class Data:
         else:
             if regularization is not None and regularization != self._regularization:
                 estimator = _tomlib.Estimator(self.stree)
-                estimator.regularization(**regularization)
+                estimator.regularization(*regularization)
                 return estimator.v(self.Y, z[0], z[1], self.X)
             try: V = self._cache['V_zYX'][tuple(z)]
             except:
@@ -277,7 +277,7 @@ class Data:
         else:
             if regularization is not None and regularization != self._regularization:
                 estimator = _tomlib.Estimator(self.stree)
-                estimator.regularization(**regularization)
+                estimator.regularization(*regularization)
                 return estimator.v(self._E, self.X)
             try: v = self._cache['v_EX']
             except: return self.estimator.v(self._E, self.X)
@@ -291,7 +291,7 @@ class Data:
         else:
             if regularization is not None and regularization != self._regularization:
                 estimator = _tomlib.Estimator(self.stree)
-                estimator.regularization(**regularization)
+                estimator.regularization(*regularization)
                 return estimator.v(self.Y, self._E)
             try: v = self._cache['v_YE']
             except: return self.estimator.v(self.Y, self._E)
@@ -314,9 +314,9 @@ def v_Y_from_data(data, p=1, q=1, regularization='auto'):
     """
     if q == 0: return 1
     if p is None:
-        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        if regularization == 'auto': regularization = (2,3)
         return data.v_YE(regularization=regularization) ** q
-    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    if regularization == 'auto': regularization = (0, 1e-15)
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p)**q
 
@@ -334,9 +334,9 @@ def v_X_from_data(data, p=1, q=1, regularization='auto'):
     """
     if q == 0: return 1
     if p is None:
-        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        if regularization == 'auto': regularization = (2,3)
         return data.v_EX(regularization=regularization) ** q
-    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    if regularization == 'auto': regularization = (0, 1e-15)
     V = data.V_YX(regularization=regularization)
     return _tomlib.colwiseMean(V, p)**q
 
@@ -356,9 +356,9 @@ def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
     """
     if q == 0: return 1, 1
     if p is None:
-        if regularization == 'auto': regularization = {'vPC': 2, 'vMin': 3}
+        if regularization == 'auto': regularization = (2,3)
         return data.v_EX(regularization=regularization) ** q
-    if regularization == 'auto': regularization = {'vPC': 0, 'vMin': 1e-15}
+    if regularization == 'auto': regularization = (0, 1e-15)
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
 
