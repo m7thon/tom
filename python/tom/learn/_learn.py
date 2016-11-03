@@ -191,6 +191,7 @@ class Data:
 
     def pre_compute(self):
         self._cache['F_YX'], self._cache['V_YX'] = self.estimator.fv(self.Y, self.X)
+        self._cache['F_zYX'], self._cache['V_zYX'] = {}, {}
         for o, u in itertools.product(range(self.nOutputSymbols), range(max(1, self.nInputSymbols))):
             self._cache['F_zYX'][(o, u)], self._cache['V_zYX'][(o, u)] = self.estimator.fv(self.Y, o, u, self.X)
         self._cache['f_YE'], self._cache['v_YE'] = self.estimator.fv(self.Y, self._E)
