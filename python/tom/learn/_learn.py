@@ -78,7 +78,7 @@ class Data:
         elif cache_level == 2:
             self.cache = ['F_YX', 'F_zYX', 'f_YE', 'f_EX', 'V_YX', 'V_YXr', 'V_zYX', 'v_YE', 'v_EX']
         if sequence is not None:
-            self.sequence(setTo=sequence)
+            self.sequence = sequence
 
     @property
     def cache(self):
