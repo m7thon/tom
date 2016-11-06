@@ -413,11 +413,11 @@ def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=cached_wsvd):
     return sqrt_v_Y * U[:, :dim] * ssd[None, :dim]
 
 
-def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, method='Cholesky'):
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='Cholesky'):
     if stopCondition is None: stopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
     if type(dim_subspace) is int:
         dim_subspace = subspace_by_svd(F, dim_subspace)
-    B, A = _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, method)
+    B, A = _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, ls_method)
     return B
 
 
@@ -461,18 +461,18 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     return oom
 
 
-def model_by_weighted_equations(data, subspace, use_covariances=True):
+def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='Cholesky'):
     B = subspace
     dim = B.shape[1]
-    A = _tomlib.solveLS(B, data.F_YX(), 1/data.V_YX(), transposed=False)
+    A = _tomlib.solveLS(B, data.F_YX(), 1 / data.V_YX(), transposed=False, method=ls_method)
     oom = _tomlib.Oom(dim, data.nOutputSymbols, data.nInputSymbols)
     for u, o in itertools.product(range(max(1, data.nInputSymbols)), range(data.nOutputSymbols)):
         Wz = 1 / data.V_zYX([o, u])
-        Az = _tomlib.solveLS(B, data.F_zYX([o, u]), Wz, transposed=False)
+        Az = _tomlib.solveLS(B, data.F_zYX([o, u]), Wz, transposed=False, method=ls_method)
         WAz = _tomlib.transformWeights(Wz, B, covariances=use_covariances)
-        oom.tau(o, u, _tomlib.solveLS(A, Az, WAz, transposed=True))
-    oom.sig(_tomlib.solveLS(A, data.f_EX(), 1 / data.v_EX(), transposed=True))
-    oom.w0(_tomlib.solveLS(B, data.f_YE(), 1 / data.v_YE(), transposed=False))
+        oom.tau(o, u, _tomlib.solveLS(A, Az, WAz, transposed=True, method=ls_method))
+    oom.sig(_tomlib.solveLS(A, data.f_EX(), 1 / data.v_EX(), transposed=True, method=ls_method))
+    oom.w0(_tomlib.solveLS(B, data.f_YE(), 1 / data.v_YE(), transposed=False, method=ls_method))
     oom.initialize()
     return oom
 
