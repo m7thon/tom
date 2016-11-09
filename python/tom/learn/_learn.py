@@ -189,8 +189,9 @@ class Data:
             self._Y = _tomlib.wordsFromData(self.stree, **setTo)
         else: self._Y = setTo
 
-    def pre_compute(self):
+    def pre_compute(self, only_F_and_V = False):
         self._cache['F_YX'], self._cache['V_YX'] = self.estimator.fv(self.Y, self.X)
+        if only_F_and_V: return
         self._cache['F_zYX'], self._cache['V_zYX'] = {}, {}
         for o, u in itertools.product(range(self.nOutputSymbols), range(max(1, self.nInputSymbols))):
             self._cache['F_zYX'][(o, u)], self._cache['V_zYX'][(o, u)] = self.estimator.fv(self.Y, o, u, self.X)
