@@ -11,3 +11,4 @@ from .learn import Data
 from . import util
 
 from .util import load, save
+from ._version import version

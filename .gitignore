@@ -16,4 +16,5 @@ doc/xml
 doc/tom.tag
 doc/dummydox
 python/tom.egg-info
+python/tom/_version.py
 tom.egg-info

@@ -15,9 +15,20 @@ def make_depends():
                     depends.append(os.path.join(root,file))
     return depends
 
+def set_version(v):
+    try:
+        vh = os.popen("git log -1 --format=\"%h\"").read().strip()
+        if os.popen("git status --porcelain").read() != '':
+            vh += 'M'
+    except:
+        v = 'UNKNOWN'
+    with open('python/tom/_version.py', 'w') as f:
+        f.write("version = '%s'" % vh)
+    return v
+
 setup(
     name = "tom",
-    version = "0.4.0",
+    version = set_version('0.4.0'),
     author = "Michael Thon",
     author_email = "m7.thon@gmail.com",
     description = ("Toolkit for observable operator modeling"),
