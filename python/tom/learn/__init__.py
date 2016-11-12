@@ -1,5 +1,5 @@
 from .._tomlib import transformWeights
-from ._learn import wsvd, CachedWSVD, cached_wsvd, Data, parse_v
+from ._learn import Data, parse_v
 from ._learn import v_X_from_data, v_Y_from_data, v_Y_v_X_from_data
 from ._learn import rank_estimate
 from ._learn import subspace_by_alternating_projections, subspace_from_model

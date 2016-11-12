@@ -3,63 +3,7 @@ from .. import _tomlib
 from .. import linalg
 
 import numpy as np
-try:
-    import scipy.linalg as py_linalg
-    pinv = py_linalg.pinv2
-except ImportError:
-    import numpy.linalg as py_linalg
-    pinv = py_linalg.pinv
 import itertools
-
-
-def wsvd(sqrt_w_Y, F, sqrt_w_X):
-    """Return the singular value decomposition `(U, s, VT)` of the row and column
-    weighted matrix `sqrt_w_Y * F * sqrt_w_Y."""
-    return py_linalg.svd(sqrt_w_Y * F * sqrt_w_X)
-
-
-class CachedWSVD:
-    """A cached version of `wsvd`."""
-    def __init__(self):
-        self._F = None
-        self._sqrt_w_Y = None
-        self._sqrt_w_X = None
-        self._wsvd = None
-        self._svd = None
-
-    def __call__(self, sqrt_w_Y, F, sqrt_w_X):
-        if F is not self._F:
-            self._F = F
-            self._F.setflags(write=False)
-            self._svd = self._wsvd = None
-        if np.array_equal(sqrt_w_Y, 1) and np.array_equal(sqrt_w_X, 1):
-            if self._svd is None:
-                U, s, VT = wsvd(1, F, 1)
-                U.setflags(write=False)
-                s.setflags(write=False)
-                VT.setflags(write=False)
-                self._svd = U, s, VT
-            return self._svd
-        if not (sqrt_w_Y is self._sqrt_w_Y or np.array_equal(sqrt_w_Y, self._sqrt_w_Y)):
-            self._sqrt_w_Y = sqrt_w_Y
-            try: self._sqrt_w_Y.setflags(write=False)
-            except: pass
-            self._wsvd = None
-        if not (sqrt_w_X is self._sqrt_w_X or np.array_equal(sqrt_w_X, self._sqrt_w_X)):
-            self._sqrt_w_X = sqrt_w_X
-            try: self._sqrt_w_X.setflags(write=False)
-            except: pass
-            self._wsvd = None
-        if self._wsvd is None:
-            U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
-            U.setflags(write=False)
-            s.setflags(write=False)
-            VT.setflags(write=False)
-            self._wsvd = U, s, VT
-        return self._wsvd
-
-
-cached_wsvd = CachedWSVD()
 
 
 class Data:
@@ -365,7 +309,7 @@ def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
     return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
 
 
-def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=False, wsvd=cached_wsvd):
+def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=False, wsvd=linalg.cached_wsvd):
     """
     Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
     to determine a cutoff for the error on `F` that is determined using the given `errorNorm`.
@@ -441,7 +385,7 @@ def subspace_from_model(model, Y, v_Y=1, stabilization=None):
     return Pi
 
 
-def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=cached_wsvd):
+def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     threshold = 1e-12
     sqrt_v_Y, sqrt_v_X = np.sqrt(v_Y), np.sqrt(v_X)
     U, s, VT = wsvd(1/sqrt_v_Y, F, 1/sqrt_v_X)
@@ -463,7 +407,7 @@ def subspace_corresponding_to_C_and_v_Y(C, v_Y):
     return v_Y * C.transpose()
 
 
-def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=cached_wsvd):
+def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     sqrt_w_X = 1/np.sqrt(v_X)
     if type(dim_subspace) is int:
         dim = dim_subspace
@@ -481,7 +425,7 @@ def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=cached_wsvd):
     else:
         subspace = dim_subspace
         C = (1 / v_Y * subspace).transpose()
-        Q = np.transpose(sqrt_w_X) * pinv(C.dot(F_YX) * sqrt_w_X)
+        Q = np.transpose(sqrt_w_X) * linalg.pinv(C.dot(F_YX) * sqrt_w_X)
     return C, Q
 
 
@@ -489,7 +433,7 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     dim = C.shape[0]
     nU = data.nInputSymbols
     nO = data.nOutputSymbols
-    CFQ_inv = 1 if CFQ_is_identity is True else pinv(C.dot(data.F_YX()).dot(Q))
+    CFQ_inv = 1 if CFQ_is_identity is True else linalg.pinv(C.dot(data.F_YX()).dot(Q))
     oom = _tomlib.Oom(dim, nO, nU)
     for o, u in itertools.product(range(nO), range(max(1, nU))):
         oom.tau(o, u, C.dot(data.F_zYX([o, u])).dot(Q).dot(CFQ_inv))
