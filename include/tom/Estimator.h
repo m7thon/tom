@@ -361,7 +361,7 @@ private:
             c += 0.5 * estimator_.vPC_;
             n += estimator_.vPC_;
             p = ( n == 0 ? 0.5 : c / n );
-            double var_p = ( n >= 2 ? p * (1 - p) / (n - 1) : 0.25 );
+            double var_p = ( n >= 2 ? p * (1 - p) / (n - 1) : n == 1 and c == 0 ? 0 : 0.25 );
             v_ = v_ * std::max(p*p - var_p, 0.0) + f2_ * var_p;
             f2_ *= p*p;
             return *this;
