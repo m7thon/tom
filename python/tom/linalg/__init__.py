@@ -2,5 +2,5 @@ from .._tomlib import normalize, normalizeRows, normalizeCols, colwiseMean, roww
 from .._tomlib import solveLS
 from .._tomlib import computeWLRA, improveWLRA
 
-#from ._linalg import stuff
+from ._linalg import spectral_norm_expectation
 

@@ -1,6 +1,6 @@
 from __future__ import (division, absolute_import, print_function, unicode_literals)
 from .. import _tomlib
-# from .. import linalg
+from .. import linalg
 
 import numpy as np
 try:
@@ -318,7 +318,7 @@ def v_Y_from_data(data, p=1, q=1, regularization='auto'):
     if p is None:
         if regularization == 'auto': regularization = (2,3)
         return data.v_YE(regularization=regularization) ** q
-    if regularization == 'auto': regularization = (0, 1e-15)
+    if regularization == 'auto': regularization = (2, 0)
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p)**q
 
@@ -338,7 +338,7 @@ def v_X_from_data(data, p=1, q=1, regularization='auto'):
     if p is None:
         if regularization == 'auto': regularization = (2,3)
         return data.v_EX(regularization=regularization) ** q
-    if regularization == 'auto': regularization = (0, 1e-15)
+    if regularization == 'auto': regularization = (2, 0)
     V = data.V_YX(regularization=regularization)
     return _tomlib.colwiseMean(V, p)**q
 
@@ -360,36 +360,73 @@ def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
     if p is None:
         if regularization == 'auto': regularization = (2,3)
         return data.v_EX(regularization=regularization) ** q
-    if regularization == 'auto': regularization = (0, 1e-15)
+    if regularization == 'auto': regularization = (2, 0)
     V = data.V_YX(regularization=regularization)
     return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
 
 
-def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='spec', wsvd=cached_wsvd):
-    """Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
-    to determine a cutoff for the error on `F` that is measured by the given `errorNorm`, which may
-    be 'spec' (default) or 'frob'. """
+def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=False, wsvd=cached_wsvd):
+    """
+    Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
+    to determine a cutoff for the error on `F` that is determined using the given `errorNorm`.
 
-    w_Y, w_X = 1/v_Y, 1/v_X
-    wU, ws, wVT = wsvd(np.sqrt(w_Y), F, np.sqrt(w_X))
+    If the row-variance (col-)vector `v_Y` and the column-variance (row-)vector `v_X` are given, the
+    matrix `F` is row and column weighted by `1/sqrt(v_Y)` and `1/sqrt(v_X)`, respectively, and the
+    variance matrix is row and column weighted by `1/v_Y` and `1/v_X`, accordingly.
+
+    Let `swV = `sqrt(1/v_Y * V * 1/v_X)`.
+
+    The `errorNorm` may be one of
+        * `'frob'`: Use the Frobenius norm of `swV`
+        * `'spec'`: Use the spectral norm of `swV`
+        * `'exspec'`: Use the expected spectral norm of the random matrix with normally distributed
+          zero mean errors with standard deviation given by `swV`
+        * `'mid_spec'`: Use the geometric mean of the 'spec' and 'exspec' cutoffs
+        * `'frob_mid_spec'` (default): Use the 'frob' or 'mid_spec' cutoff giving the larger rank
+        * `'relative'`: Use the average relative error times the largest entry of (weighted) `F` as
+          cutoff (as in publications by Herbert Jaeger)
+
+    The numerical rank is returned if `return_cutoff` is False (default), otherwise a tuple of the
+    numerical rank and computed cutoff is returned.
+    """
+
+    if errorNorm not in ['frob', 'spec', 'exspec', 'mid_spec', 'frob_mid_spec', 'relative']:
+        raise ValueError('Unknown errorNorm.')
+
+    sqrt_w_Y, sqrt_w_X = 1/np.sqrt(v_Y), 1/np.sqrt(v_X)
+    U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
+
+    V = (1/v_Y) * V * (1/v_X)
+    d = 0
+    e = np.inf
+
+    if errorNorm in ['frob', 'frob_mid_spec']:
+        e = np.sum(V)
+        s2_tailsum = 0
+        d = s.size
+        while d > 0 and s2_tailsum <= e:
+            d -= 1
+            s2_tailsum += s[d]**2
+        e = s[d] - (s2_tailsum**0.5 - e**0.5) / s[d] * (s[d] - (0 if d == len(s) else s[d+1]))
+        d += 1
+        if errorNorm == 'frob_mid_spec': errorNorm = 'mid_spec'
 
     if errorNorm == 'spec':
-        e = np.sum(np.sqrt(w_Y * V * w_X)) / np.sqrt(V.size)
-        d = 0
-        while d < ws.size and ws[d] > e:
-            d += 1
-        return d
-    elif errorNorm == 'frob':
-        e = np.sum(w_Y * V * w_X)
-        s2_tailsum = 0
-        d = ws.size
-        if d == 0: return d
-        while d > 0 and s2_tailsum <= e:
-            s2_tailsum += ws[d-1]**2
-            d -= 1
-        return d+1
-    else:
-        raise ValueError('Unknown errorNorm.')
+        e = np.linalg.norm(np.sqrt(V), ord=2)
+    elif errorNorm == 'exspec':
+        e = sum(linalg.spectral_norm_expectation(np.sqrt(V)))
+    elif errorNorm == 'mid_spec':
+        sqrt_V = np.sqrt(V)
+        e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.linalg.norm(sqrt_V, ord=2))**0.5)
+    elif errorNorm == 'relative':
+        F = sqrt_w_Y * F * sqrt_w_X
+        e = np.sqrt(V) / F
+        e[F == 0] = 0
+        e = np.average(e) * np.max(F)
+
+    while d < s.size and s[d] > e:
+        d += 1
+    return (d,e) if return_cutoff else d
 
 
 def subspace_from_model(model, Y, v_Y=1, stabilization=None):
