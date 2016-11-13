@@ -174,12 +174,14 @@ namespace Eigen {
 
     // (Argout) & OUTPUT [creates new object, passes ownership]
     %typemap(in, numinputs=0)
-      EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT
+      EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT,
+      const EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT
     {
         $1 = new $*1_ltype();
     }
     %typemap(argout)
-      EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT
+      EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT,
+      const EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT
     {
         npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
         PyObject* res = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) $1->data(), 0, NPY_ARRAY_FARRAY, NULL);

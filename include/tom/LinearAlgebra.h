@@ -441,6 +441,34 @@ MatrixXd transformWeights(const MatrixBase<D1> &W, const MatrixBase<D2> &B, bool
 SWIGCODE(%template(transformWeights) transformWeights<MatrixMd, MatrixMd>;)
 
 /**
+ * \ifnot PY
+ * Compute in the arguments `U`,`s` and `VT`
+ * \else
+ * Return in a tuple [U,s,VT]
+ * \endif
+ * the singular value decomposition of the given matrix `M`, such that `M = U D(s) VT`, using the given `method` ('bdc' | 'jacobi').
+ */
+SWIGCODE(%apply const MatrixXd& OUTPUT { const MatrixXd &U, const MatrixXd &VT };)
+SWIGCODE(%apply const ArrayXd& OUTPUT { const ArrayXd &s };)
+template<typename D >
+C1(void) PY3(tuple<MatrixXd, ArrayXd, MatrixXd>)
+svd(C4(const MatrixXd &U, const ArrayXd &s, const MatrixXd &VT,) const MatrixBase<D> &M, const std::string &method="bdc") {
+    if (method == "bdc") {
+        BDCSVD<MatrixXd> svd(M, ComputeThinU | ComputeThinV);
+        const_cast<MatrixXd&>(U) = svd.matrixU();
+        const_cast<ArrayXd&>(s) = svd.singularValues();
+        const_cast<MatrixXd&>(VT) = svd.matrixV().transpose();
+    } else if (method == "jacobi") {
+        JacobiSVD<MatrixXd> svd(M, ComputeThinU | ComputeThinV);
+        const_cast<MatrixXd&>(U) = svd.matrixU();
+        const_cast<ArrayXd&>(s) = svd.singularValues();
+        const_cast<MatrixXd&>(VT) = svd.matrixV().transpose();
+    }
+}
+SWIGCODE(%template(svd) svd<MatrixMd >;)
+SWIGCODE(%clear const MatrixXd &U, const ArrayXd &s, const MatrixXd &VT;)
+
+/**
  * Return the pseudo-inverse of the given matrix `M` computed according to the given `method` from {"Cholesky", "QR", "SVD" (default), "JacobiSVD"}.
  *
  * If `method` is "SVD" or "JacobiSVD", the classical pseudo-inverse is computed from the svd of `M`.

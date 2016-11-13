@@ -18263,6 +18263,116 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_svd(PyObject *self, PyObject *args, PyObject *kwargs) {
+  PyObject *resultobj = 0;
+  Eigen::MatrixXd *arg1 = 0 ;
+  Eigen::ArrayXd *arg2 = 0 ;
+  Eigen::MatrixXd *arg3 = 0 ;
+  Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > *arg4 = 0 ;
+  std::string const &arg5_defvalue = "bdc" ;
+  std::string *arg5 = (std::string *) &arg5_defvalue ;
+  int res5 = SWIG_OLDOBJ ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *  kwnames[] = {
+    (char *) "M",(char *) "method", NULL 
+  };
+  
+  {
+    arg1 = new Eigen::MatrixXd();
+  }
+  {
+    arg2 = new Eigen::ArrayXd();
+  }
+  {
+    arg3 = new Eigen::MatrixXd();
+  }
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"O|O:svd",kwnames,&obj0,&obj1)) SWIG_fail;
+  {
+    /*@SWIG:swig/eigen3.i,85,%array_conversion_code@*/
+    PyArrayObject * ary = obj_to_array_no_conversion(obj0, NPY_DOUBLE);
+    if (ary == NULL) SWIG_fail;
+    if (array_numdims(ary) != 2) {
+      PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
+    }
+    int rows = array_size(ary, 0);
+    int cols = 2 == 1 ? 1 : array_size(ary, 1);
+    if (2 == 1 and -1 == 1 and -1 != 1) {
+      cols = rows; rows = 1; 
+    }
+    if (-1 != -1 and -1 != rows) {
+      PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
+    }
+    if (-1 != -1 and -1 != cols) {
+      PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
+    }
+    int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
+    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    /*@SWIG@*/;
+    arg4 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
+  }
+  if (obj1) {
+    {
+      std::string *ptr = (std::string *)0;
+      res5 = SWIG_AsPtr_std_string(obj1, &ptr);
+      if (!SWIG_IsOK(res5)) {
+        SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "svd" "', argument " "5"" of type '" "std::string const &""'"); 
+      }
+      if (!ptr) {
+        SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "svd" "', argument " "5"" of type '" "std::string const &""'"); 
+      }
+      arg5 = ptr;
+    }
+  }
+  tom::SWIGTEMPLATEDISAMBIGUATOR svd< MatrixMd >((Eigen::Matrix< double,-1,-1 > const &)*arg1,(Eigen::Array< double,-1,1 > const &)*arg2,(Eigen::Matrix< double,-1,-1 > const &)*arg3,(Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg4,(std::string const &)*arg5);
+  resultobj = SWIG_Py_Void();
+  {
+    npy_intp dims[2]; dims[0] = arg1->rows(); if (2 == 2) {
+      dims[1] = arg1->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg1->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg1; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg1, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[1]; dims[0] = arg2->rows(); if (1 == 2) {
+      dims[1] = arg2->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg2; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg2, clean<Eigen::ArrayXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+      dims[1] = arg3->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg3; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg3, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    if (arg4) delete arg4; 
+  }
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  {
+    if (arg4) delete arg4; 
+  }
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_pinv(PyObject *self, PyObject *args, PyObject *kwargs) {
   PyObject *resultobj = 0;
   Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > *arg1 = 0 ;
@@ -40760,6 +40870,14 @@ static PyMethodDef SwigMethods[] = {
 		"    M.cols() if `covariances`  \n"
 		"*   [diag(B^T * D([W]_1) * B), ..., diag(B^T * D([W]_m) * B)] of size B.cols() x\n"
 		"    M.cols() otherwise.  \n"
+		"\n"
+		""},
+	 { (char *)"svd", (PyCFunction) _wrap_svd, METH_VARARGS | METH_KEYWORDS, (char *)"\n"
+		"\n"
+		"`svd(M, method=\"bdc\") -> tuple< MatrixXd, ArrayXd, MatrixXd >`  \n"
+		"\n"
+		"Return in a tuple [U,s,VT] the singular value decomposition of the given matrix\n"
+		"`M`, such that `M = U D(s) VT`, using the given `method` ('bdc' | 'jacobi').  \n"
 		"\n"
 		""},
 	 { (char *)"pinv", (PyCFunction) _wrap_pinv, METH_VARARGS | METH_KEYWORDS, (char *)"\n"

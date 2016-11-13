@@ -1,4 +1,5 @@
 from __future__ import (division, absolute_import, print_function, unicode_literals)
+from .. import _tomlib
 
 import numpy as np
 try:
@@ -25,7 +26,7 @@ def spectral_norm_expectation(sqrt_V, n = 3):
 def wsvd(sqrt_w_Y, F, sqrt_w_X):
     """Return the singular value decomposition `(U, s, VT)` of the row and column
     weighted matrix `sqrt_w_Y * F * sqrt_w_Y."""
-    return py_linalg.svd(sqrt_w_Y * F * sqrt_w_X)
+    return _tomlib.svd(sqrt_w_Y * F * sqrt_w_X)
 
 
 class CachedWSVD:
