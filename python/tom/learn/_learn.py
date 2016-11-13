@@ -326,7 +326,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
         * `'avspec'`: Use a spectral norm estimate based on the average of `swV`
         * `'exspec'`: Use the expected spectral norm of the random matrix with normally distributed
           zero mean errors with standard deviation given by `swV`
-        * `'mid_spec'`: Use the geometric mean of the 'spec' and 'exspec' cutoffs
+        * `'mid_spec'`: Use the geometric mean of the 'avspec' and 'exspec' cutoffs
         * `'frob_mid_spec'` (default): Use the 'frob' or 'mid_spec' cutoff giving the larger rank
         * `'relative'`: Use the average relative error times the largest entry of (weighted) `F` as
           cutoff (as in publications by Herbert Jaeger)
@@ -364,7 +364,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
         e = sum(linalg.spectral_norm_expectation(V**0.5))
     elif errorNorm == 'mid_spec':
         sqrt_V = V**0.5
-        e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.linalg.norm(sqrt_V, ord=2))**0.5)
+        e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.sum(sqrt_V) / V.size**0.5)**0.5)
     elif errorNorm == 'relative':
         F = sqrt_w_Y * F * sqrt_w_X
         with np.errstate(divide='ignore'):
