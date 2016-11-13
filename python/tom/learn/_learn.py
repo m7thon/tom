@@ -323,6 +323,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
     The `errorNorm` may be one of
         * `'frob'`: Use the Frobenius norm of `swV`
         * `'spec'`: Use the spectral norm of `swV`
+        * `'avspec'`: Use a spectral norm estimate based on the average of `swV`
         * `'exspec'`: Use the expected spectral norm of the random matrix with normally distributed
           zero mean errors with standard deviation given by `swV`
         * `'mid_spec'`: Use the geometric mean of the 'spec' and 'exspec' cutoffs
@@ -334,7 +335,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
     numerical rank and computed cutoff is returned.
     """
 
-    if errorNorm not in ['frob', 'spec', 'exspec', 'mid_spec', 'frob_mid_spec', 'relative']:
+    if errorNorm not in ['frob', 'spec', 'exspec', 'avspec', 'mid_spec', 'frob_mid_spec', 'relative']:
         raise ValueError('Unknown errorNorm.')
 
     sqrt_w_Y, sqrt_w_X = 1/np.sqrt(v_Y), 1/np.sqrt(v_X)
@@ -357,6 +358,8 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
 
     if errorNorm == 'spec':
         e = np.linalg.norm(np.sqrt(V), ord=2)
+    elif errorNorm == 'avspec':
+        e = np.sum(np.sqrt(V)) / V.size**0.5
     elif errorNorm == 'exspec':
         e = sum(linalg.spectral_norm_expectation(np.sqrt(V)))
     elif errorNorm == 'mid_spec':
