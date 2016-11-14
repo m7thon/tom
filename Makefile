@@ -9,7 +9,7 @@ PY_SRC := $(shell find python/tom -type f -name "*.py")
 .PHONY: install install_user
 .PHONY: test debug
 .PHONY: doc swig clean cleanall
-.PHONY: deploy
+.PHONY: deploy deploy_quickly deploy_optimized
 .PHONY: tom
 
 build: swig/_tomlib_wrap.cpp
@@ -30,8 +30,8 @@ debug: swig/_tomlib_wrap.cpp
 deploy: swig/_tomlib_wrap.cpp
 	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
 
-#deploy_optimized: swig/_tomlib_wrap.cpp
-#    CC=g++-mp-6 CXX=g++-mp-6 CPPFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
+deploy_optimized: swig/_tomlib_wrap.cpp
+	CC=g++-mp-6 CXX=g++-mp-6 CPPFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
 
 doc:
 	doxygen doc/tom.doxyfile

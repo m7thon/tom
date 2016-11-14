@@ -338,7 +338,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
     if errorNorm not in ['frob', 'spec', 'exspec', 'avspec', 'mid_spec', 'frob_mid_spec', 'relative']:
         raise ValueError('Unknown errorNorm.')
 
-    sqrt_w_Y, sqrt_w_X = v_Y**-0.5, v_X**-0.5
+    sqrt_w_Y, sqrt_w_X = 1/np.sqrt(v_Y), 1/np.sqrt(v_X)
     U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
 
     V = (1/v_Y) * V * (1/v_X)
@@ -357,18 +357,18 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
         if errorNorm == 'frob_mid_spec': errorNorm = 'mid_spec'
 
     if errorNorm == 'spec':
-        e = np.linalg.norm(V**0.5, ord=2)
+        e = np.linalg.norm(np.sqrt(V), ord=2)
     elif errorNorm == 'avspec':
-        e = np.sum(V**0.5) / V.size**0.5
+        e = np.sum(np.sqrt(V)) / V.size**0.5
     elif errorNorm == 'exspec':
-        e = sum(linalg.spectral_norm_expectation(V**0.5))
+        e = sum(linalg.spectral_norm_expectation(np.sqrt(V)))
     elif errorNorm == 'mid_spec':
-        sqrt_V = V**0.5
+        sqrt_V = np.sqrt(V)
         e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.sum(sqrt_V) / V.size**0.5)**0.5)
     elif errorNorm == 'relative':
         F = sqrt_w_Y * F * sqrt_w_X
         with np.errstate(divide='ignore', invalid='ignore'):
-            e = V**0.5 / F
+            e = np.sqrt(V) / F
         e[F == 0] = 0
         e = np.average(e) * np.max(F)
 
@@ -391,11 +391,12 @@ def subspace_from_model(model, Y, v_Y=1, stabilization=None):
 
 def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     threshold = 1e-12
-    U, s, VT = wsvd(v_Y**-0.5, F, v_X**-0.5)
+    sqrt_v_Y, sqrt_v_X = np.sqrt(v_Y), np.sqrt(v_X)
+    U, s, VT = wsvd(1/sqrt_v_Y, F, 1/sqrt_v_X)
     dim = min(dim, len(s))
-    ssd = s[:dim]**0.5
+    ssd = np.sqrt(s[:dim])
     while dim > 1 and ssd[dim-1] < threshold: dim -= 1
-    return v_Y**0.5 * U[:, :dim] * ssd[None, :dim]
+    return sqrt_v_Y * U[:, :dim] * ssd[None, :dim]
 
 
 def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='Cholesky'):
@@ -411,14 +412,14 @@ def subspace_corresponding_to_C_and_v_Y(C, v_Y):
 
 
 def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
-    sqrt_w_X = v_X**-0.5
+    sqrt_w_X = 1/np.sqrt(v_X)
     if type(dim_subspace) is int:
         dim = dim_subspace
-        sqrt_w_Y = v_Y**-0.5
+        sqrt_w_Y = 1/np.sqrt(v_Y)
         threshold = 1e-12
         U, s, VT = wsvd(sqrt_w_Y, F_YX, sqrt_w_X)
         dim = min(dim, len(s))
-        ssdi = s[:dim]**0.5  # ssdi: square-root of Sd inverse
+        ssdi = np.sqrt(s[:dim])  # ssdi: square-root of Sd inverse
         for i in range(dim):
             if ssdi[i] > threshold: ssdi[i] = 1/ssdi[i]
             else: dim = i; break
