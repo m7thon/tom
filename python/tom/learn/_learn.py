@@ -338,7 +338,7 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
     if errorNorm not in ['frob', 'spec', 'exspec', 'avspec', 'mid_spec', 'frob_mid_spec', 'relative']:
         raise ValueError('Unknown errorNorm.')
 
-    sqrt_w_Y, sqrt_w_X = 1/np.sqrt(v_Y), 1/np.sqrt(v_X)
+    sqrt_w_Y, sqrt_w_X = v_Y**-0.5, v_X**-0.5
     U, s, VT = wsvd(sqrt_w_Y, F, sqrt_w_X)
 
     V = (1/v_Y) * V * (1/v_X)
@@ -391,15 +391,14 @@ def subspace_from_model(model, Y, v_Y=1, stabilization=None):
 
 def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     threshold = 1e-12
-    sqrt_v_Y, sqrt_v_X = np.sqrt(v_Y), np.sqrt(v_X)
-    U, s, VT = wsvd(1/sqrt_v_Y, F, 1/sqrt_v_X)
+    U, s, VT = wsvd(v_Y**-0.5, F, v_X**-0.5)
     dim = min(dim, len(s))
     ssd = np.sqrt(s[:dim])
     while dim > 1 and ssd[dim-1] < threshold: dim -= 1
-    return sqrt_v_Y * U[:, :dim] * ssd[None, :dim]
+    return np.sqrt(v_Y) * U[:, :dim] * ssd[None, :dim]
 
 
-def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='Cholesky'):
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='LDLT'):
     if stopCondition is None: stopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
     if type(dim_subspace) is int:
         dim_subspace = subspace_by_svd(F, dim_subspace)
@@ -412,10 +411,10 @@ def subspace_corresponding_to_C_and_v_Y(C, v_Y):
 
 
 def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
-    sqrt_w_X = 1/np.sqrt(v_X)
+    sqrt_w_X = v_X**-0.5
     if type(dim_subspace) is int:
         dim = dim_subspace
-        sqrt_w_Y = 1/np.sqrt(v_Y)
+        sqrt_w_Y = v_Y**-0.5
         threshold = 1e-12
         U, s, VT = wsvd(sqrt_w_Y, F_YX, sqrt_w_X)
         dim = min(dim, len(s))
@@ -447,7 +446,7 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     return oom
 
 
-def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='Cholesky'):
+def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='LDLT'):
     B = subspace
     dim = B.shape[1]
     A = _tomlib.solveLS(B, data.F_YX(), 1 / data.V_YX(), transposed=False, method=ls_method)
