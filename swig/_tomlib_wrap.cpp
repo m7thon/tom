@@ -4231,6 +4231,7 @@ namespace swig {
 #include "../include/tom/tom.h"
 // Turn off an annoying warning:
 #pragma GCC diagnostic ignored "-Warray-bounds"
+#pragma GCC diagnostic ignored "-Wunreachable-code"
 
 
 #include <stdint.h>		// Use the C99 official header
@@ -17028,18 +17029,18 @@ SWIGINTERN PyObject *_wrap_normalize(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17073,18 +17074,18 @@ SWIGINTERN PyObject *_wrap_normalizeCols(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17118,18 +17119,18 @@ SWIGINTERN PyObject *_wrap_normalizeRows(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17162,18 +17163,18 @@ SWIGINTERN PyObject *_wrap_kron(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17185,24 +17186,24 @@ SWIGINTERN PyObject *_wrap_kron(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
   {
     auto c_obj = new Eigen::MatrixXd(tom::SWIGTEMPLATEDISAMBIGUATOR kron< MatrixMd,MatrixMd >((Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg1,(Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -17250,18 +17251,18 @@ SWIGINTERN PyObject *_wrap_colwiseMean(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17274,7 +17275,7 @@ SWIGINTERN PyObject *_wrap_colwiseMean(PyObject *self, PyObject *args, PyObject 
   }
   {
     auto c_obj = new Eigen::RowVectorXd(tom::SWIGTEMPLATEDISAMBIGUATOR colwiseMean< MatrixMd >((Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg1,arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -17316,18 +17317,18 @@ SWIGINTERN PyObject *_wrap_rowwiseMean(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17340,7 +17341,7 @@ SWIGINTERN PyObject *_wrap_rowwiseMean(PyObject *self, PyObject *args, PyObject 
   }
   {
     auto c_obj = new Eigen::VectorXd(tom::SWIGTEMPLATEDISAMBIGUATOR rowwiseMean< MatrixMd >((Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg1,arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -17385,18 +17386,18 @@ SWIGINTERN PyObject *_wrap_weightedNorm(PyObject *self, PyObject *args, PyObject
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17408,18 +17409,18 @@ SWIGINTERN PyObject *_wrap_weightedNorm(PyObject *self, PyObject *args, PyObject
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17487,18 +17488,18 @@ SWIGINTERN PyObject *_wrap_solveOLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17510,18 +17511,18 @@ SWIGINTERN PyObject *_wrap_solveOLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg3 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17611,18 +17612,18 @@ SWIGINTERN PyObject *_wrap_solveRowColWLS(PyObject *self, PyObject *args, PyObje
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17634,18 +17635,18 @@ SWIGINTERN PyObject *_wrap_solveRowColWLS(PyObject *self, PyObject *args, PyObje
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg3 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17657,18 +17658,18 @@ SWIGINTERN PyObject *_wrap_solveRowColWLS(PyObject *self, PyObject *args, PyObje
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg4 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -17767,18 +17768,18 @@ SWIGINTERN PyObject *_wrap_solveWLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -17792,18 +17793,18 @@ SWIGINTERN PyObject *_wrap_solveWLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -17817,18 +17818,18 @@ SWIGINTERN PyObject *_wrap_solveWLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -17911,18 +17912,18 @@ SWIGINTERN PyObject *_wrap_solveGLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -17936,18 +17937,18 @@ SWIGINTERN PyObject *_wrap_solveGLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -17961,18 +17962,18 @@ SWIGINTERN PyObject *_wrap_solveGLS(PyObject *self, PyObject *args, PyObject *kw
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18054,18 +18055,18 @@ SWIGINTERN PyObject *_wrap_solveLS(PyObject *self, PyObject *args, PyObject *kwa
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18079,18 +18080,18 @@ SWIGINTERN PyObject *_wrap_solveLS(PyObject *self, PyObject *args, PyObject *kwa
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18105,18 +18106,18 @@ SWIGINTERN PyObject *_wrap_solveLS(PyObject *self, PyObject *args, PyObject *kwa
         PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
       }
       int rows = array_size(ary, 0);
-      int cols = 2 == 1 ? 1 : array_size(ary, 1);
-      if (2 == 1 and -1 == 1 and -1 != 1) {
+      int cols = (2) == 1 ? 1 : array_size(ary, 1);
+      if ((2) == 1 and -1 == (1) and -1 != (1)) {
         cols = rows; rows = 1; 
       }
-      if (-1 != -1 and -1 != rows) {
+      if ((-1) != -1 and -1 != rows) {
         PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
       }
-      if (-1 != -1 and -1 != cols) {
+      if ((-1) != -1 and -1 != cols) {
         PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
       }
       int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-      int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+      int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
       /*@SWIG@*/;
       temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
       ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18189,18 +18190,18 @@ SWIGINTERN PyObject *_wrap_transformWeights(PyObject *self, PyObject *args, PyOb
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18212,18 +18213,18 @@ SWIGINTERN PyObject *_wrap_transformWeights(PyObject *self, PyObject *args, PyOb
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18236,7 +18237,7 @@ SWIGINTERN PyObject *_wrap_transformWeights(PyObject *self, PyObject *args, PyOb
   }
   {
     auto c_obj = new Eigen::MatrixXd(tom::SWIGTEMPLATEDISAMBIGUATOR transformWeights< MatrixMd,MatrixMd >((Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg1,(Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg2,arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -18296,18 +18297,18 @@ SWIGINTERN PyObject *_wrap_svd(PyObject *self, PyObject *args, PyObject *kwargs)
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg4 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18327,7 +18328,7 @@ SWIGINTERN PyObject *_wrap_svd(PyObject *self, PyObject *args, PyObject *kwargs)
   tom::SWIGTEMPLATEDISAMBIGUATOR svd< MatrixMd >((Eigen::Matrix< double,-1,-1 > const &)*arg1,(Eigen::Array< double,-1,1 > const &)*arg2,(Eigen::Matrix< double,-1,-1 > const &)*arg3,(Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg4,(std::string const &)*arg5);
   resultobj = SWIG_Py_Void();
   {
-    npy_intp dims[2]; dims[0] = arg1->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg1->rows(); if ((2) == 2) {
       dims[1] = arg1->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg1->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -18338,7 +18339,7 @@ SWIGINTERN PyObject *_wrap_svd(PyObject *self, PyObject *args, PyObject *kwargs)
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[1]; dims[0] = arg2->rows(); if (1 == 2) {
+    npy_intp dims[1]; dims[0] = arg2->rows(); if ((1) == 2) {
       dims[1] = arg2->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 1, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -18349,7 +18350,7 @@ SWIGINTERN PyObject *_wrap_svd(PyObject *self, PyObject *args, PyObject *kwargs)
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if ((2) == 2) {
       dims[1] = arg3->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -18394,18 +18395,18 @@ SWIGINTERN PyObject *_wrap_pinv(PyObject *self, PyObject *args, PyObject *kwargs
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18424,7 +18425,7 @@ SWIGINTERN PyObject *_wrap_pinv(PyObject *self, PyObject *args, PyObject *kwargs
   }
   {
     auto c_obj = new Eigen::MatrixXd(tom::SWIGTEMPLATEDISAMBIGUATOR pinv< MatrixMd >((Eigen::MatrixBase< Eigen::Map< Eigen::Matrix< double,-1,-1 >,0,Eigen::Stride< -1,-1 > > > const &)*arg1,(std::string const &)*arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -18481,18 +18482,18 @@ SWIGINTERN PyObject *_wrap_improveWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg1 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18504,18 +18505,18 @@ SWIGINTERN PyObject *_wrap_improveWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride<-1,-1>(outer, inner));
   }
@@ -18527,18 +18528,18 @@ SWIGINTERN PyObject *_wrap_improveWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18552,18 +18553,18 @@ SWIGINTERN PyObject *_wrap_improveWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18655,18 +18656,18 @@ SWIGINTERN PyObject *_wrap_computeWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18680,18 +18681,18 @@ SWIGINTERN PyObject *_wrap_computeWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18705,18 +18706,18 @@ SWIGINTERN PyObject *_wrap_computeWLRA(PyObject *self, PyObject *args, PyObject 
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp5 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -18965,7 +18966,7 @@ SWIGINTERN PyObject *_wrap_Random_random__SWIG_1(PyObject *self, int nobjs, PyOb
   arg3 = static_cast< int >(val3);
   {
     auto c_obj = new Eigen::MatrixXd(((tom::Random const *)arg1)->random(arg2,arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -19059,18 +19060,18 @@ SWIGINTERN PyObject *_wrap_Random_sample(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""1" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 1 == 1 ? 1 : array_size(ary, 1);
-    if (1 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (1) == 1 ? 1 : array_size(ary, 1);
+    if ((1) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 1 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (1) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     arg2 = new Eigen::Map<Eigen::Array<double, -1, 1>, 0, Eigen::Stride< 0,-1> > ((double*) array_data(ary), rows, cols, Eigen::Stride< 0,-1>(outer, inner));
   }
@@ -30931,18 +30932,18 @@ SWIGINTERN PyObject *_wrap_Policy_u(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -30988,18 +30989,18 @@ SWIGINTERN PyObject *_wrap_Policy_p(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -31007,7 +31008,7 @@ SWIGINTERN PyObject *_wrap_Policy_p(PyObject *self, PyObject *args) {
   }
   {
     auto c_obj = new Eigen::VectorXd(((tom::Policy const *)arg1)->p((Eigen::VectorXd const &)*arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -31981,7 +31982,7 @@ SWIGINTERN PyObject *_wrap_Hmm_pi__SWIG_0(PyObject *self, int nobjs, PyObject **
   }
   result = (Eigen::VectorXd *) &((tom::Hmm const *)arg1)->pi();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -32028,18 +32029,18 @@ SWIGINTERN PyObject *_wrap_Hmm_pi__SWIG_1(PyObject *self, int nobjs, PyObject **
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -32112,7 +32113,7 @@ SWIGINTERN PyObject *_wrap_Hmm_T__SWIG_0(PyObject *self, int nobjs, PyObject **s
   arg2 = static_cast< int >(val2);
   result = (Eigen::MatrixXd *) &((tom::Hmm const *)arg1)->T(arg2);
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::MatrixXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -32152,7 +32153,7 @@ SWIGINTERN PyObject *_wrap_Hmm_T__SWIG_1(PyObject *self, int nobjs, PyObject **S
   }
   result = (Eigen::MatrixXd *) &((tom::Hmm const *)arg1)->T();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::MatrixXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -32199,18 +32200,18 @@ SWIGINTERN PyObject *_wrap_Hmm_T__SWIG_2(PyObject *self, int nobjs, PyObject **s
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -32266,18 +32267,18 @@ SWIGINTERN PyObject *_wrap_Hmm_T__SWIG_3(PyObject *self, int nobjs, PyObject **s
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -32376,7 +32377,7 @@ SWIGINTERN PyObject *_wrap_Hmm_E__SWIG_0(PyObject *self, int nobjs, PyObject **s
   arg3 = static_cast< int >(val3);
   result = (Eigen::VectorXd *) &((tom::Hmm const *)arg1)->E(arg2,arg3);
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -32424,7 +32425,7 @@ SWIGINTERN PyObject *_wrap_Hmm_E__SWIG_1(PyObject *self, int nobjs, PyObject **s
   arg2 = static_cast< int >(val2);
   result = (Eigen::VectorXd *) &((tom::Hmm const *)arg1)->E(arg2);
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -32487,18 +32488,18 @@ SWIGINTERN PyObject *_wrap_Hmm_E__SWIG_2(PyObject *self, int nobjs, PyObject **s
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -32554,18 +32555,18 @@ SWIGINTERN PyObject *_wrap_Hmm_E__SWIG_3(PyObject *self, int nobjs, PyObject **s
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -33480,7 +33481,7 @@ SWIGINTERN PyObject *_wrap_Oom_sig__SWIG_0(PyObject *self, int nobjs, PyObject *
   }
   result = (Eigen::RowVectorXd *) &((tom::Oom const *)arg1)->sig();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::RowVectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -33527,18 +33528,18 @@ SWIGINTERN PyObject *_wrap_Oom_sig__SWIG_1(PyObject *self, int nobjs, PyObject *
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and 1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and 1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (1 != -1 and 1 != rows) {
+    if ((1) != -1 and 1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -33619,7 +33620,7 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_0(PyObject *self, int nobjs, PyObject *
   arg3 = static_cast< tom::Symbol >(val3);
   result = (Eigen::MatrixXd *) &((tom::Oom const *)arg1)->tau(arg2,arg3);
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::MatrixXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -33667,7 +33668,7 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_1(PyObject *self, int nobjs, PyObject *
   arg2 = static_cast< tom::Symbol >(val2);
   result = (Eigen::MatrixXd *) &((tom::Oom const *)arg1)->tau(arg2);
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::MatrixXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -33724,7 +33725,7 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_2(PyObject *self, int nobjs, PyObject *
   }
   
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::MatrixXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -33782,18 +33783,18 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_3(PyObject *self, int nobjs, PyObject *
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -33863,18 +33864,18 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_4(PyObject *self, int nobjs, PyObject *
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp4 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -33930,18 +33931,18 @@ SWIGINTERN PyObject *_wrap_Oom_tau__SWIG_5(PyObject *self, int nobjs, PyObject *
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -34054,7 +34055,7 @@ SWIGINTERN PyObject *_wrap_Oom_w0__SWIG_0(PyObject *self, int nobjs, PyObject **
   }
   result = (Eigen::VectorXd *) &((tom::Oom const *)arg1)->w0();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -34101,18 +34102,18 @@ SWIGINTERN PyObject *_wrap_Oom_w0__SWIG_1(PyObject *self, int nobjs, PyObject **
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -34624,7 +34625,7 @@ SWIGINTERN PyObject *_wrap_Oom_wt__SWIG_0(PyObject *self, int nobjs, PyObject **
   }
   result = (Eigen::VectorXd *) &((tom::Oom const *)arg1)->wt();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -34708,18 +34709,18 @@ SWIGINTERN PyObject *_wrap_Oom_wt__SWIG_1(PyObject *self, int nobjs, PyObject **
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -34780,18 +34781,18 @@ SWIGINTERN PyObject *_wrap_Oom_wt__SWIG_2(PyObject *self, int nobjs, PyObject **
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -35102,7 +35103,7 @@ SWIGINTERN PyObject *_wrap_Oom_prediction(PyObject *self, PyObject *args) {
   }
   result = (Eigen::VectorXd *) &((tom::Oom const *)arg1)->prediction();
   {
-    npy_intp dims[2]; dims[0] = result->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = result->rows(); if ((2) == 2) {
       dims[1] = result->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) const_cast<Eigen::VectorXd *>(result)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
@@ -35581,7 +35582,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_6(PyObject *self, int nobjs, PyObject **s
   arg4 = static_cast< bool >(val4);
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3,arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -35668,7 +35669,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_7(PyObject *self, int nobjs, PyObject **s
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -35771,7 +35772,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_8(PyObject *self, int nobjs, PyObject **s
   arg5 = static_cast< bool >(val5);
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4,arg5));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -35866,7 +35867,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_9(PyObject *self, int nobjs, PyObject **s
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -35977,7 +35978,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_10(PyObject *self, int nobjs, PyObject **
   arg6 = static_cast< bool >(val6);
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5,arg6));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -36080,7 +36081,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_11(PyObject *self, int nobjs, PyObject **
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -36191,7 +36192,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_12(PyObject *self, int nobjs, PyObject **
   arg5 = static_cast< bool >(val5);
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4,arg5));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -36294,7 +36295,7 @@ SWIGINTERN PyObject *_wrap_Oom_f__SWIG_13(PyObject *self, int nobjs, PyObject **
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -36974,7 +36975,7 @@ SWIGINTERN PyObject *_wrap_Oom_harvestStates__SWIG_0(PyObject *self, int nobjs, 
   arg3 = static_cast< bool >(val3);
   {
     auto c_obj = new Eigen::MatrixXf((arg1)->harvestStates((tom::Sequence const &)*arg2,arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_FLOAT, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -37026,7 +37027,7 @@ SWIGINTERN PyObject *_wrap_Oom_harvestStates__SWIG_1(PyObject *self, int nobjs, 
   arg2 = reinterpret_cast< tom::Sequence * >(argp2);
   {
     auto c_obj = new Eigen::MatrixXf((arg1)->harvestStates((tom::Sequence const &)*arg2));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_FLOAT, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -37120,7 +37121,7 @@ SWIGINTERN PyObject *_wrap_Oom_stationaryState(PyObject *self, PyObject *args, P
   }
   {
     auto c_obj = new Eigen::VectorXd(((tom::Oom const *)arg1)->stationaryState((tom::Policy const &)*arg2,arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -37275,18 +37276,18 @@ SWIGINTERN PyObject *_wrap_Oom_transform__SWIG_0(PyObject *self, int nobjs, PyOb
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and 1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and 1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (1 != -1 and 1 != rows) {
+    if ((1) != -1 and 1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -37300,18 +37301,18 @@ SWIGINTERN PyObject *_wrap_Oom_transform__SWIG_0(PyObject *self, int nobjs, PyOb
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and 1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and 1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (1 != -1 and 1 != cols) {
+    if ((1) != -1 and 1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -37359,18 +37360,18 @@ SWIGINTERN PyObject *_wrap_Oom_transform__SWIG_1(PyObject *self, int nobjs, PyOb
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and 1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and 1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (1 != -1 and 1 != rows) {
+    if ((1) != -1 and 1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -37445,18 +37446,18 @@ SWIGINTERN PyObject *_wrap_Oom_conjugate(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp2 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -37470,18 +37471,18 @@ SWIGINTERN PyObject *_wrap_Oom_conjugate(PyObject *self, PyObject *args) {
       PyErr_SetString(PyExc_ValueError, "array must be ""2" "-dimensional"); SWIG_fail; 
     }
     int rows = array_size(ary, 0);
-    int cols = 2 == 1 ? 1 : array_size(ary, 1);
-    if (2 == 1 and -1 == 1 and -1 != 1) {
+    int cols = (2) == 1 ? 1 : array_size(ary, 1);
+    if ((2) == 1 and -1 == (1) and -1 != (1)) {
       cols = rows; rows = 1; 
     }
-    if (-1 != -1 and -1 != rows) {
+    if ((-1) != -1 and -1 != rows) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "rows"); SWIG_fail; 
     }
-    if (-1 != -1 and -1 != cols) {
+    if ((-1) != -1 and -1 != cols) {
       PyErr_SetString(PyExc_ValueError, "array must have exactly""-1" "columns"); SWIG_fail; 
     }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = 2 == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (2) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
     /*@SWIG@*/;
     temp3 = Eigen::Map<Eigen::Matrix<double, -1, -1>, 0, Eigen::Stride<-1, -1> >
     ((double*) array_data(ary), rows, cols, Eigen::Stride<-1, -1>(outer, inner));
@@ -38833,7 +38834,7 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_3(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -38916,7 +38917,7 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_4(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39007,7 +39008,7 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_5(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39098,7 +39099,7 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_6(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39350,7 +39351,7 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_3(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39433,7 +39434,7 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_4(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39524,7 +39525,7 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_5(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39615,7 +39616,7 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_6(PyObject *self, int nobjs, PyObje
   }
   {
     auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
-    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if ((2) == 2) {
       dims[1] = c_obj->cols(); 
     }
     resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39933,7 +39934,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_3(PyObject *self, int nobjs, PyObj
   (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,(tom::Sequences const &)*arg5);
   resultobj = SWIG_Py_Void();
   {
-    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if ((2) == 2) {
       dims[1] = arg2->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -39944,7 +39945,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_3(PyObject *self, int nobjs, PyObj
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if ((2) == 2) {
       dims[1] = arg3->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40043,7 +40044,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObj
   
   resultobj = SWIG_Py_Void();
   {
-    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if ((2) == 2) {
       dims[1] = arg2->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40054,7 +40055,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObj
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if ((2) == 2) {
       dims[1] = arg3->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40155,7 +40156,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_5(PyObject *self, int nobjs, PyObj
   (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,arg6,(tom::Sequences const &)*arg7);
   resultobj = SWIG_Py_Void();
   {
-    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if ((2) == 2) {
       dims[1] = arg2->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40166,7 +40167,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_5(PyObject *self, int nobjs, PyObj
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if ((2) == 2) {
       dims[1] = arg3->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40267,7 +40268,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObj
   (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,(tom::Sequences const &)*arg6);
   resultobj = SWIG_Py_Void();
   {
-    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if ((2) == 2) {
       dims[1] = arg2->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
@@ -40278,7 +40279,7 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObj
     resultobj = SWIG_Python_AppendOutput(resultobj,res);
   }
   {
-    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if ((2) == 2) {
       dims[1] = arg3->cols(); 
     }
     PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);

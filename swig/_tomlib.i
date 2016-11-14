@@ -8,6 +8,7 @@
 #include "../include/tom/tom.h"
 // Turn off an annoying warning:
 #pragma GCC diagnostic ignored "-Warray-bounds"
+#pragma GCC diagnostic ignored "-Wunreachable-code"
 %}
 
 %include "stdint.i"

@@ -87,12 +87,12 @@ namespace Eigen {
     if (ary == NULL) SWIG_fail;
     if (array_numdims(ary) != DIM) { PyErr_SetString(PyExc_ValueError, "array must be " #DIM "-dimensional"); SWIG_fail; }
     int rows = array_size(ary, 0);
-    int cols = DIM == 1 ? 1 : array_size(ary, 1);
-    if (DIM == 1 and ROWS == 1 and COLS != 1) { cols = rows; rows = 1; }
-    if (ROWS != -1 and ROWS != rows) { PyErr_SetString(PyExc_ValueError, "array must have exactly" #ROWS "rows"); SWIG_fail; }
-    if (COLS != -1 and COLS != cols) { PyErr_SetString(PyExc_ValueError, "array must have exactly" #COLS "columns"); SWIG_fail; }
+    int cols = (DIM) == 1 ? 1 : array_size(ary, 1);
+    if ((DIM) == 1 and ROWS == (1) and COLS != (1)) { cols = rows; rows = 1; }
+    if ((ROWS) != -1 and ROWS != rows) { PyErr_SetString(PyExc_ValueError, "array must have exactly" #ROWS "rows"); SWIG_fail; }
+    if ((COLS) != -1 and COLS != cols) { PyErr_SetString(PyExc_ValueError, "array must have exactly" #COLS "columns"); SWIG_fail; }
     int inner = array_stride(ary,0)/PyArray_ITEMSIZE(ary);
-    int outer = DIM == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
+    int outer = (DIM) == 1 ? 0 : array_stride(ary,1)/PyArray_ITEMSIZE(ary);
 %enddef
 
 %define %eigen_standard_typemaps(DATA_TYPE, DATA_TYPEPRECEDENCE, DATA_TYPECODE, EIGEN_TYPE, ROWS, COLS, DIM)
@@ -124,7 +124,7 @@ namespace Eigen {
     %typemap(out, fragment="Eigen_NumPy_Utilities")
       EIGEN_TYPE<DATA_TYPE, ROWS, COLS> &
     {
-        npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
+        npy_intp dims[DIM]; dims[0] = $1->rows(); if ((DIM) == 2) { dims[1] = $1->cols(); }
         $result = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) const_cast<$1_ltype>($1)->data(), 0, NPY_ARRAY_FARRAY, NULL);
         if (!$result) SWIG_fail;
         array_setbase($result,encapsulate($1, NULL));
@@ -134,7 +134,7 @@ namespace Eigen {
     %typemap(out, fragment="Eigen_NumPy_Utilities")
       const EIGEN_TYPE<DATA_TYPE, ROWS, COLS> &
     {
-        npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
+        npy_intp dims[DIM]; dims[0] = $1->rows(); if ((DIM) == 2) { dims[1] = $1->cols(); }
         $result = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) const_cast<$1_ltype>($1)->data(), 0, NPY_ARRAY_FARRAY_RO, NULL);
         if (!$result) SWIG_fail;
         array_setbase($result,encapsulate($1, NULL));
@@ -144,7 +144,7 @@ namespace Eigen {
     %typemap(out, fragment="Eigen_NumPy_Utilities")
       EIGEN_TYPE<DATA_TYPE, ROWS, COLS> *
     {
-        npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
+        npy_intp dims[DIM]; dims[0] = $1->rows(); if ((DIM) == 2) { dims[1] = $1->cols(); }
         $result = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) $1->data(), 0, NPY_ARRAY_FARRAY, NULL);
         if (!$result) SWIG_fail;
         array_setbase($result, encapsulate($1, clean<$1_ltype>));
@@ -155,7 +155,7 @@ namespace Eigen {
       std::shared_ptr<EIGEN_TYPE<DATA_TYPE, ROWS, COLS> >
     {
         auto c_obj = new $1_ltype($1);
-        npy_intp dims[DIM]; dims[0] = c_obj->rows(); if (DIM == 2) { dims[1] = c_obj->cols(); }
+        npy_intp dims[DIM]; dims[0] = c_obj->rows(); if ((DIM) == 2) { dims[1] = c_obj->cols(); }
         $result = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
         if (!$result) { delete c_obj; SWIG_fail; }
         array_setbase($result, encapsulate(c_obj, clean<$1_ltype*>));
@@ -166,7 +166,7 @@ namespace Eigen {
       EIGEN_TYPE<DATA_TYPE, ROWS, COLS>
     {
         auto c_obj = new $1_ltype($1);
-        npy_intp dims[DIM]; dims[0] = c_obj->rows(); if (DIM == 2) { dims[1] = c_obj->cols(); }
+        npy_intp dims[DIM]; dims[0] = c_obj->rows(); if ((DIM) == 2) { dims[1] = c_obj->cols(); }
         $result = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
         if (!$result) { delete c_obj; SWIG_fail; }
         array_setbase($result, encapsulate(c_obj, clean<$1_ltype*>));
@@ -183,7 +183,7 @@ namespace Eigen {
       EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT,
       const EIGEN_TYPE<DATA_TYPE, ROWS, COLS> & OUTPUT
     {
-        npy_intp dims[DIM]; dims[0] = $1->rows(); if (DIM == 2) { dims[1] = $1->cols(); }
+        npy_intp dims[DIM]; dims[0] = $1->rows(); if ((DIM) == 2) { dims[1] = $1->cols(); }
         PyObject* res = PyArray_New(&PyArray_Type, DIM, dims, DATA_TYPECODE, NULL, (void*) $1->data(), 0, NPY_ARRAY_FARRAY, NULL);
         if (!res) { delete $1; SWIG_fail; }
         array_setbase(res, encapsulate($1, clean<$1_ltype>));
