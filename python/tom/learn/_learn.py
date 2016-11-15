@@ -398,10 +398,10 @@ def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     return np.sqrt(v_Y) * U[:, :dim] * ssd[None, :dim]
 
 
-def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='Cholesky'):
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='LDLT', wsvd=linalg.cached_wsvd):
     if stopCondition is None: stopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
     if type(dim_subspace) is int:
-        dim_subspace = subspace_by_svd(F, dim_subspace)
+        dim_subspace = subspace_by_svd(F, dim_subspace, wsvd=wsvd)
     B, A = _tomlib.computeWLRA(F, 1/V, dim_subspace, stopCondition, ls_method)
     return B
 
@@ -446,7 +446,7 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     return oom
 
 
-def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='Cholesky'):
+def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='LDLT'):
     B = subspace
     dim = B.shape[1]
     A = _tomlib.solveLS(B, data.F_YX(), 1 / data.V_YX(), transposed=False, method=ls_method)
@@ -478,7 +478,7 @@ def parse_v(data, v):
 
 
 def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
-                   WLRAstopCondition=None, ES_stabilization=None, return_subspace=False):
+                   WLRAstopCondition=None, ES_stabilization=None, return_subspace=False, wsvd=linalg.cached_wsvd, ls_method='LDLT'):
     """Estimate a model from the given `data` using a spectral `method`.
 
     Parameters
@@ -562,24 +562,24 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
     if method == 'RCW':
         if v is None: v = ((1, 1),)
         v_Y, v_X = parse_v(data, v)
-        C, Q = CQ(data.F_YX(), dim_subspace, v_Y, v_X)
+        C, Q = CQ(data.F_YX(), dim_subspace, v_Y, v_X, wsvd=wsvd)
         model = model_by_learning_equations(data, C, Q)
-        subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y) if return_subspace and type(dim_subspace) is int else dim_subspace
+        subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y, ) if return_subspace and type(dim_subspace) is int else dim_subspace
 
     elif method == 'ES':
         if v is None: v = [[1, 1]]
         v_Y, v_X = parse_v(data, v)
-        if type(dim_subspace) is int: dim_subspace = model_estimate(data, dim_subspace, method='SPEC')
+        if type(dim_subspace) is int: dim_subspace = model_estimate(data, dim_subspace, method='SPEC', wsvd=wsvd)
         if type(dim_subspace) is not np.ndarray:
             subspace = subspace_from_model(dim_subspace, data.Y, v_Y=v_Y, stabilization=ES_stabilization)
         if v_Y is None: v_Y = 1
-        model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X))
+        model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X, wsvd=wsvd))
 
     elif method in ['GLS', 'WLS']:
         if WLRAstopCondition is None: WLRAstopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
         elif WLRAstopCondition is int: WLRAstopCondition = _tomlib.StopCondition(WLRAstopCondition)
-        subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=WLRAstopCondition)
-        model = model_by_weighted_equations(data, subspace, method == 'GLS')
+        subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=WLRAstopCondition, wsvd=wsvd, ls_method=ls_method)
+        model = model_by_weighted_equations(data, subspace, method == 'GLS', ls_method=ls_method)
 
     else:
         raise ValueError('Unknown method: ' + method)
