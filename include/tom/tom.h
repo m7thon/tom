@@ -72,6 +72,17 @@
 namespace tom {
     using namespace Eigen;
 }
+
+#ifdef SWIG
+namespace Eigen {
+/** Return the number of threads used by the eigen3 backend (if compiled with openmp) */
+int nbThreads();
+
+/** Set the number of threads to be used by the eigen3 backend (if compiled with openmp) */
+void setNbThreads(int n);
+}
+#endif
+
 #include "cereal/cereal.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/types/string.hpp"

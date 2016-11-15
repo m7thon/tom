@@ -16369,6 +16369,41 @@ SWIGINTERN PyObject *Swig_var_Dynamic_get(void) {
 }
 
 
+SWIGINTERN PyObject *_wrap_nbThreads(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"nbThreads",0,0,0)) SWIG_fail;
+  result = (int)Eigen::nbThreads();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_setNbThreads(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  ecode1 = SWIG_AsVal_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "setNbThreads" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  Eigen::setNbThreads(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_StopCondition_maxIterations__set(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::StopCondition *arg1 = (tom::StopCondition *) 0 ;
@@ -40583,6 +40618,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"endl", (PyCFunction)_wrap_endl, METH_O, (char *)"swig_ptr: endl_cb_ptr"},
 	 { (char *)"ends", (PyCFunction)_wrap_ends, METH_O, (char *)"swig_ptr: ends_cb_ptr"},
 	 { (char *)"flush", (PyCFunction)_wrap_flush, METH_O, (char *)"swig_ptr: flush_cb_ptr"},
+	 { (char *)"nbThreads", (PyCFunction)_wrap_nbThreads, METH_NOARGS, NULL},
+	 { (char *)"setNbThreads", (PyCFunction)_wrap_setNbThreads, METH_O, NULL},
 	 { (char *)"disown_StopCondition", (PyCFunction)_wrap_disown_StopCondition, METH_O, NULL},
 	 { (char *)"normalize", (PyCFunction)_wrap_normalize, METH_O, (char *)"\n"
 		"\n"

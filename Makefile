@@ -1,6 +1,10 @@
 PYTHON = python
 SWIG_FLAGS = -c++ -python -naturalvar -builtin -O
 
+MKLROOT = /opt/intel/mkl
+MKL_LDFLAGS = -L${MKLROOT}/lib -Wl,-rpath,${MKLROOT}/lib -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -L/opt/intel/lib -Wl,-rpath,/opt/intel/lib -liomp5 -lpthread -lm -ldl
+MKL_CFLAGS = -DMKL_LP64 -m64 -I${MKLROOT}/include
+
 CXX_SRC := $(shell find include/tom -type f -name '*.h' -o -name '*.cpp' -o -name '*.hpp')
 SWIG_SRC := $(shell find swig -type f -name "*.i")
 PY_SRC := $(shell find python/tom -type f -name "*.py")
@@ -9,7 +13,6 @@ PY_SRC := $(shell find python/tom -type f -name "*.py")
 .PHONY: install install_user
 .PHONY: test debug
 .PHONY: doc swig clean cleanall
-.PHONY: deploy deploy_quickly deploy_optimized
 .PHONY: tom
 
 build: swig/_tomlib_wrap.cpp
@@ -28,10 +31,19 @@ debug: swig/_tomlib_wrap.cpp
 	CPPFLAGS="-DTOM_DEBUG -g" $(PYTHON) setup.py build_ext
 
 deploy: swig/_tomlib_wrap.cpp
-	CC=clang++ CXX=clang++ CPPFLAGS="-gline-tables-only -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
+	CC=g++-mp-6 CXX=g++-mp-6 CFLAGS="-Wa,-q -g0 -march=native -O2" $(PYTHON) setup.py install --user
 
-deploy_optimized: swig/_tomlib_wrap.cpp
-	CC=g++-mp-6 CXX=g++-mp-6 CPPFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
+deploy_clang: swig/_tomlib_wrap.cpp
+	CC=clang++ CXX=clang++ CFLAGS="-gline-tables-only -march=native -O2" $(PYTHON) setup.py install --user
+
+deploy_openmp: swig/_tomlib_wrap.cpp
+	CC=g++-mp-6 CXX=g++-mp-6 CFLAGS="-fopenmp -Wa,-q -g0 -march=native -O2" $(PYTHON) setup.py install --user
+
+deploy_mkl: swig/_tomlib_wrap.cpp
+	CC=g++-mp-6 CXX=g++-mp-6 CFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_MKL_ALL ${MKL_CFLAGS} -Wno-enum-compare" LDFLAGS="${MKL_LDFLAGS}" $(PYTHON) setup.py install --user
+
+deploy_mkl_clang: swig/_tomlib_wrap.cpp
+	CC=clang++ CXX=clang++ CFLAGS="-gline-tables-only -march=native -O2 -DEIGEN_USE_MKL_ALL ${MKL_CFLAGS}" LDFLAGS="${MKL_LDFLAGS}" $(PYTHON) setup.py install --user
 
 doc:
 	doxygen doc/tom.doxyfile
