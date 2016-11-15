@@ -398,7 +398,7 @@ def subspace_by_svd(F, dim, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     return np.sqrt(v_Y) * U[:, :dim] * ssd[None, :dim]
 
 
-def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='LDLT'):
+def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, ls_method='Cholesky'):
     if stopCondition is None: stopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
     if type(dim_subspace) is int:
         dim_subspace = subspace_by_svd(F, dim_subspace)
@@ -446,7 +446,7 @@ def model_by_learning_equations(data, C, Q, CFQ_is_identity=True):
     return oom
 
 
-def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='LDLT'):
+def model_by_weighted_equations(data, subspace, use_covariances=True, ls_method='Cholesky'):
     B = subspace
     dim = B.shape[1]
     A = _tomlib.solveLS(B, data.F_YX(), 1 / data.V_YX(), transposed=False, method=ls_method)
