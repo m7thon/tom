@@ -10,7 +10,7 @@ except ImportError:
     pinv = py_linalg.pinv
 
 
-def spectral_norm_expectation(sqrt_V, n = 3):
+def spectral_norm_expectation(sqrt_V, n = 5):
     """
     Compute the expectation of the spectral norm of a random matrix with independently normally
     distributed entries with zero mean and standard deviation given by `sqrt_V` (i.e., the
