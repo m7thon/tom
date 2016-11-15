@@ -81,6 +81,12 @@ int nbThreads();
 /** Set the number of threads to be used by the eigen3 backend (if compiled with openmp) */
 void setNbThreads(int n);
 }
+/** Set the number of threads to be used by MKL (if used) */
+void mkl_set_num_threads(int n);
+#else
+#ifndef INTEL_MKL_VERSION
+void mkl_set_num_threads(int n) {}
+#endif
 #endif
 
 #include "cereal/cereal.hpp"

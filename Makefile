@@ -42,6 +42,9 @@ deploy_openmp: swig/_tomlib_wrap.cpp
 deploy_mkl: swig/_tomlib_wrap.cpp
 	CC=g++-mp-6 CXX=g++-mp-6 CFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_MKL_ALL ${MKL_CFLAGS} -Wno-enum-compare" LDFLAGS="${MKL_LDFLAGS}" $(PYTHON) setup.py install --user
 
+deploy_accelerate: swig/_tomlib_wrap.cpp
+	CC=g++-mp-6 CXX=g++-mp-6 CFLAGS="-Wa,-q -g0 -march=native -O2 -DEIGEN_USE_BLAS -framework Accelerate" $(PYTHON) setup.py install --user
+
 deploy_mkl_clang: swig/_tomlib_wrap.cpp
 	CC=clang++ CXX=clang++ CFLAGS="-gline-tables-only -march=native -O2 -DEIGEN_USE_MKL_ALL ${MKL_CFLAGS}" LDFLAGS="${MKL_LDFLAGS}" $(PYTHON) setup.py install --user
 

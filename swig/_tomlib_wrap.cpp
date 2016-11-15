@@ -16404,6 +16404,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_mkl_set_num_threads(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  ecode1 = SWIG_AsVal_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "mkl_set_num_threads" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  mkl_set_num_threads(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_StopCondition_maxIterations__set(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::StopCondition *arg1 = (tom::StopCondition *) 0 ;
@@ -40620,6 +40642,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"flush", (PyCFunction)_wrap_flush, METH_O, (char *)"swig_ptr: flush_cb_ptr"},
 	 { (char *)"nbThreads", (PyCFunction)_wrap_nbThreads, METH_NOARGS, NULL},
 	 { (char *)"setNbThreads", (PyCFunction)_wrap_setNbThreads, METH_O, NULL},
+	 { (char *)"mkl_set_num_threads", (PyCFunction)_wrap_mkl_set_num_threads, METH_O, NULL},
 	 { (char *)"disown_StopCondition", (PyCFunction)_wrap_disown_StopCondition, METH_O, NULL},
 	 { (char *)"normalize", (PyCFunction)_wrap_normalize, METH_O, (char *)"\n"
 		"\n"
