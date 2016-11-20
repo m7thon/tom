@@ -361,7 +361,8 @@ def numerical_rank(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=
     elif errorNorm == 'avspec':
         e = np.sum(np.sqrt(V)) / V.size**0.5
     elif errorNorm == 'exspec':
-        e = sum(linalg.spectral_norm_expectation(np.sqrt(V)))
+        exspec = linalg.spectral_norm_expectation(np.sqrt(V))
+        e = exspec[0]
     elif errorNorm == 'mid_spec':
         sqrt_V = np.sqrt(V)
         e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.sum(sqrt_V) / V.size**0.5)**0.5)
