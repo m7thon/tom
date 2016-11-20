@@ -309,7 +309,7 @@ def v_Y_v_X_from_data(data, p=1, q=1, regularization='auto'):
     return _tomlib.rowwiseMean(V, p) ** q, _tomlib.colwiseMean(V, p) ** q
 
 
-def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=False, wsvd=linalg.cached_wsvd):
+def numerical_rank(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=False, wsvd=linalg.cached_wsvd):
     """
     Estimate the numerical rank of the matrix `F`. This uses the element-wise variances given by `V`
     to determine a cutoff for the error on `F` that is determined using the given `errorNorm`.
@@ -375,6 +375,31 @@ def rank_estimate(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=F
     while d < s.size and s[d] > e:
         d += 1
     return (d,e) if return_cutoff else d
+
+
+def dimension_estimate(data, regularization=(0,0), v=((1,1,(2,0)),), errorNorm='frob_mid_spec', return_cutoff=False, wsvd=linalg.cached_wsvd):
+    """
+    Estimate a suitable model dimension from the `data` by computing the numerical rank of the matrix
+    `data.F_YX()`. This uses the element-wise variances given by `data.V_YX(regularization)` computed
+    with the given `regularization` (default `(0,0)`). The parameter `v` controls the variance
+    normalization by row and column scaling, and the remaining parameters are simply passed on to
+    `numerical_rank()` (consult for details).
+
+    The optional parameter `v` is a tuple (v_Y, v_X) that specifies the row and column weights (1/v_Y)
+    and (1/v_X) to use to normalize the variance matrix in the following way:
+    `v_[Y|X]` may each be given as:
+        - a scalar or 2D column / row vector
+        - a tuple of parameters. In this case `v_[Y|X]` will be
+          computed by a call to `v_[Y|X]_from_data(data, *v_[Y|X])`.
+
+    Furthermore, `v_X` may be omitted to indicate that the same settings
+    should be used as for `v_Y`. For instance, one may pass
+        `v = [[p,q]]`  or  `v = ((p,q), )`  (but *not* `v = ((p,q))`!).
+
+    The estimated dimension is returned if `return_cutoff` is False (default), otherwise a tuple of the
+    estimated dimension and the computed cutoff is returned.
+    """
+    return numerical_rank(data.F_YX(), data.V_YX(regularization=regularization), *parse_v(data, v), errorNorm=errorNorm, return_cutoff=return_cutoff, wsvd=wsvd)
 
 
 def subspace_from_model(model, Y, v_Y=1, stabilization=None):
