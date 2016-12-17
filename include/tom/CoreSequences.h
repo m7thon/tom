@@ -73,8 +73,8 @@ SWIGCODE(%feature ("kwargs") wordsFromData;)
  * @param maxLength the maximum length for returned words, or `0` (default) for no limit
  * @param minRelevance the minimum "relevance" in the data sequence for returned words (default 1.0)
  * @param maxWords the maximum number of returned words, or `0` (default) for no limit
- * @param prefixUnique if set to `true`, then only retain the shortest prefix among words occurring at the same set of positions in the data sequence (default `false`)
- * @param suffixUnique if set to `true`, then only retain the shortest suffix among words ending at the same set of positions in the data sequence (default `false`)
+ * @param prefixUnique if set to `true`, then only retain the shortest prefix among words occurring at the same set of positions in the data sequence (default `false`). This may be useful when selecting characteristic sequences.
+ * @param suffixUnique if set to `true`, then only retain the shortest suffix among words ending at the same set of positions in the data sequence (default `false`).This may be useful when selecting indicative sequences.
  * @param relevance a `PositionRelevance` object to compute the *relevance value* for words, which defaults to their occurrence count in the data (plus a fraction to penalize longer words). This can be customized by passing a `relevance` inherited from `PositionRelevance` with an overwritten `.compute()` method.
  *
  * @return an array of words occurring in the data sequence according to the given constraints, and sorted by occurrence count (descending) and then lexicographically.

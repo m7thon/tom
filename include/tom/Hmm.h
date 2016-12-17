@@ -14,10 +14,10 @@ namespace tom {
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Hmm::repr;)
 /**
- * This class provides provides a rudimentry structure for HMMs and POMDPs. It purpose is to
+ * This class provides a rudimentry structure for HMMs and POMDPs. It purpose is to
  * - create randomly initialized HMMs or POMDPs
  * - learn HMMs / POMDPs from data using EM (Baum-Welch)
- * Further operations are available after conversion into an \c Oom.
+ * Further operations are available after conversion into an \c Oom (uning the `Oom` constructor)
  */
 class Hmm {
 	friend class cereal::access;
@@ -147,7 +147,7 @@ double Hmm::trainEM(const Sequence& trainSequence, const StopCondition& stopCond
 	double llOpt;
 	double log2Px;
 
-	long betaBlockSize = ceil(sqrt(N));
+	long betaBlockSize = std::ceil(std::sqrt(N));
 	if (betaBlockSize < 3) { betaBlockSize = 1; }
 	long betaCacheSize = (N-1) / betaBlockSize;
 	MatrixXd betaCache(dim_, betaCacheSize);
@@ -200,9 +200,10 @@ double Hmm::trainEM(const Sequence& trainSequence, const StopCondition& stopCond
 				}
 			}
 			beta /*t*/ = betaBlock.col(tbi);
-			xi.noalias() /*t-1*/ = std::exp2( alphaLog2Scale + betaLog2Scale(t) - log2Px ) * alpha.asDiagonal() * Theta_(x.o(t),x.u(t)) * beta.asDiagonal();
+			xi.noalias() /*t-1*/ = std::exp2( alphaLog2Scale + betaLog2Scale(t) - log2Px )
+								   * alpha.asDiagonal() * Theta_(x.o(t),x.u(t)) * beta.asDiagonal();
 			// tom::normalize(xi);
-			hmmOpt.T_(x.u(0)) += xi;
+			hmmOpt.T_(x.u(t)) += xi;
 			temp.noalias() = Theta_(x.o(t), x.u(t)).transpose() * alpha;
 			alpha /*t*/ = temp;
 			alphaLog2Scale += std::log2( tom::normalize(alpha) );
