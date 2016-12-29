@@ -83,9 +83,16 @@ void setNbThreads(int n);
 }
 /** Set the number of threads to be used by MKL (if used) */
 void mkl_set_num_threads(int n);
+
+/** Set the number of threads to be used by tomlib (currently only for GLS) (if compiled with openmp) */
+void omp_set_num_threads(int n);
+
 #else
 #ifndef INTEL_MKL_VERSION
 void mkl_set_num_threads(int n) {}
+#endif
+#ifndef _OPENMP
+void omp_set_num_threads(int n) {}
 #endif
 #endif
 

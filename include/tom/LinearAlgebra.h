@@ -294,7 +294,8 @@ SWIGCODE(%template(solveWLS) solveWLS<MatrixXd, MatrixXd, MatrixXd, MatrixXd>;)
  * \ifnot PY
  * in the output-argument `X`,
  * \endif
- * the D(W1,..., Wm)-weighted least-squares (GLS) solution to the overdetermined problem `A` * `X` = `M` (or to `X` * `A` = `M` if `transposed`) using a `method` from {"Cholesky", "LDLT" (default)}, where the block-diagonal symmetric and positive definite weight matrix is given by `W` = [W1,..., Wn], where each `Wj` is the full weight matrix for the column j of `M`.
+ * the D(W1,..., Wm)-weighted least-squares (GLS) solution to the overdetermined problem `A` * `X` = `M` (or to `X` * `A` = `M` if `transposed`) using a `method` from {"Cholesky", "LDLT" (default)}, where the block-diagonal symmetric and positive definite weight matrix is given by:
+ * `W` = [[W1]_1,...,[Wn]_1, ..., [W1]_m,...,[Wn]_m], where each `Wj` is the full weight matrix for the column j of `M`.
  *
  * This computes `X` that minimizes |`A` * `X` - `M`|_D(W1,...,Wn) (or |`X` * `A` - `M`|_D(W1,...,Wn) if `transposed`).
  *
@@ -304,22 +305,28 @@ template< typename D, typename D1, typename D2, typename D3>
 C1(void) PY1(MatrixXd)
 solveGLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D2>& M, const MatrixBase<D3>& W, bool transposed = false, const std::string &method = "LDLT") {
     assert(W.rows() == M.rows() and W.cols() == M.cols() * M.rows()); // Block-diagonal weight matrix
+    Map<const MatrixXd> W_reshaped(W.derived().data(), W.cols(), W.rows());
     if (transposed) {
         // solve XA≈M by solving [\sum_j AjAj^T ⊗ Wj] vec(X) = vec( [W1M1, W2M2, ..., WnMn] A^T )
+        MatrixXd AT = A.transpose();
         MatrixXd AtI_W_ATtI(A.rows() * W.rows(), A.rows() * W.rows()); // we only compute lower triagonal part
-        MatrixXd AiijAjjjWj(W.rows(), W.rows());
-        for (long jj = 0; jj < A.rows(); ++jj) {
-            for (long ii = jj; ii < A.rows(); ++ii) {
-                AiijAjjjWj.setZero(W.rows(), W.rows());
-                for (long j = 0; j < M.cols(); ++j) {
-                    AiijAjjjWj += A(ii, j) * A(jj, j) * W.middleCols(j * W.rows(), W.rows());
+#pragma omp parallel
+        {
+            VectorXd ATii_ATjj(W.rows());
+            for (long jj = 0; jj < A.rows(); ++jj) {
+                for (long j = 0; j < M.rows(); ++j) {
+#pragma omp for
+                    for (long ii = jj; ii < A.rows(); ++ii) {
+                        ATii_ATjj = AT.col(ii).cwiseProduct(AT.col(jj));
+                        AtI_W_ATtI.block(ii * W.rows(), jj * W.rows() + j, W.rows(), 1).noalias() =
+                                W.middleCols(j * M.cols(), M.cols()) * ATii_ATjj;
+                    }
                 }
-                AtI_W_ATtI.block(ii * W.rows(), jj * W.rows(), W.rows(), W.rows()) = AiijAjjjWj;
             }
         }
         MatrixXd WM = MatrixXd(W.rows(), M.cols());
         for (int j = 0; j < M.cols(); ++j) {
-            WM.col(j).noalias() = W.middleCols(j*W.rows(), W.rows()) * M.col(j);
+            WM.col(j).noalias() = W_reshaped.middleRows(j*W.rows(), W.rows()) * M.col(j);
         }
         WM *= A.transpose();
         const Map<const VectorXd> vecWMAT(WM.data(),WM.size());
@@ -336,17 +343,17 @@ solveGLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D
             LLT<MatrixXd> llt;
             const_cast<MatrixBase<D> &>(X).derived().resize(A.cols(), M.cols());
             for (int j = 0; j < X.cols(); ++j) {
-                llt.compute(A.transpose() * W.middleCols(j * W.rows(), W.rows()) * A);
+                llt.compute(A.transpose() * W_reshaped.middleRows(j * W.rows(), W.rows()) * A);
                 const_cast<MatrixBase<D> &>(X).col(j).noalias() = llt.solve(
-                        A.transpose() * (W.middleCols(j * W.rows(), W.rows()) * M.col(j)));
+                        A.transpose() * (W_reshaped.middleRows(j * W.rows(), W.rows()) * M.col(j)));
             }
         } else if (method == "LDLT") {
             LDLT<MatrixXd> ldlt;
             const_cast<MatrixBase<D> &>(X).derived().resize(A.cols(), M.cols());
             for (int j = 0; j < X.cols(); ++j) {
-                ldlt.compute(A.transpose() * W.middleCols(j * W.rows(), W.rows()) * A);
+                ldlt.compute(A.transpose() * W_reshaped.middleRows(j * W.rows(), W.rows()) * A);
                 const_cast<MatrixBase<D> &>(X).col(j).noalias() = ldlt.solve(
-                        A.transpose() * (W.middleCols(j * W.rows(), W.rows()) * M.col(j)));
+                        A.transpose() * (W_reshaped.middleRows(j * W.rows(), W.rows()) * M.col(j)));
             }
         }
     }
@@ -424,7 +431,8 @@ SWIGCODE(%template(solveLS) solveLS<MatrixXd>;)
  *
  * The returned matrix will therefore be
  *
- * - [B^T * D([W]_1) * B, ..., B^T * D([W]_m) * B] of size B.cols() x B.cols * M.cols() if `covariances`
+ * - [[tW_1]_1, ..., [tW_m]_1, ..., [tW_1]_{B.cols}, ..., [tW_m]_{B.cols}] of size (B.cols x M.cols) * B.cols if `covariances`, where
+ *   tW_j = B^T * D([W]_j) * B
  * - [diag(B^T * D([W]_1) * B), ..., diag(B^T * D([W]_m) * B)] of size B.cols() x M.cols() otherwise.
  */
 template< typename D1, typename D2 >
@@ -432,7 +440,8 @@ MatrixXd transformWeights(const MatrixBase<D1> &W, const MatrixBase<D2> &B, bool
     MatrixXd newWeights(B.cols(), W.cols() * (covariances ? B.cols() : 1));
     for (int j = 0; j < W.cols(); ++j) {
         if (covariances) {
-            newWeights.middleCols(j * B.cols(), B.cols()).noalias() = B.transpose() * W.col(j).asDiagonal() * B;
+            MatrixXd::Map(newWeights.data(), B.cols() * W.cols(), B.cols()).middleRows(j * B.cols(), B.cols()).noalias() =
+            B.transpose() * W.col(j).asDiagonal() * B;
         } else {
             newWeights.col(j).noalias() = (B.transpose() * W.col(j).asDiagonal() * B).diagonal();
         }

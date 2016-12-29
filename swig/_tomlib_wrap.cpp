@@ -16426,6 +16426,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_omp_set_num_threads(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  ecode1 = SWIG_AsVal_int(swig_obj[0], &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "omp_set_num_threads" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  omp_set_num_threads(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_StopCondition_maxIterations__set(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::StopCondition *arg1 = (tom::StopCondition *) 0 ;
@@ -40643,6 +40665,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"nbThreads", (PyCFunction)_wrap_nbThreads, METH_NOARGS, NULL},
 	 { (char *)"setNbThreads", (PyCFunction)_wrap_setNbThreads, METH_O, NULL},
 	 { (char *)"mkl_set_num_threads", (PyCFunction)_wrap_mkl_set_num_threads, METH_O, NULL},
+	 { (char *)"omp_set_num_threads", (PyCFunction)_wrap_omp_set_num_threads, METH_O, NULL},
 	 { (char *)"disown_StopCondition", (PyCFunction)_wrap_disown_StopCondition, METH_O, NULL},
 	 { (char *)"normalize", (PyCFunction)_wrap_normalize, METH_O, (char *)"\n"
 		"\n"
@@ -40841,8 +40864,9 @@ static PyMethodDef SwigMethods[] = {
 		"Return the D(W1,..., Wm)-weighted least-squares (GLS) solution to the\n"
 		"overdetermined problem `A` * `X` = `M` (or to `X` * `A` = `M` if `transposed`)\n"
 		"using a `method` from {\"Cholesky\", \"LDLT\" (default)}, where the block-\n"
-		"diagonal symmetric and positive definite weight matrix is given by `W` =\n"
-		"[W1,..., Wn], where each `Wj` is the full weight matrix for the column j of `M`.  \n"
+		"diagonal symmetric and positive definite weight matrix is given by: `W` =\n"
+		"[[W1]_1,...,[Wn]_1, ..., [W1]_m,...,[Wn]_m], where each `Wj` is the full weight\n"
+		"matrix for the column j of `M`.  \n"
 		"\n"
 		"This computes `X` that minimizes |`A` * `X` - `M`|_D(W1,...,Wn) (or |`X` * `A` -\n"
 		"`M`|_D(W1,...,Wn) if `transposed`).  \n"
@@ -40927,8 +40951,9 @@ static PyMethodDef SwigMethods[] = {
 		"\n"
 		"The returned matrix will therefore be  \n"
 		"\n"
-		"*   [B^T * D([W]_1) * B, ..., B^T * D([W]_m) * B] of size B.cols() x B.cols *\n"
-		"    M.cols() if `covariances`  \n"
+		"*   [[tW_1]_1, ..., [tW_m]_1, ..., [tW_1]_{B.cols}, ..., [tW_m]_{B.cols}] of\n"
+		"    size (B.cols x M.cols) * B.cols if `covariances`, where tW_j = B^T *\n"
+		"    D([W]_j) * B  \n"
 		"*   [diag(B^T * D([W]_1) * B), ..., diag(B^T * D([W]_m) * B)] of size B.cols() x\n"
 		"    M.cols() otherwise.  \n"
 		"\n"
