@@ -142,7 +142,7 @@ template< typename D, typename D1, typename D2 >
 C1(void) PY1(MatrixXd)
 solveOLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D2> &M, bool transposed = false, const std::string& method = "QR") {
     if (transposed) {
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A * A.transpose()).llt().solve(A * M.transpose()).transpose();
         } else if (method == "LDLT") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A * A.transpose()).ldlt().solve(A * M.transpose()).transpose();
@@ -154,7 +154,7 @@ solveOLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D
             const_cast<MatrixBase<D> &>(X).derived().noalias() = A.transpose().jacobiSvd(ComputeThinU | ComputeThinV).solve(M.transpose()).transpose();
         } else { throw std::invalid_argument("unrecognized method"); }
     } else {
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A.transpose() * A).llt().solve(A.transpose() * M);
         } else if (method == "LDLT") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A.transpose() * A).ldlt().solve(A.transpose() * M);
@@ -194,7 +194,7 @@ template< typename D, typename D1, typename D2, typename D3>
 C1(void) PY1(MatrixXd)
 solveRowColWLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1>&A, const MatrixBase<D2>& M, const MatrixBase<D3>& W, bool transposed = false, const std::string &method = "LDLT") {
     if (transposed) {
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A * W.asDiagonal() * A.transpose()).llt().solve(
                     A * W.asDiagonal() * M.transpose()).transpose();
         } else if (method == "LDLT") {
@@ -205,7 +205,7 @@ solveRowColWLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1>&A, const MatrixB
             solveOLS(X, A * sqrt_W.asDiagonal(), M * sqrt_W.asDiagonal(), transposed, method);
         }
     } else {
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             const_cast<MatrixBase<D> &>(X).derived().noalias() = (A.transpose() * W.asDiagonal() * A).llt().solve(
                     A.transpose() * W.asDiagonal() * M);
         } else if (method == "LDLT") {
@@ -243,7 +243,7 @@ C1(void) PY1(MatrixXd)
 solveWLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1>& A, const MatrixBase<D2>& M, const MatrixBase<D3>& W, bool transposed = false, const std::string &method = "LDLT") {
     if (transposed) {
         const_cast<MatrixBase<D> &>(X).derived().resize(M.rows(), A.rows());
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             LLT<MatrixXd> llt;
             MatrixXd A_WMT = A * (W.array() * M.array()).matrix().transpose();
             for (int i = 0; i < M.rows(); ++i) {
@@ -265,7 +265,7 @@ solveWLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1>& A, const MatrixBase<D
         }
     } else {
         const_cast<MatrixBase<D> &>(X).derived().resize(A.cols(), M.cols());
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             LLT<MatrixXd> llt;
             MatrixXd AT_WM = A.transpose() * (W.array() * M.array()).matrix();
             for (int j = 0; j < M.cols(); ++j) {
@@ -326,12 +326,13 @@ solveGLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D
         MatrixXd vecX;
         if (method == "LDLT") { vecX.noalias() = AtI_W_ATtI.ldlt().solve(vecWMAT); }
         else if (method == "Cholesky") { vecX.noalias() = AtI_W_ATtI.llt().solve(vecWMAT); }
+        else if (method == "iCholesky") { LLT<Ref<MatrixXd> > llt(AtI_W_ATtI); vecX.noalias() = llt.solve(vecWMAT); }
         else { throw std::invalid_argument("unrecognized method"); }
         vecX.resize(M.rows(), A.rows());
         const_cast<MatrixBase<D>&>(X).derived() = std::move(vecX);
     } else {
         // solve AX≈M by solving SjAXj ≈ SjMj for each column j
-        if (method == "Cholesky") {
+        if (method == "Cholesky" or method == "iCholesky") {
             LLT<MatrixXd> llt;
             const_cast<MatrixBase<D> &>(X).derived().resize(A.cols(), M.cols());
             for (int j = 0; j < X.cols(); ++j) {
@@ -387,14 +388,14 @@ SWIGCODE(%template(solveGLS) solveGLS<MatrixXd, MatrixXd, MatrixXd, MatrixXd>;)
 template< typename D>
 C1(void) PY1(MatrixXd)
 solveLS(C2(const MatrixBase<D> &X,) const MatrixXd &A, const MatrixXd &M, const MatrixXd &W = MatrixXd(), bool transposed = false, std::string method = "LDLT") throw(std::invalid_argument) {
-    if (not (method == "Cholesky" or method == "LDLT" or method == "QR" or method == "SVD" or method == "JacobiSVD")) throw std::invalid_argument("method not recognized");
+    if (not (method == "Cholesky" or method == "iCholesky" or method == "LDLT" or method == "QR" or method == "SVD" or method == "JacobiSVD")) throw std::invalid_argument("method not recognized");
     if (not transposed) { // solve AX=M
         if (A.rows() != M.rows()) throw std::invalid_argument("LHS rows != RHS rows");
         if (A.cols() > A.rows()) throw std::invalid_argument("system must be overdetermined");
         if (W.size() == 0) { solveOLS(X, A, M, transposed, method); }
         else if (W.rows() == M.rows() and W.cols() == M.cols()) { solveWLS(X, A, M, W, transposed, method); }
         else if (W.rows() == M.rows() and W.cols() == M.rows() * M.cols()) {
-            if (method != "Cholesky" and method != "LDLT") throw std::invalid_argument("GLS only supported with method 'Cholesky' or 'LDLT'");
+            if (method != "Cholesky" and method != "LDLT" and method != "iCholesky") throw std::invalid_argument("GLS only supported with method 'Cholesky' or 'LDLT'");
             solveGLS(X, A, M, W, transposed, method); }
         else if (W.rows() == W.cols() and W.cols() == M.rows() * M.cols()) throw std::invalid_argument("GLS with full weight matrix not implemented");
         else if (W.rows() == M.rows() and W.cols() == 1) { solveRowColWLS(X, A, M, W, transposed, method); }
@@ -406,7 +407,7 @@ solveLS(C2(const MatrixBase<D> &X,) const MatrixXd &A, const MatrixXd &M, const 
         if (W.size() == 0) { solveOLS(X, A, M, transposed, method); }
         else if (W.rows() == M.rows() and W.cols() == M.cols()) { solveWLS(X, A, M, W, transposed, method); }
         else if (W.rows() == M.rows() and W.cols() == M.rows() * M.cols()) {
-            if (method != "Cholesky" and method != "LDLT") throw std::invalid_argument("GLS only supported with method 'Cholesky' or 'LDLT'");
+            if (method != "Cholesky" and method != "LDLT" and method != "iCholesky") throw std::invalid_argument("GLS only supported with method 'Cholesky' or 'LDLT'");
             solveGLS(X, A, M, W, transposed, method); }
         else if (W.rows() == W.cols() and W.cols() == M.rows() * M.cols()) throw std::invalid_argument("LS with full weight matrix not implemented");
         else if (W.rows() == 1 and W.cols() == M.cols()) { solveRowColWLS(X, A, M, W, transposed, method); }
@@ -482,7 +483,7 @@ MatrixXd pinv(const MatrixBase<D> &M, const std::string &method = "SVD") {
     MatrixXd result;
     unsigned long I_size = M.rows();
     bool transpose = false;
-    if ((method == "LDLT" or method == "Cholesky" or method == "QR") and (M.rows() < M.cols())) {
+    if ((method == "LDLT" or method == "Cholesky" or method == "iCholesky" or method == "QR") and (M.rows() < M.cols())) {
         I_size = M.cols();
         transpose = true;
     }
