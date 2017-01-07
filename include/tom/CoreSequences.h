@@ -172,21 +172,6 @@ std::shared_ptr<Sequences> wordsFromModel(Oom &oom, long minLength = 0, long max
     return words;
 }
 
-std::shared_ptr<std::vector<stree::nidx_t> > getIndicativeSequenceNodes(
-        const std::shared_ptr<stree::STree> reverseDataSuffixTree, int minIndCount, int maxIndLen) {
-    auto indNodes = std::make_shared<std::vector<stree::nidx_t> >();
-    for (auto node = stree::DFSIterator(reverseDataSuffixTree); node.isValid(); node.toNext()) {
-        if (node.isFirstVisit()) {
-            if (node.count() < minIndCount or node.depth() > maxIndLen) {
-                node.setUpPass();
-            } else {
-                indNodes->push_back(node.nidx());
-            }
-        }
-    }
-    return indNodes;
-}
-
 } // namespace tom
 
 #endif // CORESEQUENCES_H

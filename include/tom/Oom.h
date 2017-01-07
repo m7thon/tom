@@ -210,14 +210,14 @@ public:
                   double minPrediction = -1, double normalizationTolerance = -1, int maxSetback = -1, double impossibilityThreshold = -1,
                   std::string preset = "") throw(std::invalid_argument) {
         if (preset == "default") {
-            minPrediction_ = 0.0003;
-            normalizationTolerance_ = 0.02;
+            minPrediction_ = 0.0002;
+            normalizationTolerance_ = 0.03;
             impossibilityThreshold_ = 1e-8;
-            this->maxSetback(3);
+            this->maxSetback(5);
         } else if (preset == "none") {
             minPrediction_ = 0;
-            normalizationTolerance_ = 1;
-            impossibilityThreshold_ = 1e-12;
+            normalizationTolerance_ = std::numeric_limits<double>::infinity();
+            impossibilityThreshold_ = 1e-15;
             this->maxSetback(0);
         } else if (preset != "") {
             throw std::invalid_argument("unrecognized preset");

@@ -362,7 +362,7 @@ def numerical_rank(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=
         e = np.sum(np.sqrt(V)) / V.size**0.5
     elif errorNorm == 'exspec':
         exspec = linalg.spectral_norm_expectation(np.sqrt(V))
-        e = exspec[0]
+        e = exspec[0] - exspec[1]
     elif errorNorm == 'mid_spec':
         sqrt_V = np.sqrt(V)
         e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.sum(sqrt_V) / V.size**0.5)**0.5)
@@ -504,7 +504,7 @@ def parse_v(data, v):
 
 
 def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
-                   WLRAstopCondition=None, ES_stabilization=None, return_subspace=False, wsvd=linalg.cached_wsvd, ls_method='LDLT'):
+                   IterationStopCondition=None, ES_stabilization=None, return_subspace=False, wsvd=linalg.cached_wsvd, ls_method='LDLT'):
     """Estimate a model from the given `data` using a spectral `method`.
 
     Parameters
@@ -526,6 +526,7 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
             - 'SPEC': Standard spectral learning
             - 'RCW' : Row and column weighted spectral learning
             - 'ES'  : (Generalized) efficiency sharpening
+            - 'ST-ES': (legacy) suffix tree based efficiency sharpening
             - 'WLS' : Weighted spectral learning using WLS
             - 'GLS' : Weighted spectral learning using GLS
     v : { (v_Y, v_X) }, optional
@@ -545,15 +546,18 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
         Furthermore, `v_X` may be omitted to indicate that the same settings
         should be used as for `v_Y`. For instance, one may pass
             `v = [[p,q]]`  or  `v = ((p,q), )`  (but *not* `v = ((p,q))`!).
-    WLRAstopCondition : tom.util.StopCondition (or int or None), optional
+    IterationStopCondition : tom.util.StopCondition (or int or None), optional
         Determines the stopping condition for the iterative computation of
         the weighted low-rank approximation of F in the case of methods
         'WLS' or 'GLS'. By default at most 100 iterations are performed.
         This can be set to `0` to perform no iterations (which then uses
         the provided subspace or computes the principal subspace by SVD).
+        This is also used by the 'ES' and 'ST-ES' methods, but only to pass
+        the maximum number of iterations.
     ES_stabilization : dict of tom.Oom.stabilization() parameters
         Stabilization parameters to use for the computation of Π (defaults
-        to no stabilization) in the case of method `ES`.
+        to no stabilization) in the case of method `ES`, or for the computation
+        of the reverse states in the case of 'ST-ES'.
     return_subspace : bool, optional
         If `True` (default: `False`), return the principal subspace estimate.
 
@@ -577,6 +581,7 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
     if method in ['Standard', 'Spectral']: method = 'SPEC'
     elif method in ['RowColWeighted', 'RCCQ']: method = 'RCW'
     elif method == 'EfficiencySharpening': method = 'ES'
+    elif method in ['STES', 'SuffixTreeEfficiencySharpening']: method = 'ST-ES'
 
     if dim_subspace is None:
         raise ValueError('Please provide a target dimension.')
@@ -592,19 +597,39 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
         model = model_by_learning_equations(data, C, Q)
         subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y, ) if return_subspace and type(dim_subspace) is int else dim_subspace
 
-    elif method == 'ES':
-        if v is None: v = [[1, 1]]
+    elif method in ['ES', 'ST-ES']:
+        if v is None: v = ((1, 1),)
         v_Y, v_X = parse_v(data, v)
         if type(dim_subspace) is int: dim_subspace = model_estimate(data, dim_subspace, method='SPEC', wsvd=wsvd)
-        if type(dim_subspace) is not np.ndarray:
-            subspace = subspace_from_model(dim_subspace, data.Y, v_Y=v_Y, stabilization=ES_stabilization)
-        if v_Y is None: v_Y = 1
-        model = model_by_learning_equations(data, *CQ(data.F_YX(), subspace, v_Y, v_X, wsvd=wsvd))
+        if type(dim_subspace) is np.ndarray: raise ValueError('ES requires initial model estimate.')
+        if IterationStopCondition is None: IterationStopCondition = _tomlib.StopCondition(5, 0, 0);
+        elif IterationStopCondition is int: IterationStopCondition = _tomlib.StopCondition(IterationStopCondition, 0, 0)
+        IterationStopCondition.reset()
+        model_i = dim_subspace
+        l2l = np.inf
+        if method == 'ES':
+            while(not IterationStopCondition()):
+                subspace_i = subspace_from_model(model_i, data.Y, v_Y=v_Y, stabilization=ES_stabilization)
+                model_i = model_by_learning_equations(data, *CQ(data.F_YX(), subspace_i, 1 if v_Y is None else v_Y, v_X, wsvd=wsvd))
+                model_i.stabilization(preset='default')
+                l2l_i = model_i.l2l(data.sequence.slice(-10**6) if data.sequence.length() > 10**6 else data.sequence)
+                if l2l_i < l2l: model, subspace, l2l = model_i, subspace_i, l2l_i
+        else:
+            if ES_stabilization is None: ES_stabilization = {'preset': 'default'}
+            rstree = _tomlib.STree(data.sequence.reverse())
+            indNodes = _tomlib.getIndicativeSequenceNodes(rstree)
+            while(not IterationStopCondition()):
+                model_i.stabilization(**ES_stabilization)
+                model_i = _tomlib.sharpenEfficiency(model_i, rstree, indNodes)
+                model_i.stabilization(preset='default')
+                l2l_i = model_i.l2l(data.sequence.slice(-10**6) if data.sequence.length() > 10**6 else data.sequence)
+                if l2l_i < l2l: model, l2l = model_i, l2l_i
+            subspace = None
 
     elif method in ['GLS', 'WLS']:
-        if WLRAstopCondition is None: WLRAstopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
-        elif WLRAstopCondition is int: WLRAstopCondition = _tomlib.StopCondition(WLRAstopCondition)
-        subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=WLRAstopCondition, wsvd=wsvd, ls_method=ls_method)
+        if IterationStopCondition is None: IterationStopCondition = _tomlib.StopCondition(100, 1e-5, 1e-7)
+        elif IterationStopCondition is int: IterationStopCondition = _tomlib.StopCondition(IterationStopCondition)
+        subspace = subspace_by_alternating_projections(data.F_YX(), dim_subspace, data.V_YX(), stopCondition=IterationStopCondition, wsvd=wsvd, ls_method=ls_method)
         model = model_by_weighted_equations(data, subspace, method == 'GLS', ls_method=ls_method)
 
     else:

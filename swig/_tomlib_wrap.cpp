@@ -38610,51 +38610,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_getIndicativeSequenceNodes(PyObject *self, PyObject *args) {
-  PyObject *resultobj = 0;
-  std::shared_ptr< stree::STree > arg1 ;
-  int arg2 ;
-  int arg3 ;
-  void *argp1 ;
-  int res1 = 0 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  std::shared_ptr< std::vector< stree::nidx_t,std::allocator< stree::nidx_t > > > result;
-  
-  if (!SWIG_Python_UnpackTuple(args,"getIndicativeSequenceNodes",3,3,swig_obj)) SWIG_fail;
-  {
-    int newmem = 0;
-    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
-    if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getIndicativeSequenceNodes" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const""'"); 
-    }
-    if (argp1) arg1 = *(reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1));
-    if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
-  }
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getIndicativeSequenceNodes" "', argument " "2"" of type '" "int""'");
-  } 
-  arg2 = static_cast< int >(val2);
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "getIndicativeSequenceNodes" "', argument " "3"" of type '" "int""'");
-  } 
-  arg3 = static_cast< int >(val3);
-  result = tom::getIndicativeSequenceNodes(arg1,arg2,arg3);
-  {
-    std::shared_ptr<  std::vector<stree::nidx_t> > *smartresult = result ? new std::shared_ptr<  std::vector<stree::nidx_t> >(result) : 0;
-    resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_std__vectorT_stree__nidx_t_std__allocatorT_stree__nidx_t_t_t_t, SWIG_POINTER_OWN);
-  }
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN int _wrap_new_Estimator(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   std::shared_ptr< stree::STree > *arg1 = 0 ;
@@ -40556,6 +40511,142 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_getIndicativeSequenceNodes__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree > arg1 ;
+  int arg2 ;
+  int arg3 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::shared_ptr< std::vector< stree::nidx_t,std::allocator< stree::nidx_t > > > result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getIndicativeSequenceNodes" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const""'"); 
+    }
+    if (argp1) arg1 = *(reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1));
+    if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
+  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getIndicativeSequenceNodes" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "getIndicativeSequenceNodes" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = static_cast< int >(val3);
+  result = tom::getIndicativeSequenceNodes(arg1,arg2,arg3);
+  {
+    std::shared_ptr<  std::vector<stree::nidx_t> > *smartresult = result ? new std::shared_ptr<  std::vector<stree::nidx_t> >(result) : 0;
+    resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_std__vectorT_stree__nidx_t_std__allocatorT_stree__nidx_t_t_t_t, SWIG_POINTER_OWN);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getIndicativeSequenceNodes__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree > arg1 ;
+  int arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  std::shared_ptr< std::vector< stree::nidx_t,std::allocator< stree::nidx_t > > > result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getIndicativeSequenceNodes" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const""'"); 
+    }
+    if (argp1) arg1 = *(reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1));
+    if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
+  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getIndicativeSequenceNodes" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = tom::getIndicativeSequenceNodes(arg1,arg2);
+  {
+    std::shared_ptr<  std::vector<stree::nidx_t> > *smartresult = result ? new std::shared_ptr<  std::vector<stree::nidx_t> >(result) : 0;
+    resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_std__vectorT_stree__nidx_t_std__allocatorT_stree__nidx_t_t_t_t, SWIG_POINTER_OWN);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getIndicativeSequenceNodes__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree > arg1 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  std::shared_ptr< std::vector< stree::nidx_t,std::allocator< stree::nidx_t > > > result;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getIndicativeSequenceNodes" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const""'"); 
+    }
+    if (argp1) arg1 = *(reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1));
+    if (newmem & SWIG_CAST_NEW_MEMORY) delete reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
+  }
+  result = tom::getIndicativeSequenceNodes(arg1);
+  {
+    std::shared_ptr<  std::vector<stree::nidx_t> > *smartresult = result ? new std::shared_ptr<  std::vector<stree::nidx_t> >(result) : 0;
+    resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(smartresult), SWIGTYPE_p_std__shared_ptrT_std__vectorT_stree__nidx_t_std__allocatorT_stree__nidx_t_t_t_t, SWIG_POINTER_OWN);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getIndicativeSequenceNodes(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"getIndicativeSequenceNodes",0,3,argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    return _wrap_getIndicativeSequenceNodes__SWIG_2(self, argc, argv);
+  }
+  if (argc == 2) {
+    return _wrap_getIndicativeSequenceNodes__SWIG_1(self, argc, argv);
+  }
+  if (argc == 3) {
+    return _wrap_getIndicativeSequenceNodes__SWIG_0(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'getIndicativeSequenceNodes'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::getIndicativeSequenceNodes(std::shared_ptr< stree::STree > const,int,int)\n"
+    "    tom::getIndicativeSequenceNodes(std::shared_ptr< stree::STree > const,int)\n"
+    "    tom::getIndicativeSequenceNodes(std::shared_ptr< stree::STree > const)\n");
+  return 0;
+}
+
+
 SWIGINTERN PyObject *_wrap_sharpenEfficiency(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   tom::Oom *arg1 = 0 ;
@@ -41150,8 +41241,8 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { (char *)"getIndicativeSequenceNodes", _wrap_getIndicativeSequenceNodes, METH_VARARGS, (char *)"\n"
 		"\n"
-		"`getIndicativeSequenceNodes(reverseDataSuffixTree, minIndCount, maxIndLen) ->\n"
-		"    std::shared_ptr< std::vector< stree::nidx_t > >`  \n"
+		"`getIndicativeSequenceNodes(reverseDataSuffixTree, minIndCount=1, maxIndLen=10)\n"
+		"    -> std::shared_ptr< std::vector< stree::nidx_t > >`  \n"
 		"\n"
 		""},
 	 { (char *)"sharpenEfficiency", _wrap_sharpenEfficiency, METH_VARARGS, (char *)"\n"
