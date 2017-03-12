@@ -54,6 +54,10 @@ Notes:
   + `doc` to make the C++ documentation
   + `clean` to clean up the build
   + targets to make the swig wrappers and python documentation
+- When using Anaconda on OSX and compiling with clang, you may need to set the environment variable `MACOSX_DEPLOYMENT_TARGET`
+  to 10.9 or greater. For example:  
+  `MACOSX_DEPLOYMENT_TARGET=10.11 python setup.py install` or  
+  `MACOSX_DEPLOYMENT_TARGET=10.11 make`.
 
 Using the toolkit
 -----------------
