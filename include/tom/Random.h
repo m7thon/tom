@@ -39,6 +39,7 @@ public:
 
 	/** Return a non-negative integer sampled uniformly from the set {0, ..., `n`-1}. */
 	unsigned int integer(unsigned int n) const {
+		if (n <= 1) return 0;
 		using dist_t = std::uniform_int_distribution<unsigned int>;
 		using param_t = dist_t::param_type;
 		return const_cast<Random&>(*this).int_dist(const_cast<Random&>(*this).engine, param_t{0,n-1});
