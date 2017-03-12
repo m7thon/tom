@@ -92,7 +92,6 @@ std::shared_ptr<Sequences> wordsFromData(const std::shared_ptr<const stree::STre
     if (prefixUnique and suffixUnique) throw std::invalid_argument("`prefixUnique` and `suffixUnique` cannot both be set");
     stree::PositionRelevance& key = const_cast<stree::PositionRelevance&>(relevance);
     auto sequence = dataSuffixTree->sequence();
-    int nSymbols = sequence.nInputSymbols() * std::min(sequence.nOutputSymbols(), 1);
     int IO = sequence.isIO() ? 2 : 1;
     if (maxLength == 0) maxLength = sequence.length();
     auto words = std::make_shared<Sequences>();
