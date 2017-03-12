@@ -584,39 +584,46 @@ public:
 
     SWIGCODE(%feature ("kwargs") stationaryState;)
     /**
-     * Return the stationary state (in the case of an input-output `Oom` according to the given `policy`), computed by the power method with at most `maxIterations` number of iterations. */
-    Eigen::VectorXd stationaryState(const Policy& policy = Policy(), int maxIterations = 10000) const {
+     * Return the stationary state $w$ (which is only defined in the case of an output-only `Oom`), computed by solving \f$argmin_{\sigma w = 1} \| \tau w - w \|^2\f$. */
+    Eigen::VectorXd stationaryState() const {
+        MatrixXd T_minus_I = MatrixXd::Zero(dim_, dim_);
+        for (int o = 0; o < nO_; ++o) { T_minus_I += tau(o); }
+        T_minus_I -= MatrixXd::Identity(dim_, dim_);
+        MatrixXd sig_inv = sig_.transpose() / (double)(sig_ * sig_.transpose());
+        MatrixXd I_minus_sig_inv_sig = MatrixXd::Identity(dim_, dim_) - sig_inv * sig_;
+        return sig_inv - (I_minus_sig_inv_sig * (pinv(T_minus_I * I_minus_sig_inv_sig) * (T_minus_I * sig_inv)));
+    }
+
+    SWIGCODE(%feature ("kwargs") averageState;)
+    /**
+     * Return the average state (in the case of an input-output `Oom` according to the given `policy`), computed over `length` time-steps. */
+    Eigen::VectorXd averageState(const Policy& policy = Policy(), int length = 10000) const {
         if (policy.nU_ > nU_) { throw std::invalid_argument("incompatible policy"); }
-        Array<MatrixXd, Dynamic, 1> t(nU_ == 0 ? 1 : nU_);
+        Array<MatrixXd, Dynamic, 1> T(nU_ == 0 ? 1 : nU_);
         for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); ++u) {
-            t(u) = MatrixXd::Zero(dim_, dim_);
+            T(u) = MatrixXd::Zero(dim_, dim_);
             for (Symbol o = 0; o < nO_; ++o) {
-                t(u) += tau(o, u);
+                T(u) += tau(o, u);
             }
         }
-        MatrixXd tt;
+        MatrixXd tt = T(0);
+        VectorXd w_average = w0();
         VectorXd w = w0();
-        VectorXd w_temp = w;
+        VectorXd w_temp = w0();
         VectorXd inputProbs = VectorXd::Ones(nU_ == 0 ? 1 : nU_) / (nU_ == 0 ? 1 : nU_);
-        double error = 1;
-        double lambda = 1;
-        int iteration = 0;
-        while (error > fabs(lambda) * std::numeric_limits<double>::epsilon()
-               and iteration < maxIterations) {
-            iteration++;
-            w = w_temp;
-            w.normalize();
-            if (policy.nU_ != 0) { inputProbs = policy.p(w); }
-            tt.setZero(dim_, dim_);
-            for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); ++u) {
-                tt += inputProbs(u) * t(u);
+        for (int t = 0; t < length; ++t) {
+            if (policy.nU_ > 1) {
+                inputProbs = policy.p(w);
+                tt.setZero(dim_, dim_);
+                for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); ++u) {
+                    tt += inputProbs(u) * T(u);
+                }
             }
             w_temp.noalias() = tt * w;
-            lambda = (double)(w.transpose() * w_temp);
-            error = (w_temp - lambda * w).norm();
+            w = 1.0 / (double)(sig_ * w_temp) * w_temp;
+            w_average += w;
         }
-        w /= (double)(sig_ * w);
-        return w;
+        return 1.0/length * w;
     }
 
     /**
