@@ -136,6 +136,15 @@ public:
      * Return `true` if this is an input-output sequence, i.e., if the input alphabet size `nInputSymbols()` is non-zero. */
     bool isIO() const { return ( nU_ != 0 ); }
 
+    /** Set this to be an IO-OOM if `io` is true, else to be an OOM. This only makes sense for OOMs/IO-OOMs with at most one input symbol. */
+    void setIO(bool io = true) throw(std::runtime_error) {
+        if (nU_ > 1) {
+            if (io) return;
+            throw std::runtime_error("Too many input symbols to convert to normal OOM!");
+        }
+        nU_ = (io ? 1 : 0);
+    }
+
     /**
      * Return the evaluation functional row vector \f$\sigma\f$ */
     const RowVectorXd &sig() const { return sig_; }
