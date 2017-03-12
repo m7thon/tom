@@ -20690,6 +20690,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Sequence_inputSum(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Sequence *arg1 = (tom::Sequence *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  long result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Sequence_inputSum",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Sequence, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Sequence_inputSum" "', argument " "1"" of type '" "tom::Sequence const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Sequence * >(argp1);
+  result = (long)((tom::Sequence const *)arg1)->inputSum();
+  resultobj = SWIG_From_long(static_cast< long >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Sequence_lexicographicIndex__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   tom::Sequence *arg1 = (tom::Sequence *) 0 ;
@@ -33533,6 +33555,114 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Oom_setIO__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Oom *arg1 = (tom::Oom *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::shared_ptr< tom::Oom > tempshared1 ;
+  std::shared_ptr< tom::Oom > *smartarg1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_setIO" "', argument " "1"" of type '" "tom::Oom *""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared1 = *reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >(tempshared1.get());
+    } else {
+      smartarg1 = reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >((smartarg1 ? smartarg1->get() : 0));
+    }
+  }
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Oom_setIO" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  try {
+    (arg1)->setIO(arg2);
+  }
+  catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Oom_setIO__SWIG_1(PyObject *self, int nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
+  PyObject *resultobj = 0;
+  tom::Oom *arg1 = (tom::Oom *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::shared_ptr< tom::Oom > tempshared1 ;
+  std::shared_ptr< tom::Oom > *smartarg1 = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_setIO" "', argument " "1"" of type '" "tom::Oom *""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared1 = *reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >(tempshared1.get());
+    } else {
+      smartarg1 = reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >((smartarg1 ? smartarg1->get() : 0));
+    }
+  }
+  try {
+    (arg1)->setIO();
+  }
+  catch(std::runtime_error &_e) {
+    SWIG_exception_fail(SWIG_RuntimeError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Oom_setIO(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"Oom_setIO",0,2,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 1) {
+    return _wrap_Oom_setIO__SWIG_1(self, argc, argv);
+  }
+  if (argc == 2) {
+    return _wrap_Oom_setIO__SWIG_0(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Oom_setIO'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::Oom::setIO(bool)\n"
+    "    tom::Oom::setIO()\n");
+  return 0;
+}
+
+
 SWIGINTERN PyObject *_wrap_Oom_sig__SWIG_0(PyObject *self, int nobjs, PyObject **SWIGUNUSEDPARM(swig_obj)) {
   PyObject *resultobj = 0;
   tom::Oom *arg1 = (tom::Oom *) 0 ;
@@ -37145,7 +37275,49 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Oom_stationaryState(PyObject *self, PyObject *args, PyObject *kwargs) {
+SWIGINTERN PyObject *_wrap_Oom_stationaryState(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Oom *arg1 = (tom::Oom *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  std::shared_ptr< tom::Oom const > tempshared1 ;
+  std::shared_ptr< tom::Oom const > *smartarg1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"Oom_stationaryState",0,0,0)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_stationaryState" "', argument " "1"" of type '" "tom::Oom const *""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared1 = *reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >(tempshared1.get());
+    } else {
+      smartarg1 = reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      arg1 = const_cast< tom::Oom * >((smartarg1 ? smartarg1->get() : 0));
+    }
+  }
+  {
+    auto c_obj = new Eigen::VectorXd(((tom::Oom const *)arg1)->stationaryState());
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::VectorXd*>));
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Oom_averageState(PyObject *self, PyObject *args, PyObject *kwargs) {
   PyObject *resultobj = 0;
   tom::Oom *arg1 = (tom::Oom *) 0 ;
   tom::Policy const &arg2_defvalue = tom::Policy() ;
@@ -37162,15 +37334,15 @@ SWIGINTERN PyObject *_wrap_Oom_stationaryState(PyObject *self, PyObject *args, P
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   char *  kwnames[] = {
-    (char *) "policy",(char *) "maxIterations", NULL 
+    (char *) "policy",(char *) "length", NULL 
   };
   
-  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OO:Oom_stationaryState",kwnames,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OO:Oom_averageState",kwnames,&obj1,&obj2)) SWIG_fail;
   {
     int newmem = 0;
     res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_stationaryState" "', argument " "1"" of type '" "tom::Oom const *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_averageState" "', argument " "1"" of type '" "tom::Oom const *""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared1 = *reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
@@ -37184,22 +37356,22 @@ SWIGINTERN PyObject *_wrap_Oom_stationaryState(PyObject *self, PyObject *args, P
   if (obj1) {
     res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_tom__Policy,  0  | 0);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Oom_stationaryState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Oom_stationaryState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
     }
     arg2 = reinterpret_cast< tom::Policy * >(argp2);
   }
   if (obj2) {
     ecode3 = SWIG_AsVal_int(obj2, &val3);
     if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Oom_stationaryState" "', argument " "3"" of type '" "int""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Oom_averageState" "', argument " "3"" of type '" "int""'");
     } 
     arg3 = static_cast< int >(val3);
   }
   {
-    auto c_obj = new Eigen::VectorXd(((tom::Oom const *)arg1)->stationaryState((tom::Policy const &)*arg2,arg3));
+    auto c_obj = new Eigen::VectorXd(((tom::Oom const *)arg1)->averageState((tom::Policy const &)*arg2,arg3));
     npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
       dims[1] = c_obj->cols(); 
     }
@@ -44087,6 +44259,17 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Sequence_methods[] = {
 		"Return a deep copy of this `Sequence`, i.e., the copy will use its own memory.  \n"
 		"\n"
 		"" },
+  { "inputSum", (PyCFunction) _wrap_Sequence_inputSum, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`inputSum() -> long`  \n"
+		"\n"
+		"Return the sum of all inputs.  \n"
+		"\n"
+		"This is useful when dealing with missing values. If \"missingness\" is coded by\n"
+		"the input value `1` for binary inputs, then this counts the number of missing\n"
+		"values.  \n"
+		"\n"
+		"" },
   { "lexicographicIndex", (PyCFunction) _wrap_Sequence_lexicographicIndex, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`lexicographicIndex(withinSequencesOfSameLength=false) -> unsigned long`  \n"
@@ -49241,6 +49424,15 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Oom_methods[] = {
 		"size `nInputSymbols()` is non-zero.  \n"
 		"\n"
 		"" },
+  { "setIO", (PyCFunction) _wrap_Oom_setIO, METH_VARARGS, (char*) "\n"
+		"\n"
+		"`setIO(io=true)`  \n"
+		"\n"
+		"Set this to be an IO-OOM if `io` is true, else to be an OOM.  \n"
+		"\n"
+		"This only makes sense for OOMs/IO-OOMs with at most one input symbol.  \n"
+		"\n"
+		"" },
   { "sig", (PyCFunction) _wrap_Oom_sig, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`sig() -> const RowVectorXd &`  \n"
@@ -49664,11 +49856,18 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Oom_methods[] = {
 		"" },
   { "stationaryState", (PyCFunction) _wrap_Oom_stationaryState, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
 		"\n"
-		"`stationaryState(policy=Policy(), maxIterations=10000) -> Eigen::VectorXd`  \n"
+		"`stationaryState() -> Eigen::VectorXd`  \n"
 		"\n"
-		"Return the stationary state (in the case of an input-output `Oom` according to\n"
-		"the given `policy`), computed by the power method with at most `maxIterations`\n"
-		"number of iterations.  \n"
+		"Return the stationary state $w$ (which is only defined in the case of an output-\n"
+		"only `Oom`), computed by solving $argmin_{\\sigma w = 1} \\| \\tau w - w \\|^2$.  \n"
+		"\n"
+		"" },
+  { "averageState", (PyCFunction) _wrap_Oom_averageState, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
+		"\n"
+		"`averageState(policy=Policy(), length=10000) -> Eigen::VectorXd`  \n"
+		"\n"
+		"Return the average state (in the case of an input-output `Oom` according to the\n"
+		"given `policy`), computed over `length` time-steps.  \n"
 		"\n"
 		"" },
   { "reverse", (PyCFunction) _wrap_Oom_reverse, METH_VARARGS, (char*) "\n"
