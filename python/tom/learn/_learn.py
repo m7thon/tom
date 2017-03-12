@@ -32,7 +32,7 @@ class Data:
     def cache(self, keys):
         self._cache = {}
         for key in keys:
-            if key in ['F_zYX', 'V_zYX']:
+            if key in ['F_zYX', 'V_zYX', 'V_YXr']:
                 self._cache[key] = {}
             else:
                 self._cache[key] = None
@@ -41,7 +41,7 @@ class Data:
         if keys is None: keys = self._cache
         else: keys = [k for k in keys if k in self._cache]
         for key in keys:
-            if key in ['F_zYX', 'V_zYX']:
+            if key in ['F_zYX', 'V_zYX', 'V_YXr']:
                 self._cache[key] = {}
             else:
                 self._cache[key] = None
@@ -188,13 +188,12 @@ class Data:
         else:
             if regularization is not None and regularization != self._regularization:
                 try:
-                    r, V = self._cache['V_YXr']
-                    if r != regularization: raise ValueError()
+                    V = self._cache['V_YXr'][tuple(regularization)]
                 except:
                     estimator = _tomlib.Estimator(self.stree)
                     estimator.regularization(*regularization)
                     V = estimator.v(self.Y, self.X)
-                    if 'V_YXr' in self._cache: self._cache['V_YXr'] = (regularization, V)
+                    if 'V_YXr' in self._cache: self._cache['V_YXr'][tuple(regularization)] = V
                 return V
             try: V = self._cache['V_YX']
             except: return self.estimator.v(self.Y, self.X)
@@ -361,11 +360,10 @@ def numerical_rank(F, V, v_Y=1, v_X=1, errorNorm='frob_mid_spec', return_cutoff=
     elif errorNorm == 'avspec':
         e = np.sum(np.sqrt(V)) / V.size**0.5
     elif errorNorm == 'exspec':
-        exspec = linalg.spectral_norm_expectation(np.sqrt(V))
-        e = exspec[0] - exspec[1]
+        e = linalg.spectral_norm_expectation(np.sqrt(V))
     elif errorNorm == 'mid_spec':
         sqrt_V = np.sqrt(V)
-        e = min(e, (sum(linalg.spectral_norm_expectation(sqrt_V)) * np.sum(sqrt_V) / V.size**0.5)**0.5)
+        e = min(e, (linalg.spectral_norm_expectation(sqrt_V) * np.sum(sqrt_V) / V.size**0.5)**0.5)
     elif errorNorm == 'relative':
         F = sqrt_w_Y * F * sqrt_w_X
         with np.errstate(divide='ignore', invalid='ignore'):
