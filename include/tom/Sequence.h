@@ -316,6 +316,13 @@ public:
         return seq;
     }
 
+    /** Return the sum of all inputs. This is useful when dealing with missing values. If "missingness" is coded by the input value `1` for binary inputs, then this counts the number of missing values. */
+    long inputSum() const {
+        long i_sum = 0;
+        for (long idx = 0; idx < length(); ++idx) { i_sum += u(idx); }
+        return i_sum;
+    }
+
     unsigned long lexicographicIndex(bool withinSequencesOfSameLength = false) const {
         Symbol nI = isIO() ? nInputSymbols() : 1;
         Symbol nO = nOutputSymbols();
