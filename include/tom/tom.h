@@ -92,6 +92,7 @@ void omp_set_num_threads(int n);
 void mkl_set_num_threads(int n) {}
 #endif
 #ifndef _OPENMP
+#define omp comment
 void omp_set_num_threads(int n) {}
 #endif
 #endif
