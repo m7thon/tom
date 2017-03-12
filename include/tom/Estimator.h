@@ -352,6 +352,7 @@ private:
             n = pos_.count();
             if (pos_.isSuffix()) { --n; }
             pos_.toSymbol(ou.first);
+            if (estimator_.nU_ == 1 and ou.second == 1) /* missing value */ { return *this; }
             double c = pos_.count();
             double p = ( n == 0 ? 1.0 / estimator_.nO_ : c / n );
             f_ *= p;
