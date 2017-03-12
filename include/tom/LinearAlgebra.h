@@ -310,12 +310,16 @@ solveGLS(C2(const MatrixBase<D> &X,) const MatrixBase<D1> &A, const MatrixBase<D
         // solve XA≈M by solving [\sum_j AjAj^T ⊗ Wj] vec(X) = vec( [W1M1, W2M2, ..., WnMn] A^T )
         MatrixXd AT = A.transpose();
         MatrixXd AtI_W_ATtI(A.rows() * W.rows(), A.rows() * W.rows()); // we only compute lower triagonal part
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
         {
             VectorXd ATii_ATjj(W.rows());
             for (long jj = 0; jj < A.rows(); ++jj) {
                 for (long j = 0; j < M.rows(); ++j) {
+#ifdef _OPENMP
 #pragma omp for
+#endif
                     for (long ii = jj; ii < A.rows(); ++ii) {
                         ATii_ATjj = AT.col(ii).cwiseProduct(AT.col(jj));
                         AtI_W_ATtI.block(ii * W.rows(), jj * W.rows() + j, W.rows(), 1).noalias() =
