@@ -2,6 +2,8 @@ from __future__ import (division, absolute_import, print_function, unicode_liter
 from .. import _tomlib
 from .. import linalg
 
+_tomlib.Estimator = _tomlib.EstimatorNMCAR
+
 import numpy as np
 import itertools
 
@@ -57,11 +59,11 @@ class Data:
             self._nInputSymbols = setTo.nInputSymbols()
             self._nOutputSymbols = setTo.nOutputSymbols()
             self._stree = _tomlib.STree(setTo)
+            self._estimator = _tomlib.Estimator(self._stree)
+            self._estimator.regularization(*self._regularization)
         else:
             self._stree.extendTo(setTo, False)
         self._sequence = setTo
-        self._estimator = _tomlib.Estimator(self._stree)
-        self._estimator.regularization(*self._regularization)
 
         self._X = self._Y = None
         self._reset_cache()
@@ -430,10 +432,6 @@ def subspace_by_alternating_projections(F, dim_subspace, V, stopCondition=None, 
     return B
 
 
-def subspace_corresponding_to_C_and_v_Y(C, v_Y):
-    return v_Y * C.transpose()
-
-
 def CQ(F_YX, dim_subspace, v_Y=1, v_X=1, wsvd=linalg.cached_wsvd):
     sqrt_w_X = v_X**-0.5
     if type(dim_subspace) is int:
@@ -593,7 +591,7 @@ def model_estimate(data, dim_subspace=None, method='SPEC', v=None,
         v_Y, v_X = parse_v(data, v)
         C, Q = CQ(data.F_YX(), dim_subspace, v_Y, v_X, wsvd=wsvd)
         model = model_by_learning_equations(data, C, Q)
-        subspace = subspace_corresponding_to_C_and_v_Y(C, v_Y, ) if return_subspace and type(dim_subspace) is int else dim_subspace
+        subspace = subspace_by_svd(data.F_YX(), dim_subspace, v_Y, v_X, wsvd=wsvd) if return_subspace and type(dim_subspace) is int else dim_subspace
 
     elif method in ['ES', 'ST-ES']:
         if v is None: v = ((1, 1),)
