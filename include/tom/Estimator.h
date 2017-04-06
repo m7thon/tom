@@ -1,10 +1,10 @@
 namespace tom {
 
 SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") Estimator::repr;)
-
 /**
  * This class computes estimates for \f$f( x )\f$ and corresponding variance estimates for sequences \f$x\f$ based on a suffix tree representation of a sample sequence.
  */
+template<bool MCAR = false>
 class Estimator {
 public:
     /**
@@ -321,12 +321,35 @@ private:
         friend class Estimator;
         State(const Estimator& estimator) : estimator_(estimator), pos_(estimator.stree_) { reset(true); }
 
+        template<bool MCAR_T>
+        typename std::enable_if<MCAR_T>::type handle_missing(std::pair<Symbol, Symbol> ou) {
+            pos_.toWildcard(); pos_.toWildcard();
+        }
+        template<bool MCAR_T>
+        typename std::enable_if<!MCAR_T>::type handle_missing(std::pair<Symbol, Symbol> ou) {
+            double n = pos_.count();
+            pos_.toSymbol(ou.second);
+            pi_ *= (n == 0 ? 1.0 / estimator_.nU_ : pos_.count() / n);
+            pos_.toSymbol(ou.first);
+        }
+
         State& reset(bool estimateVariance = true) {
             pos_.setRoot();
             f_ = pi_ = f2_ = 1;
             v_ = 0;
             estimateVariance_ = estimateVariance;
             return *this;
+        }
+
+        void update_f_and_v(double n, double c) {
+            f_ *= ( n == 0 ? 1.0 / estimator_.nO_ : c / n );
+            if (!estimateVariance_) { return; }
+            c += 0.5 * estimator_.vPC_;
+            n += estimator_.vPC_;
+            double p = ( n == 0 ? 0.5 : c / n );
+            double var_p = ( n >= 2 ? p * (1 - p) / (n - 1) : n == 1 and c == 0 ? 0 : 0.25 );
+            v_ = v_ * std::max(p*p - var_p, 0.0) + f2_ * var_p;
+            f2_ *= p*p;
         }
 
         State& operator <<(const State& state) {
@@ -345,6 +368,7 @@ private:
             /* `n` is the number of possible occurrences for `x_k`, and `c` is the number of occurrences of `x_k`. */
             double n;
             if (estimator_.nU_ != 0) {
+                if (ou.second == 1 and ou.first == estimator_.nO_) { handle_missing<MCAR>(ou); return *this; }
                 n = pos_.count();
                 pos_.toSymbol(ou.second);
                 pi_ *= ( n == 0 ? 1.0 / estimator_.nU_ : pos_.count() / n );
@@ -352,19 +376,8 @@ private:
             n = pos_.count();
             if (pos_.isSuffix()) { --n; }
             pos_.toSymbol(ou.first);
-            if (estimator_.nU_ == 1 and ou.second == 1) /* missing value */ { return *this; }
             double c = pos_.count();
-            double p = ( n == 0 ? 1.0 / estimator_.nO_ : c / n );
-            f_ *= p;
-
-            if (not estimateVariance_) { return *this; }
-
-            c += 0.5 * estimator_.vPC_;
-            n += estimator_.vPC_;
-            p = ( n == 0 ? 0.5 : c / n );
-            double var_p = ( n >= 2 ? p * (1 - p) / (n - 1) : n == 1 and c == 0 ? 0 : 0.25 );
-            v_ = v_ * std::max(p*p - var_p, 0.0) + f2_ * var_p;
-            f2_ *= p*p;
+            update_f_and_v(n, c);
             return *this;
         }
 
@@ -385,7 +398,7 @@ private:
         }
 
         const Estimator& estimator_; ///< the `Estimator` that this `State` belongs to
-        stree::Position pos_;        ///< the position in the suffix tree for the currently estimated sequence.
+        typename std::conditional<MCAR, stree::MultiPosition, stree::Position>::type pos_;  ///< the position in the suffix tree for the currently estimated sequence.
         double f_;               ///< the current estimate
         double pi_;
         double f2_;
@@ -396,5 +409,8 @@ private:
     const std::shared_ptr<stree::STree> stree_; ///< the suffix tree for the underlying sample sequence
     State state_;                   ///< captures the relevant information during the parsing of a sequence
 }; // class Estimator
+
+SWIGCODE(%template(EstimatorMCAR) Estimator<true>;)
+SWIGCODE(%template(EstimatorNMCAR) Estimator<false>;)
 
 } // namespace tom

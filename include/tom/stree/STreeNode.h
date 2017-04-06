@@ -665,7 +665,7 @@ public:
 		if (isExplicit()) {
 			edge_.toChild();
 			if (isValid()) depth_++;
-		} else { ++depth_; }
+		} else { depth_++; }
 	}
 
 	/** Return the next sibling `Position` in the suffix tree structure viewed as a *suffix trie*, i.e., where all positions are seen as nodes and all edges have length one. If no sibling exists, a `Position` marked as invalid is returned. Note that the siblings are ordered lexicographically according to their edge symbols.
@@ -709,6 +709,66 @@ public:
     }
 
 }; // class STreePos
+
+
+SWIGCODE(%feature("python:slot", "tp_repr", functype="reprfunc") MultiPosition::repr;)
+/** This class represents a set of positions in the suffix tree that represent a subsequence with wildcards. */
+class MultiPosition {
+    std::forward_list<Position> positions;
+    std::shared_ptr<const STree> stree_; /**< the underlying `STree` */
+public:
+    /** Find the position(s) in the given `stree` corresponding to the given `sequence`. Multi positions may be found in the case of wild-cards. */
+    MultiPosition(const std::shared_ptr<const STree>& stree, Sequence sequence = Sequence()) : stree_(stree) {
+        positions.resize(1, Position(stree));
+        toSequence(sequence);
+    }
+
+    /** Set this `MultiPosition` to the given `multiposition`, which must belong to the same suffix tree. */
+    void set(const MultiPosition& multiposition) { *this = multiposition; }
+
+    /** Reset this `MultiPosition` to the root of the suffix tree. */
+    void setRoot() { positions.resize(1, Position(stree_)); positions.front().setRoot(); }
+
+    /** Return `true` if the represented subsequence matches a suffix of the underlying sequence. */
+    bool isSuffix() const {
+        for (auto it = positions.begin(); it != positions.end(); ++it) { if (it->isSuffix()) return true; }
+        return false;
+    }
+
+    /** Return the number of occurrences of the sequence represented by this `MultiPosition` in the sequence represented by the suffix tree. */
+    nidx_t count() const {
+        nidx_t c = 0;
+        for (auto it = positions.begin(); it != positions.end(); ++it) { c += it->count(); }
+        return c;
+    }
+
+    /** Update this `MultiPosition` such that it represents a subsequence extended by the given `symbol`. */
+    void toSymbol(Symbol symbol) {
+        for (auto it = positions.begin(); it != positions.end(); ++it) { it->toSymbol(symbol); }
+        positions.remove_if([](const Position& p){ return !p.isValid(); });
+    }
+
+    /** Update this `MultiPosition` such that it represents a subsequence extended by a wildcard. */
+    void toWildcard() {
+        for (auto it = positions.begin(); it != positions.end(); ++it) { it->toChild(); }
+        positions.remove_if([](const Position& p){ return !p.isValid(); });
+        for (auto it = positions.begin(); it != positions.end(); ++it) {
+            for (Position sib = it->sibling(); sib.isValid(); sib.toSibling()) { positions.push_front(sib); }
+        }
+    }
+
+    /** Update this `MultiPosition` such that it represents a subsequence extended by the given `sequence`. */
+    void toSequence(const Sequence& sequence) {
+        for (nidx_t idx = 0; ((idx < sequence.rawSize()) and (!positions.empty())); ++idx) { toSymbol(sequence.rawAt(idx)); }
+    }
+
+    /** Return a string representation to display in python. */
+    std::string repr() const {
+        std::stringstream s;
+        s << "A `MultiPosition` object for a `STree`";
+        return s.str();
+    }
+};
 
 
 SWIGCODE(%feature("director") PositionRelevance;)

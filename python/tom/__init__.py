@@ -1,6 +1,7 @@
 from . import _tomlib
 
-from ._tomlib import Oom, Sequence, Sequences, STree, Random, Estimator, StopCondition, NoIndex
+from ._tomlib import Oom, Sequence, Sequences, STree, Random, StopCondition, NoIndex, EstimatorMCAR
+from ._tomlib import EstimatorNMCAR as Estimator
 from ._tomlib import wordsFromData, wordsFromModel, wordsOverAlphabet, reverseWords, sortWords
 
 from . import stree

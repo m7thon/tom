@@ -53,6 +53,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <forward_list>
 #include <deque>
 #include <stack>
 #include <queue>
@@ -65,6 +66,7 @@
 #include <cassert>
 #include <stdexcept>
 #include <random>
+#include <type_traits>
 
 //MARK: external libraries
 #include "Eigen/Core"
