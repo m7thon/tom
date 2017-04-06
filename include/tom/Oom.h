@@ -586,44 +586,27 @@ public:
     /**
      * Return the stationary state $w$ (which is only defined in the case of an output-only `Oom`), computed by solving \f$argmin_{\sigma w = 1} \| \tau w - w \|^2\f$. */
     Eigen::VectorXd stationaryState() const {
-        MatrixXd T_minus_I = MatrixXd::Zero(dim_, dim_);
-        for (int o = 0; o < nO_; ++o) { T_minus_I += tau(o); }
-        T_minus_I -= MatrixXd::Identity(dim_, dim_);
-        MatrixXd sig_inv = sig_.transpose() / (double)(sig_ * sig_.transpose());
-        MatrixXd I_minus_sig_inv_sig = MatrixXd::Identity(dim_, dim_) - sig_inv * sig_;
-        return sig_inv - (I_minus_sig_inv_sig * (pinv(T_minus_I * I_minus_sig_inv_sig) * (T_minus_I * sig_inv)));
+        MatrixXd T_minus_Id = MatrixXd::Zero(dim_, dim_);
+        for (int o = 0; o < nO_; ++o) { T_minus_Id += tau(o); }
+        T_minus_Id -= MatrixXd::Identity(dim_, dim_);
+        VectorXd w = (T_minus_Id.transpose() * T_minus_Id).ldlt().solve(sig().transpose());
+        w /= (double)(sig() * w);
+        return w;
     }
 
     SWIGCODE(%feature ("kwargs") averageState;)
     /**
-     * Return the average state (in the case of an input-output `Oom` according to the given `policy`), computed over `length` time-steps. */
-    Eigen::VectorXd averageState(const Policy& policy = Policy(), int length = 10000) const {
-        if (policy.nU_ > nU_) { throw std::invalid_argument("incompatible policy"); }
-        Array<MatrixXd, Dynamic, 1> T(nU_ == 0 ? 1 : nU_);
-        for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); ++u) {
-            T(u) = MatrixXd::Zero(dim_, dim_);
-            for (Symbol o = 0; o < nO_; ++o) {
-                T(u) += tau(o, u);
-            }
+     * Return the (Cesaro) average state over a given sequence (which may be sampled from this `Oom`). */
+    Eigen::VectorXd averageState(const Sequence& sequence,  bool reset = true) {
+        if (reset) { this->reset(); }
+        VectorXd w = wt_;
+        for (unsigned long pos = 0; pos < sequence.length(); ++pos) {
+            if (nU_ != 0) condition(sequence.u(pos));
+            update(sequence.o(pos), sequence.u(pos));
+            w += wt_;
         }
-        MatrixXd tt = T(0);
-        VectorXd w_average = w0();
-        VectorXd w = w0();
-        VectorXd w_temp = w0();
-        VectorXd inputProbs = VectorXd::Ones(nU_ == 0 ? 1 : nU_) / (nU_ == 0 ? 1 : nU_);
-        for (int t = 0; t < length; ++t) {
-            if (policy.nU_ > 1) {
-                inputProbs = policy.p(w);
-                tt.setZero(dim_, dim_);
-                for (Symbol u = 0; u < (nU_ == 0 ? 1 : nU_); ++u) {
-                    tt += inputProbs(u) * T(u);
-                }
-            }
-            w_temp.noalias() = tt * w;
-            w = 1.0 / (double)(sig_ * w_temp) * w_temp;
-            w_average += w;
-        }
-        return 1.0/length * w;
+        w /= sequence.length();
+        return w;
     }
 
     /**
