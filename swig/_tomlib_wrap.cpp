@@ -4081,32 +4081,34 @@ namespace Swig {
 #define SWIGTYPE_p_streampos swig_types[90]
 #define SWIGTYPE_p_stree__DFSIterator swig_types[91]
 #define SWIGTYPE_p_stree__EdgeNode swig_types[92]
-#define SWIGTYPE_p_stree__Node swig_types[93]
-#define SWIGTYPE_p_stree__PathNode swig_types[94]
-#define SWIGTYPE_p_stree__Position swig_types[95]
-#define SWIGTYPE_p_stree__PositionRelevance swig_types[96]
-#define SWIGTYPE_p_stree__PostfixIterator swig_types[97]
-#define SWIGTYPE_p_stree__PrefixIterator swig_types[98]
-#define SWIGTYPE_p_stree__STree swig_types[99]
-#define SWIGTYPE_p_stree__internal__InternalNode swig_types[100]
-#define SWIGTYPE_p_stree__internal__LeafNode swig_types[101]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[102]
-#define SWIGTYPE_p_tom__Estimator swig_types[103]
-#define SWIGTYPE_p_tom__Hmm swig_types[104]
-#define SWIGTYPE_p_tom__Oom swig_types[105]
-#define SWIGTYPE_p_tom__Policy swig_types[106]
-#define SWIGTYPE_p_tom__Random swig_types[107]
-#define SWIGTYPE_p_tom__Sequence swig_types[108]
-#define SWIGTYPE_p_tom__StopCondition swig_types[109]
-#define SWIGTYPE_p_traits_type swig_types[110]
-#define SWIGTYPE_p_unsigned_char swig_types[111]
-#define SWIGTYPE_p_unsigned_int swig_types[112]
-#define SWIGTYPE_p_unsigned_long swig_types[113]
-#define SWIGTYPE_p_unsigned_long_long swig_types[114]
-#define SWIGTYPE_p_unsigned_short swig_types[115]
-#define SWIGTYPE_p_value_type swig_types[116]
-static swig_type_info *swig_types[118];
-static swig_module_info swig_module = {swig_types, 117, 0, 0, 0, 0};
+#define SWIGTYPE_p_stree__MultiPosition swig_types[93]
+#define SWIGTYPE_p_stree__Node swig_types[94]
+#define SWIGTYPE_p_stree__PathNode swig_types[95]
+#define SWIGTYPE_p_stree__Position swig_types[96]
+#define SWIGTYPE_p_stree__PositionRelevance swig_types[97]
+#define SWIGTYPE_p_stree__PostfixIterator swig_types[98]
+#define SWIGTYPE_p_stree__PrefixIterator swig_types[99]
+#define SWIGTYPE_p_stree__STree swig_types[100]
+#define SWIGTYPE_p_stree__internal__InternalNode swig_types[101]
+#define SWIGTYPE_p_stree__internal__LeafNode swig_types[102]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[103]
+#define SWIGTYPE_p_tom__EstimatorT_false_t swig_types[104]
+#define SWIGTYPE_p_tom__EstimatorT_true_t swig_types[105]
+#define SWIGTYPE_p_tom__Hmm swig_types[106]
+#define SWIGTYPE_p_tom__Oom swig_types[107]
+#define SWIGTYPE_p_tom__Policy swig_types[108]
+#define SWIGTYPE_p_tom__Random swig_types[109]
+#define SWIGTYPE_p_tom__Sequence swig_types[110]
+#define SWIGTYPE_p_tom__StopCondition swig_types[111]
+#define SWIGTYPE_p_traits_type swig_types[112]
+#define SWIGTYPE_p_unsigned_char swig_types[113]
+#define SWIGTYPE_p_unsigned_int swig_types[114]
+#define SWIGTYPE_p_unsigned_long swig_types[115]
+#define SWIGTYPE_p_unsigned_long_long swig_types[116]
+#define SWIGTYPE_p_unsigned_short swig_types[117]
+#define SWIGTYPE_p_value_type swig_types[118]
+static swig_type_info *swig_types[120];
+static swig_module_info swig_module = {swig_types, 119, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -30315,6 +30317,335 @@ fail:
 }
 
 
+SWIGINTERN int _wrap_new_MultiPosition__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree const > *arg1 = 0 ;
+  stree::Sequence arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  std::shared_ptr< stree::STree const > tempshared1 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  stree::MultiPosition *result = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_MultiPosition" "', argument " "1"" of type '" "std::shared_ptr< stree::STree const > const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      if (argp1) tempshared1 = *reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1);
+      arg1 = &tempshared1;
+    } else {
+      arg1 = (argp1) ? reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1) : &tempshared1;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_MultiPosition" "', argument " "2"" of type '" "stree::Sequence""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_MultiPosition" "', argument " "2"" of type '" "stree::Sequence""'");
+    } else {
+      stree::Sequence * temp = reinterpret_cast< stree::Sequence * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (stree::MultiPosition *)new stree::MultiPosition((std::shared_ptr< stree::STree const > const &)*arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_stree__MultiPosition, SWIG_BUILTIN_INIT |  0 );
+  return resultobj == Py_None ? -1 : 0;
+fail:
+  return -1;
+}
+
+
+SWIGINTERN int _wrap_new_MultiPosition__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree const > *arg1 = 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  std::shared_ptr< stree::STree const > tempshared1 ;
+  stree::MultiPosition *result = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_MultiPosition" "', argument " "1"" of type '" "std::shared_ptr< stree::STree const > const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      if (argp1) tempshared1 = *reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1);
+      arg1 = &tempshared1;
+    } else {
+      arg1 = (argp1) ? reinterpret_cast< std::shared_ptr< stree::STree const > * >(argp1) : &tempshared1;
+    }
+  }
+  result = (stree::MultiPosition *)new stree::MultiPosition((std::shared_ptr< stree::STree const > const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_stree__MultiPosition, SWIG_BUILTIN_INIT |  0 );
+  return resultobj == Py_None ? -1 : 0;
+fail:
+  return -1;
+}
+
+
+SWIGINTERN int _wrap_new_MultiPosition(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"new_MultiPosition",0,2,argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    return _wrap_new_MultiPosition__SWIG_1(self, argc, argv);
+  }
+  if (argc == 2) {
+    return _wrap_new_MultiPosition__SWIG_0(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_MultiPosition'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    stree::MultiPosition::MultiPosition(std::shared_ptr< stree::STree const > const &,stree::Sequence)\n"
+    "    stree::MultiPosition::MultiPosition(std::shared_ptr< stree::STree const > const &)\n");
+  return -1;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_set(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  stree::MultiPosition *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_set" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_stree__MultiPosition,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MultiPosition_set" "', argument " "2"" of type '" "stree::MultiPosition const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MultiPosition_set" "', argument " "2"" of type '" "stree::MultiPosition const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::MultiPosition * >(argp2);
+  (arg1)->set((stree::MultiPosition const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_setRoot(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MultiPosition_setRoot",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_setRoot" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  (arg1)->setRoot();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_isSuffix(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MultiPosition_isSuffix",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_isSuffix" "', argument " "1"" of type '" "stree::MultiPosition const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  result = (bool)((stree::MultiPosition const *)arg1)->isSuffix();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_count(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  stree::nidx_t result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MultiPosition_count",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_count" "', argument " "1"" of type '" "stree::MultiPosition const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  result = (stree::nidx_t)((stree::MultiPosition const *)arg1)->count();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_toSymbol(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  stree::Symbol arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_toSymbol" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MultiPosition_toSymbol" "', argument " "2"" of type '" "stree::Symbol""'");
+  } 
+  arg2 = static_cast< stree::Symbol >(val2);
+  (arg1)->toSymbol(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_toWildcard(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MultiPosition_toWildcard",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_toWildcard" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  (arg1)->toWildcard();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_toSequence(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  stree::Sequence *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_toSequence" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[0], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MultiPosition_toSequence" "', argument " "2"" of type '" "stree::Sequence const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MultiPosition_toSequence" "', argument " "2"" of type '" "stree::Sequence const &""'"); 
+  }
+  arg2 = reinterpret_cast< stree::Sequence * >(argp2);
+  (arg1)->toSequence((stree::Sequence const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MultiPosition_repr(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"MultiPosition_repr",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MultiPosition_repr" "', argument " "1"" of type '" "stree::MultiPosition const *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  result = ((stree::MultiPosition const *)arg1)->repr();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGPY_REPRFUNC_CLOSURE(_wrap_MultiPosition_repr)
+
+SWIGINTERN PyObject *_wrap_delete_MultiPosition(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  stree::MultiPosition *arg1 = (stree::MultiPosition *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"delete_MultiPosition",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_stree__MultiPosition, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MultiPosition" "', argument " "1"" of type '" "stree::MultiPosition *""'"); 
+  }
+  arg1 = reinterpret_cast< stree::MultiPosition * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_PositionRelevance_compute(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   stree::PositionRelevance *arg1 = (stree::PositionRelevance *) 0 ;
@@ -37320,58 +37651,55 @@ fail:
 SWIGINTERN PyObject *_wrap_Oom_averageState(PyObject *self, PyObject *args, PyObject *kwargs) {
   PyObject *resultobj = 0;
   tom::Oom *arg1 = (tom::Oom *) 0 ;
-  tom::Policy const &arg2_defvalue = tom::Policy() ;
-  tom::Policy *arg2 = (tom::Policy *) &arg2_defvalue ;
-  int arg3 = (int) 10000 ;
+  tom::Sequence *arg2 = 0 ;
+  bool arg3 = (bool) true ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  std::shared_ptr< tom::Oom const > tempshared1 ;
-  std::shared_ptr< tom::Oom const > *smartarg1 = 0 ;
+  std::shared_ptr< tom::Oom > tempshared1 ;
+  std::shared_ptr< tom::Oom > *smartarg1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
-  int val3 ;
+  bool val3 ;
   int ecode3 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   char *  kwnames[] = {
-    (char *) "policy",(char *) "length", NULL 
+    (char *) "sequence",(char *) "reset", NULL 
   };
   
-  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OO:Oom_averageState",kwnames,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"O|O:Oom_averageState",kwnames,&obj1,&obj2)) SWIG_fail;
   {
     int newmem = 0;
     res1 = SWIG_ConvertPtrAndOwn(self, &argp1, SWIGTYPE_p_std__shared_ptrT_tom__Oom_t, 0 |  0 , &newmem);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_averageState" "', argument " "1"" of type '" "tom::Oom const *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Oom_averageState" "', argument " "1"" of type '" "tom::Oom *""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
-      tempshared1 = *reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
-      delete reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      tempshared1 = *reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
       arg1 = const_cast< tom::Oom * >(tempshared1.get());
     } else {
-      smartarg1 = reinterpret_cast< std::shared_ptr< const tom::Oom > * >(argp1);
+      smartarg1 = reinterpret_cast< std::shared_ptr<  tom::Oom > * >(argp1);
       arg1 = const_cast< tom::Oom * >((smartarg1 ? smartarg1->get() : 0));
     }
   }
-  if (obj1) {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_tom__Policy,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
-    }
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Policy const &""'"); 
-    }
-    arg2 = reinterpret_cast< tom::Policy * >(argp2);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
   }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Oom_averageState" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  arg2 = reinterpret_cast< tom::Sequence * >(argp2);
   if (obj2) {
-    ecode3 = SWIG_AsVal_int(obj2, &val3);
+    ecode3 = SWIG_AsVal_bool(obj2, &val3);
     if (!SWIG_IsOK(ecode3)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Oom_averageState" "', argument " "3"" of type '" "int""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Oom_averageState" "', argument " "3"" of type '" "bool""'");
     } 
-    arg3 = static_cast< int >(val3);
+    arg3 = static_cast< bool >(val3);
   }
   {
-    auto c_obj = new Eigen::VectorXd(((tom::Oom const *)arg1)->averageState((tom::Policy const &)*arg2,arg3));
+    auto c_obj = new Eigen::VectorXd((arg1)->averageState((tom::Sequence const &)*arg2,arg3));
     npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
       dims[1] = c_obj->cols(); 
     }
@@ -38782,21 +39110,21 @@ fail:
 }
 
 
-SWIGINTERN int _wrap_new_Estimator(PyObject *self, PyObject *args) {
+SWIGINTERN int _wrap_new_EstimatorMCAR(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
   std::shared_ptr< stree::STree > *arg1 = 0 ;
   void *argp1 ;
   int res1 = 0 ;
   std::shared_ptr< stree::STree > tempshared1 ;
   PyObject *swig_obj[1] ;
-  tom::Estimator *result = 0 ;
+  tom::Estimator< true > *result = 0 ;
   
-  if (!SWIG_Python_UnpackTuple(args,"new_Estimator",1,1,swig_obj)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args,"new_EstimatorMCAR",1,1,swig_obj)) SWIG_fail;
   {
     int newmem = 0;
     res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_Estimator" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_EstimatorMCAR" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       if (argp1) tempshared1 = *reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
@@ -38806,29 +39134,29 @@ SWIGINTERN int _wrap_new_Estimator(PyObject *self, PyObject *args) {
       arg1 = (argp1) ? reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1) : &tempshared1;
     }
   }
-  result = (tom::Estimator *)new tom::Estimator((std::shared_ptr< stree::STree > const &)*arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_tom__Estimator, SWIG_BUILTIN_INIT |  0 );
+  result = (tom::Estimator< true > *)new tom::Estimator< true >((std::shared_ptr< stree::STree > const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_tom__EstimatorT_true_t, SWIG_BUILTIN_INIT |  0 );
   return resultobj == Py_None ? -1 : 0;
 fail:
   return -1;
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_sequence(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_sequence(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   tom::Sequence result;
   
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_sequence",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorMCAR_sequence",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_sequence" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_sequence" "', argument " "1"" of type '" "tom::Estimator< true > const *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = ((tom::Estimator const *)arg1)->sequence();
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
+  result = ((tom::Estimator< true > const *)arg1)->sequence();
   resultobj = SWIG_NewPointerObj((new tom::Sequence(static_cast< const tom::Sequence& >(result))), SWIGTYPE_p_tom__Sequence, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -38836,21 +39164,21 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_nInputSymbols(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_nInputSymbols(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   int result;
   
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_nInputSymbols",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorMCAR_nInputSymbols",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_nInputSymbols" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_nInputSymbols" "', argument " "1"" of type '" "tom::Estimator< true > const *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = (int)((tom::Estimator const *)arg1)->nInputSymbols();
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
+  result = (int)((tom::Estimator< true > const *)arg1)->nInputSymbols();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -38858,21 +39186,21 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_nOutputSymbols(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_nOutputSymbols(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   int result;
   
-  if (!SWIG_Python_UnpackTuple(args,"Estimator_nOutputSymbols",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorMCAR_nOutputSymbols",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_nOutputSymbols" "', argument " "1"" of type '" "tom::Estimator const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_nOutputSymbols" "', argument " "1"" of type '" "tom::Estimator< true > const *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
-  result = (int)((tom::Estimator const *)arg1)->nOutputSymbols();
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
+  result = (int)((tom::Estimator< true > const *)arg1)->nOutputSymbols();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -38880,9 +39208,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Symbol arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -38891,14 +39219,14 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_0(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Symbol""'");
   } 
   arg2 = static_cast< tom::Symbol >(val2);
   try {
@@ -38915,9 +39243,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Symbol arg2 ;
   tom::Symbol arg3 ;
   void *argp1 = 0 ;
@@ -38929,19 +39257,19 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_1(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Symbol""'");
   } 
   arg2 = static_cast< tom::Symbol >(val2);
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   result = (double)(arg1)->f(arg2,arg3);
@@ -38952,9 +39280,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequence *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -38963,17 +39291,17 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_2(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
   }
   arg2 = reinterpret_cast< tom::Sequence * >(argp2);
   result = (double)(arg1)->f((tom::Sequence const &)*arg2);
@@ -38984,9 +39312,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Sequences *arg3 = 0 ;
   void *argp1 = 0 ;
@@ -38999,19 +39327,19 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_3(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared3 ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39025,10 +39353,10 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_3(PyObject *self, int nobjs, PyObje
     int newmem = 0;
     res3 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp3, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp3) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared3 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
@@ -39059,9 +39387,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Symbol arg3 ;
   tom::Sequences *arg4 = 0 ;
@@ -39077,19 +39405,19 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_4(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared4 ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39101,17 +39429,17 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_4(PyObject *self, int nobjs, PyObje
   }
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -39142,9 +39470,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Symbol arg3 ;
   tom::Symbol arg4 ;
@@ -39163,19 +39491,19 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_5(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared5 ;
   
   if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39187,22 +39515,22 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_5(PyObject *self, int nobjs, PyObje
   }
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Estimator_f" "', argument " "4"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorMCAR_f" "', argument " "4"" of type '" "tom::Symbol""'");
   } 
   arg4 = static_cast< tom::Symbol >(val4);
   {
     int newmem = 0;
     res5 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res5)) {
-      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "Estimator_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorMCAR_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp5) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
@@ -39233,9 +39561,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Sequence arg3 ;
   tom::Sequences *arg4 = 0 ;
@@ -39251,19 +39579,19 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_6(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared4 ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_f" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_f" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39276,10 +39604,10 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_6(PyObject *self, int nobjs, PyObje
   {
     res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_tom__Sequence,  0  | 0);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Sequence const""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Sequence const""'"); 
     }  
     if (!argp3) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "3"" of type '" "tom::Sequence const""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "3"" of type '" "tom::Sequence const""'");
     } else {
       tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp3);
       arg3 = *temp;
@@ -39290,10 +39618,10 @@ SWIGINTERN PyObject *_wrap_Estimator_f__SWIG_6(PyObject *self, int nobjs, PyObje
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -39324,13 +39652,13 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_f(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_f(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[6] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args,"Estimator_f",0,5,argv+1))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorMCAR_f",0,5,argv+1))) SWIG_fail;
   argv[0] = self;
   if (argc == 2) {
     int _v = 0;
@@ -39339,12 +39667,12 @@ SWIGINTERN PyObject *_wrap_Estimator_f(PyObject *self, PyObject *args) {
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_1;
-    return _wrap_Estimator_f__SWIG_2(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_2(self, argc, argv);
   }
 check_1:
   
   if (argc == 2) {
-    return _wrap_Estimator_f__SWIG_0(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_0(self, argc, argv);
   }
   if (argc == 3) {
     int _v = 0;
@@ -39358,12 +39686,12 @@ check_1:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_3;
-    return _wrap_Estimator_f__SWIG_3(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_3(self, argc, argv);
   }
 check_3:
   
   if (argc == 3) {
-    return _wrap_Estimator_f__SWIG_1(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_1(self, argc, argv);
   }
   if (argc == 4) {
     int _v = 0;
@@ -39372,34 +39700,34 @@ check_3:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_5;
-    return _wrap_Estimator_f__SWIG_6(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_6(self, argc, argv);
   }
 check_5:
   
   if (argc == 4) {
-    return _wrap_Estimator_f__SWIG_4(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_4(self, argc, argv);
   }
   if (argc == 5) {
-    return _wrap_Estimator_f__SWIG_5(self, argc, argv);
+    return _wrap_EstimatorMCAR_f__SWIG_5(self, argc, argv);
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Estimator_f'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorMCAR_f'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    tom::Estimator::f(tom::Symbol)\n"
-    "    tom::Estimator::f(tom::Symbol,tom::Symbol)\n"
-    "    tom::Estimator::f(tom::Sequence const &)\n"
-    "    tom::Estimator::f(tom::Sequences const &,tom::Sequences const &)\n"
-    "    tom::Estimator::f(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::f(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::f(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+    "    tom::Estimator< true >::f(tom::Symbol)\n"
+    "    tom::Estimator< true >::f(tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< true >::f(tom::Sequence const &)\n"
+    "    tom::Estimator< true >::f(tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::f(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::f(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::f(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Symbol arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -39408,14 +39736,14 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_0(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Symbol""'");
   } 
   arg2 = static_cast< tom::Symbol >(val2);
   try {
@@ -39432,9 +39760,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Symbol arg2 ;
   tom::Symbol arg3 ;
   void *argp1 = 0 ;
@@ -39446,19 +39774,19 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_1(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Symbol""'");
   } 
   arg2 = static_cast< tom::Symbol >(val2);
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   result = (double)(arg1)->v(arg2,arg3);
@@ -39469,9 +39797,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequence *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -39480,17 +39808,17 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_2(PyObject *self, int nobjs, PyObje
   double result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
   }
   arg2 = reinterpret_cast< tom::Sequence * >(argp2);
   result = (double)(arg1)->v((tom::Sequence const &)*arg2);
@@ -39501,9 +39829,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Sequences *arg3 = 0 ;
   void *argp1 = 0 ;
@@ -39516,19 +39844,19 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_3(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared3 ;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39542,10 +39870,10 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_3(PyObject *self, int nobjs, PyObje
     int newmem = 0;
     res3 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp3, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp3) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared3 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
@@ -39576,9 +39904,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Symbol arg3 ;
   tom::Sequences *arg4 = 0 ;
@@ -39594,19 +39922,19 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_4(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared4 ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39618,17 +39946,17 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_4(PyObject *self, int nobjs, PyObje
   }
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -39659,9 +39987,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Symbol arg3 ;
   tom::Symbol arg4 ;
@@ -39680,19 +40008,19 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_5(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared5 ;
   
   if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39704,22 +40032,22 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_5(PyObject *self, int nobjs, PyObje
   }
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
   } 
   arg3 = static_cast< tom::Symbol >(val3);
   ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Estimator_v" "', argument " "4"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorMCAR_v" "', argument " "4"" of type '" "tom::Symbol""'");
   } 
   arg4 = static_cast< tom::Symbol >(val4);
   {
     int newmem = 0;
     res5 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res5)) {
-      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "Estimator_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorMCAR_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp5) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
@@ -39750,9 +40078,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   tom::Sequences *arg2 = 0 ;
   tom::Sequence arg3 ;
   tom::Sequences *arg4 = 0 ;
@@ -39768,19 +40096,19 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_6(PyObject *self, int nobjs, PyObje
   std::shared_ptr< tom::Sequences const > tempshared4 ;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_v" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_v" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
@@ -39793,10 +40121,10 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_6(PyObject *self, int nobjs, PyObje
   {
     res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_tom__Sequence,  0  | 0);
     if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Sequence const""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Sequence const""'"); 
     }  
     if (!argp3) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "3"" of type '" "tom::Sequence const""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "3"" of type '" "tom::Sequence const""'");
     } else {
       tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp3);
       arg3 = *temp;
@@ -39807,10 +40135,10 @@ SWIGINTERN PyObject *_wrap_Estimator_v__SWIG_6(PyObject *self, int nobjs, PyObje
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -39841,13 +40169,13 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_v(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_v(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[6] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args,"Estimator_v",0,5,argv+1))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorMCAR_v",0,5,argv+1))) SWIG_fail;
   argv[0] = self;
   if (argc == 2) {
     int _v = 0;
@@ -39856,12 +40184,12 @@ SWIGINTERN PyObject *_wrap_Estimator_v(PyObject *self, PyObject *args) {
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_1;
-    return _wrap_Estimator_v__SWIG_2(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_2(self, argc, argv);
   }
 check_1:
   
   if (argc == 2) {
-    return _wrap_Estimator_v__SWIG_0(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_0(self, argc, argv);
   }
   if (argc == 3) {
     int _v = 0;
@@ -39875,12 +40203,12 @@ check_1:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_3;
-    return _wrap_Estimator_v__SWIG_3(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_3(self, argc, argv);
   }
 check_3:
   
   if (argc == 3) {
-    return _wrap_Estimator_v__SWIG_1(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_1(self, argc, argv);
   }
   if (argc == 4) {
     int _v = 0;
@@ -39889,34 +40217,34 @@ check_3:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_5;
-    return _wrap_Estimator_v__SWIG_6(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_6(self, argc, argv);
   }
 check_5:
   
   if (argc == 4) {
-    return _wrap_Estimator_v__SWIG_4(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_4(self, argc, argv);
   }
   if (argc == 5) {
-    return _wrap_Estimator_v__SWIG_5(self, argc, argv);
+    return _wrap_EstimatorMCAR_v__SWIG_5(self, argc, argv);
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Estimator_v'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorMCAR_v'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    tom::Estimator::v(tom::Symbol)\n"
-    "    tom::Estimator::v(tom::Symbol,tom::Symbol)\n"
-    "    tom::Estimator::v(tom::Sequence const &)\n"
-    "    tom::Estimator::v(tom::Sequences const &,tom::Sequences const &)\n"
-    "    tom::Estimator::v(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::v(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::v(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+    "    tom::Estimator< true >::v(tom::Symbol)\n"
+    "    tom::Estimator< true >::v(tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< true >::v(tom::Sequence const &)\n"
+    "    tom::Estimator< true >::v(tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::v(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::v(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::v(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   double *arg2 = 0 ;
   double *arg3 = 0 ;
   tom::Symbol arg4 ;
@@ -39932,14 +40260,14 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_0(PyObject *self, int nobjs, PyObj
   arg2 = &temp2;
   arg3 = &temp3;
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode4 = SWIG_AsVal_int(swig_obj[1], &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Symbol""'");
   } 
   arg4 = static_cast< tom::Symbol >(val4);
   try {
@@ -39968,9 +40296,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   double *arg2 = 0 ;
   double *arg3 = 0 ;
   tom::Symbol arg4 ;
@@ -39989,19 +40317,19 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_1(PyObject *self, int nobjs, PyObj
   arg2 = &temp2;
   arg3 = &temp3;
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   ecode4 = SWIG_AsVal_int(swig_obj[1], &val4);
   if (!SWIG_IsOK(ecode4)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Symbol""'");
   } 
   arg4 = static_cast< tom::Symbol >(val4);
   ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
   if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
   } 
   arg5 = static_cast< tom::Symbol >(val5);
   (arg1)->fv(*arg2,*arg3,arg4,arg5);
@@ -40024,9 +40352,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   double *arg2 = 0 ;
   double *arg3 = 0 ;
   tom::Sequence *arg4 = 0 ;
@@ -40042,17 +40370,17 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_2(PyObject *self, int nobjs, PyObj
   arg2 = &temp2;
   arg3 = &temp3;
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   res4 = SWIG_ConvertPtr(swig_obj[1], &argp4, SWIGTYPE_p_tom__Sequence,  0  | 0);
   if (!SWIG_IsOK(res4)) {
-    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
   }
   if (!argp4) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
   }
   arg4 = reinterpret_cast< tom::Sequence * >(argp4);
   (arg1)->fv(*arg2,*arg3,(tom::Sequence const &)*arg4);
@@ -40075,9 +40403,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   Eigen::MatrixXd *arg2 = 0 ;
   Eigen::MatrixXd *arg3 = 0 ;
   tom::Sequences *arg4 = 0 ;
@@ -40098,19 +40426,19 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_3(PyObject *self, int nobjs, PyObj
     arg3 = new Eigen::MatrixXd();
   }
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -40124,10 +40452,10 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_3(PyObject *self, int nobjs, PyObj
     int newmem = 0;
     res5 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res5)) {
-      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp5) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
@@ -40171,9 +40499,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   Eigen::MatrixXd *arg2 = 0 ;
   Eigen::MatrixXd *arg3 = 0 ;
   tom::Sequences *arg4 = 0 ;
@@ -40197,19 +40525,19 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObj
     arg3 = new Eigen::MatrixXd();
   }
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -40221,17 +40549,17 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_4(PyObject *self, int nobjs, PyObj
   }
   ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
   if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
   } 
   arg5 = static_cast< tom::Symbol >(val5);
   {
     int newmem = 0;
     res6 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp6, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res6)) {
-      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "Estimator_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "EstimatorMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp6) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared6 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
@@ -40281,9 +40609,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   Eigen::MatrixXd *arg2 = 0 ;
   Eigen::MatrixXd *arg3 = 0 ;
   tom::Sequences *arg4 = 0 ;
@@ -40310,19 +40638,19 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_5(PyObject *self, int nobjs, PyObj
     arg3 = new Eigen::MatrixXd();
   }
   if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -40334,22 +40662,22 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_5(PyObject *self, int nobjs, PyObj
   }
   ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
   if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
   } 
   arg5 = static_cast< tom::Symbol >(val5);
   ecode6 = SWIG_AsVal_int(swig_obj[3], &val6);
   if (!SWIG_IsOK(ecode6)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "Estimator_fv" "', argument " "6"" of type '" "tom::Symbol""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "EstimatorMCAR_fv" "', argument " "6"" of type '" "tom::Symbol""'");
   } 
   arg6 = static_cast< tom::Symbol >(val6);
   {
     int newmem = 0;
     res7 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp7, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res7)) {
-      SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "Estimator_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "EstimatorMCAR_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp7) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared7 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp7);
@@ -40393,9 +40721,9 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   Eigen::MatrixXd *arg2 = 0 ;
   Eigen::MatrixXd *arg3 = 0 ;
   tom::Sequences *arg4 = 0 ;
@@ -40419,19 +40747,19 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObj
     arg3 = new Eigen::MatrixXd();
   }
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_fv" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   {
     int newmem = 0;
     res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res4)) {
-      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp4) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
@@ -40444,10 +40772,10 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObj
   {
     res5 = SWIG_ConvertPtr(swig_obj[2], &argp5, SWIGTYPE_p_tom__Sequence,  0  | 0);
     if (!SWIG_IsOK(res5)) {
-      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Sequence const""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Sequence const""'"); 
     }  
     if (!argp5) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "5"" of type '" "tom::Sequence const""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "5"" of type '" "tom::Sequence const""'");
     } else {
       tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp5);
       arg5 = *temp;
@@ -40458,10 +40786,10 @@ SWIGINTERN PyObject *_wrap_Estimator_fv__SWIG_6(PyObject *self, int nobjs, PyObj
     int newmem = 0;
     res6 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp6, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
     if (!SWIG_IsOK(res6)) {
-      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "Estimator_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "EstimatorMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
     }
     if (!argp6) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Estimator_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
     }
     if (newmem & SWIG_CAST_NEW_MEMORY) {
       tempshared6 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
@@ -40505,13 +40833,13 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_fv(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_fv(PyObject *self, PyObject *args) {
   Py_ssize_t argc;
   PyObject *argv[6] = {
     0
   };
   
-  if (!(argc = SWIG_Python_UnpackTuple(args,"Estimator_fv",0,5,argv+1))) SWIG_fail;
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorMCAR_fv",0,5,argv+1))) SWIG_fail;
   argv[0] = self;
   if (argc == 2) {
     int _v = 0;
@@ -40520,12 +40848,12 @@ SWIGINTERN PyObject *_wrap_Estimator_fv(PyObject *self, PyObject *args) {
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_1;
-    return _wrap_Estimator_fv__SWIG_2(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_2(self, argc, argv);
   }
 check_1:
   
   if (argc == 2) {
-    return _wrap_Estimator_fv__SWIG_0(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_0(self, argc, argv);
   }
   if (argc == 3) {
     int _v = 0;
@@ -40539,12 +40867,12 @@ check_1:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_3;
-    return _wrap_Estimator_fv__SWIG_3(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_3(self, argc, argv);
   }
 check_3:
   
   if (argc == 3) {
-    return _wrap_Estimator_fv__SWIG_1(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_1(self, argc, argv);
   }
   if (argc == 4) {
     int _v = 0;
@@ -40553,34 +40881,34 @@ check_3:
       _v = SWIG_CheckState(res);
     }
     if (!_v) goto check_5;
-    return _wrap_Estimator_fv__SWIG_6(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_6(self, argc, argv);
   }
 check_5:
   
   if (argc == 4) {
-    return _wrap_Estimator_fv__SWIG_4(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_4(self, argc, argv);
   }
   if (argc == 5) {
-    return _wrap_Estimator_fv__SWIG_5(self, argc, argv);
+    return _wrap_EstimatorMCAR_fv__SWIG_5(self, argc, argv);
   }
   
 fail:
-  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'Estimator_fv'.\n"
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorMCAR_fv'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    tom::Estimator::fv(double &,double &,tom::Symbol)\n"
-    "    tom::Estimator::fv(double &,double &,tom::Symbol,tom::Symbol)\n"
-    "    tom::Estimator::fv(double &,double &,tom::Sequence const &)\n"
-    "    tom::Estimator::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequences const &)\n"
-    "    tom::Estimator::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
-    "    tom::Estimator::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+    "    tom::Estimator< true >::fv(double &,double &,tom::Symbol)\n"
+    "    tom::Estimator< true >::fv(double &,double &,tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< true >::fv(double &,double &,tom::Sequence const &)\n"
+    "    tom::Estimator< true >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< true >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
   return 0;
 }
 
 
-SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *args, PyObject *kwargs) {
+SWIGINTERN PyObject *_wrap_EstimatorMCAR_regularization(PyObject *self, PyObject *args, PyObject *kwargs) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   double *arg2 = (double *) 0 ;
   double *arg3 = (double *) 0 ;
   double arg4 = (double) -1 ;
@@ -40605,23 +40933,23 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
   
   arg2 = &temp2;
   arg3 = &temp3;
-  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OOO:Estimator_regularization",kwnames,&obj1,&obj2,&obj3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, 0 |  0 );
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OOO:EstimatorMCAR_regularization",kwnames,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Estimator_regularization" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorMCAR_regularization" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
   if (obj1) {
     ecode4 = SWIG_AsVal_double(obj1, &val4);
     if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Estimator_regularization" "', argument " "4"" of type '" "double""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorMCAR_regularization" "', argument " "4"" of type '" "double""'");
     } 
     arg4 = static_cast< double >(val4);
   }
   if (obj2) {
     ecode5 = SWIG_AsVal_double(obj2, &val5);
     if (!SWIG_IsOK(ecode5)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Estimator_regularization" "', argument " "5"" of type '" "double""'");
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorMCAR_regularization" "', argument " "5"" of type '" "double""'");
     } 
     arg5 = static_cast< double >(val5);
   }
@@ -40630,7 +40958,7 @@ SWIGINTERN PyObject *_wrap_Estimator_regularization(PyObject *self, PyObject *ar
       std::string *ptr = (std::string *)0;
       int res = SWIG_AsPtr_std_string(obj3, &ptr);
       if (!SWIG_IsOK(res) || !ptr) {
-        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Estimator_regularization" "', argument " "6"" of type '" "std::string""'"); 
+        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "EstimatorMCAR_regularization" "', argument " "6"" of type '" "std::string""'"); 
       }
       arg6 = *ptr;
       if (SWIG_IsNewObj(res)) delete ptr;
@@ -40662,19 +40990,1920 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_Estimator(PyObject *self, PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_EstimatorMCAR(PyObject *self, PyObject *args) {
   PyObject *resultobj = 0;
-  tom::Estimator *arg1 = (tom::Estimator *) 0 ;
+  tom::Estimator< true > *arg1 = (tom::Estimator< true > *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
   
-  if (!SWIG_Python_UnpackTuple(args,"delete_Estimator",0,0,0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__Estimator, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_Python_UnpackTuple(args,"delete_EstimatorMCAR",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_true_t, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Estimator" "', argument " "1"" of type '" "tom::Estimator *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_EstimatorMCAR" "', argument " "1"" of type '" "tom::Estimator< true > *""'"); 
   }
-  arg1 = reinterpret_cast< tom::Estimator * >(argp1);
+  arg1 = reinterpret_cast< tom::Estimator< true > * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN int _wrap_new_EstimatorNMCAR(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  std::shared_ptr< stree::STree > *arg1 = 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  std::shared_ptr< stree::STree > tempshared1 ;
+  PyObject *swig_obj[1] ;
+  tom::Estimator< false > *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"new_EstimatorNMCAR",1,1,swig_obj)) SWIG_fail;
+  {
+    int newmem = 0;
+    res1 = SWIG_ConvertPtrAndOwn(swig_obj[0], &argp1, SWIGTYPE_p_std__shared_ptrT_stree__STree_t,  0 , &newmem);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_EstimatorNMCAR" "', argument " "1"" of type '" "std::shared_ptr< stree::STree > const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      if (argp1) tempshared1 = *reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
+      delete reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1);
+      arg1 = &tempshared1;
+    } else {
+      arg1 = (argp1) ? reinterpret_cast< std::shared_ptr< stree::STree > * >(argp1) : &tempshared1;
+    }
+  }
+  result = (tom::Estimator< false > *)new tom::Estimator< false >((std::shared_ptr< stree::STree > const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_tom__EstimatorT_false_t, SWIG_BUILTIN_INIT |  0 );
+  return resultobj == Py_None ? -1 : 0;
+fail:
+  return -1;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_sequence(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  tom::Sequence result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_sequence",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_sequence" "', argument " "1"" of type '" "tom::Estimator< false > const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  result = ((tom::Estimator< false > const *)arg1)->sequence();
+  resultobj = SWIG_NewPointerObj((new tom::Sequence(static_cast< const tom::Sequence& >(result))), SWIGTYPE_p_tom__Sequence, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_nInputSymbols(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_nInputSymbols",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_nInputSymbols" "', argument " "1"" of type '" "tom::Estimator< false > const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  result = (int)((tom::Estimator< false > const *)arg1)->nInputSymbols();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_nOutputSymbols(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_nOutputSymbols",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_nOutputSymbols" "', argument " "1"" of type '" "tom::Estimator< false > const *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  result = (int)((tom::Estimator< false > const *)arg1)->nOutputSymbols();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Symbol arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  double result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Symbol""'");
+  } 
+  arg2 = static_cast< tom::Symbol >(val2);
+  try {
+    result = (double)(arg1)->f(arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Symbol arg2 ;
+  tom::Symbol arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  double result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Symbol""'");
+  } 
+  arg2 = static_cast< tom::Symbol >(val2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  result = (double)(arg1)->f(arg2,arg3);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequence *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  double result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  arg2 = reinterpret_cast< tom::Sequence * >(argp2);
+  result = (double)(arg1)->f((tom::Sequence const &)*arg2);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Sequences *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared3 ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  {
+    int newmem = 0;
+    res3 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp3, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared3 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
+      arg3 = const_cast< tom::Sequences * >(tempshared3.get());
+    } else {
+      arg3 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Symbol arg3 ;
+  tom::Sequences *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Symbol arg3 ;
+  tom::Symbol arg4 ;
+  tom::Sequences *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared5 ;
+  
+  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorNMCAR_f" "', argument " "4"" of type '" "tom::Symbol""'");
+  } 
+  arg4 = static_cast< tom::Symbol >(val4);
+  {
+    int newmem = 0;
+    res5 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorNMCAR_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      arg5 = const_cast< tom::Sequences * >(tempshared5.get());
+    } else {
+      arg5 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Sequence arg3 ;
+  tom::Sequences *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_f" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_tom__Sequence,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Sequence const""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "3"" of type '" "tom::Sequence const""'");
+    } else {
+      tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_f" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->f((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_f(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[6] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_f",0,5,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_EstimatorNMCAR_f__SWIG_2(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_EstimatorNMCAR_f__SWIG_0(self, argc, argv);
+  }
+  if (argc == 3) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    return _wrap_EstimatorNMCAR_f__SWIG_3(self, argc, argv);
+  }
+check_3:
+  
+  if (argc == 3) {
+    return _wrap_EstimatorNMCAR_f__SWIG_1(self, argc, argv);
+  }
+  if (argc == 4) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_5;
+    return _wrap_EstimatorNMCAR_f__SWIG_6(self, argc, argv);
+  }
+check_5:
+  
+  if (argc == 4) {
+    return _wrap_EstimatorNMCAR_f__SWIG_4(self, argc, argv);
+  }
+  if (argc == 5) {
+    return _wrap_EstimatorNMCAR_f__SWIG_5(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorNMCAR_f'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::Estimator< false >::f(tom::Symbol)\n"
+    "    tom::Estimator< false >::f(tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< false >::f(tom::Sequence const &)\n"
+    "    tom::Estimator< false >::f(tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::f(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::f(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::f(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Symbol arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  double result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Symbol""'");
+  } 
+  arg2 = static_cast< tom::Symbol >(val2);
+  try {
+    result = (double)(arg1)->v(arg2);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Symbol arg2 ;
+  tom::Symbol arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  double result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Symbol""'");
+  } 
+  arg2 = static_cast< tom::Symbol >(val2);
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  result = (double)(arg1)->v(arg2,arg3);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequence *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  double result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequence const &""'"); 
+  }
+  arg2 = reinterpret_cast< tom::Sequence * >(argp2);
+  result = (double)(arg1)->v((tom::Sequence const &)*arg2);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Sequences *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared3 ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  {
+    int newmem = 0;
+    res3 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp3, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared3 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3);
+      arg3 = const_cast< tom::Sequences * >(tempshared3.get());
+    } else {
+      arg3 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp3)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,(tom::Sequences const &)*arg3));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Symbol arg3 ;
+  tom::Sequences *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Symbol arg3 ;
+  tom::Symbol arg4 ;
+  tom::Sequences *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared5 ;
+  
+  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Symbol""'");
+  } 
+  arg3 = static_cast< tom::Symbol >(val3);
+  ecode4 = SWIG_AsVal_int(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorNMCAR_v" "', argument " "4"" of type '" "tom::Symbol""'");
+  } 
+  arg4 = static_cast< tom::Symbol >(val4);
+  {
+    int newmem = 0;
+    res5 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorNMCAR_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      arg5 = const_cast< tom::Sequences * >(tempshared5.get());
+    } else {
+      arg5 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,arg4,(tom::Sequences const &)*arg5));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  tom::Sequences *arg2 = 0 ;
+  tom::Sequence arg3 ;
+  tom::Sequences *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared2 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_v" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res2 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp2, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "2"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared2 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2);
+      arg2 = const_cast< tom::Sequences * >(tempshared2.get());
+    } else {
+      arg2 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp2)->get());
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_tom__Sequence,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Sequence const""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "3"" of type '" "tom::Sequence const""'");
+    } else {
+      tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_v" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    auto c_obj = new Eigen::MatrixXd((arg1)->v((tom::Sequences const &)*arg2,arg3,(tom::Sequences const &)*arg4));
+    npy_intp dims[2]; dims[0] = c_obj->rows(); if (2 == 2) {
+      dims[1] = c_obj->cols(); 
+    }
+    resultobj = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) c_obj->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!resultobj) {
+      delete c_obj; SWIG_fail; 
+    }
+    array_setbase(resultobj, encapsulate(c_obj, clean<Eigen::MatrixXd*>));
+  }
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_v(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[6] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_v",0,5,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_EstimatorNMCAR_v__SWIG_2(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_EstimatorNMCAR_v__SWIG_0(self, argc, argv);
+  }
+  if (argc == 3) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    return _wrap_EstimatorNMCAR_v__SWIG_3(self, argc, argv);
+  }
+check_3:
+  
+  if (argc == 3) {
+    return _wrap_EstimatorNMCAR_v__SWIG_1(self, argc, argv);
+  }
+  if (argc == 4) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_5;
+    return _wrap_EstimatorNMCAR_v__SWIG_6(self, argc, argv);
+  }
+check_5:
+  
+  if (argc == 4) {
+    return _wrap_EstimatorNMCAR_v__SWIG_4(self, argc, argv);
+  }
+  if (argc == 5) {
+    return _wrap_EstimatorNMCAR_v__SWIG_5(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorNMCAR_v'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::Estimator< false >::v(tom::Symbol)\n"
+    "    tom::Estimator< false >::v(tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< false >::v(tom::Sequence const &)\n"
+    "    tom::Estimator< false >::v(tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::v(tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::v(tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::v(tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_0(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  double *arg2 = 0 ;
+  double *arg3 = 0 ;
+  tom::Symbol arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  int res2 = SWIG_TMPOBJ ;
+  double temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  int val4 ;
+  int ecode4 = 0 ;
+  
+  arg2 = &temp2;
+  arg3 = &temp3;
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode4 = SWIG_AsVal_int(swig_obj[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Symbol""'");
+  } 
+  arg4 = static_cast< tom::Symbol >(val4);
+  try {
+    (arg1)->fv(*arg2,*arg3,arg4);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsTmpObj(res2)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg2)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res2) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_double, new_flags));
+  }
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_double, new_flags));
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_1(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  double *arg2 = 0 ;
+  double *arg3 = 0 ;
+  tom::Symbol arg4 ;
+  tom::Symbol arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  int res2 = SWIG_TMPOBJ ;
+  double temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  int val4 ;
+  int ecode4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  
+  arg2 = &temp2;
+  arg3 = &temp3;
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  ecode4 = SWIG_AsVal_int(swig_obj[1], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Symbol""'");
+  } 
+  arg4 = static_cast< tom::Symbol >(val4);
+  ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+  } 
+  arg5 = static_cast< tom::Symbol >(val5);
+  (arg1)->fv(*arg2,*arg3,arg4,arg5);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsTmpObj(res2)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg2)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res2) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_double, new_flags));
+  }
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_double, new_flags));
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_2(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  double *arg2 = 0 ;
+  double *arg3 = 0 ;
+  tom::Sequence *arg4 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  int res2 = SWIG_TMPOBJ ;
+  double temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  
+  arg2 = &temp2;
+  arg3 = &temp3;
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  res4 = SWIG_ConvertPtr(swig_obj[1], &argp4, SWIGTYPE_p_tom__Sequence,  0  | 0);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequence const &""'"); 
+  }
+  arg4 = reinterpret_cast< tom::Sequence * >(argp4);
+  (arg1)->fv(*arg2,*arg3,(tom::Sequence const &)*arg4);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsTmpObj(res2)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg2)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res2) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_double, new_flags));
+  }
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_double, new_flags));
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_3(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  Eigen::MatrixXd *arg2 = 0 ;
+  Eigen::MatrixXd *arg3 = 0 ;
+  tom::Sequences *arg4 = 0 ;
+  tom::Sequences *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared5 ;
+  
+  {
+    arg2 = new Eigen::MatrixXd();
+  }
+  {
+    arg3 = new Eigen::MatrixXd();
+  }
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    int newmem = 0;
+    res5 = SWIG_ConvertPtrAndOwn(swig_obj[2], &argp5, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared5 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5);
+      arg5 = const_cast< tom::Sequences * >(tempshared5.get());
+    } else {
+      arg5 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp5)->get());
+    }
+  }
+  (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,(tom::Sequences const &)*arg5);
+  resultobj = SWIG_Py_Void();
+  {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+      dims[1] = arg2->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg2; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg2, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+      dims[1] = arg3->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg3; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg3, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_4(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  Eigen::MatrixXd *arg2 = 0 ;
+  Eigen::MatrixXd *arg3 = 0 ;
+  tom::Sequences *arg4 = 0 ;
+  tom::Symbol arg5 ;
+  tom::Sequences *arg6 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared6 ;
+  
+  {
+    arg2 = new Eigen::MatrixXd();
+  }
+  {
+    arg3 = new Eigen::MatrixXd();
+  }
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+  } 
+  arg5 = static_cast< tom::Symbol >(val5);
+  {
+    int newmem = 0;
+    res6 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp6, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res6)) {
+      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "EstimatorNMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp6) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared6 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
+      arg6 = const_cast< tom::Sequences * >(tempshared6.get());
+    } else {
+      arg6 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6)->get());
+    }
+  }
+  try {
+    (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,(tom::Sequences const &)*arg6);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_Py_Void();
+  {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+      dims[1] = arg2->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg2; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg2, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+      dims[1] = arg3->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg3; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg3, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res6)) delete arg6;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res6)) delete arg6;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_5(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  Eigen::MatrixXd *arg2 = 0 ;
+  Eigen::MatrixXd *arg3 = 0 ;
+  tom::Sequences *arg4 = 0 ;
+  tom::Symbol arg5 ;
+  tom::Symbol arg6 ;
+  tom::Sequences *arg7 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  int val6 ;
+  int ecode6 = 0 ;
+  void *argp7 = 0 ;
+  int res7 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared7 ;
+  
+  {
+    arg2 = new Eigen::MatrixXd();
+  }
+  {
+    arg3 = new Eigen::MatrixXd();
+  }
+  if ((nobjs < 5) || (nobjs > 5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  ecode5 = SWIG_AsVal_int(swig_obj[2], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Symbol""'");
+  } 
+  arg5 = static_cast< tom::Symbol >(val5);
+  ecode6 = SWIG_AsVal_int(swig_obj[3], &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "EstimatorNMCAR_fv" "', argument " "6"" of type '" "tom::Symbol""'");
+  } 
+  arg6 = static_cast< tom::Symbol >(val6);
+  {
+    int newmem = 0;
+    res7 = SWIG_ConvertPtrAndOwn(swig_obj[4], &argp7, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res7)) {
+      SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "EstimatorNMCAR_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp7) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "7"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared7 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp7);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp7);
+      arg7 = const_cast< tom::Sequences * >(tempshared7.get());
+    } else {
+      arg7 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp7)->get());
+    }
+  }
+  (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,arg6,(tom::Sequences const &)*arg7);
+  resultobj = SWIG_Py_Void();
+  {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+      dims[1] = arg2->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg2; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg2, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+      dims[1] = arg3->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg3; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg3, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res7)) delete arg7;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res7)) delete arg7;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv__SWIG_6(PyObject *self, int nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  Eigen::MatrixXd *arg2 = 0 ;
+  Eigen::MatrixXd *arg3 = 0 ;
+  tom::Sequences *arg4 = 0 ;
+  tom::Sequence arg5 ;
+  tom::Sequences *arg6 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared4 ;
+  void *argp5 ;
+  int res5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  std::shared_ptr< tom::Sequences const > tempshared6 ;
+  
+  {
+    arg2 = new Eigen::MatrixXd();
+  }
+  {
+    arg3 = new Eigen::MatrixXd();
+  }
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_fv" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  {
+    int newmem = 0;
+    res4 = SWIG_ConvertPtrAndOwn(swig_obj[1], &argp4, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "4"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared4 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4);
+      arg4 = const_cast< tom::Sequences * >(tempshared4.get());
+    } else {
+      arg4 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp4)->get());
+    }
+  }
+  {
+    res5 = SWIG_ConvertPtr(swig_obj[2], &argp5, SWIGTYPE_p_tom__Sequence,  0  | 0);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Sequence const""'"); 
+    }  
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "5"" of type '" "tom::Sequence const""'");
+    } else {
+      tom::Sequence * temp = reinterpret_cast< tom::Sequence * >(argp5);
+      arg5 = *temp;
+      if (SWIG_IsNewObj(res5)) delete temp;
+    }
+  }
+  {
+    int newmem = 0;
+    res6 = SWIG_ConvertPtrAndOwn(swig_obj[3], &argp6, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t,  0 , &newmem);
+    if (!SWIG_IsOK(res6)) {
+      SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "EstimatorNMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (!argp6) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "EstimatorNMCAR_fv" "', argument " "6"" of type '" "tom::Sequences const &""'"); 
+    }
+    if (newmem & SWIG_CAST_NEW_MEMORY) {
+      tempshared6 = *reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
+      delete reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6);
+      arg6 = const_cast< tom::Sequences * >(tempshared6.get());
+    } else {
+      arg6 = const_cast< tom::Sequences * >(reinterpret_cast< std::shared_ptr< const tom::Sequences > * >(argp6)->get());
+    }
+  }
+  (arg1)->fv(*arg2,*arg3,(tom::Sequences const &)*arg4,arg5,(tom::Sequences const &)*arg6);
+  resultobj = SWIG_Py_Void();
+  {
+    npy_intp dims[2]; dims[0] = arg2->rows(); if (2 == 2) {
+      dims[1] = arg2->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg2->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg2; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg2, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  {
+    npy_intp dims[2]; dims[0] = arg3->rows(); if (2 == 2) {
+      dims[1] = arg3->cols(); 
+    }
+    PyObject* res = PyArray_New(&PyArray_Type, 2, dims, NPY_DOUBLE, NULL, (void*) arg3->data(), 0, NPY_ARRAY_FARRAY, NULL);
+    if (!res) {
+      delete arg3; SWIG_fail; 
+    }
+    array_setbase(res, encapsulate(arg3, clean<Eigen::MatrixXd *>));
+    resultobj = SWIG_Python_AppendOutput(resultobj,res);
+  }
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res6)) delete arg6;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res6)) delete arg6;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_fv(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[6] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args,"EstimatorNMCAR_fv",0,5,argv+1))) SWIG_fail;
+  argv[0] = self;
+  if (argc == 2) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_1;
+    return _wrap_EstimatorNMCAR_fv__SWIG_2(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 2) {
+    return _wrap_EstimatorNMCAR_fv__SWIG_0(self, argc, argv);
+  }
+  if (argc == 3) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_std__shared_ptrT_std__vectorT_tom__Sequence_std__allocatorT_tom__Sequence_t_t_t, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_3;
+    return _wrap_EstimatorNMCAR_fv__SWIG_3(self, argc, argv);
+  }
+check_3:
+  
+  if (argc == 3) {
+    return _wrap_EstimatorNMCAR_fv__SWIG_1(self, argc, argv);
+  }
+  if (argc == 4) {
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_tom__Sequence, 0);
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_5;
+    return _wrap_EstimatorNMCAR_fv__SWIG_6(self, argc, argv);
+  }
+check_5:
+  
+  if (argc == 4) {
+    return _wrap_EstimatorNMCAR_fv__SWIG_4(self, argc, argv);
+  }
+  if (argc == 5) {
+    return _wrap_EstimatorNMCAR_fv__SWIG_5(self, argc, argv);
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'EstimatorNMCAR_fv'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    tom::Estimator< false >::fv(double &,double &,tom::Symbol)\n"
+    "    tom::Estimator< false >::fv(double &,double &,tom::Symbol,tom::Symbol)\n"
+    "    tom::Estimator< false >::fv(double &,double &,tom::Sequence const &)\n"
+    "    tom::Estimator< false >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Symbol,tom::Symbol,tom::Sequences const &)\n"
+    "    tom::Estimator< false >::fv(Eigen::MatrixXd &,Eigen::MatrixXd &,tom::Sequences const &,tom::Sequence const,tom::Sequences const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_EstimatorNMCAR_regularization(PyObject *self, PyObject *args, PyObject *kwargs) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  double *arg2 = (double *) 0 ;
+  double *arg3 = (double *) 0 ;
+  double arg4 = (double) -1 ;
+  double arg5 = (double) -1 ;
+  std::string arg6 = (std::string) "" ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  double temp2 ;
+  int res2 = SWIG_TMPOBJ ;
+  double temp3 ;
+  int res3 = SWIG_TMPOBJ ;
+  double val4 ;
+  int ecode4 = 0 ;
+  double val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  char *  kwnames[] = {
+    (char *) "vPC",(char *) "vMin",(char *) "preset", NULL 
+  };
+  
+  arg2 = &temp2;
+  arg3 = &temp3;
+  if (!PyArg_ParseTupleAndKeywords(args,kwargs,(char *)"|OOO:EstimatorNMCAR_regularization",kwnames,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "EstimatorNMCAR_regularization" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
+  if (obj1) {
+    ecode4 = SWIG_AsVal_double(obj1, &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "EstimatorNMCAR_regularization" "', argument " "4"" of type '" "double""'");
+    } 
+    arg4 = static_cast< double >(val4);
+  }
+  if (obj2) {
+    ecode5 = SWIG_AsVal_double(obj2, &val5);
+    if (!SWIG_IsOK(ecode5)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "EstimatorNMCAR_regularization" "', argument " "5"" of type '" "double""'");
+    } 
+    arg5 = static_cast< double >(val5);
+  }
+  if (obj3) {
+    {
+      std::string *ptr = (std::string *)0;
+      int res = SWIG_AsPtr_std_string(obj3, &ptr);
+      if (!SWIG_IsOK(res) || !ptr) {
+        SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "EstimatorNMCAR_regularization" "', argument " "6"" of type '" "std::string""'"); 
+      }
+      arg6 = *ptr;
+      if (SWIG_IsNewObj(res)) delete ptr;
+    }
+  }
+  try {
+    (arg1)->regularization(arg2,arg3,arg4,arg5,arg6);
+  }
+  catch(std::invalid_argument &_e) {
+    SWIG_exception_fail(SWIG_ValueError, (&_e)->what());
+  }
+  
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsTmpObj(res2)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg2)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res2) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg2), SWIGTYPE_p_double, new_flags));
+  }
+  if (SWIG_IsTmpObj(res3)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg3)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res3) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg3), SWIGTYPE_p_double, new_flags));
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_EstimatorNMCAR(PyObject *self, PyObject *args) {
+  PyObject *resultobj = 0;
+  tom::Estimator< false > *arg1 = (tom::Estimator< false > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!SWIG_Python_UnpackTuple(args,"delete_EstimatorNMCAR",0,0,0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_tom__EstimatorT_false_t, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_EstimatorNMCAR" "', argument " "1"" of type '" "tom::Estimator< false > *""'"); 
+  }
+  arg1 = reinterpret_cast< tom::Estimator< false > * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -47685,6 +49914,302 @@ static PyHeapTypeObject SwigPyBuiltin__stree__Position_type = {
 
 SWIGINTERN SwigPyClientData SwigPyBuiltin__stree__Position_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__stree__Position_type};
 
+SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_MultiPosition)
+static SwigPyGetSet MultiPosition___dict___getset = { SwigPyObject_get___dict__, 0 };
+SWIGINTERN PyGetSetDef SwigPyBuiltin__stree__MultiPosition_getset[] = {
+    { (char*) "__dict__", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) 0, (char*)"stree::MultiPosition.__dict__", (void*) &MultiPosition___dict___getset }
+,
+    {NULL, NULL, NULL, NULL, NULL} /* Sentinel */
+};
+
+SWIGINTERN PyObject *
+SwigPyBuiltin__stree__MultiPosition_richcompare(PyObject *self, PyObject *other, int op) {
+  PyObject *result = NULL;
+  if (!result) {
+    if (SwigPyObject_Check(self) && SwigPyObject_Check(other)) {
+      result = SwigPyObject_richcompare((SwigPyObject *)self, (SwigPyObject *)other, op);
+    } else {
+      result = Py_NotImplemented;
+      Py_INCREF(result);
+    }
+  }
+  return result;
+}
+
+SWIGINTERN PyMethodDef SwigPyBuiltin__stree__MultiPosition_methods[] = {
+  { "set", (PyCFunction) _wrap_MultiPosition_set, METH_O, (char*) "\n"
+		"\n"
+		"`set(multiposition)`  \n"
+		"\n"
+		"Set this `MultiPosition` to the given `multiposition`, which must belong to the\n"
+		"same suffix tree.  \n"
+		"\n"
+		"" },
+  { "setRoot", (PyCFunction) _wrap_MultiPosition_setRoot, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`setRoot()`  \n"
+		"\n"
+		"Reset this `MultiPosition` to the root of the suffix tree.  \n"
+		"\n"
+		"" },
+  { "isSuffix", (PyCFunction) _wrap_MultiPosition_isSuffix, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`isSuffix() -> bool`  \n"
+		"\n"
+		"Return `true` if the represented subsequence matches a suffix of the underlying\n"
+		"sequence.  \n"
+		"\n"
+		"" },
+  { "count", (PyCFunction) _wrap_MultiPosition_count, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`count() -> nidx_t`  \n"
+		"\n"
+		"Return the number of occurrences of the sequence represented by this\n"
+		"`MultiPosition` in the sequence represented by the suffix tree.  \n"
+		"\n"
+		"" },
+  { "toSymbol", (PyCFunction) _wrap_MultiPosition_toSymbol, METH_O, (char*) "\n"
+		"\n"
+		"`toSymbol(symbol)`  \n"
+		"\n"
+		"Update this `MultiPosition` such that it represents a subsequence extended by\n"
+		"the given `symbol`.  \n"
+		"\n"
+		"" },
+  { "toWildcard", (PyCFunction) _wrap_MultiPosition_toWildcard, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`toWildcard()`  \n"
+		"\n"
+		"Update this `MultiPosition` such that it represents a subsequence extended by a\n"
+		"wildcard.  \n"
+		"\n"
+		"" },
+  { "toSequence", (PyCFunction) _wrap_MultiPosition_toSequence, METH_O, (char*) "\n"
+		"\n"
+		"`toSequence(sequence)`  \n"
+		"\n"
+		"Update this `MultiPosition` such that it represents a subsequence extended by\n"
+		"the given `sequence`.  \n"
+		"\n"
+		"" },
+  { "repr", (PyCFunction) _wrap_MultiPosition_repr, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`repr() -> std::string`  \n"
+		"\n"
+		"Return a string representation to display in python.  \n"
+		"\n"
+		"" },
+  { NULL, NULL, 0, NULL } /* Sentinel */
+};
+
+static PyHeapTypeObject SwigPyBuiltin__stree__MultiPosition_type = {
+  {
+#if PY_VERSION_HEX >= 0x03000000
+    PyVarObject_HEAD_INIT(NULL, 0)
+#else
+    PyObject_HEAD_INIT(NULL)
+    0,                                        /* ob_size */
+#endif
+    "tom._tomlib.MultiPosition",              /* tp_name */
+    sizeof(SwigPyObject),                     /* tp_basicsize */
+    0,                                        /* tp_itemsize */
+    (destructor) _wrap_delete_MultiPosition_closure, /* tp_dealloc */
+    (printfunc) 0,                            /* tp_print */
+    (getattrfunc) 0,                          /* tp_getattr */
+    (setattrfunc) 0,                          /* tp_setattr */
+#if PY_VERSION_HEX >= 0x03000000
+    0,                                        /* tp_compare */
+#else
+    (cmpfunc) 0,                              /* tp_compare */
+#endif
+    (reprfunc) (reprfunc) _wrap_MultiPosition_repr_closure, /* tp_repr */
+    &SwigPyBuiltin__stree__MultiPosition_type.as_number,      /* tp_as_number */
+    &SwigPyBuiltin__stree__MultiPosition_type.as_sequence,    /* tp_as_sequence */
+    &SwigPyBuiltin__stree__MultiPosition_type.as_mapping,     /* tp_as_mapping */
+    (hashfunc) 0,                             /* tp_hash */
+    (ternaryfunc) 0,                          /* tp_call */
+    (reprfunc) 0,                             /* tp_str */
+    (getattrofunc) 0,                         /* tp_getattro */
+    (setattrofunc) 0,                         /* tp_setattro */
+    &SwigPyBuiltin__stree__MultiPosition_type.as_buffer,      /* tp_as_buffer */
+#if PY_VERSION_HEX >= 0x03000000
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,   /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_CHECKTYPES, /* tp_flags */
+#endif
+    "\n"
+		"\n"
+		"`MultiPosition(stree, sequence=Sequence())`  \n"
+		"\n"
+		"This class represents a set of positions in the suffix tree that represent a\n"
+		"subsequence with wildcards.  \n"
+		"\n"
+		"Constructors\n"
+		"------------\n"
+		"* `MultiPosition(stree, sequence=Sequence())`  \n"
+		"\n"
+		"    Find the position(s) in the given `stree` corresponding to the given\n"
+		"    `sequence`.  \n"
+		"\n"
+		"    Multi positions may be found in the case of wild-cards.  \n"
+		"\n"
+		"C++ includes: STreeNode.h\n"
+		"\n"
+		"", /* tp_doc */
+    (traverseproc) 0,                         /* tp_traverse */
+    (inquiry) 0,                              /* tp_clear */
+    (richcmpfunc) SwigPyBuiltin__stree__MultiPosition_richcompare, /* feature:python:tp_richcompare */
+    0,                                        /* tp_weaklistoffset */
+    (getiterfunc) 0,                          /* tp_iter */
+    (iternextfunc) 0,                         /* tp_iternext */
+    SwigPyBuiltin__stree__MultiPosition_methods, /* tp_methods */
+    0,                                        /* tp_members */
+    SwigPyBuiltin__stree__MultiPosition_getset, /* tp_getset */
+    0,                                        /* tp_base */
+    0,                                        /* tp_dict */
+    (descrgetfunc) 0,                         /* tp_descr_get */
+    (descrsetfunc) 0,                         /* tp_descr_set */
+    (Py_ssize_t)offsetof(SwigPyObject, dict), /* tp_dictoffset */
+    (initproc) _wrap_new_MultiPosition,       /* tp_init */
+    (allocfunc) 0,                            /* tp_alloc */
+    (newfunc) 0,                              /* tp_new */
+    (freefunc) 0,                             /* tp_free */
+    (inquiry) 0,                              /* tp_is_gc */
+    (PyObject*) 0,                            /* tp_bases */
+    (PyObject*) 0,                            /* tp_mro */
+    (PyObject*) 0,                            /* tp_cache */
+    (PyObject*) 0,                            /* tp_subclasses */
+    (PyObject*) 0,                            /* tp_weaklist */
+    (destructor) 0,                           /* tp_del */
+#if PY_VERSION_HEX >= 0x02060000
+    (int) 0,                                  /* tp_version_tag */
+#endif
+#if PY_VERSION_HEX >= 0x03040000
+    (destructor) 0,                           /* tp_finalize */
+#endif
+#ifdef COUNT_ALLOCS
+    (Py_ssize_t) 0,                           /* tp_allocs */
+    (Py_ssize_t) 0,                           /* tp_frees */
+    (Py_ssize_t) 0,                           /* tp_maxalloc */
+#if PY_VERSION_HEX >= 0x02050000
+    (struct _typeobject*) 0,                  /* tp_prev */
+#endif
+    (struct _typeobject*) 0,                  /* tp_next */
+#endif
+  },
+#if PY_VERSION_HEX >= 0x03050000
+  {
+    (unaryfunc) 0,                            /* am_await */
+    (unaryfunc) 0,                            /* am_aiter */
+    (unaryfunc) 0,                            /* am_anext */
+  },
+#endif
+  {
+    (binaryfunc) 0,                           /* nb_add */
+    (binaryfunc) 0,                           /* nb_subtract */
+    (binaryfunc) 0,                           /* nb_multiply */
+#if PY_VERSION_HEX < 0x03000000
+    (binaryfunc) 0,                           /* nb_divide */
+#endif
+    (binaryfunc) 0,                           /* nb_remainder */
+    (binaryfunc) 0,                           /* nb_divmod */
+    (ternaryfunc) 0,                          /* nb_power */
+    (unaryfunc) 0,                            /* nb_negative */
+    (unaryfunc) 0,                            /* nb_positive */
+    (unaryfunc) 0,                            /* nb_absolute */
+    (inquiry) 0,                              /* nb_nonzero */
+    (unaryfunc) 0,                            /* nb_invert */
+    (binaryfunc) 0,                           /* nb_lshift */
+    (binaryfunc) 0,                           /* nb_rshift */
+    (binaryfunc) 0,                           /* nb_and */
+    (binaryfunc) 0,                           /* nb_xor */
+    (binaryfunc) 0,                           /* nb_or */
+#if PY_VERSION_HEX < 0x03000000
+    (coercion) 0,                             /* nb_coerce */
+#endif
+    (unaryfunc) 0,                            /* nb_int */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* nb_reserved */
+#else
+    (unaryfunc) 0,                            /* nb_long */
+#endif
+    (unaryfunc) 0,                            /* nb_float */
+#if PY_VERSION_HEX < 0x03000000
+    (unaryfunc) 0,                            /* nb_oct */
+    (unaryfunc) 0,                            /* nb_hex */
+#endif
+    (binaryfunc) 0,                           /* nb_inplace_add */
+    (binaryfunc) 0,                           /* nb_inplace_subtract */
+    (binaryfunc) 0,                           /* nb_inplace_multiply */
+#if PY_VERSION_HEX < 0x03000000
+    (binaryfunc) 0,                           /* nb_inplace_divide */
+#endif
+    (binaryfunc) 0,                           /* nb_inplace_remainder */
+    (ternaryfunc) 0,                          /* nb_inplace_power */
+    (binaryfunc) 0,                           /* nb_inplace_lshift */
+    (binaryfunc) 0,                           /* nb_inplace_rshift */
+    (binaryfunc) 0,                           /* nb_inplace_and */
+    (binaryfunc) 0,                           /* nb_inplace_xor */
+    (binaryfunc) 0,                           /* nb_inplace_or */
+    (binaryfunc) 0,                           /* nb_floor_divide */
+    (binaryfunc) 0,                           /* nb_true_divide */
+    (binaryfunc) 0,                           /* nb_inplace_floor_divide */
+    (binaryfunc) 0,                           /* nb_inplace_true_divide */
+#if PY_VERSION_HEX >= 0x02050000
+    (unaryfunc) 0,                            /* nb_index */
+#endif
+#if PY_VERSION_HEX >= 0x03050000
+    (binaryfunc) 0,                           /* nb_matrix_multiply */
+    (binaryfunc) 0,                           /* nb_inplace_matrix_multiply */
+#endif
+  },
+  {
+    (lenfunc) 0,                              /* mp_length */
+    (binaryfunc) 0,                           /* mp_subscript */
+    (objobjargproc) 0,                        /* mp_ass_subscript */
+  },
+  {
+    (lenfunc) 0,                              /* sq_length */
+    (binaryfunc) 0,                           /* sq_concat */
+    (ssizeargfunc) 0,                         /* sq_repeat */
+    (ssizeargfunc) 0,                         /* sq_item */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* was_sq_slice */
+#else
+    (ssizessizeargfunc) 0,                    /* sq_slice */
+#endif
+    (ssizeobjargproc) 0,                      /* sq_ass_item */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* was_sq_ass_slice */
+#else
+    (ssizessizeobjargproc) 0,                 /* sq_ass_slice */
+#endif
+    (objobjproc) 0,                           /* sq_contains */
+    (binaryfunc) 0,                           /* sq_inplace_concat */
+    (ssizeargfunc) 0,                         /* sq_inplace_repeat */
+  },
+  {
+#if PY_VERSION_HEX < 0x03000000
+    (readbufferproc) 0,                       /* bf_getreadbuffer */
+    (writebufferproc) 0,                      /* bf_getwritebuffer */
+    (segcountproc) 0,                         /* bf_getsegcount */
+    (charbufferproc) 0,                       /* bf_getcharbuffer */
+#endif
+#if PY_VERSION_HEX >= 0x02060000
+    (getbufferproc) 0,                        /* bf_getbuffer */
+    (releasebufferproc) 0,                    /* bf_releasebuffer */
+#endif
+  },
+    (PyObject*) 0,                            /* ht_name */
+    (PyObject*) 0,                            /* ht_slots */
+#if PY_VERSION_HEX >= 0x03030000
+    (PyObject*) 0,                            /* ht_qualname */
+    (struct _dictkeysobject*) 0,              /* ht_cached_keys */
+#endif
+};
+
+SWIGINTERN SwigPyClientData SwigPyBuiltin__stree__MultiPosition_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__stree__MultiPosition_type};
+
 SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_PositionRelevance)
 static SwigPyGetSet PositionRelevance___dict___getset = { SwigPyObject_get___dict__, 0 };
 SWIGINTERN PyGetSetDef SwigPyBuiltin__stree__PositionRelevance_getset[] = {
@@ -49864,10 +52389,10 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Oom_methods[] = {
 		"" },
   { "averageState", (PyCFunction) _wrap_Oom_averageState, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
 		"\n"
-		"`averageState(policy=Policy(), length=10000) -> Eigen::VectorXd`  \n"
+		"`averageState(sequence, reset=true) -> Eigen::VectorXd`  \n"
 		"\n"
-		"Return the average state (in the case of an input-output `Oom` according to the\n"
-		"given `policy`), computed over `length` time-steps.  \n"
+		"Return the (Cesaro) average state over a given sequence (which may be sampled\n"
+		"from this `Oom`).  \n"
 		"\n"
 		"" },
   { "reverse", (PyCFunction) _wrap_Oom_reverse, METH_VARARGS, (char*) "\n"
@@ -50206,16 +52731,16 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Oom_type = {
 
 SWIGINTERN SwigPyClientData SwigPyBuiltin__tom__Oom_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__tom__Oom_type};
 
-SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_Estimator)
-static SwigPyGetSet Estimator___dict___getset = { SwigPyObject_get___dict__, 0 };
-SWIGINTERN PyGetSetDef SwigPyBuiltin__tom__Estimator_getset[] = {
-    { (char*) "__dict__", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) 0, (char*)"tom::Estimator.__dict__", (void*) &Estimator___dict___getset }
+SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_EstimatorMCAR)
+static SwigPyGetSet EstimatorMCAR___dict___getset = { SwigPyObject_get___dict__, 0 };
+SWIGINTERN PyGetSetDef SwigPyBuiltin__tom__EstimatorT_true_t_getset[] = {
+    { (char*) "__dict__", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) 0, (char*)"tom::Estimator<(true)>.__dict__", (void*) &EstimatorMCAR___dict___getset }
 ,
     {NULL, NULL, NULL, NULL, NULL} /* Sentinel */
 };
 
 SWIGINTERN PyObject *
-SwigPyBuiltin__tom__Estimator_richcompare(PyObject *self, PyObject *other, int op) {
+SwigPyBuiltin__tom__EstimatorT_true_t_richcompare(PyObject *self, PyObject *other, int op) {
   PyObject *result = NULL;
   if (!result) {
     if (SwigPyObject_Check(self) && SwigPyObject_Check(other)) {
@@ -50228,29 +52753,29 @@ SwigPyBuiltin__tom__Estimator_richcompare(PyObject *self, PyObject *other, int o
   return result;
 }
 
-SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
-  { "sequence", (PyCFunction) _wrap_Estimator_sequence, METH_NOARGS, (char*) "\n"
+SWIGINTERN PyMethodDef SwigPyBuiltin__tom__EstimatorT_true_t_methods[] = {
+  { "sequence", (PyCFunction) _wrap_EstimatorMCAR_sequence, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`sequence() -> Sequence`  \n"
 		"\n"
 		"Return the data sequence.  \n"
 		"\n"
 		"" },
-  { "nInputSymbols", (PyCFunction) _wrap_Estimator_nInputSymbols, METH_NOARGS, (char*) "\n"
+  { "nInputSymbols", (PyCFunction) _wrap_EstimatorMCAR_nInputSymbols, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`nInputSymbols() -> int`  \n"
 		"\n"
 		"Return the size of the input alphabet.  \n"
 		"\n"
 		"" },
-  { "nOutputSymbols", (PyCFunction) _wrap_Estimator_nOutputSymbols, METH_NOARGS, (char*) "\n"
+  { "nOutputSymbols", (PyCFunction) _wrap_EstimatorMCAR_nOutputSymbols, METH_NOARGS, (char*) "\n"
 		"\n"
 		"`nOutputSymbols() -> int`  \n"
 		"\n"
 		"Return the size of the output alphabet.  \n"
 		"\n"
 		"" },
-  { "f", (PyCFunction) _wrap_Estimator_f, METH_VARARGS, (char*) "\n"
+  { "f", (PyCFunction) _wrap_EstimatorMCAR_f, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`f(z) -> double`  \n"
 		"`f(o, u) -> double`  \n"
@@ -50307,7 +52832,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
 		"    `Sequence` `s`.  \n"
 		"\n"
 		"" },
-  { "v", (PyCFunction) _wrap_Estimator_v, METH_VARARGS, (char*) "\n"
+  { "v", (PyCFunction) _wrap_EstimatorMCAR_v, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`v(z) -> double`  \n"
 		"`v(o, u) -> double`  \n"
@@ -50367,7 +52892,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
 		"    set `X` of indicative sequences for a given `Sequence` `s`.  \n"
 		"\n"
 		"" },
-  { "fv", (PyCFunction) _wrap_Estimator_fv, METH_VARARGS, (char*) "\n"
+  { "fv", (PyCFunction) _wrap_EstimatorMCAR_fv, METH_VARARGS, (char*) "\n"
 		"\n"
 		"`fv(z) -> tuple< double, double >`  \n"
 		"`fv(o, u) -> tuple< double, double >`  \n"
@@ -50435,7 +52960,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
 		"    estimates returned in `F`.  \n"
 		"\n"
 		"" },
-  { "regularization", (PyCFunction) _wrap_Estimator_regularization, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
+  { "regularization", (PyCFunction) _wrap_EstimatorMCAR_regularization, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
 		"\n"
 		"`regularization(vPC=-1, vMin=-1, preset=\"\") -> tuple`  \n"
 		"\n"
@@ -50472,7 +52997,7 @@ SWIGINTERN PyMethodDef SwigPyBuiltin__tom__Estimator_methods[] = {
   { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
-static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
+static PyHeapTypeObject SwigPyBuiltin__tom__EstimatorT_true_t_type = {
   {
 #if PY_VERSION_HEX >= 0x03000000
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -50480,10 +53005,10 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
     PyObject_HEAD_INIT(NULL)
     0,                                        /* ob_size */
 #endif
-    "tom._tomlib.Estimator",                  /* tp_name */
+    "tom._tomlib.EstimatorMCAR",              /* tp_name */
     sizeof(SwigPyObject),                     /* tp_basicsize */
     0,                                        /* tp_itemsize */
-    (destructor) _wrap_delete_Estimator_closure, /* tp_dealloc */
+    (destructor) _wrap_delete_EstimatorMCAR_closure, /* tp_dealloc */
     (printfunc) 0,                            /* tp_print */
     (getattrfunc) 0,                          /* tp_getattr */
     (setattrfunc) 0,                          /* tp_setattr */
@@ -50493,15 +53018,15 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
     (cmpfunc) 0,                              /* tp_compare */
 #endif
     (reprfunc) 0,                             /* tp_repr */
-    &SwigPyBuiltin__tom__Estimator_type.as_number,      /* tp_as_number */
-    &SwigPyBuiltin__tom__Estimator_type.as_sequence,    /* tp_as_sequence */
-    &SwigPyBuiltin__tom__Estimator_type.as_mapping,     /* tp_as_mapping */
+    &SwigPyBuiltin__tom__EstimatorT_true_t_type.as_number,      /* tp_as_number */
+    &SwigPyBuiltin__tom__EstimatorT_true_t_type.as_sequence,    /* tp_as_sequence */
+    &SwigPyBuiltin__tom__EstimatorT_true_t_type.as_mapping,     /* tp_as_mapping */
     (hashfunc) 0,                             /* tp_hash */
     (ternaryfunc) 0,                          /* tp_call */
     (reprfunc) 0,                             /* tp_str */
     (getattrofunc) 0,                         /* tp_getattro */
     (setattrofunc) 0,                         /* tp_setattro */
-    &SwigPyBuiltin__tom__Estimator_type.as_buffer,      /* tp_as_buffer */
+    &SwigPyBuiltin__tom__EstimatorT_true_t_type.as_buffer,      /* tp_as_buffer */
 #if PY_VERSION_HEX >= 0x03000000
     Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,   /* tp_flags */
 #else
@@ -50509,36 +53034,28 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
 #endif
     "\n"
 		"\n"
-		"`Estimator(stree)`  \n"
 		"\n"
 		"This class computes estimates for $f( x )$ and corresponding variance estimates\n"
 		"for sequences $x$ based on a suffix tree representation of a sample sequence.  \n"
-		"\n"
-		"Constructors\n"
-		"------------\n"
-		"* `Estimator(stree)`  \n"
-		"\n"
-		"    Create an `Estimator` for a sample sequence data given by a suffix tree\n"
-		"    representation `stree`.  \n"
 		"\n"
 		"C++ includes: Estimator.h\n"
 		"\n"
 		"", /* tp_doc */
     (traverseproc) 0,                         /* tp_traverse */
     (inquiry) 0,                              /* tp_clear */
-    (richcmpfunc) SwigPyBuiltin__tom__Estimator_richcompare, /* feature:python:tp_richcompare */
+    (richcmpfunc) SwigPyBuiltin__tom__EstimatorT_true_t_richcompare, /* feature:python:tp_richcompare */
     0,                                        /* tp_weaklistoffset */
     (getiterfunc) 0,                          /* tp_iter */
     (iternextfunc) 0,                         /* tp_iternext */
-    SwigPyBuiltin__tom__Estimator_methods,    /* tp_methods */
+    SwigPyBuiltin__tom__EstimatorT_true_t_methods, /* tp_methods */
     0,                                        /* tp_members */
-    SwigPyBuiltin__tom__Estimator_getset,     /* tp_getset */
+    SwigPyBuiltin__tom__EstimatorT_true_t_getset, /* tp_getset */
     0,                                        /* tp_base */
     0,                                        /* tp_dict */
     (descrgetfunc) 0,                         /* tp_descr_get */
     (descrsetfunc) 0,                         /* tp_descr_set */
     (Py_ssize_t)offsetof(SwigPyObject, dict), /* tp_dictoffset */
-    (initproc) _wrap_new_Estimator,           /* tp_init */
+    (initproc) _wrap_new_EstimatorMCAR,       /* tp_init */
     (allocfunc) 0,                            /* tp_alloc */
     (newfunc) 0,                              /* tp_new */
     (freefunc) 0,                             /* tp_free */
@@ -50676,7 +53193,471 @@ static PyHeapTypeObject SwigPyBuiltin__tom__Estimator_type = {
 #endif
 };
 
-SWIGINTERN SwigPyClientData SwigPyBuiltin__tom__Estimator_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__tom__Estimator_type};
+SWIGINTERN SwigPyClientData SwigPyBuiltin__tom__EstimatorT_true_t_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__tom__EstimatorT_true_t_type};
+
+SWIGPY_DESTRUCTOR_CLOSURE(_wrap_delete_EstimatorNMCAR)
+static SwigPyGetSet EstimatorNMCAR___dict___getset = { SwigPyObject_get___dict__, 0 };
+SWIGINTERN PyGetSetDef SwigPyBuiltin__tom__EstimatorT_false_t_getset[] = {
+    { (char*) "__dict__", (getter) SwigPyBuiltin_FunpackGetterClosure, (setter) 0, (char*)"tom::Estimator<(false)>.__dict__", (void*) &EstimatorNMCAR___dict___getset }
+,
+    {NULL, NULL, NULL, NULL, NULL} /* Sentinel */
+};
+
+SWIGINTERN PyObject *
+SwigPyBuiltin__tom__EstimatorT_false_t_richcompare(PyObject *self, PyObject *other, int op) {
+  PyObject *result = NULL;
+  if (!result) {
+    if (SwigPyObject_Check(self) && SwigPyObject_Check(other)) {
+      result = SwigPyObject_richcompare((SwigPyObject *)self, (SwigPyObject *)other, op);
+    } else {
+      result = Py_NotImplemented;
+      Py_INCREF(result);
+    }
+  }
+  return result;
+}
+
+SWIGINTERN PyMethodDef SwigPyBuiltin__tom__EstimatorT_false_t_methods[] = {
+  { "sequence", (PyCFunction) _wrap_EstimatorNMCAR_sequence, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`sequence() -> Sequence`  \n"
+		"\n"
+		"Return the data sequence.  \n"
+		"\n"
+		"" },
+  { "nInputSymbols", (PyCFunction) _wrap_EstimatorNMCAR_nInputSymbols, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`nInputSymbols() -> int`  \n"
+		"\n"
+		"Return the size of the input alphabet.  \n"
+		"\n"
+		"" },
+  { "nOutputSymbols", (PyCFunction) _wrap_EstimatorNMCAR_nOutputSymbols, METH_NOARGS, (char*) "\n"
+		"\n"
+		"`nOutputSymbols() -> int`  \n"
+		"\n"
+		"Return the size of the output alphabet.  \n"
+		"\n"
+		"" },
+  { "f", (PyCFunction) _wrap_EstimatorNMCAR_f, METH_VARARGS, (char*) "\n"
+		"\n"
+		"`f(z) -> double`  \n"
+		"`f(o, u) -> double`  \n"
+		"`f(sequence) -> double`  \n"
+		"`f(Y, X) -> MatrixXd`  \n"
+		"`f(Y, z, X) -> MatrixXd`  \n"
+		"`f(Y, o, u, X) -> MatrixXd`  \n"
+		"`f(Y, s, X) -> MatrixXd`  \n"
+		"\n"
+		"Overloaded function\n"
+		"-------------------\n"
+		"* `f(z) -> double`  \n"
+		"\n"
+		"    Return an estimate of f( `z` ) for the given output symbol `z`.  \n"
+		"\n"
+		"* `f(o, u) -> double`  \n"
+		"\n"
+		"    Return an estimate of f( z ) for the given input-output symbol pair z =\n"
+		"    (`u`, `o`).  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `f(sequence) -> double`  \n"
+		"\n"
+		"    Return an estimate of f( `sequence` ).  \n"
+		"\n"
+		"* `f(Y, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of estimates for $[ f( x y ) ]_{y \\in X, x \\in X}$ with\n"
+		"    rows indexed by the given set `Y` of characteristic sequences and columns\n"
+		"    indexed by the given set `X` of indicative sequences.  \n"
+		"\n"
+		"* `f(Y, z, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$\n"
+		"    with rows indexed by the given set `Y` of characteristic sequences and\n"
+		"    columns indexed by the given set `X` of indicative sequences for a given\n"
+		"    output symbol `z`.  \n"
+		"\n"
+		"* `f(Y, o, u, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$\n"
+		"    with rows indexed by the given set `Y` of characteristic sequences and\n"
+		"    columns indexed by the given set `X` of indicative sequences for a given\n"
+		"    input-output symbol pair z = (`u`, `o`).  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `f(Y, s, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of estimates for $[ f( x s y ) ]_{y \\in X, x \\in X}$\n"
+		"    with rows indexed by the given set `Y` of characteristic sequences and\n"
+		"    columns indexed by the given set `X` of indicative sequences for a given\n"
+		"    `Sequence` `s`.  \n"
+		"\n"
+		"" },
+  { "v", (PyCFunction) _wrap_EstimatorNMCAR_v, METH_VARARGS, (char*) "\n"
+		"\n"
+		"`v(z) -> double`  \n"
+		"`v(o, u) -> double`  \n"
+		"`v(sequence) -> double`  \n"
+		"`v(Y, X) -> MatrixXd`  \n"
+		"`v(Y, z, X) -> MatrixXd`  \n"
+		"`v(Y, o, u, X) -> MatrixXd`  \n"
+		"`v(Y, s, X) -> MatrixXd`  \n"
+		"\n"
+		"Overloaded function\n"
+		"-------------------\n"
+		"* `v(z) -> double`  \n"
+		"\n"
+		"    Return a variance estimate for the estimate of f( `z` ) for the given output\n"
+		"    symbol `z`.  \n"
+		"\n"
+		"* `v(o, u) -> double`  \n"
+		"\n"
+		"    Return a variance estimate for the estimate of f( z ) for the given input-\n"
+		"    output symbol pair z = (`u`, `o`).  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `v(sequence) -> double`  \n"
+		"\n"
+		"    Return a variance estimate for the estimate of f( `sequence` ).  \n"
+		"\n"
+		"* `v(Y, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of element-wise variance estimates corresponding to the\n"
+		"    estimates for $[ f( x y ) ]_{y \\in X, x \\in X}$ with rows indexed by the\n"
+		"    given set `Y` of characteristic sequences and columns indexed by the given\n"
+		"    set `X` of indicative sequences.  \n"
+		"\n"
+		"* `v(Y, z, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of element-wise variance estimates corresponding to the\n"
+		"    estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$ with rows indexed by the\n"
+		"    given set `Y` of characteristic sequences and columns indexed by the given\n"
+		"    set `X` of indicative sequences for a given output symbol `z`.  \n"
+		"\n"
+		"* `v(Y, o, u, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of element-wise variance estimates corresponding to the\n"
+		"    estimates for $[ f( x z y ) ]_{y \\in X, x \\in X}$ with rows indexed by the\n"
+		"    given set `Y` of characteristic sequences and columns indexed by the given\n"
+		"    set `X` of indicative sequences for a given input-output symbol pair z =\n"
+		"    (`u`, `o`).  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `v(Y, s, X) -> MatrixXd`  \n"
+		"\n"
+		"    Return the matrix of element-wise variance estimates corresponding to the\n"
+		"    estimates for $[ f( x s y ) ]_{y \\in X, x \\in X}$ with rows indexed by the\n"
+		"    given set `Y` of characteristic sequences and columns indexed by the given\n"
+		"    set `X` of indicative sequences for a given `Sequence` `s`.  \n"
+		"\n"
+		"" },
+  { "fv", (PyCFunction) _wrap_EstimatorNMCAR_fv, METH_VARARGS, (char*) "\n"
+		"\n"
+		"`fv(z) -> tuple< double, double >`  \n"
+		"`fv(o, u) -> tuple< double, double >`  \n"
+		"`fv(sequence) -> tuple< double, double >`  \n"
+		"`fv(Y, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"`fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"`fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"`fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"\n"
+		"Overloaded function\n"
+		"-------------------\n"
+		"* `fv(z) -> tuple< double, double >`  \n"
+		"\n"
+		"    Return in a tuple (`f`, `v`) an estimate `f` of f( `z` ) for the given\n"
+		"    output symbol `z` together with the corresponding variance estimate `v`.  \n"
+		"\n"
+		"* `fv(o, u) -> tuple< double, double >`  \n"
+		"\n"
+		"    Return in a tuple (`f`, `v`) an estimate `f` of f( z ) for the given input-\n"
+		"    output symbol pair z = (`u`, `o`) together with the corresponding variance\n"
+		"    estimate `v`.  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `fv(sequence) -> tuple< double, double >`  \n"
+		"\n"
+		"    Return in a tuple (`f`, `v`) an estimate of f( `sequence` ) together with\n"
+		"    the corresponding variance estimate `v`.  \n"
+		"\n"
+		"* `fv(Y, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"\n"
+		"    Return in a tuple (`F`, `V`) the matrix `F` of estimates for $[ f( x y )\n"
+		"    ]_{y \\in X, x \\in X}$ with rows indexed by the given set `Y` of\n"
+		"    characteristic sequences and columns indexed by the given set `X` of\n"
+		"    indicative sequences, together with the corresponding matrix `V` of element-\n"
+		"    wise variance estimates for the estimates returned in `F`.  \n"
+		"\n"
+		"* `fv(Y, z, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"\n"
+		"    Return in a tuple (`F`, `V`) the matrix `F` of estimates for $[ f( x z y )\n"
+		"    ]_{y \\in X, x \\in X}$ with rows indexed by the given set `Y` of\n"
+		"    characteristic sequences and columns indexed by the given set `X` of\n"
+		"    indicative sequences for a given output symbol `z`, together with the\n"
+		"    corresponding matrix `V` of element-wise variance estimates for the\n"
+		"    estimates returned in `F`.  \n"
+		"\n"
+		"* `fv(Y, o, u, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"\n"
+		"    Return in a tuple (`F`, `V`) the matrix `F` of estimates for $[ f( x z y )\n"
+		"    ]_{y \\in X, x \\in X}$ with rows indexed by the given set `Y` of\n"
+		"    characteristic sequences and columns indexed by the given set `X` of\n"
+		"    indicative sequences for a given input-output symbol pair z = (`u`, `o`),\n"
+		"    together with the corresponding matrix `V` of element-wise variance\n"
+		"    estimates for the estimates returned in `F`.  \n"
+		"\n"
+		"    In the case of an output-only system, the input `u` is simply ignored.  \n"
+		"\n"
+		"* `fv(Y, s, X) -> tuple< MatrixXd, MatrixXd >`  \n"
+		"\n"
+		"    Return in a tuple (`F`, `V`) the matrix `F` of estimates for $[ f( x s y )\n"
+		"    ]_{y \\in X, x \\in X}$ with rows indexed by the given set `Y` of\n"
+		"    characteristic sequences and columns indexed by the given set `X` of\n"
+		"    indicative sequences for a given `Sequence` `s`, together with the\n"
+		"    corresponding matrix `V` of element-wise variance estimates for the\n"
+		"    estimates returned in `F`.  \n"
+		"\n"
+		"" },
+  { "regularization", (PyCFunction) _wrap_EstimatorNMCAR_regularization, METH_VARARGS|METH_KEYWORDS, (char*) "\n"
+		"\n"
+		"`regularization(vPC=-1, vMin=-1, preset=\"\") -> tuple`  \n"
+		"\n"
+		"Set (optional) and then return the regularization parameters for the\n"
+		"`Estimator`.  \n"
+		"\n"
+		"This is done as follows:  \n"
+		"\n"
+		"*   First, if a `preset` (\"none\" / \"default\") is specified, all\n"
+		"    regularization parameters are set accordingly.  \n"
+		"*   Next, any non-default argument causes the corresponding regularization\n"
+		"    parameter to be set to the given value, while any argument left at its\n"
+		"    default value (-1) has no effect.  \n"
+		"*   Finally, the current regularization parameters are returned in a tuple in\n"
+		"    the same order as they appear as function arguments. This allows writing\n"
+		"    python code such as:  \n"
+		"\n"
+		"        old_params = estimator.regularization()\n"
+		"        ...\n"
+		"        estimator.regularization(*old_params)  \n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"* `vPC` :  \n"
+		"    number of pseudo-counts to add for the variance computation  \n"
+		"* `vMin` :  \n"
+		"    determines a lower bound for the returned variance, which will simply be\n"
+		"    `vMin` if this is < 0.25, or computed as $vMin / (\\pi N)^2$, where `N` is\n"
+		"    the length of the sequence data.  \n"
+		"* `preset` :  \n"
+		"    a preset that may be specified as explained above { \"default\", \"none\" }  \n"
+		"\n"
+		"" },
+  { NULL, NULL, 0, NULL } /* Sentinel */
+};
+
+static PyHeapTypeObject SwigPyBuiltin__tom__EstimatorT_false_t_type = {
+  {
+#if PY_VERSION_HEX >= 0x03000000
+    PyVarObject_HEAD_INIT(NULL, 0)
+#else
+    PyObject_HEAD_INIT(NULL)
+    0,                                        /* ob_size */
+#endif
+    "tom._tomlib.EstimatorNMCAR",             /* tp_name */
+    sizeof(SwigPyObject),                     /* tp_basicsize */
+    0,                                        /* tp_itemsize */
+    (destructor) _wrap_delete_EstimatorNMCAR_closure, /* tp_dealloc */
+    (printfunc) 0,                            /* tp_print */
+    (getattrfunc) 0,                          /* tp_getattr */
+    (setattrfunc) 0,                          /* tp_setattr */
+#if PY_VERSION_HEX >= 0x03000000
+    0,                                        /* tp_compare */
+#else
+    (cmpfunc) 0,                              /* tp_compare */
+#endif
+    (reprfunc) 0,                             /* tp_repr */
+    &SwigPyBuiltin__tom__EstimatorT_false_t_type.as_number,      /* tp_as_number */
+    &SwigPyBuiltin__tom__EstimatorT_false_t_type.as_sequence,    /* tp_as_sequence */
+    &SwigPyBuiltin__tom__EstimatorT_false_t_type.as_mapping,     /* tp_as_mapping */
+    (hashfunc) 0,                             /* tp_hash */
+    (ternaryfunc) 0,                          /* tp_call */
+    (reprfunc) 0,                             /* tp_str */
+    (getattrofunc) 0,                         /* tp_getattro */
+    (setattrofunc) 0,                         /* tp_setattro */
+    &SwigPyBuiltin__tom__EstimatorT_false_t_type.as_buffer,      /* tp_as_buffer */
+#if PY_VERSION_HEX >= 0x03000000
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,   /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_CHECKTYPES, /* tp_flags */
+#endif
+    "\n"
+		"\n"
+		"\n"
+		"This class computes estimates for $f( x )$ and corresponding variance estimates\n"
+		"for sequences $x$ based on a suffix tree representation of a sample sequence.  \n"
+		"\n"
+		"C++ includes: Estimator.h\n"
+		"\n"
+		"", /* tp_doc */
+    (traverseproc) 0,                         /* tp_traverse */
+    (inquiry) 0,                              /* tp_clear */
+    (richcmpfunc) SwigPyBuiltin__tom__EstimatorT_false_t_richcompare, /* feature:python:tp_richcompare */
+    0,                                        /* tp_weaklistoffset */
+    (getiterfunc) 0,                          /* tp_iter */
+    (iternextfunc) 0,                         /* tp_iternext */
+    SwigPyBuiltin__tom__EstimatorT_false_t_methods, /* tp_methods */
+    0,                                        /* tp_members */
+    SwigPyBuiltin__tom__EstimatorT_false_t_getset, /* tp_getset */
+    0,                                        /* tp_base */
+    0,                                        /* tp_dict */
+    (descrgetfunc) 0,                         /* tp_descr_get */
+    (descrsetfunc) 0,                         /* tp_descr_set */
+    (Py_ssize_t)offsetof(SwigPyObject, dict), /* tp_dictoffset */
+    (initproc) _wrap_new_EstimatorNMCAR,      /* tp_init */
+    (allocfunc) 0,                            /* tp_alloc */
+    (newfunc) 0,                              /* tp_new */
+    (freefunc) 0,                             /* tp_free */
+    (inquiry) 0,                              /* tp_is_gc */
+    (PyObject*) 0,                            /* tp_bases */
+    (PyObject*) 0,                            /* tp_mro */
+    (PyObject*) 0,                            /* tp_cache */
+    (PyObject*) 0,                            /* tp_subclasses */
+    (PyObject*) 0,                            /* tp_weaklist */
+    (destructor) 0,                           /* tp_del */
+#if PY_VERSION_HEX >= 0x02060000
+    (int) 0,                                  /* tp_version_tag */
+#endif
+#if PY_VERSION_HEX >= 0x03040000
+    (destructor) 0,                           /* tp_finalize */
+#endif
+#ifdef COUNT_ALLOCS
+    (Py_ssize_t) 0,                           /* tp_allocs */
+    (Py_ssize_t) 0,                           /* tp_frees */
+    (Py_ssize_t) 0,                           /* tp_maxalloc */
+#if PY_VERSION_HEX >= 0x02050000
+    (struct _typeobject*) 0,                  /* tp_prev */
+#endif
+    (struct _typeobject*) 0,                  /* tp_next */
+#endif
+  },
+#if PY_VERSION_HEX >= 0x03050000
+  {
+    (unaryfunc) 0,                            /* am_await */
+    (unaryfunc) 0,                            /* am_aiter */
+    (unaryfunc) 0,                            /* am_anext */
+  },
+#endif
+  {
+    (binaryfunc) 0,                           /* nb_add */
+    (binaryfunc) 0,                           /* nb_subtract */
+    (binaryfunc) 0,                           /* nb_multiply */
+#if PY_VERSION_HEX < 0x03000000
+    (binaryfunc) 0,                           /* nb_divide */
+#endif
+    (binaryfunc) 0,                           /* nb_remainder */
+    (binaryfunc) 0,                           /* nb_divmod */
+    (ternaryfunc) 0,                          /* nb_power */
+    (unaryfunc) 0,                            /* nb_negative */
+    (unaryfunc) 0,                            /* nb_positive */
+    (unaryfunc) 0,                            /* nb_absolute */
+    (inquiry) 0,                              /* nb_nonzero */
+    (unaryfunc) 0,                            /* nb_invert */
+    (binaryfunc) 0,                           /* nb_lshift */
+    (binaryfunc) 0,                           /* nb_rshift */
+    (binaryfunc) 0,                           /* nb_and */
+    (binaryfunc) 0,                           /* nb_xor */
+    (binaryfunc) 0,                           /* nb_or */
+#if PY_VERSION_HEX < 0x03000000
+    (coercion) 0,                             /* nb_coerce */
+#endif
+    (unaryfunc) 0,                            /* nb_int */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* nb_reserved */
+#else
+    (unaryfunc) 0,                            /* nb_long */
+#endif
+    (unaryfunc) 0,                            /* nb_float */
+#if PY_VERSION_HEX < 0x03000000
+    (unaryfunc) 0,                            /* nb_oct */
+    (unaryfunc) 0,                            /* nb_hex */
+#endif
+    (binaryfunc) 0,                           /* nb_inplace_add */
+    (binaryfunc) 0,                           /* nb_inplace_subtract */
+    (binaryfunc) 0,                           /* nb_inplace_multiply */
+#if PY_VERSION_HEX < 0x03000000
+    (binaryfunc) 0,                           /* nb_inplace_divide */
+#endif
+    (binaryfunc) 0,                           /* nb_inplace_remainder */
+    (ternaryfunc) 0,                          /* nb_inplace_power */
+    (binaryfunc) 0,                           /* nb_inplace_lshift */
+    (binaryfunc) 0,                           /* nb_inplace_rshift */
+    (binaryfunc) 0,                           /* nb_inplace_and */
+    (binaryfunc) 0,                           /* nb_inplace_xor */
+    (binaryfunc) 0,                           /* nb_inplace_or */
+    (binaryfunc) 0,                           /* nb_floor_divide */
+    (binaryfunc) 0,                           /* nb_true_divide */
+    (binaryfunc) 0,                           /* nb_inplace_floor_divide */
+    (binaryfunc) 0,                           /* nb_inplace_true_divide */
+#if PY_VERSION_HEX >= 0x02050000
+    (unaryfunc) 0,                            /* nb_index */
+#endif
+#if PY_VERSION_HEX >= 0x03050000
+    (binaryfunc) 0,                           /* nb_matrix_multiply */
+    (binaryfunc) 0,                           /* nb_inplace_matrix_multiply */
+#endif
+  },
+  {
+    (lenfunc) 0,                              /* mp_length */
+    (binaryfunc) 0,                           /* mp_subscript */
+    (objobjargproc) 0,                        /* mp_ass_subscript */
+  },
+  {
+    (lenfunc) 0,                              /* sq_length */
+    (binaryfunc) 0,                           /* sq_concat */
+    (ssizeargfunc) 0,                         /* sq_repeat */
+    (ssizeargfunc) 0,                         /* sq_item */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* was_sq_slice */
+#else
+    (ssizessizeargfunc) 0,                    /* sq_slice */
+#endif
+    (ssizeobjargproc) 0,                      /* sq_ass_item */
+#if PY_VERSION_HEX >= 0x03000000
+    (void*) 0,                                /* was_sq_ass_slice */
+#else
+    (ssizessizeobjargproc) 0,                 /* sq_ass_slice */
+#endif
+    (objobjproc) 0,                           /* sq_contains */
+    (binaryfunc) 0,                           /* sq_inplace_concat */
+    (ssizeargfunc) 0,                         /* sq_inplace_repeat */
+  },
+  {
+#if PY_VERSION_HEX < 0x03000000
+    (readbufferproc) 0,                       /* bf_getreadbuffer */
+    (writebufferproc) 0,                      /* bf_getwritebuffer */
+    (segcountproc) 0,                         /* bf_getsegcount */
+    (charbufferproc) 0,                       /* bf_getcharbuffer */
+#endif
+#if PY_VERSION_HEX >= 0x02060000
+    (getbufferproc) 0,                        /* bf_getbuffer */
+    (releasebufferproc) 0,                    /* bf_releasebuffer */
+#endif
+  },
+    (PyObject*) 0,                            /* ht_name */
+    (PyObject*) 0,                            /* ht_slots */
+#if PY_VERSION_HEX >= 0x03030000
+    (PyObject*) 0,                            /* ht_qualname */
+    (struct _dictkeysobject*) 0,              /* ht_cached_keys */
+#endif
+};
+
+SWIGINTERN SwigPyClientData SwigPyBuiltin__tom__EstimatorT_false_t_clientdata = {0, 0, 0, 0, 0, 0, (PyTypeObject *)&SwigPyBuiltin__tom__EstimatorT_false_t_type};
 
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
@@ -50852,6 +53833,7 @@ static swig_type_info _swigt__p_streamoff = {"_p_streamoff", "std::basic_ostream
 static swig_type_info _swigt__p_streampos = {"_p_streampos", "std::basic_ostream< char >::pos_type *|std::basic_istream< char >::pos_type *|streampos *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_stree__DFSIterator = {"_p_stree__DFSIterator", "stree::DFSIterator *", 0, 0, (void*)&SwigPyBuiltin__stree__DFSIterator_clientdata, 0};
 static swig_type_info _swigt__p_stree__EdgeNode = {"_p_stree__EdgeNode", "stree::EdgeNode *", 0, 0, (void*)&SwigPyBuiltin__stree__EdgeNode_clientdata, 0};
+static swig_type_info _swigt__p_stree__MultiPosition = {"_p_stree__MultiPosition", "stree::MultiPosition *", 0, 0, (void*)&SwigPyBuiltin__stree__MultiPosition_clientdata, 0};
 static swig_type_info _swigt__p_stree__Node = {"_p_stree__Node", "stree::Node *", 0, 0, (void*)&SwigPyBuiltin__stree__Node_clientdata, 0};
 static swig_type_info _swigt__p_stree__PathNode = {"_p_stree__PathNode", "stree::PathNode *", 0, 0, (void*)&SwigPyBuiltin__stree__PathNode_clientdata, 0};
 static swig_type_info _swigt__p_stree__Position = {"_p_stree__Position", "stree::Position *", 0, 0, (void*)&SwigPyBuiltin__stree__Position_clientdata, 0};
@@ -50862,7 +53844,8 @@ static swig_type_info _swigt__p_stree__STree = {"_p_stree__STree", "stree::STree
 static swig_type_info _swigt__p_stree__internal__InternalNode = {"_p_stree__internal__InternalNode", "stree::internal::InternalNode *", 0, 0, (void*)&SwigPyBuiltin__stree__internal__InternalNode_clientdata, 0};
 static swig_type_info _swigt__p_stree__internal__LeafNode = {"_p_stree__internal__LeafNode", "stree::internal::LeafNode *", 0, 0, (void*)&SwigPyBuiltin__stree__internal__LeafNode_clientdata, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)&SwigPyBuiltin__swig__SwigPyIterator_clientdata, 0};
-static swig_type_info _swigt__p_tom__Estimator = {"_p_tom__Estimator", "tom::Estimator *", 0, 0, (void*)&SwigPyBuiltin__tom__Estimator_clientdata, 0};
+static swig_type_info _swigt__p_tom__EstimatorT_false_t = {"_p_tom__EstimatorT_false_t", "tom::Estimator< false > *", 0, 0, (void*)&SwigPyBuiltin__tom__EstimatorT_false_t_clientdata, 0};
+static swig_type_info _swigt__p_tom__EstimatorT_true_t = {"_p_tom__EstimatorT_true_t", "tom::Estimator< true > *", 0, 0, (void*)&SwigPyBuiltin__tom__EstimatorT_true_t_clientdata, 0};
 static swig_type_info _swigt__p_tom__Hmm = {"_p_tom__Hmm", "tom::Hmm *", 0, 0, (void*)&SwigPyBuiltin__tom__Hmm_clientdata, 0};
 static swig_type_info _swigt__p_tom__Oom = {"_p_tom__Oom", "tom::Oom *", 0, 0, (void*)&SwigPyBuiltin__tom__Oom_clientdata, 0};
 static swig_type_info _swigt__p_tom__Policy = {"_p_tom__Policy", "tom::Policy *", 0, 0, (void*)&SwigPyBuiltin__tom__Policy_clientdata, 0};
@@ -50971,6 +53954,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_streampos,
   &_swigt__p_stree__DFSIterator,
   &_swigt__p_stree__EdgeNode,
+  &_swigt__p_stree__MultiPosition,
   &_swigt__p_stree__Node,
   &_swigt__p_stree__PathNode,
   &_swigt__p_stree__Position,
@@ -50981,7 +53965,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_stree__internal__InternalNode,
   &_swigt__p_stree__internal__LeafNode,
   &_swigt__p_swig__SwigPyIterator,
-  &_swigt__p_tom__Estimator,
+  &_swigt__p_tom__EstimatorT_false_t,
+  &_swigt__p_tom__EstimatorT_true_t,
   &_swigt__p_tom__Hmm,
   &_swigt__p_tom__Oom,
   &_swigt__p_tom__Policy,
@@ -51090,6 +54075,7 @@ static swig_cast_info _swigc__p_streamoff[] = {  {&_swigt__p_streamoff, 0, 0, 0}
 static swig_cast_info _swigc__p_streampos[] = {  {&_swigt__p_streampos, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__DFSIterator[] = {  {&_swigt__p_stree__DFSIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__EdgeNode[] = {  {&_swigt__p_stree__EdgeNode, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_stree__MultiPosition[] = {  {&_swigt__p_stree__MultiPosition, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__Node[] = {  {&_swigt__p_stree__EdgeNode, _p_stree__EdgeNodeTo_p_stree__Node, 0, 0},  {&_swigt__p_stree__Node, 0, 0, 0},  {&_swigt__p_stree__PrefixIterator, _p_stree__PrefixIteratorTo_p_stree__Node, 0, 0},  {&_swigt__p_stree__PostfixIterator, _p_stree__PostfixIteratorTo_p_stree__Node, 0, 0},  {&_swigt__p_stree__DFSIterator, _p_stree__DFSIteratorTo_p_stree__Node, 0, 0},  {&_swigt__p_stree__PathNode, _p_stree__PathNodeTo_p_stree__Node, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__PathNode[] = {  {&_swigt__p_stree__PrefixIterator, _p_stree__PrefixIteratorTo_p_stree__PathNode, 0, 0},  {&_swigt__p_stree__PostfixIterator, _p_stree__PostfixIteratorTo_p_stree__PathNode, 0, 0},  {&_swigt__p_stree__DFSIterator, _p_stree__DFSIteratorTo_p_stree__PathNode, 0, 0},  {&_swigt__p_stree__PathNode, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__Position[] = {  {&_swigt__p_stree__Position, 0, 0, 0},{0, 0, 0, 0}};
@@ -51100,7 +54086,8 @@ static swig_cast_info _swigc__p_stree__STree[] = {  {&_swigt__p_stree__STree, 0,
 static swig_cast_info _swigc__p_stree__internal__InternalNode[] = {  {&_swigt__p_stree__internal__InternalNode, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_stree__internal__LeafNode[] = {  {&_swigt__p_stree__internal__LeafNode, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_tom__Estimator[] = {  {&_swigt__p_tom__Estimator, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tom__EstimatorT_false_t[] = {  {&_swigt__p_tom__EstimatorT_false_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tom__EstimatorT_true_t[] = {  {&_swigt__p_tom__EstimatorT_true_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tom__Hmm[] = {  {&_swigt__p_tom__Hmm, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tom__Oom[] = {  {&_swigt__p_tom__Oom, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tom__Policy[] = {  {&_swigt__p_tom__Policy, 0, 0, 0},{0, 0, 0, 0}};
@@ -51209,6 +54196,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_streampos,
   _swigc__p_stree__DFSIterator,
   _swigc__p_stree__EdgeNode,
+  _swigc__p_stree__MultiPosition,
   _swigc__p_stree__Node,
   _swigc__p_stree__PathNode,
   _swigc__p_stree__Position,
@@ -51219,7 +54207,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_stree__internal__InternalNode,
   _swigc__p_stree__internal__LeafNode,
   _swigc__p_swig__SwigPyIterator,
-  _swigc__p_tom__Estimator,
+  _swigc__p_tom__EstimatorT_false_t,
+  _swigc__p_tom__EstimatorT_true_t,
   _swigc__p_tom__Hmm,
   _swigc__p_tom__Oom,
   _swigc__p_tom__Policy,
@@ -52639,6 +55628,29 @@ SWIG_init(void) {
   SwigPyBuiltin_AddPublicSymbol(public_interface, "Position");
   d = md;
   
+  /* type 'stree::MultiPosition' */
+  builtin_pytype = (PyTypeObject *)&SwigPyBuiltin__stree__MultiPosition_type;
+  builtin_pytype->tp_dict = d = PyDict_New();
+  SwigPyBuiltin_SetMetaType(builtin_pytype, metatype);
+  builtin_pytype->tp_new = PyType_GenericNew;
+  builtin_base_count = 0;
+  builtin_bases[builtin_base_count] = NULL;
+  SwigPyBuiltin_InitBases(builtin_pytype, builtin_bases);
+  PyDict_SetItemString(d, "this", this_descr);
+  PyDict_SetItemString(d, "thisown", thisown_descr);
+  if (PyType_Ready(builtin_pytype) < 0) {
+    PyErr_SetString(PyExc_TypeError, "Could not create type 'MultiPosition'.");
+#if PY_VERSION_HEX >= 0x03000000
+    return NULL;
+#else
+    return;
+#endif
+  }
+  Py_INCREF(builtin_pytype);
+  PyModule_AddObject(m, "MultiPosition", (PyObject*) builtin_pytype);
+  SwigPyBuiltin_AddPublicSymbol(public_interface, "MultiPosition");
+  d = md;
+  
   /* type 'stree::PositionRelevance' */
   builtin_pytype = (PyTypeObject *)&SwigPyBuiltin__stree__PositionRelevance_type;
   builtin_pytype->tp_dict = d = PyDict_New();
@@ -52833,8 +55845,8 @@ SWIG_init(void) {
   SwigPyBuiltin_AddPublicSymbol(public_interface, "Oom");
   d = md;
   
-  /* type 'tom::Estimator' */
-  builtin_pytype = (PyTypeObject *)&SwigPyBuiltin__tom__Estimator_type;
+  /* type 'tom::Estimator< true >' */
+  builtin_pytype = (PyTypeObject *)&SwigPyBuiltin__tom__EstimatorT_true_t_type;
   builtin_pytype->tp_dict = d = PyDict_New();
   SwigPyBuiltin_SetMetaType(builtin_pytype, metatype);
   builtin_pytype->tp_new = PyType_GenericNew;
@@ -52844,7 +55856,7 @@ SWIG_init(void) {
   PyDict_SetItemString(d, "this", this_descr);
   PyDict_SetItemString(d, "thisown", thisown_descr);
   if (PyType_Ready(builtin_pytype) < 0) {
-    PyErr_SetString(PyExc_TypeError, "Could not create type 'Estimator'.");
+    PyErr_SetString(PyExc_TypeError, "Could not create type 'EstimatorMCAR'.");
 #if PY_VERSION_HEX >= 0x03000000
     return NULL;
 #else
@@ -52852,8 +55864,31 @@ SWIG_init(void) {
 #endif
   }
   Py_INCREF(builtin_pytype);
-  PyModule_AddObject(m, "Estimator", (PyObject*) builtin_pytype);
-  SwigPyBuiltin_AddPublicSymbol(public_interface, "Estimator");
+  PyModule_AddObject(m, "EstimatorMCAR", (PyObject*) builtin_pytype);
+  SwigPyBuiltin_AddPublicSymbol(public_interface, "EstimatorMCAR");
+  d = md;
+  
+  /* type 'tom::Estimator< false >' */
+  builtin_pytype = (PyTypeObject *)&SwigPyBuiltin__tom__EstimatorT_false_t_type;
+  builtin_pytype->tp_dict = d = PyDict_New();
+  SwigPyBuiltin_SetMetaType(builtin_pytype, metatype);
+  builtin_pytype->tp_new = PyType_GenericNew;
+  builtin_base_count = 0;
+  builtin_bases[builtin_base_count] = NULL;
+  SwigPyBuiltin_InitBases(builtin_pytype, builtin_bases);
+  PyDict_SetItemString(d, "this", this_descr);
+  PyDict_SetItemString(d, "thisown", thisown_descr);
+  if (PyType_Ready(builtin_pytype) < 0) {
+    PyErr_SetString(PyExc_TypeError, "Could not create type 'EstimatorNMCAR'.");
+#if PY_VERSION_HEX >= 0x03000000
+    return NULL;
+#else
+    return;
+#endif
+  }
+  Py_INCREF(builtin_pytype);
+  PyModule_AddObject(m, "EstimatorNMCAR", (PyObject*) builtin_pytype);
+  SwigPyBuiltin_AddPublicSymbol(public_interface, "EstimatorNMCAR");
   d = md;
 #if PY_VERSION_HEX >= 0x03000000
   return m;
