@@ -589,8 +589,15 @@ public:
         MatrixXd T_minus_Id = MatrixXd::Zero(dim_, dim_);
         for (int o = 0; o < nO_; ++o) { T_minus_Id += tau(o); }
         T_minus_Id -= MatrixXd::Identity(dim_, dim_);
-        VectorXd w = (T_minus_Id.transpose() * T_minus_Id).ldlt().solve(sig().transpose());
-        w /= (double)(sig() * w);
+        MatrixXd K = MatrixXd::Zero(dim_+1, dim_+1);
+        K.topLeftCorner(dim_,dim_).noalias() = T_minus_Id.transpose() * T_minus_Id;
+        K.topRightCorner(dim_, 1) = sig_.transpose();
+        K.bottomLeftCorner(1, dim_) = sig_;
+        VectorXd e_n = VectorXd::Zero(dim_+1);
+        e_n.coeffRef(dim_) = 1;
+        VectorXd w = (pinv(K) * e_n).head(dim_);
+        // VectorXd w = (T_minus_Id.transpose() * T_minus_Id).ldlt().solve(sig().transpose());
+        w /= (double)(sig_ * w);
         return w;
     }
 
