@@ -59,11 +59,11 @@ class Data:
             self._nInputSymbols = setTo.nInputSymbols()
             self._nOutputSymbols = setTo.nOutputSymbols()
             self._stree = _tomlib.STree(setTo)
-            self._estimator = _tomlib.Estimator(self._stree)
-            self._estimator.regularization(*self._regularization)
         else:
             self._stree.extendTo(setTo, False)
         self._sequence = setTo
+        self._estimator = _tomlib.Estimator(self._stree)
+        self._estimator.regularization(*self._regularization)
 
         self._X = self._Y = None
         self._reset_cache()
