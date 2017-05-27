@@ -180,3 +180,9 @@ def stringToSequence(str, symbolTable=None):
     for i in range(len(char)):
         symbolTable[char[i]] = firstFreeSymbolValue + i
     return _tomlib.Sequence([symbolTable[c] for c in str], firstFreeSymbolValue + len(char)), symbolTable
+
+def invertSymbolTable(symbolTable):
+    return {v: k for k, v in symbolTable.items()}
+
+def sequenceToString(sequence, inverseSymbolTable):
+    return ''.join([inverseSymbolTable[s] for s in sequence])
