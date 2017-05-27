@@ -19,8 +19,8 @@ This `research` directory contains all the scripts to create the results used in
 * The **POMDP benchmarks** are provided ready to use in a json format. To re-create:
   + Install `zmdp` from `https://github.com/trey0/zmdp.git`
   + Edit `ZMDP_LIB_DIR` and `ZMDP_INCLUDE_DIR` in the `Makefile` to point to the correct locations
-  + Run `make pomdps` to obtain the original POMDP files, compile `pomdp_to_json` and convert the POMDPs to json format
-* Run the `Synthetic OOM Benchmarks` jupyter notebook to compute the **OOM benchmarks**. This also generates the figure `oom_benchmark_selection.pdf` and gives some information about the OOM benchmarks. Computation time is ~1.5 hours on my laptop.
+  + Run `make pomdps` to obtain the original POMDP files, compile `pomdp_to_json` and convert the POMDPs to json
+* The **OOM benchmarks** are provided ready to use. To re-create, run the `Synthetic OOM Benchmarks` jupyter notebook. This also generates the figure `oom_benchmark_selection.pdf` and gives some information about the OOM benchmarks. Computation time is ~1.5 hours on my laptop.
 
 ### 2. Comparison of various learning settings
 
