@@ -423,7 +423,7 @@ namespace cereal
         itsNextName( nullptr ),
         itsReadStream(stream)
       {
-        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag>(itsReadStream);
+        itsDocument.ParseStream<rapidjson::kParseFullPrecisionFlag | rapidjson::kParseNanAndInfFlag>(itsReadStream);
         if (itsDocument.IsArray())
           itsIteratorStack.emplace_back(itsDocument.Begin(), itsDocument.End());
         else
