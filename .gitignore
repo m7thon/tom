@@ -18,3 +18,6 @@ doc/dummydox
 python/tom.egg-info
 python/tom/_version.py
 tom.egg-info
+research/benchmarks/*.seq.bz2
+research/results/*.pdf
+research/results/RANDOM27_32_max_data
