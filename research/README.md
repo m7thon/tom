@@ -2,7 +2,7 @@ This `research` directory contains all the scripts to create the results used in
 
 ### Requirements
 
-* installed `tom` toolkit
+* installed `tom` toolkit (the version tagged as "phd" was used to create the results in the thesis)
 * Python 3, numpy, scipy, ipython, ipyparallel, jupyter (e.g. from the Anaconda distribution)
 
 ### Setup
@@ -22,8 +22,10 @@ This `research` directory contains all the scripts to create the results used in
   + Run `make pomdps` to obtain the original POMDP files, compile `pomdp_to_json` and convert the POMDPs to json
 * The **OOM benchmarks** are provided ready to use. To re-create, run the `Synthetic OOM Benchmarks` jupyter notebook. This also generates the figure `oom_benchmark_selection.pdf` and gives some information about the OOM benchmarks. Computation time is ~1.5 hours on my laptop.
 
-### 2. Comparison of various learning settings
+### 2. Computation of all research results
 
+* Run the `Compute` jupyter notebook. Computation time is approx 2.5 days on my laptop.
 
+### 3. Generate plots
 
-
+* Run the `Plots` jupyter notebook.
