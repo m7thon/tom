@@ -1,0 +1,67 @@
+# This file is a POMDP policy, represented as a set of "lower bound
+# planes", each of which consists of an alpha vector and a corresponding
+# action.  Given a particular belief b, this information can be used to
+# answer two queries of interest:
+#
+#   1. What is a lower bound on the expected long-term reward starting
+#        from belief b?
+#   2. What is an action that achieves that expected reward lower bound?
+#
+# Each lower bound plane is only defined over a subset of the belief
+# simplex--it is defined for those beliefs b such that the non-zero
+# entries of b are a subset of the entries present in the plane's alpha
+# vector.  If this condition holds we say the plane is 'applicable' to b.
+#
+# Given a belief b, both of the queries above can be answered by the
+# following process: first, throw out all the planes that are not
+# applicable to b.  Then, for each of the remaining planes, take the inner
+# product of the plane's alpha vector with b.  The highest inner product
+# value is the expected long-term reward lower bound, and the action label
+# for that plane is the action that achieves the bound.
+
+{
+  policyType => "MaxPlanesLowerBound",
+  numPlanes => 5,
+  planes => [
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 11.45,
+        1, -98.55
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 2,
+      entries => [
+        0, 6.51685,
+        1, -10.8545
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 2,
+      entries => [
+        0, -98.55,
+        1, 11.45
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 2,
+      entries => [
+        0, -10.8543,
+        1, 6.51691
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 2,
+      entries => [
+        0, 1.93338,
+        1, 1.9334
+      ]
+    }
+  ]
+}

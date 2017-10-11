@@ -1,0 +1,323 @@
+# This file is a POMDP policy, represented as a set of "lower bound
+# planes", each of which consists of an alpha vector and a corresponding
+# action.  Given a particular belief b, this information can be used to
+# answer two queries of interest:
+#
+#   1. What is a lower bound on the expected long-term reward starting
+#        from belief b?
+#   2. What is an action that achieves that expected reward lower bound?
+#
+# Each lower bound plane is only defined over a subset of the belief
+# simplex--it is defined for those beliefs b such that the non-zero
+# entries of b are a subset of the entries present in the plane's alpha
+# vector.  If this condition holds we say the plane is 'applicable' to b.
+#
+# Given a belief b, both of the queries above can be answered by the
+# following process: first, throw out all the planes that are not
+# applicable to b.  Then, for each of the remaining planes, take the inner
+# product of the plane's alpha vector with b.  The highest inner product
+# value is the expected long-term reward lower bound, and the action label
+# for that plane is the action that achieves the bound.
+
+{
+  policyType => "MaxPlanesLowerBound",
+  numPlanes => 27,
+  planes => [
+    {
+      action => 1,
+      numEntries => 7,
+      entries => [
+        0, 215.067,
+        1, 266.624,
+        2, 322.262,
+        3, 369.4,
+        4, 381.472,
+        5, 363.381,
+        6, 134.061
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 6,
+      entries => [
+        0, 243.718,
+        1, 292.171,
+        2, 332.494,
+        3, 347.795,
+        4, 350.616,
+        5, 308.265
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 3,
+      entries => [
+        0, 243.954,
+        1, 292.213,
+        2, 332.368
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 215.071,
+        1, 266.984,
+        2, 324.074,
+        3, 374.031,
+        4, 385.918,
+        5, 361.959
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        3, 336.106,
+        4, 351.536,
+        5, 349.291,
+        6, 162.174
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 213.386,
+        1, 266.175,
+        2, 324.212,
+        3, 374.764,
+        4, 386.685,
+        5, 362.448
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 4,
+      entries => [
+        3, 373.544,
+        4, 389.887,
+        5, 370.566,
+        6, 134.065
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 6,
+      entries => [
+        0, 243.08,
+        1, 292.223,
+        2, 332.992,
+        3, 348.438,
+        4, 351.125,
+        5, 308.544
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 4,
+      entries => [
+        0, 243.721,
+        1, 292.173,
+        2, 332.496,
+        3, 347.794
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 203.275,
+        1, 259.151,
+        2, 322.051,
+        3, 377.72,
+        4, 391.669,
+        5, 366.741
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 5,
+      entries => [
+        1, 253.442,
+        2, 319.772,
+        3, 378.52,
+        4, 393.702,
+        5, 368.472
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 3,
+      entries => [
+        3, 378.171,
+        4, 394.328,
+        5, 369.14
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 225.442,
+        1, 275.683,
+        2, 327.237,
+        3, 367.752,
+        4, 375.53,
+        5, 350.817
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 1,
+      entries => [
+        3, 378.91
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 1,
+      entries => [
+        0, 243.96
+      ]
+    },
+    {
+      action => 3,
+      numEntries => 4,
+      entries => [
+        3, 191.762,
+        4, 191.762,
+        5, 191.762,
+        6, 191.762
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 5,
+      entries => [
+        1, 252.019,
+        2, 319.157,
+        3, 378.547,
+        4, 393.973,
+        5, 368.705
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 221.17,
+        1, 272.972,
+        2, 327.412,
+        3, 370.269,
+        4, 378.854,
+        5, 353.335
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 210.047,
+        1, 264.176,
+        2, 324.009,
+        3, 375.963,
+        4, 388.255,
+        5, 363.584
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 200.655,
+        1, 257.503,
+        2, 321.586,
+        3, 378.165,
+        4, 392.38,
+        5, 367.268
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        3, 335.754,
+        4, 351.524,
+        5, 349.39,
+        6, 162.174
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 4,
+      entries => [
+        3, 373.348,
+        4, 389.927,
+        5, 370.648,
+        6, 134.065
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 6,
+      entries => [
+        0, 232.943,
+        1, 286.09,
+        2, 335.849,
+        3, 356.852,
+        4, 362.023,
+        5, 317.216
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 6,
+      entries => [
+        0, 238.147,
+        1, 290.757,
+        2, 335.059,
+        3, 352.229,
+        4, 355.019,
+        5, 310.947
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 6,
+      entries => [
+        0, 241.479,
+        1, 291.99,
+        2, 333.822,
+        3, 349.717,
+        4, 352.258,
+        5, 309.192
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 6,
+      entries => [
+        0, 227.774,
+        1, 276.651,
+        2, 326.704,
+        3, 366.324,
+        4, 374.082,
+        5, 349.902
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 7,
+      entries => [
+        0, 215.071,
+        1, 266.631,
+        2, 322.273,
+        3, 369.413,
+        4, 381.475,
+        5, 363.37,
+        6, 134.065
+      ]
+    }
+  ]
+}

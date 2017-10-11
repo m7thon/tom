@@ -1,0 +1,81 @@
+# This file is a POMDP policy, represented as a set of "lower bound
+# planes", each of which consists of an alpha vector and a corresponding
+# action.  Given a particular belief b, this information can be used to
+# answer two queries of interest:
+#
+#   1. What is a lower bound on the expected long-term reward starting
+#        from belief b?
+#   2. What is an action that achieves that expected reward lower bound?
+#
+# Each lower bound plane is only defined over a subset of the belief
+# simplex--it is defined for those beliefs b such that the non-zero
+# entries of b are a subset of the entries present in the plane's alpha
+# vector.  If this condition holds we say the plane is 'applicable' to b.
+#
+# Given a belief b, both of the queries above can be answered by the
+# following process: first, throw out all the planes that are not
+# applicable to b.  Then, for each of the remaining planes, take the inner
+# product of the plane's alpha vector with b.  The highest inner product
+# value is the expected long-term reward lower bound, and the action label
+# for that plane is the action that achieves the bound.
+
+{
+  policyType => "MaxPlanesLowerBound",
+  numPlanes => 6,
+  planes => [
+    {
+      action => 3,
+      numEntries => 4,
+      entries => [
+        0, 2.12169,
+        1, 2.12169,
+        2, 3.12169,
+        3, 4.12169
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 4,
+      entries => [
+        0, 3.15501,
+        1, 3.34501,
+        2, 1.44501,
+        3, 1.44501
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        0, 2.12885,
+        1, 4.12885,
+        2, 2.12885,
+        3, 2.12885
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 2,
+      entries => [
+        0, 3.73241,
+        3, 2.02241
+      ]
+    },
+    {
+      action => 3,
+      numEntries => 2,
+      entries => [
+        0, 2.12886,
+        3, 4.12886
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 2,
+      entries => [
+        0, 3.16495,
+        3, 3.42214
+      ]
+    }
+  ]
+}

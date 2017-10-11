@@ -1,0 +1,1203 @@
+# This file is a POMDP policy, represented as a set of "lower bound
+# planes", each of which consists of an alpha vector and a corresponding
+# action.  Given a particular belief b, this information can be used to
+# answer two queries of interest:
+#
+#   1. What is a lower bound on the expected long-term reward starting
+#        from belief b?
+#   2. What is an action that achieves that expected reward lower bound?
+#
+# Each lower bound plane is only defined over a subset of the belief
+# simplex--it is defined for those beliefs b such that the non-zero
+# entries of b are a subset of the entries present in the plane's alpha
+# vector.  If this condition holds we say the plane is 'applicable' to b.
+#
+# Given a belief b, both of the queries above can be answered by the
+# following process: first, throw out all the planes that are not
+# applicable to b.  Then, for each of the remaining planes, take the inner
+# product of the plane's alpha vector with b.  The highest inner product
+# value is the expected long-term reward lower bound, and the action label
+# for that plane is the action that achieves the bound.
+
+{
+  policyType => "MaxPlanesLowerBound",
+  numPlanes => 141,
+  planes => [
+    {
+      action => 8,
+      numEntries => 5,
+      entries => [
+        0, 2.47457e+06,
+        1, 2.4762e+06,
+        2, 2.47713e+06,
+        3, 2.48153e+06,
+        4, 2.518e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.50328e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.50319e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.50313e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.50304e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.50296e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 3,
+      entries => [
+        2, 2.5029e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 8,
+      numEntries => 2,
+      entries => [
+        0, 2.49323e+06,
+        1, 2.49863e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.5044e+06,
+        3, 2.51219e+06,
+        4, 2.5175e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 4,
+      entries => [
+        1, 2.50045e+06,
+        2, 2.50404e+06,
+        3, 2.51221e+06,
+        4, 2.51755e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.5044e+06,
+        3, 2.51219e+06,
+        4, 2.5175e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.5044e+06,
+        3, 2.51219e+06,
+        4, 2.5175e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 4,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.50442e+06,
+        3, 2.51218e+06,
+        4, 2.5175e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 5,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06,
+        3, 2.51218e+06,
+        4, 2.5175e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50375e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50092e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50338e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50375e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50338e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50337e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50338e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50355e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50325e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50337e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50353e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50355e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50404e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50355e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50376e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50355e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.50442e+06,
+        3, 2.51218e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50374e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50375e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50092e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50404e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50376e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 8,
+      numEntries => 2,
+      entries => [
+        0, 2.49324e+06,
+        1, 2.49856e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50403e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 5,
+      numEntries => 2,
+      entries => [
+        2, 2.50402e+06,
+        3, 2.51221e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50092e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        2, 2.5044e+06,
+        3, 2.51219e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 8,
+      numEntries => 2,
+      entries => [
+        3, 2.50754e+06,
+        4, 2.518e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 3,
+      entries => [
+        1, 2.50101e+06,
+        2, 2.50442e+06,
+        3, 2.51218e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 2,
+      entries => [
+        0, 2.49322e+06,
+        1, 2.50101e+06
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 5,
+      entries => [
+        0, 2.49321e+06,
+        1, 2.50101e+06,
+        2, 2.50442e+06,
+        3, 2.51218e+06,
+        4, 2.5175e+06
+      ]
+    }
+  ]
+}

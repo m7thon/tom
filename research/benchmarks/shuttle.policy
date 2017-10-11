@@ -1,0 +1,83 @@
+# This file is a POMDP policy, represented as a set of "lower bound
+# planes", each of which consists of an alpha vector and a corresponding
+# action.  Given a particular belief b, this information can be used to
+# answer two queries of interest:
+#
+#   1. What is a lower bound on the expected long-term reward starting
+#        from belief b?
+#   2. What is an action that achieves that expected reward lower bound?
+#
+# Each lower bound plane is only defined over a subset of the belief
+# simplex--it is defined for those beliefs b such that the non-zero
+# entries of b are a subset of the entries present in the plane's alpha
+# vector.  If this condition holds we say the plane is 'applicable' to b.
+#
+# Given a belief b, both of the queries above can be answered by the
+# following process: first, throw out all the planes that are not
+# applicable to b.  Then, for each of the remaining planes, take the inner
+# product of the plane's alpha vector with b.  The highest inner product
+# value is the expected long-term reward lower bound, and the action label
+# for that plane is the action that achieves the bound.
+
+{
+  policyType => "MaxPlanesLowerBound",
+  numPlanes => 7,
+  planes => [
+    {
+      action => 2,
+      numEntries => 8,
+      entries => [
+        0, 0,
+        1, 4.00577,
+        2, 8.71431,
+        3, 9.79021,
+        4, 0,
+        5, 0.420494,
+        6, 4.69363,
+        7, 0
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 1,
+      entries => [
+        0, 32.8894
+      ]
+    },
+    {
+      action => 2,
+      numEntries => 1,
+      entries => [
+        3, 40.3797
+      ]
+    },
+    {
+      action => 0,
+      numEntries => 1,
+      entries => [
+        6, 38.3607
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 1,
+      entries => [
+        5, 36.4426
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 1,
+      entries => [
+        4, 34.6205
+      ]
+    },
+    {
+      action => 1,
+      numEntries => 1,
+      entries => [
+        7, 32.8895
+      ]
+    }
+  ]
+}
